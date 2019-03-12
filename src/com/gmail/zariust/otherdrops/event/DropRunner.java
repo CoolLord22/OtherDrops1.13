@@ -107,6 +107,7 @@ public class DropRunner implements Runnable {
         if (!performDrop(who, location))
             return;
 
+        if(Dependencies.hasWildStacker() && currentEvent.getVictim() instanceof LivingEntity) {
                 StackedEntity se = WildStackerAPI.getStackedEntity(currentEvent.getVictim());
                 List<ItemStack> tempLoot = new ArrayList<ItemStack>();
                 
