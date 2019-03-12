@@ -16,7 +16,9 @@
 
 package com.gmail.zariust.common;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.bukkit.Material;
 import org.bukkit.TreeSpecies;
@@ -60,13 +62,24 @@ public final class CommonEntity {
     public static EntityType getCreatureEntityType(String name) {
         if (name == null || name.isEmpty())
             return null;
+        List<String> conflictMobs = new ArrayList<String>();
+        conflictMobs.add("chicken");
+        conflictMobs.add("cod");
+        conflictMobs.add("salmon");
+        conflictMobs.add("pufferfish");
+        conflictMobs.add("tropicalfish");
+        
         name = name.split("@")[0].toLowerCase(); // remove data value, if any,
                                                  // and make **lowercase** (keep
                                                  // in mind below)
         name = name.replaceAll("[\\s-_]", ""); // remove spaces, dashes &
                                                // underscores
+        if(conflictMobs.contains(name.toLowerCase()))
+        	return null;
+        
         if(name.equalsIgnoreCase("tntprimed"))
         	return EntityType.PRIMED_TNT;
+        
         
         boolean isEntity = false;
         if (name.matches("^entity.*"))
