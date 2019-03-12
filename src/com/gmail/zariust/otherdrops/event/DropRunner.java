@@ -7,6 +7,7 @@ import static java.lang.Math.max;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -19,8 +20,11 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import com.bgsoftware.wildstacker.api.WildStackerAPI;
+import com.bgsoftware.wildstacker.api.objects.StackedEntity;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
@@ -103,6 +107,15 @@ public class DropRunner implements Runnable {
         if (!performDrop(who, location))
             return;
 
+                StackedEntity se = WildStackerAPI.getStackedEntity(currentEvent.getVictim());
+                List<ItemStack> tempLoot = new ArrayList<ItemStack>();
+                
+                ItemStack air = new ItemStack(Material.AIR);
+                tempLoot.add(air);
+                
+            	se.setTempLootTable(tempLoot);
+        }
+        
         processActions();
         processCommands(customDrop.getCommands(), who, customDrop, currentEvent, amount);
         processReplacementBlock();
