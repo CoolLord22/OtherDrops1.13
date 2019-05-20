@@ -35,8 +35,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.Callable;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -67,7 +65,6 @@ import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.DropsMap;
 import com.gmail.zariust.otherdrops.event.GroupDropEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
-import com.gmail.zariust.otherdrops.metrics.Metrics;
 import com.gmail.zariust.otherdrops.options.Comparative;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.options.Flag;
@@ -95,6 +92,7 @@ import com.gmail.zariust.otherdrops.subject.Target;
 import com.gmail.zariust.otherdrops.subject.ToolAgent;
 import com.gmail.zariust.otherdrops.subject.VehicleTarget;
 import com.gmail.zariust.otherdrops.things.ODItem;
+import com.gmail.zariust.otherdrops.metrics.BStats;
 
 public class OtherDropsConfig {
 
@@ -108,9 +106,6 @@ public class OtherDropsConfig {
 
     // Track loaded files so we don't get into an infinite loop
     Set<String>                        loadedDropFiles                       = new HashSet<String>();
-
-    // Action counts for Metrics
-    private final Map<String, Integer> triggerCounts                         = new HashMap<String, Integer>();
 
     // Constants
     public static final String         CreatureDataSeparator                 = "!!";
@@ -351,8 +346,6 @@ public class OtherDropsConfig {
         }
         OtherDrops.disableOtherDrops(); // deregister all listeners
         OtherDrops.enableOtherDrops(); // register only needed listeners
-
-        plotConfigDataToMetrics();
     }
 
     private void sendMessage(CommandSender sender, List<String> result) {
@@ -433,29 +426,6 @@ public class OtherDropsConfig {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Set up any required custom graphs that count data from config loading.
-     * Currently counts used triggers
-     * 
-     */
-    private void plotConfigDataToMetrics() {
-        if (!Dependencies.hasMetrics())
-            return;
-
-        Metrics metrics = Dependencies.getMetrics();
-        metrics.addCustomChart(new Metrics.AdvancedPie("triggers", new Callable<Map<String, Integer>>() {
-        	@Override
-        	public Map<String, Integer> call() throws Exception {
-        		Map<String, Integer> valueMap = new HashMap<>();
-        		for (final Entry<String, Integer> entry : triggerCounts.entrySet()) {
-        			valueMap.put(entry.getKey(), entry.getValue());
-        		}
-        		return valueMap;
-        	}
-        }));
-        triggerCounts.clear();
     }
     
     public void loadConfig() throws FileNotFoundException, IOException,
@@ -820,20 +790,20 @@ public class OtherDropsConfig {
             for (Trigger trigger : triggers) {
                 if (trigger.equals(Trigger.HIT)
                         && target.getType() == ItemCategory.CREATURE)
-                    incrementTriggerCounts("HIT_MOB");
+                    BStats.incrementTriggerCounts("HIT_MOB");
                 else if (trigger.equals(Trigger.HIT)
                         && target.getType() == ItemCategory.BLOCK)
-                    incrementTriggerCounts("HIT_BLOCK");
+                	BStats.incrementTriggerCounts("HIT_BLOCK");
 
                 // show difference between mob death and block break for Metrics
                 if (trigger.equals(Trigger.BREAK)
                         && target.getType() == ItemCategory.CREATURE)
-                    incrementTriggerCounts("MOB_DEATH");
+                	BStats.incrementTriggerCounts("MOB_DEATH");
                 else if (trigger.equals(Trigger.BREAK)
                         && target.getType() == ItemCategory.BLOCK)
-                    incrementTriggerCounts("BLOCK_BREAK");
+                	BStats.incrementTriggerCounts("BLOCK_BREAK");
                 else
-                    incrementTriggerCounts(trigger.toString());
+                	BStats.incrementTriggerCounts(trigger.toString());
 
                 // Register "dropForInteract"
                 if (trigger.equals(Trigger.HIT)
@@ -883,21 +853,6 @@ public class OtherDropsConfig {
                 }
                 blocksHash.addDrop(drop);
             }
-        }
-    }
-
-    /**
-     * Keeps a count of each individual trigger for the purpose of logging to
-     * Metrics custom graph
-     * 
-     * @param triggerString
-     */
-    private void incrementTriggerCounts(String triggerString) {
-        if (triggerCounts.get(triggerString) == null) {
-            triggerCounts.put(triggerString, new Integer(1));
-        } else {
-            triggerCounts.put(triggerString,
-                    triggerCounts.get(triggerString) + 1);
         }
     }
 
