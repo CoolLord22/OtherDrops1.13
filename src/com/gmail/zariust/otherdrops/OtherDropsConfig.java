@@ -208,7 +208,6 @@ public class OtherDropsConfig {
     public static boolean              globalRedstonewireTriggersSurrounding = true;
     public static boolean              globalUpdateChecking					 = true;
     public static boolean 			   globalFallToGround					 = true;
-    public static boolean              globalDisableMetrics                  = false;
     public static boolean              primedTNTEnabled		                 = false;
 
     public static boolean              globalOverrideExplosionCap            = false;
@@ -523,7 +522,6 @@ public class OtherDropsConfig {
         globalAllowAnyReplacementBlock = globalConfig.getBoolean("allow_any_replacementblock", false);
         globalRedstonewireTriggersSurrounding = globalConfig.getBoolean("redstonewire_triggers_surrounding", true);
         globalUpdateChecking = globalConfig.getBoolean("update_checker", true);
-        globalDisableMetrics = globalConfig.getBoolean("disable_metrics", false);
         primedTNTEnabled = globalConfig.getBoolean("primed_tnt", false);
         globalOverrideExplosionCap = globalConfig.getBoolean("override_explosion_cap", false);
         globalCustomSpawnLimit = globalConfig.getInt("custom_spawn_limit", 150);
