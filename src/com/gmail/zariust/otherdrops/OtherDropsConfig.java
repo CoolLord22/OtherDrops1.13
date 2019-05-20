@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.Callable;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -67,7 +68,6 @@ import com.gmail.zariust.otherdrops.event.DropsMap;
 import com.gmail.zariust.otherdrops.event.GroupDropEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.metrics.Metrics;
-import com.gmail.zariust.otherdrops.metrics.Metrics.Graph;
 import com.gmail.zariust.otherdrops.options.Comparative;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.options.Flag;
@@ -446,28 +446,17 @@ public class OtherDropsConfig {
             return;
 
         Metrics metrics = Dependencies.getMetrics();
-
-        // Construct a graph, which can be immediately used and considered as
-        // valid
-        Graph graph = metrics.createGraph("Triggers");
-        String logMsg = "Custom Metrics, logging: ";
-
-        for (final Entry<String, Integer> entry : triggerCounts.entrySet()) {
-            logMsg += entry.getKey() + "+" + entry.getValue() + ", ";
-            graph.addPlotter(new Metrics.Plotter(entry.getKey()) {
-
-                @Override
-                public int getValue() {
-                    return entry.getValue();
-                }
-
-            });
-        }
-
+        metrics.addCustomChart(new Metrics.AdvancedPie("triggers", new Callable<Map<String, Integer>>() {
+        	@Override
+        	public Map<String, Integer> call() throws Exception {
+        		Map<String, Integer> valueMap = new HashMap<>();
+        		for (final Entry<String, Integer> entry : triggerCounts.entrySet()) {
+        			valueMap.put(entry.getKey(), entry.getValue());
+        		}
+        		return valueMap;
+        	}
+        }));
         triggerCounts.clear();
-
-        Log.logInfo(logMsg.substring(0, logMsg.length() - 2), Verbosity.HIGH);
-        metrics.start();
     }
     
     public void loadConfig() throws FileNotFoundException, IOException,
