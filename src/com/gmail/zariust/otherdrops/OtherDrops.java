@@ -213,8 +213,6 @@ public class OtherDrops extends JavaPlugin {
             out = new BufferedWriter(new FileWriter(configFile));
 
             // Write out details
-            out.write("Server ID: " + Bukkit.getServerId() + "\n");
-            out.write("Server Name: " + Bukkit.getServerName() + "\n");
             out.write("Bukkit Version: " + Bukkit.getBukkitVersion() + "\n");
             out.write("Version: " + Bukkit.getVersion() + "\n");
 
