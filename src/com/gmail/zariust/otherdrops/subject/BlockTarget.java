@@ -75,7 +75,8 @@ public class BlockTarget implements Target {
         if (block.getState() instanceof CommandBlock) {
             customName = ((CommandBlock)block.getState()).getName();
         } else if (block.getState() instanceof InventoryHolder) {
-            customName = ((InventoryHolder)block.getState()).getInventory().getName();
+        	// TODO: This really shouldn't be toString, but rather an inventory view? But not sure how to get that from a break event.
+            customName = block.getState().toString();
         }
     }
 
