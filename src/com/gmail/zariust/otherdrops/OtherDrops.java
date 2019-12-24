@@ -19,15 +19,18 @@ package com.gmail.zariust.otherdrops;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
@@ -89,9 +92,15 @@ public class OtherDrops extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		File oldFolder = new File("plugins" + File.separator + "OtherDrops_1.13");
+		if(oldFolder.exists()) {
+			Bukkit.getLogger().warning("Detected old directory plugins/OtherDrops_1.13! Copying directory to OtherDrops...");
+			copyFiles(oldFolder.listFiles());
+			Bukkit.getLogger().warning("Successfully copied files. Deleting old directory plugins/OtherDrops_1.13!");
+			deleteDirectories(oldFolder);
+		}
 		initLogger();
 		registerParameters();
-		checkFolders();
 		initConfig();
 		registerCommands();
 		if (OtherDropsConfig.exportEnumLists)
@@ -107,19 +116,27 @@ public class OtherDrops extends JavaPlugin {
 		Log.logInfo("OtherDrops loaded.");
 	}
 
-	private void checkFolders() {
-		File oldFolder = new File("plugins" + File.separator + "OtherDrops_1.13");
-		if(oldFolder.exists()) {
-			Log.logWarning("Detected old directory plugins/OtherDrops_1.13! Copying directory to OtherDrops...");
-			File srcDir = new File("plugins" + File.separator + "OtherDrops_1.13");
-			File destDir = new File("plugins" + File.separator + "OtherDrops");
-
-			try {
-				FileUtils.copyDirectory(srcDir, destDir);
-				Log.logWarning("Successfully copied files. Deleting old directory plugins/OtherDrops_1.13!");
-				deleteDirectories(srcDir);
-			} catch (IOException e) {
-				e.printStackTrace();
+	public void copyFiles(File[] files) {
+		for (File file : files) {
+			if (file.isDirectory()) {
+				copyFiles(file.listFiles()); 
+			} else {
+				try {
+					File destDir = new File(file.getPath().replaceAll("OtherDrops_1.13", "OtherDrops"));
+					if (destDir.getParentFile() != null) {
+						destDir.getParentFile().mkdirs();
+		            }
+					InputStream in = new FileInputStream(file);
+					OutputStream out = new FileOutputStream(destDir);
+					byte[] buffer = new byte[1024];
+					int length;
+					while ((length = in.read(buffer)) > 0)
+						out.write(buffer, 0, length);
+					in.close();
+					out.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
