@@ -39,6 +39,7 @@ import org.bukkit.material.MaterialData;
 
 import com.gmail.zariust.otherdrops.Log;
 
+@SuppressWarnings("deprecation")
 public class ContainerData implements Data {
     // TODO: Should we consider data here?
     private Set<Material> inven = new HashSet<Material>();
@@ -211,7 +212,8 @@ public class ContainerData implements Data {
             cart.getInventory().addItem(new ItemStack(item, 1));
     }
 
-    public static Data parse(Material mat, String state)
+    @SuppressWarnings("incomplete-switch")
+	public static Data parse(Material mat, String state)
             throws IllegalArgumentException {
         if (state == null || state.isEmpty())
             return null;
