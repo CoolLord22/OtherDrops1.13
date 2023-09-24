@@ -233,11 +233,11 @@ public class SectionManager {
                     if (occurence.getTarget() instanceof BlockTarget
                             && occurence.getTrigger() == Trigger.BREAK) {
                         Block block = occurence.getLocation().getBlock();
-                        String playerName = "(unknown)";
+                        Player player = null;
                         if (occurence.getTool() instanceof PlayerSubject)
-                            playerName = ((PlayerSubject) occurence.getTool())
-                                    .getPlayer().getName();
-                        Dependencies.queueBlockBreak(playerName, block, (BlockBreakEvent) occurence.getEvent());
+                            player = ((PlayerSubject) occurence.getTool()).getPlayer();
+                        DropNotificationEvent dNE = new DropNotificationEvent(player, block, (BlockBreakEvent) occurence.getEvent());
+                        Bukkit.getPluginManager().callEvent(dNE);
                     }
                 }
 
