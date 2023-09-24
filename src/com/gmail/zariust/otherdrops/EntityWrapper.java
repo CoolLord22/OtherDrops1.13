@@ -28,7 +28,7 @@ public class EntityWrapper {
     }
 
     public static void setMaxHealth(LivingEntity ent, Double health) {
-        ent.setHealth(health);
+    	getMaxHealth(ent).setBaseValue(health);
     }
 
     public static AttributeInstance getMaxHealth(LivingEntity entity) {
