@@ -125,7 +125,10 @@ public class CommonEnchantments {
         // ignoring space,
         // underscore and dashes
         for (Enchantment value : Enchantment.values()) {
-            if (enchString.equalsIgnoreCase(value.getKey().toString().replace("minecraft:", ""))) {
+        	String compare = value.getKey().toString();
+        	compare = compare.replaceAll("[\\s_-]", "");
+        	compare = compare.replace("minecraft:", "");
+            if (enchString.equalsIgnoreCase(compare)) {
                 return value;
             }
         }
