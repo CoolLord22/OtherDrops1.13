@@ -1,11 +1,12 @@
 package com.gmail.zariust.otherdrops.data.entities;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.material.MaterialData;
 
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.Verbosity;
@@ -16,13 +17,13 @@ import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.SimpleData;
 
 public class EndermanData extends CreatureData {
-    private MaterialData md       = null;
+    private BlockData 	 bd       = null;
     private Boolean      canCarry = null;
     LivingEntityData     leData   = null;
 
-    public EndermanData(MaterialData type, Boolean canCarry,
+    public EndermanData(BlockData type, Boolean canCarry,
             LivingEntityData leData) {
-        this.md = type;
+        this.bd = type;
         this.canCarry = canCarry;
         this.leData = leData;
     }
@@ -32,8 +33,8 @@ public class EndermanData extends CreatureData {
     public void setOn(Entity mob, Player owner) {
         if (mob instanceof Enderman) {
             Enderman z = (Enderman) mob;
-            if (this.md != null)
-                ((Enderman) mob).setCarriedMaterial(md);
+            if (this.bd != null)
+                ((Enderman) mob).setCarriedBlock(bd);
             if (this.canCarry != null)
                 ((Enderman) mob).setCanPickupItems(canCarry);
 
@@ -47,8 +48,8 @@ public class EndermanData extends CreatureData {
             return false;
         EndermanData vd = (EndermanData) d;
 
-        if (this.md != null)
-            if (this.md != vd.md)
+        if (this.bd != null)
+            if (this.bd != vd.bd)
                 return false;
 
         if (this.canCarry != null)
@@ -63,7 +64,7 @@ public class EndermanData extends CreatureData {
 
     public static CreatureData parseFromEntity(Entity entity) {
         if (entity instanceof Enderman) {
-            return new EndermanData(((Enderman) entity).getCarriedMaterial(),
+            return new EndermanData(((Enderman) entity).getCarriedBlock(),
                     ((Enderman) entity).getCanPickupItems(),
                     (LivingEntityData) LivingEntityData.parseFromEntity(entity));
         } else {
@@ -76,7 +77,7 @@ public class EndermanData extends CreatureData {
 	public static CreatureData parseFromString(String state) {
 
         Log.logInfo("EndermanData: parsing from string.", Verbosity.HIGHEST);
-        MaterialData materialData = null;
+        BlockData blockData = null;
         Boolean canCarry = null;
 
         LivingEntityData leData = (LivingEntityData) LivingEntityData
@@ -98,20 +99,17 @@ public class EndermanData extends CreatureData {
                     Data data = new SimpleData();
                     if (sub.contains("@")) {
                         String[] split2 = sub.split("@", 2);
+                    	Log.logWarning("Unsupported argument for: " + split2[0] + " with " + split[1]);
                         material = CommonMaterial.matchMaterial(split2[0]);
-                        data = SimpleData.parse(material, split2[1]);
                     } else {
                         material = CommonMaterial.matchMaterial(sub);
                     }
-                    if (material != null && data == null)
-                        materialData = material.getNewData((byte) 0);
-                    else if (material != null)
-                        materialData = material.getNewData((byte) data.getData());
-
+                    if (material != null)
+                    	blockData = Bukkit.createBlockData(material);
                 }
             }
         }
-        return new EndermanData(materialData, canCarry, leData);
+        return new EndermanData(blockData, canCarry, leData);
     }
 
     /*
@@ -128,8 +126,8 @@ public class EndermanData extends CreatureData {
 	@Override
     public String toString() {
         String val = "";
-        if (md != null) {
-            val += "!!" + md.getItemType().toString() + "@" + md.getData();
+        if (bd != null) {
+            val += "!!" + bd.getAsString();
         }
         if (canCarry != null) {
             val += (canCarry ? "!!carry" : "!!nocarry");
