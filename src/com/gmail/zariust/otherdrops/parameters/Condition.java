@@ -10,6 +10,7 @@ import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import com.gmail.zariust.otherdrops.parameters.conditions.BlockPlaceByCheck;
 import com.gmail.zariust.otherdrops.parameters.conditions.CooldownCheck;
 import com.gmail.zariust.otherdrops.parameters.conditions.DistanceCheck;
 import com.gmail.zariust.otherdrops.parameters.conditions.JobNameCheck;
@@ -64,6 +65,7 @@ public abstract class Condition extends Parameter {
         registerCondition(new LoreNameCheck(null));
         registerCondition(new SpawnedCheck(null));
         registerCondition(new CooldownCheck(null, null));
+        registerCondition(new BlockPlaceByCheck(null));
         registerCondition(new JobNameCheck(null));
         registerCondition(new PlayerSneakCheck(null));
         registerCondition(new DistanceCheck(null, null));
