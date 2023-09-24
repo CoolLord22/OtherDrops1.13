@@ -41,6 +41,8 @@ public class PlayerConsoleWrapper implements ConsoleCommandSender {
 
     @Override
     public String getName() {
+    	if(caller == null)
+    		return "console";
         return caller.getName();
     }
 
