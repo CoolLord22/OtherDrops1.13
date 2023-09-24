@@ -259,7 +259,7 @@ public class ProjectileAgent implements Agent {
 		String checkName = name.toUpperCase().replaceAll("[\\s-_]", "");
         // TODO: parse by projectile names for future compatibility
         if (name.equals("FIRE") || name.equals("FIREBALL"))
-            mat = Material.FIRE;
+            mat = Material.FIRE_CHARGE;
         else if (name.equals("POTION"))
             mat = Material.POTION;
         else if (name.equals("SNOWBALL"))

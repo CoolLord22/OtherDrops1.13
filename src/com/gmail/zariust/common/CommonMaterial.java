@@ -16,13 +16,12 @@
 
 package com.gmail.zariust.common;
 
+import com.gmail.zariust.otherdrops.Log;
+import org.bukkit.Material;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.bukkit.Material;
-
-import com.gmail.zariust.otherdrops.Log;
 
 public final class CommonMaterial {
     // Aliases definitions
@@ -127,7 +126,6 @@ public final class CommonMaterial {
         aMap.put("redapple", "apple");
         aMap.put("sticks", "stick");
 
-        aMap.put("grass", "grassblock");
         aMap.put("longgrass", "tall_grass");
         aMap.put("wildgrass", "tall_grass");
 
@@ -148,7 +146,6 @@ public final class CommonMaterial {
         aMap.put("enderstone", "end_stone");
 
         aMap.put("rawporkchop", "porkchop");
-        aMap.put("egg", "chickenegg");
         aMap.put("netherwarts", "nether_wart");
 
         aMap.put("cauldron_block", "cauldron");
@@ -268,11 +265,6 @@ public final class CommonMaterial {
 
         // note: aliases (on left) need to be uppercase with no spaces, dashes or underscores
         a2Map.put("ANYSHOVEL", "ANY_SPADE");
-        
-        // TODO: DISABLED until issues it causes with LAPIS_ORE are fixed
-        //a2Map.put("LAPIS([^A-Z]?)", "DYE@BLUE$1"); // only lapis as a singular word, otherwise lapis_ore becomes lapisdye@blueore
-
-        a2Map.put("WITHERSKELETON", "WITHER_SKELETON");
 
         String tmpDrop = drop.toUpperCase().replaceAll("[ _-]", "");
         for (String alias : a2Map.keySet()) {

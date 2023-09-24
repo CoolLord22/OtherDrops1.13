@@ -30,8 +30,7 @@ import org.bukkit.Material;
 import com.gmail.zariust.otherdrops.OtherDrops;
 
 public enum MaterialGroup {
-    // Blocks   
-    ANY_SIGN(WALL_SIGN, SIGN),
+    // Blocks
     ANY_REDSTONE_TORCH(REDSTONE_TORCH, REDSTONE_WALL_TORCH),
     ANY_PISTON(STICKY_PISTON, PISTON_HEAD, PISTON, MOVING_PISTON),
     ANY_LEAVES(ACACIA_LEAVES, BIRCH_LEAVES, DARK_OAK_LEAVES, JUNGLE_LEAVES, OAK_LEAVES, SPRUCE_LEAVES),

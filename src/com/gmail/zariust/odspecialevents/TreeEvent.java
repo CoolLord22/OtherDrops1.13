@@ -37,7 +37,7 @@ public class TreeEvent extends SpecialResult {
     private boolean               forceTree;
     private TreeType              tree         = TreeType.TREE;
     private static List<Material> tileEntities = Arrays.asList(
-    												   Material.SIGN, Material.WALL_SIGN, Material.BLACK_BANNER, Material.BLACK_WALL_BANNER,
+    												   Material.BLACK_BANNER, Material.BLACK_WALL_BANNER,
     												   Material.BLUE_BANNER, Material.BLUE_WALL_BANNER, Material.BROWN_BANNER, Material.BROWN_WALL_BANNER,
     												   Material.CYAN_BANNER, Material.CYAN_WALL_BANNER, Material.GRAY_BANNER, Material.GRAY_WALL_BANNER,
     												   Material.GREEN_BANNER, Material.GREEN_WALL_BANNER, Material.LIGHT_BLUE_BANNER, Material.LIGHT_BLUE_WALL_BANNER,

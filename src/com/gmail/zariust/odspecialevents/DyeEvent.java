@@ -55,7 +55,7 @@ public class DyeEvent extends SpecialResult {
                 	dye = DyeColor.CYAN;
                 if (tool.getMaterial() == Material.GRAY_DYE)
                 	dye = DyeColor.GRAY;
-                if (tool.getMaterial() == Material.CACTUS_GREEN)
+                if (tool.getMaterial() == Material.GREEN_DYE)
                 	dye = DyeColor.GREEN;
                 if (tool.getMaterial() == Material.LIGHT_BLUE_DYE)
                 	dye = DyeColor.LIGHT_BLUE;
@@ -71,11 +71,11 @@ public class DyeEvent extends SpecialResult {
                 	dye = DyeColor.PINK;
                 if (tool.getMaterial() == Material.PURPLE_DYE)
                 	dye = DyeColor.PURPLE;
-                if (tool.getMaterial() == Material.ROSE_RED)
+                if (tool.getMaterial() == Material.RED_DYE)
                 	dye = DyeColor.RED;
                 if (tool.getMaterial() == Material.BONE_MEAL)
                 	dye = DyeColor.WHITE;
-                if (tool.getMaterial() == Material.DANDELION_YELLOW)
+                if (tool.getMaterial() == Material.YELLOW_DYE)
                 	dye = DyeColor.YELLOW;
             }
             if (colour == null) {
