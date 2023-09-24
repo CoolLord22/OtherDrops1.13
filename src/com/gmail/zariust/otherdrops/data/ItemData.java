@@ -129,6 +129,8 @@ public class ItemData implements Data, RangeableData {
             return RangeData.parse(state);
         Integer data = 0;
         switch (mat) {
+        case PLAYER_HEAD:
+        	return parseItemMeta(state, ItemMetaType.SKULL);
         case SPAWNER:
             return SpawnerData.parse(state);
         case LEATHER_BOOTS:
