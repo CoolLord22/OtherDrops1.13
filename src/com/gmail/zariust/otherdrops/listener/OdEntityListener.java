@@ -20,10 +20,6 @@ import static com.gmail.zariust.common.Verbosity.EXTREME;
 import static com.gmail.zariust.common.Verbosity.HIGH;
 import static com.gmail.zariust.common.Verbosity.HIGHEST;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.block.Block;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
@@ -111,19 +107,5 @@ public class OdEntityListener implements Listener {
 
         Log.logInfo("Processing explosion...", HIGHEST);
         parent.sectionManager.performDrop(new OccurredEvent(event, event.getEntity()));
-
-        Log.logInfo(
-                "EntityExplode occurance detected - drop occurences will be created for each block.",
-                HIGHEST);
-
-        List<Block> blockListCopy = new ArrayList<Block>();
-        blockListCopy.addAll(event.blockList());
-
-        for (Block block : blockListCopy) {
-            OccurredEvent drop = new OccurredEvent(event, block);
-            parent.sectionManager.performDrop(drop);
-            if (drop.isDenied())
-                event.blockList().remove(block);
-        }
     }
 }
