@@ -16,26 +16,37 @@
 
 package com.gmail.zariust.common;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
 import org.bukkit.Material;
 import org.bukkit.TreeSpecies;
 import org.bukkit.entity.Arrow;
-import org.bukkit.entity.SpectralArrow;
 import org.bukkit.entity.Boat;
+import org.bukkit.entity.DragonFireball;
 import org.bukkit.entity.Egg;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.FishHook;
+import org.bukkit.entity.LargeFireball;
+import org.bukkit.entity.LingeringPotion;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.SmallFireball;
 import org.bukkit.entity.Snowball;
+import org.bukkit.entity.SpectralArrow;
+import org.bukkit.entity.SplashPotion;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.entity.ThrownExpBottle;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.entity.TippedArrow;
+import org.bukkit.entity.Trident;
 import org.bukkit.entity.WitherSkull;
 import org.bukkit.entity.minecart.CommandMinecart;
 import org.bukkit.entity.minecart.ExplosiveMinecart;
@@ -60,13 +71,24 @@ public final class CommonEntity {
     public static EntityType getCreatureEntityType(String name) {
         if (name == null || name.isEmpty())
             return null;
+        List<String> conflictMobs = new ArrayList<String>();
+        conflictMobs.add("chicken");
+        conflictMobs.add("cod");
+        conflictMobs.add("salmon");
+        conflictMobs.add("pufferfish");
+        conflictMobs.add("tropicalfish");
+        
         name = name.split("@")[0].toLowerCase(); // remove data value, if any,
                                                  // and make **lowercase** (keep
                                                  // in mind below)
         name = name.replaceAll("[\\s-_]", ""); // remove spaces, dashes &
                                                // underscores
+        if(conflictMobs.contains(name.toLowerCase()))
+        	return null;
+        
         if(name.equalsIgnoreCase("tntprimed"))
         	return EntityType.PRIMED_TNT;
+        
         
         boolean isEntity = false;
         if (name.matches("^entity.*"))
@@ -80,28 +102,32 @@ public final class CommonEntity {
 
         // Creature aliases - format: (<aliasvalue>, <bukkitmobname>) - must be
         // lowercase
-        name = name.replace("mooshroom", "mushroomcow");
-        name = name.replace("endermen", "enderman");
-        name = name.replace("cat", "ocelot");
-        name = name.replace("zombiepig", "pigzombie");
-        name = name.replace("lavaslime", "magmacube");
-        name = name.replace("magmaslime", "magmacube");
+        Map<String, String> replacer = new HashMap<String, String>();
+        replacer.put("mooshroom", "mushroomcow");
+        replacer.put("endermen", "enderman");
+        replacer.put("cat", "ocelot");
+        replacer.put("zombiepig", "pigzombie");
+        replacer.put("pigman", "pigzombie");
+        replacer.put("zombiepigman", "pigzombie");
+        replacer.put("dog", "wolf");
+        replacer.put("snowman", "wolf");
+        replacer.put("lavaslime", "magmacube");
+        replacer.put("magmaslime", "magmacube");
 
+        if(replacer.containsKey(name.toLowerCase()))
+        	name = replacer.get(name.toLowerCase());
+        
         Set<EntityType> possibleMatches = new HashSet<EntityType>();
 
         for (EntityType creature : EntityType.values()) {
-            String compareShortcut = ";"
-                    + (creature.toString().toLowerCase().replaceAll("[\\s-_]",
-                            ""));
+            String compareShortcut = ";" + (creature.toString().toLowerCase().replaceAll("[\\s-_]",""));
             if (compareShortcut.matches(name + ".*"))
                 possibleMatches.add(creature);
-            if (name.equalsIgnoreCase(creature.name().toLowerCase()
-                    .replaceAll("[\\s-_]", "")))
+            if (name.equalsIgnoreCase(creature.name().toLowerCase().replaceAll("[\\s-_]", "")))
                 if (creature.isAlive() || isEntity) {
                     return creature;
                 }
         }
-
         if (possibleMatches.size() == 1)
             return (EntityType) possibleMatches.toArray()[0];
 
@@ -145,24 +171,36 @@ public final class CommonEntity {
         // Arrow, Egg, EnderPearl, Fireball, Fish, LargeFireball, SmallFireball, Snowball, ThrownExpBottle, ThrownPotion, WitherSkull, SpectralArrow, and TippedArrow
         if (e instanceof Arrow)
             return Material.ARROW;
-        if (e instanceof SpectralArrow)
-            return Material.SPECTRAL_ARROW;
-        if (e instanceof TippedArrow)
-            return Material.TIPPED_ARROW;
+        if (e instanceof DragonFireball)
+            return Material.FIRE_CHARGE;
         if (e instanceof Egg)
             return Material.EGG;
         if (e instanceof EnderPearl)
             return Material.ENDER_PEARL;
         if (e instanceof Fireball)
-            return Material.FIRE;
+            return Material.FIRE_CHARGE;
         if (e instanceof FishHook)
             return Material.FISHING_ROD;
+        if (e instanceof LargeFireball)
+            return Material.FIRE_CHARGE;
+        if (e instanceof LingeringPotion)
+            return Material.POTION;
+        if (e instanceof SmallFireball)
+            return Material.FIRE_CHARGE;
         if (e instanceof Snowball)
             return Material.SNOWBALL;
+        if (e instanceof SpectralArrow)
+            return Material.SPECTRAL_ARROW;
+        if (e instanceof SplashPotion)
+            return Material.POTION;
         if (e instanceof ThrownExpBottle)
             return Material.EXPERIENCE_BOTTLE;
         if (e instanceof ThrownPotion)
             return Material.POTION;
+        if (e instanceof TippedArrow)
+            return Material.TIPPED_ARROW;
+        if (e instanceof Trident)
+            return Material.TRIDENT;
         if (e instanceof WitherSkull)
             return Material.WITHER_SKELETON_SKULL;
         return null;
@@ -170,7 +208,7 @@ public final class CommonEntity {
 
     public static Material getExplosiveType(Entity e) {
         if (e instanceof Fireball)
-            return Material.FIRE;
+            return Material.FIRE_CHARGE;
         if (e instanceof TNTPrimed)
             return Material.TNT;
         return null;
