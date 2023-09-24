@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
@@ -147,8 +146,8 @@ public class ParticleAction extends Action {
     private void applyEffect(Location location) {
         for (ParticleEffect effect : this.effects) {
             try {
-                Log.dMsg("Sending effect: "+effect.getName() + " speed: "+effect.speed+", count:"+effect.count);
-                effect.sendToLocation(location, OtherDrops.rng.nextFloat(), OtherDrops.rng.nextFloat(), OtherDrops.rng.nextFloat());
+                Log.dMsg("Sending effect: "+effect.getType().getName() + " speed: "+effect.getSpeed()+", count:"+effect.getCount()+", radius:"+effect.getRadius());
+                effect.sendToLocation(location, effect.getSpeed(), effect.getCount(), effect.getRadius());
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -160,9 +159,9 @@ public class ParticleAction extends Action {
     private void applyEffect(Entity lEnt) {
         for (ParticleEffect effect : this.effects) {
             try {
-                Log.dMsg("Sending effect: "+effect.getName() + " speed: "+effect.speed+", count:"+effect.count);
+                Log.dMsg("Sending effect: "+effect.getType().getName() + " speed: "+effect.getSpeed()+", count:"+effect.getCount()+", radius:"+effect.getRadius());
                 Location location = lEnt.getLocation();
-                effect.sendToLocation(location, OtherDrops.rng.nextFloat(), OtherDrops.rng.nextFloat(), OtherDrops.rng.nextFloat());
+                effect.sendToLocation(location, effect.getSpeed(), effect.getCount(), effect.getRadius());
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -188,12 +187,13 @@ public class ParticleAction extends Action {
 
     private static ParticleEffect getEffect(String effects) {
         String[] split = effects.split("@");
-        float speed = 1f;
+        double speed = 1;
         int count = 1;
+        double radius = 1;
 
         try {
             if (split.length > 1)
-                speed = Float.parseFloat(split[1]);
+                speed = Double.parseDouble(split[1]);
         } catch (NumberFormatException ex) {
             Log.logInfo("Particleeffect: invalid speed (" + split[1] + ")");
         }
@@ -205,15 +205,18 @@ public class ParticleAction extends Action {
             Log.logInfo("Particleeffect: invalid count (" + split[2] + ")");
         }
 
-        ParticleEffect effect = ParticleEffect.fromName(split[0]);
-        if (effect == null) {
-            Log.logInfo("ParticleEffect: INVALID effect (" + split[0] + ")",
-                    Verbosity.NORMAL);
-            return null;
+        try {
+            if (split.length > 3)
+                radius = Double.parseDouble(split[3]);
+        } catch (NumberFormatException ex) {
+            Log.logInfo("Particleeffect: invalid radius (" + split[3] + ")");
         }
+        System.out.println(ParticleEffect.ParticleType.valueOf(split[0]).toString());
+        ParticleEffect effect = new ParticleEffect(ParticleEffect.ParticleType.valueOf(split[0]));
 
-        effect.speed = speed;
-        effect.count = count;
+        effect.setSpeed(speed);
+        effect.setCount(count);
+        effect.setRadius(radius);
         
         Log.logInfo("ParticleEffect: adding effect (" + split[0] + ", speed: "
                 + speed + ", count: " + count + ")", Verbosity.HIGH);
