@@ -64,9 +64,9 @@ public abstract class Condition extends Parameter {
         registerCondition(new MobSpawnerCheck(null, null));
         registerCondition(new LoreNameCheck(null));
         registerCondition(new SpawnedCheck(null));
-        registerCondition(new CooldownCheck(null, null));
         registerCondition(new BlockPlaceByCheck(null));
         registerCondition(new JobNameCheck(null));
+        registerCondition(new CooldownCheck(null, null, null));
         registerCondition(new PlayerSneakCheck(null));
         registerCondition(new DistanceCheck(null, null));
     }
