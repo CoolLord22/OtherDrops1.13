@@ -91,11 +91,11 @@ public class SelfDrop extends DropType {
                 data = 0;
                 material = Material.REDSTONE;
                 break;
-            case SIGN:
+           /* case SIGN:
             case WALL_SIGN:
                 data = 0;
                 material = Material.SIGN;
-                break;
+                break; */
             case MOVING_PISTON:
                 data = 0;
                 PistonExtensionMaterial ext = (PistonExtensionMaterial) block.getState().getData();
