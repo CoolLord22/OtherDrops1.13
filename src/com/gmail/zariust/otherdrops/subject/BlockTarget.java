@@ -16,27 +16,22 @@
 
 package com.gmail.zariust.otherdrops.subject;
 
-import java.util.Collections;
-import java.util.List;
-
+import com.gmail.zariust.common.CommonMaterial;
+import com.gmail.zariust.common.MaterialGroup;
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.data.*;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.CommandBlock;
+import org.bukkit.block.data.Ageable;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.inventory.InventoryHolder;
 
-import com.gmail.zariust.common.CommonMaterial;
-import com.gmail.zariust.common.MaterialGroup;
-import com.gmail.zariust.common.Verbosity;
-import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.data.ContainerData;
-import com.gmail.zariust.otherdrops.data.NoteData;
-import com.gmail.zariust.otherdrops.data.RecordData;
-import com.gmail.zariust.otherdrops.data.SimpleData;
-import com.gmail.zariust.otherdrops.data.Data;
-import com.gmail.zariust.otherdrops.data.SpawnerData;
+import java.util.Collections;
+import java.util.List;
 
 public class BlockTarget implements Target {
     private Material      id;
@@ -75,7 +70,8 @@ public class BlockTarget implements Target {
         if (block.getState() instanceof CommandBlock) {
             customName = ((CommandBlock)block.getState()).getName();
         } else if (block.getState() instanceof InventoryHolder) {
-            customName = ((InventoryHolder)block.getState()).getInventory().getName();
+        	// TODO: This really shouldn't be toString, but rather an inventory view? But not sure how to get that from a break event.
+            customName = block.getState().toString();
         }
     }
 
@@ -120,11 +116,14 @@ public class BlockTarget implements Target {
             return new ContainerData(block.getState());
         case SPAWNER:
             return new SpawnerData(block.getState());
-        case NOTE_BLOCK:
-            return new NoteData(block.getState());
+        //case NOTE_BLOCK:
+            //return new NoteData(block.getState());
         case JUKEBOX:
             return new RecordData(block.getState());
         default:
+            if(block.getBlockData() instanceof Ageable) {
+                return new SimpleData(((Ageable) block.getBlockData()).getAge());
+            }
             return new SimpleData(block.getData());
         }
     }
