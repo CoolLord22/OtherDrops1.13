@@ -47,39 +47,21 @@ public class ToolDamage {
         this.replaceQuantity = replaceQuantity;
     }
 
-    public boolean apply(ItemStack stack, Random rng) {
+	public boolean apply(ItemStack stack, Random rng) {
         boolean fullyConsumed = false;
         short maxDurability = stack.getType().getMaxDurability();
         if (maxDurability > 0 && durabilityRange != null) {
-        	
             short durability = stack.getDurability();
             short damage = durabilityRange.getRandomIn(rng);
             
             if (durability + damage >= maxDurability)
                 fullyConsumed = true;
-            else if (stack.containsEnchantment(Enchantment.DURABILITY)) {
-            	int durabilityLevel = (stack.getEnchantmentLevel(Enchantment.DURABILITY) + 1);
-            	
-            	Random rand = new Random();
-            	int n = rand.nextInt(100) + 1;
-            	
-            	double chanceOfDamage = 100/(durabilityLevel);
-            	boolean shouldDamage = (n < chanceOfDamage);
-            	
-            	if(shouldDamage) {
-                    stack.setDurability((short) (durability + damage));
-                    Log.logInfo("Tool with unbreaking damaged.", Verbosity.HIGH);
-            	}
-            }
-            else {
-                stack.setDurability((short) (durability + damage));
-                Log.logInfo("Tool damaged.", Verbosity.HIGH);
-            }
+            setDurability(stack, (short) (durability + damage), rng);
         }
         if (consumeRange != null && (fullyConsumed || durabilityRange == null)) {
             if (fullyConsumed) {
                 fullyConsumed = false;
-                stack.setDurability((short) 0);
+                setDurability(stack, (short) 0, rng);
             }
             int count = stack.getAmount();
             int take = consumeRange.getRandomIn(rng);
@@ -93,20 +75,44 @@ public class ToolDamage {
         }
         if (replace != null && fullyConsumed) {
             fullyConsumed = false;
-            stack.setDurability((short) 0);
+            setDurability(stack, (short) 0, rng);
             stack.setAmount(1);
             stack.setType(replace);
             stack = new ItemStack(replace, replaceQuantity);
             Log.logInfo("Tool replaced.", Verbosity.HIGH);
         } else if (durabilityRange == null && consumeRange == null) {
             fullyConsumed = false;
-            stack.setDurability((short) 0);
+            setDurability(stack, (short) 0, rng);
             stack.setType(replace);
             stack.setAmount(replaceQuantity);
             Log.logInfo("Tool replaced.", Verbosity.HIGH);
         }
         return fullyConsumed;
     }
+	
+	private void setDurability(ItemStack stack, short durability, Random rng) {
+		if(stack.getItemMeta().isUnbreakable())
+			return;
+		
+		if (stack.containsEnchantment(Enchantment.DURABILITY)) {
+        	int durabilityLevel = (stack.getEnchantmentLevel(Enchantment.DURABILITY) + 1);
+        	double chanceOfDamage = 100 / (durabilityLevel);
+        	
+        	String name = stack.getType().toString().toLowerCase();
+        	if(name.contains("_helmet") || name.contains("_chestplate") || name.contains("_leggings") || name.contains("_boots"))
+        		chanceOfDamage = 60 + (40 / durabilityLevel);
+
+        	int n = rng.nextInt(100) + 1;
+        	
+        	if(n > chanceOfDamage) {
+                Log.logInfo("Tool with unbreaking failed damage (expected behavior).", Verbosity.HIGH);
+                return;
+        	}
+        }
+
+		Log.logInfo("Tool damaged.", Verbosity.HIGH);
+        stack.setDurability(durability);
+	}
 
     public static ToolDamage parseFrom(ConfigurationNode node) {
         ToolDamage damage = new ToolDamage();
