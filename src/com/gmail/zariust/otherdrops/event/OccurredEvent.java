@@ -66,6 +66,9 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.inventory.ItemStack;
 
+import com.gamingmesh.jobs.api.JobsExpGainEvent;
+import com.gamingmesh.jobs.api.JobsLevelUpEvent;
+import com.gamingmesh.jobs.api.JobsPaymentEvent;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
@@ -112,6 +115,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     private BlockTarget replaceBlockWith;
     private boolean     overrideEquipment;
     private String spawnedReason;
+    private String jobName;
 
     // Constructors
     public OccurredEvent(BlockBreakEvent evt) {
@@ -707,7 +711,33 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         setTool(evt.getPlayer());
         setRegions();
     }
-
+    
+    public OccurredEvent(JobsLevelUpEvent evt) {
+    	super(new PlayerSubject(evt.getPlayer().getPlayer()), Trigger.JOBS_LEVEL_UP);
+    	event = evt;
+    	setJobName(evt.getJobName());
+        setLocationWorldBiomeLight(evt.getPlayer().getPlayer().getLocation().getBlock());
+        setWeatherTimeHeight(location);
+        setRegions();
+    }
+    
+    public OccurredEvent(JobsPaymentEvent evt) {
+    	super(new PlayerSubject(evt.getPlayer().getPlayer()), Trigger.JOBS_PAYMENT);
+    	event = evt;
+        setLocationWorldBiomeLight(evt.getPlayer().getPlayer().getLocation().getBlock());
+        setWeatherTimeHeight(location);
+        setRegions();
+    }
+    
+    public OccurredEvent(JobsExpGainEvent evt) {
+    	super(new PlayerSubject(evt.getPlayer().getPlayer()), Trigger.JOBS_EXP_GAIN);
+    	event = evt;
+    	setJobName(evt.getJob().getName());
+        setLocationWorldBiomeLight(evt.getPlayer().getPlayer().getLocation().getBlock());
+        setWeatherTimeHeight(location);
+        setRegions();
+    }
+    
     public OccurredEvent(PlayerMoveEvent evt, Block standingOn) {
 //        super(new PlayerSubject(evt.getPlayer()), Trigger.PLAYER_MOVE);
         super(new BlockTarget(standingOn), Trigger.PLAYER_MOVE);
@@ -1169,6 +1199,15 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     public void setSpawnedReason(String spawnedReason) {
         this.spawnedReason = spawnedReason;
     }
+
+    public String getJobName() {
+        return jobName;
+    }
+
+    public void setJobName(String job) {
+        this.jobName = job;
+    }
+
 
     /** FIXME: Yes, this is a hack until I find a better way to pass
      *  victim names etc to variable parsing from item custom names

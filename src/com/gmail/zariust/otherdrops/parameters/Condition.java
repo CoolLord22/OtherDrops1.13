@@ -12,6 +12,7 @@ import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.parameters.conditions.CooldownCheck;
 import com.gmail.zariust.otherdrops.parameters.conditions.DistanceCheck;
+import com.gmail.zariust.otherdrops.parameters.conditions.JobNameCheck;
 import com.gmail.zariust.otherdrops.parameters.conditions.LoreNameCheck;
 import com.gmail.zariust.otherdrops.parameters.conditions.MobSpawnerCheck;
 import com.gmail.zariust.otherdrops.parameters.conditions.PlayerSneakCheck;
@@ -63,6 +64,7 @@ public abstract class Condition extends Parameter {
         registerCondition(new LoreNameCheck(null));
         registerCondition(new SpawnedCheck(null));
         registerCondition(new CooldownCheck(null, null));
+        registerCondition(new JobNameCheck(null));
         registerCondition(new PlayerSneakCheck(null));
         registerCondition(new DistanceCheck(null, null));
     }

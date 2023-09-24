@@ -28,6 +28,7 @@ import java.util.Set;
 import org.bukkit.plugin.Plugin;
 
 import com.gmail.zariust.otherdrops.ConfigurationNode;
+import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
@@ -40,6 +41,18 @@ public final class Trigger implements Comparable<Trigger> {
      * The basic action; breaking a block, or killing a creature.
      */
     public final static Trigger         BREAK          = new Trigger("BREAK");
+    /**
+     * Leveling up a job from the JobsReborn plugin
+     */
+    public final static Trigger         JOBS_LEVEL_UP          = new Trigger("JOBS_LEVEL_UP");
+    /**
+     * Being paid from the JobsReborn plugin
+     */
+    public final static Trigger         JOBS_PAYMENT          = new Trigger("JOBS_PAYMENT");
+    /**
+     * Gaining exp from the JobsReborn plugin
+     */
+    public final static Trigger         JOBS_EXP_GAIN          = new Trigger("JOBS_EXP_GAIN");
     /**
      * Left clicking on the target (hitting)
      */
@@ -134,6 +147,10 @@ public final class Trigger implements Comparable<Trigger> {
         actions.put("BLOCKGROW", BLOCK_GROW);
         actions.put("PROJECTILEHITBLOCK", PROJECTILE_HIT_BLOCK);
         actions.put("BLOCKPLACE", BLOCK_PLACE);
+        actions.put("JOBSLEVELUP", JOBS_LEVEL_UP);
+        actions.put("JOBSEXPGAIN", JOBS_EXP_GAIN);
+        actions.put("JOBSPAYMENT", JOBS_PAYMENT);
+        
         owners.put("BREAK", OtherDrops.plugin);
         //owners.put("LEFTCLICK", OtherDrops.plugin);
         owners.put("RIGHTCLICK", OtherDrops.plugin);
@@ -151,6 +168,9 @@ public final class Trigger implements Comparable<Trigger> {
         owners.put("BLOCKGROW", OtherDrops.plugin);
         owners.put("PROJECTILEHITBLOCK", OtherDrops.plugin);
         owners.put("BLOCKPLACE", OtherDrops.plugin);
+        owners.put("JOBSLEVELUP", Dependencies.getJobs());
+        owners.put("JOBSPAYMENT", Dependencies.getJobs());
+        owners.put("JOBSEXPGAIN", Dependencies.getJobs());
     }
 
     private Trigger(String tag) {
