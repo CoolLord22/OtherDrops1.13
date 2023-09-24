@@ -45,7 +45,8 @@
 	    <property name="lib.bukkit.jar" refid="lib.bukkit.jar" />
 	    <propertyregex property="lib.bukkit.version" input="${lib.bukkit.jar}" regexp="([\d\.-R]+-r\d+)\.jar$" select="\1" />
 
-	    <property name="output-jar" value="${ant.project.name}1.13-${otherdrops.version}.jar" />
+    	<buildnumber/>
+	    <property name="output-jar" value="${ant.project.name}1.13Plus-b${build.number}.jar" />
 	    <property name="events-dir" value="${ant.project.name}/events" />
 
 	    <property name="debuglevel" value="source,lines" />
@@ -96,6 +97,7 @@
 	        <path id="classpath">
 	            <pathelement location="bin" />
 	            <pathelement location="${lib.bukkit}" />
+	            <pathelement location="${lib}/CustomBlockData.jar" />
 	            <pathelement location="${coreprotect-location}" />
 	            <pathelement location="${towny-location}" />
 	            <pathelement location="${jobs-location}" />
@@ -162,6 +164,7 @@
 	            <fileset dir="${rsrc}/Sheep/" includes="event.info" />
 	        </jar>
 	        <jar destfile="${output-jar}">
+	        		<zipgroupfileset dir="lib" includes="CustomBlockData.jar" />
 	                <fileset dir="bin/" excludes="**/odspecials/*.class" />
 	                <fileset dir="rsrc/" includes="plugin.yml" />
                     <fileset dir="OtherDrops/" />

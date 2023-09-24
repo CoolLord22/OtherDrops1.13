@@ -6,8 +6,7 @@ bin-test/*
 builds/*
 doc/*
 *.*~
-OtherDrops-*.jar
-OtherDrops1.13-*.jar
+OtherDrops*.jar
 OtherDrops/events/*.jar
 lib/bukkit*.jar
 lib/spigot-api-1.13-R0.1-SNAPSHOT.jar
@@ -26,3 +25,6 @@ rsrc/plugin.yml
 
 .externalToolBuilders/New_Builder.launch
 lib/spigot-api*.jar
+build.number
+build.xml
+*.class
