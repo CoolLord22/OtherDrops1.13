@@ -13,12 +13,10 @@ import com.gmail.zariust.otherdrops.data.Data;
 public class OcelotData extends CreatureData {
     Ocelot.Type type  = null; // null = wildcard
     Boolean     adult = null;
-    Boolean     tamed = null;
 
     public OcelotData(Ocelot.Type type, Boolean adult, Boolean tamed) {
         this.type = type;
         this.adult = adult;
-        this.tamed = tamed;
     }
 
     @Override
@@ -30,15 +28,6 @@ public class OcelotData extends CreatureData {
             if (adult != null)
                 if (!adult)
                     ocelot.setBaby();
-            if (tamed != null) {
-                if (tamed)
-                    ocelot.setOwner(owner);
-            } else {
-                // default to tamed if we match a "CAT"
-                if (type.name().matches(".*_CAT")) {
-                    ocelot.setOwner(owner);
-                }
-            }
         }
     }
 
@@ -54,9 +43,6 @@ public class OcelotData extends CreatureData {
         if (this.adult != null)
             if (this.adult != vd.adult)
                 return false;
-        if (this.tamed != null)
-            if (this.tamed != vd.tamed)
-                return false;
 
         return true;
     }
@@ -64,8 +50,7 @@ public class OcelotData extends CreatureData {
     public static CreatureData parseFromEntity(Entity entity) {
         if (entity instanceof Ocelot) {
             Ocelot ocelot = (Ocelot) entity;
-            return new OcelotData(ocelot.getCatType(), ocelot.isAdult(),
-                    ocelot.isTamed());
+            return new OcelotData(ocelot.getCatType(), ocelot.isAdult(), null);
         } else {
             Log.logInfo("OcelotData: error, parseFromEntity given different creature - this shouldn't happen.");
             return null;
@@ -125,10 +110,6 @@ public class OcelotData extends CreatureData {
         if (adult != null) {
             val += "!";
             val += adult ? "ADULT" : "BABY";
-        }
-        if (tamed != null) {
-            val += "!";
-            val += tamed ? "TAMED" : "WILD";
         }
         return val;
     }
