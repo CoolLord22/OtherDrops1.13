@@ -10,7 +10,7 @@ money-precision: 2
 
 #######################
 # Disable anonymous logging - set this to true if you get errors in older Tekkit or Bukkit versions on startup
-disable_metrics: false
+# This value has been moved to the bStats/ folder. Please change the config option and disable BStats server side.
 
 #######################
 # Should we check for updates? - set this to false if you don't want to be notified of new versions
