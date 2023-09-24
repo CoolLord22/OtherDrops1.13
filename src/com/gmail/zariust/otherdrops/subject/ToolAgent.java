@@ -43,6 +43,7 @@ public class ToolAgent implements Agent {
     private List<CMEnchantment> enchantments;
     public int                  quantityRequired;
     private String              loreName;
+    private List<String>        loreText;
 
     public ToolAgent() {
         this((Material) null);
@@ -67,17 +68,20 @@ public class ToolAgent implements Agent {
                 : new ItemData(item), item == null ? 1 : item.getAmount());
 
         actualTool = item;
-        if (item != null && item.getItemMeta() != null)
+        if (item != null && item.getItemMeta() != null) {
             loreName = item.getItemMeta().getDisplayName();
+            loreText = item.getItemMeta().getLore();
+        }
     }
 
     public ToolAgent(Material tool, Data d, List<CMEnchantment> enchList,
-            int quantity, String loreName) {
+            int quantity, String loreName, List<String> loreText) {
         id = tool;
         data = d;
         enchantments = enchList;
         this.quantityRequired = quantity;
         this.loreName = loreName;
+        this.loreText = loreText;
     }
 
     public ToolAgent(Material tool, Data d, List<CMEnchantment> enchList,
@@ -100,15 +104,19 @@ public class ToolAgent implements Agent {
         if (id == null)
             return true; // null means ANY_OBJECT
         if (data == null)
-            return (id == tool.id); // no data to check (wildcard) so just check
+            return (id.equals(tool.id)); // no data to check (wildcard) so just check
                                     // id versus tool.id
-        return id == tool.id && data.equals(tool.data);
+        return id.equals(tool.id) && data.equals(tool.data);
     }
 
     private boolean isMatch(ToolAgent tool) {
         if (tool == null)
             return false;
-        return id == tool.id && data.matches(tool.data);
+        return id.equals(tool.id) && data.matches(tool.data);
+    }
+
+    public List<CMEnchantment> getEnch() {
+        return enchantments;
     }
 
     @Override
@@ -119,6 +127,16 @@ public class ToolAgent implements Agent {
         return isEqual(tool);
     }
 
+    public void printTool() {
+    	System.out.println(getReadableName());
+    	if(enchantments != null) {
+        	System.out.println("Enchantments: ");
+        	for(CMEnchantment ench : enchantments) {
+        		System.out.println("	" + ench.getEnch().getName() + " # " + ench.getLevel());
+        	}	
+    	}
+    }
+    
     @Override
     public boolean matches(Subject other) {
         // example of data passed:
@@ -131,7 +149,7 @@ public class ToolAgent implements Agent {
             return false;
         // Find the tool that the player is holding
         PlayerSubject tool = (PlayerSubject) other;
-
+        
         Log.logInfo("tool agent check : id=" + id.toString() + " gettool="
                 + tool.getTool() + " material=" + tool.getMaterial()
                 + " id=mat:" + (id == tool.getMaterial()), Verbosity.EXTREME);
@@ -139,14 +157,22 @@ public class ToolAgent implements Agent {
             boolean match = false;
             match = CommonEnchantments.matches(enchantments,
                     tool.getTool().actualTool.getEnchantments());
-            if (!match)
+            if (!match) {
                 return false;
+            }
         }
 
         if (loreName != null && !loreName.isEmpty()) {
             if (tool.getTool().loreName == null)
                 return false;
             if (!this.loreName.equals(tool.getTool().loreName))
+                return false;
+        }
+
+        if (loreText != null && !loreText.isEmpty()) {
+            if (tool.getTool().loreText == null)
+                return false;
+            if (!this.loreText.equals(tool.getTool().loreText))
                 return false;
         }
 
@@ -157,10 +183,12 @@ public class ToolAgent implements Agent {
             Log.logInfo("Toolagent check: quantity required failed.",
                     Verbosity.HIGHEST);
             return false;
-        } else if (data == null)
-            return id == tool.getMaterial();
-        else
+        }
+        if (data == null)
+            return id.equals(tool.getMaterial());
+        else {
             return isMatch(tool.getTool());
+        }
     }
 
     public Material getMaterial() {
@@ -188,11 +216,11 @@ public class ToolAgent implements Agent {
     }
 
     public static Agent parse(String name, String state) {
-        return parse(name, state, null, "");
+        return parse(name, state, null, "", null);
     }
 
     public static Agent parse(String name, String state,
-            List<CMEnchantment> enchPass, String loreName) {
+            List<CMEnchantment> enchPass, String loreName, List<String> loreText) {
         name = name.toUpperCase();
         state = state.toUpperCase();
 
@@ -209,7 +237,7 @@ public class ToolAgent implements Agent {
         // data otherwise later matching fails
         if (state.isEmpty())
             return new ToolAgent(mat, null, enchPass, quantityRequired,
-                    loreName);
+                    loreName, loreText);
 
         // Parse data, which could be an integer or an appropriate enum name
         try {
@@ -226,8 +254,8 @@ public class ToolAgent implements Agent {
         }
         if (data != null)
             return new ToolAgent(mat, data, enchPass, quantityRequired,
-                    loreName);
-        return new ToolAgent(mat, null, enchPass, quantityRequired, loreName);
+                    loreName, loreText);
+        return new ToolAgent(mat, null, enchPass, quantityRequired, loreName, loreText);
     }
 
     private static int getToolQuantity(String name, String state) {
@@ -268,5 +296,4 @@ public class ToolAgent implements Agent {
             return "ANY_OBJECT";
         return id.toString().toLowerCase().replace("_", " ");
     }
-
 }
