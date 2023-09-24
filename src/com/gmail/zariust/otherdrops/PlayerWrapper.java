@@ -26,6 +26,7 @@ import java.util.UUID;
 import org.bukkit.Achievement;
 import org.bukkit.SoundCategory;
 import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
 import org.bukkit.Effect;
 import org.bukkit.EntityEffect;
 import org.bukkit.FluidCollisionMode;
@@ -56,8 +57,10 @@ import org.bukkit.conversations.ConversationAbandonedEvent;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Pose;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Villager;
+import org.bukkit.entity.memory.MemoryKey;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.EntityEquipment;
@@ -74,6 +77,7 @@ import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -82,6 +86,7 @@ import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
+@SuppressWarnings("deprecation")
 public class PlayerWrapper implements Player {
     private final Player               caller;
     private final ConsoleCommandSender console = Bukkit.getConsoleSender();
@@ -353,7 +358,7 @@ public class PlayerWrapper implements Player {
         return caller.isDead();
     }
 
-    @Override
+	@Override
     public Entity getPassenger() {
         return caller.getPassenger();
     }
@@ -1765,6 +1770,56 @@ public class PlayerWrapper implements Player {
 
 	@Override
 	public int getClientViewDistance() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public Location getBedLocation() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public boolean sleep(Location arg0, boolean arg1) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void wakeup(boolean arg0) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void setRotation(float arg0, float arg1) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public <T> T getMemory(MemoryKey<T> arg0) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public <T> void setMemory(MemoryKey<T> arg0, T arg1) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public Pose getPose() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public PersistentDataContainer getPersistentDataContainer() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void openBook(ItemStack arg0) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void sendSignChange(Location arg0, String[] arg1, DyeColor arg2) throws IllegalArgumentException {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
