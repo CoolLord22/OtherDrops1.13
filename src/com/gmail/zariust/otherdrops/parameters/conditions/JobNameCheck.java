@@ -1,10 +1,5 @@
 package com.gmail.zariust.otherdrops.parameters.conditions;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.gamingmesh.jobs.api.JobsExpGainEvent;
 import com.gamingmesh.jobs.api.JobsLevelUpEvent;
 import com.gmail.zariust.common.Verbosity;
@@ -15,9 +10,12 @@ import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.parameters.Condition;
 
-public class JobNameCheck extends Condition {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-    String name = "JobNameCheck";
+public class JobNameCheck extends Condition {
     private final Map<String, Boolean> jobNamesStored;
 
     public JobNameCheck(Map<String, Boolean> value) {
