@@ -16,37 +16,6 @@
 
 package com.gmail.zariust.otherdrops;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.command.BlockCommandSender;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.MetadataValue;
-import org.bukkit.util.BlockIterator;
-
-import think.rpgitems.data.Locale;
-import think.rpgitems.item.ItemManager;
-import think.rpgitems.item.RPGItem;
-
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.drop.DropResult;
@@ -61,8 +30,29 @@ import com.gmail.zariust.otherdrops.parameters.conditions.Cooldown;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
 import com.herocraftonline.heroes.characters.Hero;
+import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.command.*;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.MetadataValue;
+import org.bukkit.util.BlockIterator;
+import think.rpgitems.data.Locale;
+import think.rpgitems.item.ItemManager;
+import think.rpgitems.item.RPGItem;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
-import org.bukkit.Material;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class OtherDropsCommand implements CommandExecutor {
     private enum OBCommand {
@@ -544,9 +534,9 @@ public class OtherDropsCommand implements CommandExecutor {
                 String itemMsg = playerItem.getType() + "@" + playerItem.getDurability() + " maxdura:" + playerItem.getType().getMaxDurability() +
                 		" dura%:" + getDurabilityPercentage(playerItem) + " detail: " + playerItem.toString();
                 if (playerItem.getItemMeta() != null && playerItem.getItemMeta().getDisplayName() != null)
-                    itemMsg += " name: \"" + playerItem.getItemMeta().getDisplayName().replaceAll(" §", "&") + "\"";
+                    itemMsg += " name: \"" + playerItem.getItemMeta().getDisplayName().replaceAll(" Â§", "&") + "\"";
                
-                ((Player) sender).sendRawMessage(ChatColor.GREEN + "Item in hand: " + ChatColor.WHITE + itemMsg.replaceAll("§", "&"));
+                ((Player) sender).sendRawMessage(ChatColor.GREEN + "Item in hand: " + ChatColor.WHITE + itemMsg.replaceAll("Â§", "&"));
                 sender.sendMessage("");
                 
                 Block block = player.getTargetBlock(new HashSet<Material>(), 100);
@@ -579,7 +569,7 @@ public class OtherDropsCommand implements CommandExecutor {
             	}
             }
             sender.sendMessage("");
-            ((Player) sender).sendRawMessage(ChatColor.GREEN + "The item config is:§r " + ChatColor.WHITE + itemFinalWriteData.replaceAll("§", "&"));
+            ((Player) sender).sendRawMessage(ChatColor.GREEN + "The item config is:Â§r " + ChatColor.WHITE + itemFinalWriteData.replaceAll("Â§", "&"));
         }
     }
     
@@ -625,7 +615,7 @@ public class OtherDropsCommand implements CommandExecutor {
                 exception.printStackTrace();
             }
             
-            ((Player) sender).sendRawMessage(ChatColor.GREEN + "The item config is:§r " + ChatColor.WHITE + itemFinalWriteData.replaceAll("§", "&"));
+            ((Player) sender).sendRawMessage(ChatColor.GREEN + "The item config is:Â§r " + ChatColor.WHITE + itemFinalWriteData.replaceAll("Â§", "&"));
         }
     }
     /*
@@ -641,7 +631,7 @@ public class OtherDropsCommand implements CommandExecutor {
     public void showBlockInfo(CommandSender sender, Trigger trigger,
             Target block) {
         StringBuilder message = new StringBuilder();
-        message.append("Block §a" + block + "§f (" + trigger + "):");
+        message.append("Block Â§a" + block + "Â§f (" + trigger + "):");
 
         DropsList dropGroups = otherdrops.config.blocksHash.getList(trigger,
                 block);
@@ -650,7 +640,7 @@ public class OtherDropsCommand implements CommandExecutor {
         if (dropGroups != null) {
             for (CustomDrop drop : dropGroups) {
                 if (drop != null) {
-                    message.append("\n §fDrop Number: §a" + i++);
+                    message.append("\n Â§fDrop Number: Â§a" + i++);
                     if (drop instanceof GroupDropEvent)
                         addDropInfo(message, (GroupDropEvent) drop);
                     else
@@ -690,7 +680,7 @@ public class OtherDropsCommand implements CommandExecutor {
 
         for (Entry<String, String> entry : messageMap.entrySet()) {
             if (entry.getValue() != null) {
-                message.append("\n  §7" + entry.getKey() + ": §f" + entry.getValue());
+                message.append("\n  Â§7" + entry.getKey() + ": Â§f" + entry.getValue());
             }
         }
     }
@@ -722,7 +712,7 @@ public class OtherDropsCommand implements CommandExecutor {
 
         for (Entry<String, String> entry : messageMap.entrySet()) {
             if (entry.getValue() != null) {
-                message.append("\n  §7" + entry.getKey() + ":§f " + entry.getValue());
+                message.append("\n  Â§7" + entry.getKey() + ":Â§f " + entry.getValue());
             }
         }
     }
@@ -739,7 +729,7 @@ public class OtherDropsCommand implements CommandExecutor {
         message.append(" Drop group: " + group.getName());
         char j = 'A';
         for (CustomDrop subDrop : group.getDrops()) {
-            message.append("\n §fNumber: §a" + j++);
+            message.append("\n Â§fNumber: Â§a" + j++);
             if (j > 'Z')
                 j = 'a';
             if (subDrop instanceof GroupDropEvent)
