@@ -353,8 +353,7 @@ public class OtherDropsConfig {
 	private boolean checkIfAllowedToRefreshFiles() throws FileNotFoundException, IOException, InvalidConfigurationException {
 		File file = new File(parent.getDataFolder(), "otherdrops-config.yml");
 		if (file.exists()) {
-			YamlConfiguration globalConfig = YamlConfiguration
-					.loadConfiguration(file);
+			YamlConfiguration globalConfig = YamlConfiguration.loadConfiguration(file);
 			globalConfig.load(file);
 			if (!globalConfig.getBoolean("restore_deleted_config_files", true))
 				return false;
@@ -394,22 +393,18 @@ public class OtherDropsConfig {
 		// back to new name
 
 		File global = new File(parent.getDataFolder(), filename);
-		YamlConfiguration globalConfig = YamlConfiguration
-				.loadConfiguration(global);
+		YamlConfiguration globalConfig = YamlConfiguration.loadConfiguration(global);
 		// Make sure config file exists (even for reloads - it's possible this
 		// did not create successfully or was deleted before reload)
 		if (!global.exists()) {
 			try {
 				global.createNewFile();
-				Log.logInfo("Created an empty file " + parent.getDataFolder()
-				+ "/" + filename + ", please edit it!");
+				Log.logInfo("Created an empty file " + parent.getDataFolder() + "/" + filename + ", please edit it!");
 				globalConfig.set("verbosity", "normal");
 				globalConfig.set("priority", "high");
 				globalConfig.save(global);
 			} catch (IOException ex) {
-				Log.logWarning(parent.getDescription().getName()
-						+ ": could not generate " + filename
-						+ ". Are the file permissions OK?");
+				Log.logWarning(parent.getDescription().getName() + ": could not generate " + filename + ". Are the file permissions OK?");
 			}
 		}
 
@@ -453,16 +448,11 @@ public class OtherDropsConfig {
 		gActionRadius = globalConfig.getInt("action_radius", 10);
 		gcustomBlockBreakToMcmmo = globalConfig.getBoolean("send_customblockbreak_to_mcmmo", true);
 
-		mainDropsName = globalConfig.getString("rootconfig",
-				"otherdrops-drops.yml");
-		if (!(new File(parent.getDataFolder(), mainDropsName).exists())
-				&& new File(parent.getDataFolder(),
-						"otherblocks-globalconfig.yml").exists())
-			mainDropsName = "otherblocks-globalconfig.yml"; // Compatibility
-		// with old filename
+		mainDropsName = globalConfig.getString("rootconfig", "otherdrops-drops.yml");
+		if (!(new File(parent.getDataFolder(), mainDropsName).exists()) && new File(parent.getDataFolder(), "otherblocks-globalconfig.yml").exists())
+			mainDropsName = "otherblocks-globalconfig.yml"; // Compatibility with old filename
 
-		events = new ConfigurationNode(
-				globalConfig.getConfigurationSection("events"));
+		events = new ConfigurationNode(globalConfig.getConfigurationSection("events"));
 		if (events == null) {
 			globalConfig.set("events", new HashMap<String, Object>());
 			events = new ConfigurationNode(new HashMap<String, Object>());
@@ -484,8 +474,7 @@ public class OtherDropsConfig {
 				except.printStackTrace();
 		}
 
-		Log.logInfo("Loaded global config (" + global + "), keys found: "
-				+ configKeys + " (verbosity=" + verbosity + ")", Verbosity.HIGHEST);
+		Log.logInfo("Loaded global config (" + global + "), keys found: " + configKeys + " (verbosity=" + verbosity + ")", Verbosity.HIGHEST);
 	}
 
 	private void loadDropsFile(String filename) throws Exception {
@@ -517,7 +506,7 @@ public class OtherDropsConfig {
 			try {
 				yml.createNewFile();
 				Log.logInfo("Created an empty file " + parent.getDataFolder()
-				+ "/" + filename + ", please edit it!");
+						+ "/" + filename + ", please edit it!");
 				config.set("otherdrops", null);
 				config.set("include-files", null);
 				config.set("defaults", null);
@@ -940,7 +929,7 @@ public class OtherDropsConfig {
 
 		if (drop.getDropped() != null)
 			Log.logInfo(drop.getTrigger() + " " + drop.getTarget() + " w/ "
-					+ drop.getTool() + " -> " + drop.getDropped().toString(),
+							+ drop.getTool() + " -> " + drop.getDropped().toString(),
 					HIGH);
 		else
 			Log.logInfo(
@@ -1021,7 +1010,7 @@ public class OtherDropsConfig {
 	private void loadDropGroup(ConfigurationNode node, GroupDropEvent group, Target target, Trigger trigger) {
 		if (!node.getKeys().contains("drops")) {
 			Log.logWarning("Empty drop group \"" + group.getName()
-			+ "\"; will have no effect!");
+					+ "\"; will have no effect!");
 			return;
 		}
 		Log.logInfo(
