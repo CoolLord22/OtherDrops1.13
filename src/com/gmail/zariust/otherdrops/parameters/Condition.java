@@ -1,23 +1,16 @@
 package com.gmail.zariust.otherdrops.parameters;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
-import com.gmail.zariust.otherdrops.parameters.conditions.BlockPlaceByCheck;
-import com.gmail.zariust.otherdrops.parameters.conditions.CooldownCheck;
-import com.gmail.zariust.otherdrops.parameters.conditions.DistanceCheck;
-import com.gmail.zariust.otherdrops.parameters.conditions.JobNameCheck;
-import com.gmail.zariust.otherdrops.parameters.conditions.LoreNameCheck;
-import com.gmail.zariust.otherdrops.parameters.conditions.MobSpawnerCheck;
-import com.gmail.zariust.otherdrops.parameters.conditions.PlayerSneakCheck;
-import com.gmail.zariust.otherdrops.parameters.conditions.SpawnedCheck;
+import com.gmail.zariust.otherdrops.parameters.conditions.*;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public abstract class Condition extends Parameter {
     String conditionName = "undefined";
@@ -66,9 +59,9 @@ public abstract class Condition extends Parameter {
         registerCondition(new SpawnedCheck(null));
         registerCondition(new BlockPlaceByCheck(null));
         registerCondition(new JobNameCheck(null));
+        registerCondition(new ItemRequirementCheck(null));
         registerCondition(new CooldownCheck(null, null, null));
         registerCondition(new PlayerSneakCheck(null));
         registerCondition(new DistanceCheck(null, null));
     }
-
 }
