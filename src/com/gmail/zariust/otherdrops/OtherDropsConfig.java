@@ -57,77 +57,59 @@ import static com.gmail.zariust.common.Verbosity.*;
 
 public class OtherDropsConfig {
 
-	private final OtherDrops           parent;
+	private final OtherDrops parent;
 
 	// Our main list of drops
-	protected DropsMap                 blocksHash;
+	protected DropsMap blocksHash;
 
 	// Name of drops file
-	private String                     mainDropsName;
+	private String mainDropsName;
 
 	// Track loaded files so we don't get into an infinite loop
-	Set<String>                        loadedDropFiles                       = new HashSet<String>();
+	Set<String> loadedDropFiles = new HashSet<String>();
 
 	// Constants
-	public static final String         CreatureDataSeparator                 = "!!";
+	public static final String CreatureDataSeparator = "!!";
 
 	// A place for special events to stash options
-	private ConfigurationNode          events;
+	private ConfigurationNode events;
 
 	// Triggers configured - these enable the appropriate listeners
 	// if a drop config is found using them.
-	public static boolean              dropForBlocks;                                                         // target
-	// type=BLOCK
-	// or
-	// ANY
-	public static boolean              dropForCreatures;                                                      // target
-	// type=CREATURE,
-	// PLAYER
-	// or
-	// ANY
-	public static boolean              dropForExplosions;                                                     // target
-	// type=EXPLOSION
-	public static boolean              dropForClick;                                                          // LEFT
-	// or
-	// RIGHTCLICK
-	public static boolean              dropForFishing;                                                        // FISH_CAUGHT
-	// or
-	// FAILED
-	public static boolean              dropForSpawned;                                                        // config
-	// using
-	// "spawned:"
-	public static boolean              dropForSpawnTrigger;                                                   // config
-	// using
-	// "trigger: CREATURESPAWN"
-	public static boolean              dropForRedstoneTrigger;                                                // POWERUP
-	// or
-	// POWERDOWN
-	public static boolean              dropForPlayerJoin;                                                     // PLAYERJOIN
-	public static boolean              dropForPlayerRespawn;                                                  // PLAYERRESPAWN
-	public static boolean              dropForPlayerConsume;
-	public static boolean              dropForPlayerMove;
-	public static boolean              dropForJobsLevelUp;
-	public static boolean              dropForJobsPayment;
-	public static boolean              dropForJobsExpGain;
+	public static boolean dropForBlocks;            // target type BLOCK or ANY
+	public static boolean dropForCreatures;            // target type CREATURE, PLAYER, or ANY
+	public static boolean dropForExplosions;        // target type EXPLOSION
+	public static boolean dropForClick;                // LEFT or RIGHT CLICK
+	public static boolean dropForFishing;            // FISH_CAUGHT or FAILED
+	public static boolean dropForSpawned;            // config uses spawned:
+	public static boolean dropForSpawnTrigger;        // config uses trigger: CREATURESPAWN
+	public static boolean dropForRedstoneTrigger;    // POWERUP or POWERDOWN
+	public static boolean dropForPlayerJoin;        // PLAYERJOIN
+	public static boolean dropForPlayerRespawn;        // PLAYERRESPAWN
+	public static boolean dropForPlayerConsume;
+	public static boolean dropForPlayerMove;
+	public static boolean dropForJobsLevelUp;
+	public static boolean dropForJobsPayment;
+	public static boolean dropForJobsExpGain;
 
 
 	// Defaults
-	protected Map<World, Boolean>      defaultWorlds;
-	protected Map<String, Boolean>     defaultRegions;
-	protected Map<Weather, Boolean>    defaultWeather;
-	protected Map<Biome, Boolean>      defaultBiomes;
-	protected Map<Time, Boolean>       defaultTime;
-	protected Map<String, Boolean>     defaultPermissionGroups;
-	protected Map<String, Boolean>     defaultPermissions;
-	protected Comparative              defaultHeight;
-	protected Comparative              defaultAttackRange;
-	protected Comparative              defaultLightLevel;
-	protected List<Trigger>            defaultTrigger;
+	protected static Map<Biome, Boolean> defaultBiomes;
+	protected static Map<World, Boolean> defaultWorlds;
+	protected Map<String, Boolean> defaultRegions;
+	protected Map<Weather, Boolean> defaultWeather;
+	protected Map<Time, Boolean> defaultTime;
+	protected Map<String, Boolean> defaultPermissionGroups;
+	protected Map<String, Boolean> defaultPermissions;
+	protected Comparative defaultHeight;
+	protected Comparative defaultAttackRange;
+	protected Comparative defaultLightLevel;
+	protected List<Trigger> defaultTrigger;
 
 	// Variables for settings from config.yml
-	protected static Verbosity         verbosity                             = Verbosity.NORMAL;
-	public boolean                     customDropsForExplosions;
-	public boolean                     defaultDropSpread;                                                     // determines
+	protected static Verbosity verbosity = Verbosity.NORMAL;
+	public boolean customDropsForExplosions;
+	public boolean defaultDropSpread;                                                     // determines
 	// if
 	// dropspread
 	// defaults
@@ -135,9 +117,9 @@ public class OtherDropsConfig {
 	// true
 	// or
 	// false
-	public static boolean              enableBlockTo;
-	protected boolean                  disableEntityDrops;
-	public static boolean              disableXpOnNonDefault;                                                 // if
+	public static boolean enableBlockTo;
+	protected boolean disableEntityDrops;
+	public static boolean disableXpOnNonDefault;                                                 // if
 	// drops
 	// are
 	// configured
@@ -153,32 +135,32 @@ public class OtherDropsConfig {
 	// a
 	// default
 	// drop
-	public static int                  moneyPrecision;
-	public static boolean              enchantmentsUseUnsafe;
-	public static boolean              enchantmentsIgnoreLevel;
-	public static boolean              enchantmentsRestrictMatching			 = true;
-	public static boolean              spawnTriggerIgnoreOtherDropsSpawn     = true;
-	public static boolean              globalenablewgmatching				 = false;
-	private boolean                    globalLootOverridesDefault;
-	private boolean                    globalMoneyOverridesDefault;
-	private boolean                    globalXpOverridesDefault;
-	private boolean                    moneyOverridesDefault;
-	private boolean                    xpOverridesDefault;
-	private boolean                    lootOverridesDefault;
-	public static boolean              globalRedstonewireTriggersSurrounding = true;
-	public static boolean              globalUpdateChecking					 = true;
-	public static boolean 			   globalFallToGround					 = true;
-	public static boolean              primedTNTEnabled		                 = false;
+	public static int moneyPrecision;
+	public static boolean enchantmentsUseUnsafe;
+	public static boolean enchantmentsIgnoreLevel;
+	public static boolean enchantmentsRestrictMatching = true;
+	public static boolean spawnTriggerIgnoreOtherDropsSpawn = true;
+	public static boolean globalenablewgmatching = false;
+	private boolean globalLootOverridesDefault;
+	private boolean globalMoneyOverridesDefault;
+	private boolean globalXpOverridesDefault;
+	private boolean moneyOverridesDefault;
+	private boolean xpOverridesDefault;
+	private boolean lootOverridesDefault;
+	public static boolean globalRedstonewireTriggersSurrounding = true;
+	public static boolean globalUpdateChecking = true;
+	public static boolean globalFallToGround = true;
+	public static boolean primedTNTEnabled = false;
 
-	public static boolean              globalOverrideExplosionCap            = false;
+	public static boolean globalOverrideExplosionCap = false;
 
-	public static int                  globalCustomSpawnLimit;
+	public static int globalCustomSpawnLimit;
 
-	public static String               gTimeFormat                           = "HH:mm:ss";
+	public static String gTimeFormat = "HH:mm:ss";
 
-	public static String               gDateFormat                           = "yyyy/MM/dd";
+	public static String gDateFormat = "yyyy/MM/dd";
 
-	public static boolean              gColorLogMessages                     = true;
+	public static boolean gColorLogMessages = true;
 
 	public static double gActionRadius = 10;
 
@@ -188,7 +170,7 @@ public class OtherDropsConfig {
 	public static boolean gcustomBlockBreakToMcmmo;
 
 
-	private boolean                    globalAllowAnyReplacementBlock;
+	private boolean globalAllowAnyReplacementBlock;
 
 	private int dropSections; // for summary after loading config
 	private int dropTargets;  // for summary after loading config
@@ -255,6 +237,7 @@ public class OtherDropsConfig {
 		dropForJobsPayment = false;
 		dropForJobsExpGain = false;
 	}
+
 	// load
 	public void load(CommandSender sender) {
 		List<String> result = new ArrayList<String>();
@@ -273,7 +256,7 @@ public class OtherDropsConfig {
 
 			if (actionParameterFound)
 				result.add("Note - 'action:' parameter is outdated (but still supported) - please use 'trigger:'");
-			result.add("Config loaded - total targets: "+this.dropTargets +" sections: "+this.dropSections+ " failed: "+this.dropFailed);
+			result.add("Config loaded - total targets: " + this.dropTargets + " sections: " + this.dropSections + " failed: " + this.dropFailed);
 			sendMessage(sender, result);
 		} catch (ScannerException e) {
 			if (verbosity.exceeds(HIGH)) e.printStackTrace();
@@ -328,7 +311,7 @@ public class OtherDropsConfig {
 	/**
 	 * Check for config files and other settings (events & includes), if not
 	 * found then export the resource from plugin jar file.
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	private void firstRun() throws Exception {
@@ -367,9 +350,7 @@ public class OtherDropsConfig {
 		}
 	}
 
-	private boolean checkIfAllowedToRefreshFiles()
-			throws FileNotFoundException, IOException,
-			InvalidConfigurationException {
+	private boolean checkIfAllowedToRefreshFiles() throws FileNotFoundException, IOException, InvalidConfigurationException {
 		File file = new File(parent.getDataFolder(), "otherdrops-config.yml");
 		if (file.exists()) {
 			YamlConfiguration globalConfig = YamlConfiguration
@@ -396,9 +377,10 @@ public class OtherDropsConfig {
 		}
 	}
 
-	public void loadConfig() throws FileNotFoundException, IOException,
-	InvalidConfigurationException {
-		this.dropSections = 0; this.dropTargets = 0; this.dropFailed = 0; // initialise counts
+	public void loadConfig() throws FileNotFoundException, IOException, InvalidConfigurationException {
+		this.dropSections = 0;
+		this.dropTargets = 0;
+		this.dropFailed = 0; // initialise counts
 		blocksHash.clear(); // clear here to avoid issues on /obr reloading
 		loadedDropFiles.clear();
 		clearDefaults();
@@ -621,30 +603,30 @@ public class OtherDropsConfig {
 					continue;
 				}
 				switch (target.getType()) {
-				case BLOCK:
-					dropForBlocks = true;
-					break;
-				case PLAYER:
-					dropForCreatures = true;
-					break;
-				case CREATURE:
-					dropForCreatures = true;
-					break;
-				case EXPLOSION:
-					dropForExplosions = true;
-					break;
-				case SPECIAL: // used for "ANY" drops - TODO: add specific
-				// categories for ANY_CREATURE and ANY_BLOCK
-				dropForBlocks = true;
+					case BLOCK:
+						dropForBlocks = true;
+						break;
+					case PLAYER:
 						dropForCreatures = true;
 						break;
-				default:
-					// If you want to have other similar flags, add them above
-					// the default
-					// Possibilities are DAMAGE, PROJECTILE, SPECIAL (but
-					// special isn't used for anything)
-					// (The default is here so I don't get an
-					// "incomplete switch" warning.)
+					case CREATURE:
+						dropForCreatures = true;
+						break;
+					case EXPLOSION:
+						dropForExplosions = true;
+						break;
+					case SPECIAL: // used for "ANY" drops - TODO: add specific
+						// categories for ANY_CREATURE and ANY_BLOCK
+						dropForBlocks = true;
+						dropForCreatures = true;
+						break;
+					default:
+						// If you want to have other similar flags, add them above
+						// the default
+						// Possibilities are DAMAGE, PROJECTILE, SPECIAL (but
+						// special isn't used for anything)
+						// (The default is here so I don't get an
+						// "incomplete switch" warning.)
 				}
 
 				// List<Map<?, ?>> blockNode =
@@ -664,7 +646,7 @@ public class OtherDropsConfig {
 					if (nodeValue instanceof String) {
 						String stringNodeVal = (String) nodeValue;
 						if (stringNodeVal.matches("[0-9~.-]+")) {
-							parameterName = "money";                            
+							parameterName = "money";
 						}
 					} else if (nodeValue instanceof Integer || nodeValue instanceof Float || nodeValue instanceof Double) {
 						parameterName = "money";
@@ -709,8 +691,7 @@ public class OtherDropsConfig {
 		moneyOverridesDefault = globalMoneyOverridesDefault;
 
 		if (defaults != null) {
-			Log.logInfo("Loading defaults... nodemap=" + defaults.toString(),
-					HIGH);
+			Log.logInfo("Loading defaults... nodemap=" + defaults, HIGH);
 			defaultWorlds = parseWorldsFrom(defaults, null);
 			defaultRegions = parseRegionsFrom(defaults, null);
 			defaultWeather = Weather.parseFrom(defaults, null);
@@ -719,24 +700,18 @@ public class OtherDropsConfig {
 			defaultPermissionGroups = parseGroupsFrom(defaults, null);
 			defaultPermissions = parsePermissionsFrom(defaults, null);
 			defaultHeight = Comparative.parseFrom(defaults, "height", null);
-			defaultAttackRange = Comparative.parseFrom(defaults, "attackrange",
-					null);
-			defaultLightLevel = Comparative.parseFrom(defaults, "lightlevel",
-					null);
+			defaultAttackRange = Comparative.parseFrom(defaults, "attackrange", null);
+			defaultLightLevel = Comparative.parseFrom(defaults, "lightlevel", null);
 			defaultTrigger = Trigger.parseFrom(defaults, defaultTrigger);
 
-			lootOverridesDefault = defaults.getBoolean(
-					"loot_overrides_default", globalLootOverridesDefault);
-			moneyOverridesDefault = defaults.getBoolean(
-					"money_overrides_default", globalMoneyOverridesDefault);
-			xpOverridesDefault = defaults.getBoolean("xp_overrides_default",
-					globalXpOverridesDefault);
+			lootOverridesDefault = defaults.getBoolean("loot_overrides_default", globalLootOverridesDefault);
+			moneyOverridesDefault = defaults.getBoolean("money_overrides_default", globalMoneyOverridesDefault);
+			xpOverridesDefault = defaults.getBoolean("xp_overrides_default", globalXpOverridesDefault);
 		} else
 			Log.logInfo("No defaults set.", HIGHEST);
 	}
 
-	private void loadBlockDrops(List<ConfigurationNode> drops,
-			String blockName, Target target) {
+	private void loadBlockDrops(List<ConfigurationNode> drops, String blockName, Target target) {
 		for (ConfigurationNode dropNode : drops) {
 			boolean isGroup = dropNode.getKeys().contains("dropgroup");
 			List<Trigger> triggers = new ArrayList<Trigger>();
@@ -861,19 +836,16 @@ public class OtherDropsConfig {
 		// drop.addActions(MessageAction.parse(node));
 		// drop.addActions(PotionAction.parse(node));
 		// drop.addActions(DamageAction.parse(node));
-		drop.addActions(com.gmail.zariust.otherdrops.parameters.Action
-				.parseNodes(node));
-		drop.addConditions(com.gmail.zariust.otherdrops.parameters.Condition
-				.parseNodes(node));
+		drop.addActions(com.gmail.zariust.otherdrops.parameters.Action.parseNodes(node));
+		drop.addConditions(com.gmail.zariust.otherdrops.parameters.Condition.parseNodes(node));
 
 		// Read tool
 		drop.setTool(parseAgentFrom(node));
 		// Read faces
 		drop.setBlockFace(parseFacesFrom(node));
 
-		// Now read the stuff that might have a default; if null is returned,
-		// use the default
 		drop.setWorlds(parseWorldsFrom(node, defaultWorlds));
+		// Now read the stuff that might have a default; if null is returned, use the default
 		drop.setRegions(parseRegionsFrom(node, defaultRegions));
 		drop.setWeather(Weather.parseFrom(node, defaultWeather));
 		drop.setBiome(parseBiomesFrom(node, defaultBiomes));
@@ -881,10 +853,8 @@ public class OtherDropsConfig {
 		drop.setGroups(parseGroupsFrom(node, defaultPermissionGroups));
 		drop.setPermissions(parsePermissionsFrom(node, defaultPermissions));
 		drop.setHeight(Comparative.parseFrom(node, "height", defaultHeight));
-		drop.setAttackRange(Comparative.parseFrom(node, "attackrange",
-				defaultAttackRange));
-		drop.setLightLevel(Comparative.parseFrom(node, "lightlevel",
-				defaultLightLevel));
+		drop.setAttackRange(Comparative.parseFrom(node, "attackrange", defaultAttackRange));
+		drop.setLightLevel(Comparative.parseFrom(node, "lightlevel", defaultLightLevel));
 		drop.setFlags(Flag.parseFrom(node));
 
 		// Read chance, delay, etc
@@ -916,8 +886,7 @@ public class OtherDropsConfig {
 		return chance;
 	}
 
-	private Location parseLocationFrom(ConfigurationNode node, String type,
-			double d, double defY, double e) {
+	private Location parseLocationFrom(ConfigurationNode node, String type, double d, double defY, double e) {
 		String loc = getStringFrom(node, "loc-" + type, type + "loc");
 		if (loc == null)
 			return new Location(null, d, defY, e);
@@ -1049,8 +1018,7 @@ public class OtherDropsConfig {
 
 	}
 
-	private void loadDropGroup(ConfigurationNode node, GroupDropEvent group,
-			Target target, Trigger trigger) {
+	private void loadDropGroup(ConfigurationNode node, GroupDropEvent group, Target target, Trigger trigger) {
 		if (!node.getKeys().contains("drops")) {
 			Log.logWarning("Empty drop group \"" + group.getName()
 			+ "\"; will have no effect!");
@@ -1071,8 +1039,7 @@ public class OtherDropsConfig {
 		group.sort();
 	}
 
-	public static List<String> getMaybeList(ConfigurationNode node,
-			String... keys) {
+	public static List<String> getMaybeList(ConfigurationNode node, String... keys) {
 		if (node == null)
 			return new ArrayList<String>();
 		Object prop = null;
@@ -1111,7 +1078,7 @@ public class OtherDropsConfig {
 		String name = split[0];
 		String dataStr = split.length > 1 ? split[1] : "";
 		Material mat = null;
-		if(name.matches("[0-9]+")) {
+		if (name.matches("[0-9]+")) {
 			Log.logWarning("Error while parsing: " + name + ". Support for numerical IDs has been dropped!");
 		}
 		mat = Material.getMaterial(name.toUpperCase());
@@ -1143,8 +1110,7 @@ public class OtherDropsConfig {
 
 	}
 
-	private Map<World, Boolean> parseWorldsFrom(ConfigurationNode node,
-			Map<World, Boolean> def) {
+	private static Map<World, Boolean> parseWorldsFrom(ConfigurationNode node, Map<World, Boolean> def) {
 		List<String> worlds = getMaybeList(node, "world", "worlds");
 		List<String> worldsExcept = getMaybeList(node, "worldexcept", "worldsexcept");
 		if (worlds.isEmpty() && worldsExcept.isEmpty())
@@ -1186,8 +1152,7 @@ public class OtherDropsConfig {
 
 	// TODO: refactor parseWorldsFrom, Regions & Biomes as they are all very
 	// similar - (beware - fragile, breaks easy)
-	private Map<String, Boolean> parseRegionsFrom(ConfigurationNode node,
-			Map<String, Boolean> def) {
+	private Map<String, Boolean> parseRegionsFrom(ConfigurationNode node, Map<String, Boolean> def) {
 		List<String> regions = getMaybeList(node, "region", "regions");
 		List<String> regionsExcept = getMaybeList(node, "regionexcept",
 				"regionsexcept");
@@ -1230,8 +1195,7 @@ public class OtherDropsConfig {
 				if (name.equalsIgnoreCase(biomeMatch.name())) {
 					result.put(biomeMatch, !biomeNegated);
 					matched = true;
-				}
-				else if(name.equalsIgnoreCase("ALL") || name.equalsIgnoreCase("ANY")) {
+				} else if (name.equalsIgnoreCase("ALL") || name.equalsIgnoreCase("ANY")) {
 					result.put(null, true);
 					matched = true;
 				}
@@ -1244,8 +1208,7 @@ public class OtherDropsConfig {
 		return result;
 	}
 
-	private Map<String, Boolean> parseGroupsFrom(ConfigurationNode node,
-			Map<String, Boolean> def) {
+	private Map<String, Boolean> parseGroupsFrom(ConfigurationNode node, Map<String, Boolean> def) {
 		List<String> groups = getMaybeList(node, "permissiongroup",
 				"permissiongroups");
 		List<String> groupsExcept = getMaybeList(node, "permissiongroupexcept",
@@ -1267,8 +1230,7 @@ public class OtherDropsConfig {
 		return result;
 	}
 
-	private Map<String, Boolean> parsePermissionsFrom(ConfigurationNode node,
-			Map<String, Boolean> def) {
+	private Map<String, Boolean> parsePermissionsFrom(ConfigurationNode node, Map<String, Boolean> def) {
 		List<String> permissions = getMaybeList(node, "permission",
 				"permissions");
 		List<String> permissionsExcept = getMaybeList(node, "permissionexcept",
@@ -1342,13 +1304,13 @@ public class OtherDropsConfig {
 					flag = false;
 				} else
 					agent = parseAgent(tool);
-				if (agent != null) 
+				if (agent != null)
 					toolMap.put(agent, flag);
 
 			}
 			for (String tool : toolsExcept) {
 				Agent agent = parseAgent(tool);
-				if (agent != null) 
+				if (agent != null)
 					toolMap.put(agent, false);
 			}
 		}
