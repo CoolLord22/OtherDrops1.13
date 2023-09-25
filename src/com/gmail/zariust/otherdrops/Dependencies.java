@@ -16,403 +16,262 @@
 
 package com.gmail.zariust.otherdrops;
 
-import static com.gmail.zariust.common.Verbosity.EXTREME;
-import static com.gmail.zariust.common.Verbosity.HIGH;
-import static com.gmail.zariust.common.Verbosity.HIGHEST;
-
-import java.io.IOException;
-
-import me.botsko.prism.Prism;
-import me.botsko.prism.actionlibs.ActionFactory;
+import com.bgsoftware.wildstacker.api.WildStacker;
+import com.gamingmesh.jobs.Jobs;
+import com.garbagemule.MobArena.MobArena;
+import com.garbagemule.MobArena.MobArenaHandler;
+import com.gmail.nossr50.mcMMO;
+import com.gmail.zariust.common.Verbosity;
+import com.herocraftonline.heroes.Heroes;
+import com.palmergames.bukkit.towny.Towny;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import fr.neatmonster.nocheatplus.NoCheatPlus;
 import me.drakespirit.plugins.moneydrop.MoneyDrop;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
-import net.coreprotect.CoreProtect;
-import net.coreprotect.CoreProtectAPI;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
-
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import com.gamingmesh.jobs.Jobs;
-import com.gamingmesh.jobs.listeners.JobsPaymentListener;
-import com.garbagemule.MobArena.MobArena;
-import com.garbagemule.MobArena.MobArenaHandler;
-import com.gmail.nossr50.mcMMO;
-import com.gmail.nossr50.listeners.BlockListener;
-import com.gmail.zariust.common.Verbosity;
-import com.gmail.zariust.otherdrops.metrics.Metrics;
-import com.herocraftonline.heroes.Heroes;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.palmergames.bukkit.towny.Towny;
-
-import fr.neatmonster.nocheatplus.NoCheatPlus;
+import static com.gmail.zariust.common.Verbosity.*;
 
 @SuppressWarnings("unused")
 public class Dependencies {
-    // Plugin Dependencies
-    private static CoreProtectAPI   coreProtect     = null; // for CoreProtect
-                                                             // support
-    private static WorldGuardPlugin worldGuard      = null; // for WorldGuard
-                                                             // support
-    private static Towny	 		towny 			= null;
-    private static Jobs	 			jobs 			= null;
-    private static NoCheatPlus		ncp 			= null;
-    private static GriefPrevention  gp 				= null;
-    
-    boolean                         enabled;
-    private static MobArena         mobArena        = null;
-    private static MobArenaHandler  mobArenaHandler = null; // for MobArena
-    private static MoneyDrop        moneyDrop       = null; // for MoneyDrop
+	// Plugin Dependencies
+	private static WorldGuardPlugin worldGuard      = null; // for WorldGuard
+	// support
+	private static Towny	 		towny 			= null;
+	private static WildStacker	    wildStacker 	= null;
+	private static Jobs	 			jobs 			= null;
+	private static NoCheatPlus		ncp 			= null;
+	private static GriefPrevention  gp 				= null;
 
-    
-    private static Economy          vaultEcon       = null;
+	boolean                         enabled;
+	private static MobArena         mobArena        = null;
+	private static MobArenaHandler  mobArenaHandler = null; // for MobArena
+	private static MoneyDrop        moneyDrop       = null; // for MoneyDrop
+
+
+	private static Economy          vaultEcon       = null;
 	private static Permission       vaultPerms      = null;
 
-    static String                   foundPlugins;
-    static String                   notFoundPlugins;
-    private static Heroes           heroes;
-    private static Prism            prism           = null;
+	static String                   foundPlugins;
+	static String                   notFoundPlugins;
+	private static Heroes           heroes;
 
-    private static Metrics          metrics         = null;
-    private static think.rpgitems.Plugin          rpgItems        = null;
-    private static mcMMO            mcmmo           = null;
+	private static think.rpgitems.Plugin          rpgItems        = null;
+	private static mcMMO            mcmmo           = null;
 
-    public static void init() {
-        try {
-            foundPlugins = "";
-            notFoundPlugins = ""; // need to reset variables to allow for
-                                  // reloads
-            if (!OtherDropsConfig.globalDisableMetrics)
-                enableMetrics();
-            worldGuard = (WorldGuardPlugin) getPlugin("WorldGuard");
-        } catch (Exception e) {
-            Log.logInfo("Failed to load one or more optional dependencies - continuing OtherDrops startup.");
-            e.printStackTrace();
-        }
-        try {
-            coreProtect = loadCoreProtect();
-        } catch (Exception e) {
-            Log.logInfo("Failed to load one or more optional dependencies - continuing OtherDrops startup.");
-            e.printStackTrace();
-        }
-        try {
-        	towny = (Towny) getPlugin("Towny");
-        	gp = (GriefPrevention) getPlugin("GriefPrevention");
-        	jobs = (Jobs) getPlugin("Jobs");
-        	ncp = (NoCheatPlus) getPlugin("NoCheatPlus");
-            mobArena = (MobArena) getPlugin("MobArena");
-            moneyDrop = (MoneyDrop) getPlugin("MoneyDrop");
-            heroes = (Heroes) getPlugin("Heroes");
-            prism = (Prism) getPlugin("Prism");
-            rpgItems = (think.rpgitems.Plugin) getPlugin("RPG Items");
-            mcmmo = (mcMMO) getPlugin("mcMMO");
-        } catch (Exception e) {
-            Log.logInfo("Failed to load one or more optional dependencies - continuing OtherDrops startup.");
-            e.printStackTrace();
-        }
+	public static void init() {
+		try {
+			foundPlugins = "";
+			notFoundPlugins = ""; // need to reset variables to allow for
+			// reloads
+			worldGuard = (WorldGuardPlugin) getPlugin("WorldGuard");
+		} catch (Exception e) {
+			Log.logInfo("Failed to load one or more optional dependencies - continuing OtherDrops startup.");
+			e.printStackTrace();
+		}
+		try {
+			towny = (Towny) getPlugin("Towny");
+			wildStacker = (WildStacker) getPlugin("WildStacker");
+			gp = (GriefPrevention) getPlugin("GriefPrevention");
+			jobs = (Jobs) getPlugin("Jobs");
+			ncp = (NoCheatPlus) getPlugin("NoCheatPlus");
+			mobArena = (MobArena) getPlugin("MobArena");
+			moneyDrop = (MoneyDrop) getPlugin("MoneyDrop");
+			heroes = (Heroes) getPlugin("Heroes");
+			rpgItems = (think.rpgitems.Plugin) getPlugin("RPG Items");
+			mcmmo = (mcMMO) getPlugin("mcMMO");
+		} catch (Exception e) {
+			Log.logInfo("Failed to load one or more optional dependencies - continuing OtherDrops startup.");
+			e.printStackTrace();
+		}
 
-        try {
-            setupVault();
-        } catch (Exception e) {
-            Log.logInfo("Failed to load one or more optional dependencies - continuing OtherDrops startup.");
-            e.printStackTrace();
-        }
+		try {
+			setupVault();
+		} catch (Exception e) {
+			Log.logInfo("Failed to load one or more optional dependencies - continuing OtherDrops startup.");
+			e.printStackTrace();
+		}
 
-        try {
-            if (coreProtect != null) { // Ensure we have access to the API
-                foundPlugins += ", CoreProtect";
-                // coreProtect.testAPI(); //Will print out
-                // "[CoreProtect] API Test Successful." in the console.
-            }
+		try {
+			if (mobArena != null) {
+				mobArenaHandler = new MobArenaHandler();
+			}
 
-            if (mobArena != null) {
-                mobArenaHandler = new MobArenaHandler();
-            }
+		} catch (Exception e) {
+			Log.logInfo("Failed to load one or more optional dependencies - continuing OtherDrops startup.");
+			e.printStackTrace();
+		}
+		if (!foundPlugins.isEmpty())
+			Log.logInfo("Found supported plugin(s): '" + foundPlugins + "'",
+					Verbosity.NORMAL);
+		if (!notFoundPlugins.isEmpty())
+			Log.logInfo("(Optional) plugin(s) not found: '" + notFoundPlugins
+					+ "' (OtherDrops will continue to load)",
+					Verbosity.HIGHEST);
+	}
 
-        } catch (Exception e) {
-            Log.logInfo("Failed to load one or more optional dependencies - continuing OtherDrops startup.");
-            e.printStackTrace();
-        }
-            if (!foundPlugins.isEmpty())
-                Log.logInfo("Found supported plugin(s): '" + foundPlugins + "'",
-                        Verbosity.NORMAL);
-            if (!notFoundPlugins.isEmpty())
-                Log.logInfo("(Optional) plugin(s) not found: '" + notFoundPlugins
-                        + "' (OtherDrops will continue to load)",
-                        Verbosity.HIGHEST);
-    }
+	public static Plugin getPlugin(String name) {
+		Plugin plugin = OtherDrops.plugin.getServer().getPluginManager().getPlugin(name);
 
-    public static Plugin getPlugin(String name) {
-        Plugin plugin = OtherDrops.plugin.getServer().getPluginManager().getPlugin(name);
+		if (plugin == null) {
+			if (notFoundPlugins.isEmpty())
+				notFoundPlugins += name;
+			else
+				notFoundPlugins += ", " + name;
+		} else {
+			if (foundPlugins.isEmpty())
+				foundPlugins += name;
+			else
+				foundPlugins += ", " + name;
+		}
 
-        if (plugin == null) {
-            if (notFoundPlugins.isEmpty())
-                notFoundPlugins += name;
-            else
-                notFoundPlugins += ", " + name;
-        } else {
-            if (foundPlugins.isEmpty())
-                foundPlugins += name;
-            else
-                foundPlugins += ", " + name;
-        }
+		return plugin;
+	}
 
-        return plugin;
-    }
+	public static boolean hasPermission(Permissible who, String permission) {
+		if (who instanceof ConsoleCommandSender)
+			return true;
+		boolean perm = who.hasPermission(permission);
+		if (!perm) {
+			Log.logInfo("SuperPerms - permission (" + permission
+					+ ") denied for " + who.toString(), HIGHEST);
+		} else {
+			Log.logInfo("SuperPerms - permission (" + permission
+					+ ") allowed for " + who.toString(), HIGHEST);
+		}
+		return perm;
+	}
 
-    private static CoreProtectAPI loadCoreProtect() {
-        Plugin plugin = OtherDrops.plugin.getServer().getPluginManager()
-                .getPlugin("CoreProtect");
+	private static void setupVault() {
+		if (OtherDrops.plugin.getServer().getPluginManager().getPlugin("Vault") == null) {
+			vaultEcon = null;
+			Log.logInfo("Couldn't load Vault.", EXTREME); // Vault's not
+			// essential so no
+			// need to worry.
+			return;
+		}
+		Log.logInfo("Hooked into Vault.", HIGH);
+		RegisteredServiceProvider<Economy> rsp = OtherDrops.plugin.getServer()
+				.getServicesManager().getRegistration(Economy.class);
+		if (rsp == null) {
+			vaultEcon = null;
+			Log.logWarning("Found Vault but couldn't hook into Vault economy module (note: you need a separate economy plugin, eg. Essentials, iConomy, BosEconomy, etc.)",
+					Verbosity.NORMAL);
+			return;
+		}
+		vaultEcon = rsp.getProvider();
 
-        // Check that CoreProtect is loaded
-        if (plugin == null || !(plugin instanceof CoreProtect)) {
-            return null;
-        }
+		// RegistereredServiceProvider<Chat> rsp =
+		// getServer().getServicesManager().getRegistration(Chat.class);
+		// chat = rsp.getProvider();
+		// return chat != null;
 
-        // CoreProtect has changed the way API versions need to be checked for version 2.0+
-        // As OtherDrops should work with any CoreProtect from 1.6+ we first check the old way
-        // and if that fails we check the new way for 2.0+
-        boolean checkVersionTwo = false;
+		RegisteredServiceProvider<Permission> rsp_perms = OtherDrops.plugin
+				.getServer().getServicesManager()
+				.getRegistration(Permission.class);
+		if (rsp_perms == null) {
+			vaultPerms = null;
+			Log.logWarning("...couldn't hook into Vault permissions module.",
+					Verbosity.NORMAL);
+			return;
+		}
+		vaultPerms = rsp_perms.getProvider();
+	}
 
-        try {
-            // Check that a compatible version of CoreProtect is loaded
-            if (Double.parseDouble(plugin.getDescription().getVersion()) < 1.6) {
-                return null;
-            }
-        } catch (Exception ex) {
-            checkVersionTwo = true;
-        }
+	public static boolean hasWildStacker() {
+		return Dependencies.wildStacker != null;
+	}
 
-        // Check that the API is enabled
-        CoreProtectAPI CoreProtect = ((CoreProtect) plugin).getAPI();
-        if (CoreProtect.isEnabled() == false) {
-            return null;
-        }
+	public static boolean hasTowny() {
+		return Dependencies.towny != null;
+	}
 
-        if (checkVersionTwo) {
-            try {
-                // Check that a compatible version of the API is loaded
-                if (CoreProtect.APIVersion() < 2) {
-                    return null;
-                }
-            } catch (Exception ex) {
-                return null;
-            }
-        }
+	public static Towny getTowny() {
+		return Dependencies.towny;
+	}
 
+	public static boolean hasJobs() {
+		return Dependencies.jobs != null;
+	}
 
-        return CoreProtect;
-    }
+	public static Jobs getJobs() {
+		return Dependencies.jobs;
+	}
 
-    public static boolean hasPermission(Permissible who, String permission) {
-        if (who instanceof ConsoleCommandSender)
-            return true;
-        boolean perm = who.hasPermission(permission);
-        if (!perm) {
-            Log.logInfo("SuperPerms - permission (" + permission
-                    + ") denied for " + who.toString(), HIGHEST);
-        } else {
-            Log.logInfo("SuperPerms - permission (" + permission
-                    + ") allowed for " + who.toString(), HIGHEST);
-        }
-        return perm;
-    }
+	public static boolean hasGriefPrevention() {
+		return Dependencies.gp != null;
+	}
 
-    private static void setupVault() {
-        if (OtherDrops.plugin.getServer().getPluginManager().getPlugin("Vault") == null) {
-            vaultEcon = null;
-            Log.logInfo("Couldn't load Vault.", EXTREME); // Vault's not
-                                                          // essential so no
-                                                          // need to worry.
-            return;
-        }
-        Log.logInfo("Hooked into Vault.", HIGH);
-        RegisteredServiceProvider<Economy> rsp = OtherDrops.plugin.getServer()
-                .getServicesManager().getRegistration(Economy.class);
-        if (rsp == null) {
-            vaultEcon = null;
-            Log.logWarning("Found Vault but couldn't hook into Vault economy module (note: you need a separate economy plugin, eg. Essentials, iConomy, BosEconomy, etc.)",
-                    Verbosity.NORMAL);
-            return;
-        }
-        vaultEcon = rsp.getProvider();
+	public static GriefPrevention getGriefPrevention() {
+		return Dependencies.gp;
+	}
 
-        // RegistereredServiceProvider<Chat> rsp =
-        // getServer().getServicesManager().getRegistration(Chat.class);
-        // chat = rsp.getProvider();
-        // return chat != null;
+	public static boolean hasNCP() {
+		return Dependencies.ncp != null;
+	}
 
-        RegisteredServiceProvider<Permission> rsp_perms = OtherDrops.plugin
-                .getServer().getServicesManager()
-                .getRegistration(Permission.class);
-        if (rsp_perms == null) {
-            vaultPerms = null;
-            Log.logWarning("...couldn't hook into Vault permissions module.",
-                    Verbosity.NORMAL);
-            return;
-        }
-        vaultPerms = rsp_perms.getProvider();
-    }
+	public static NoCheatPlus getNCP() {
+		return Dependencies.ncp;
+	}
 
-    public static void enableMetrics() {
-        try {
-            metrics = new Metrics(OtherDrops.plugin);
-            metrics.start();
-        } catch (IOException e) {
-            // Failed to submit the stats :-(
-        }
-    }
+	public static boolean hasMobArena() {
+		return Dependencies.mobArena != null;
+	}
 
-    // If logblock plugin is available, inform it of the block destruction
-    // before we change it
-	public static boolean queueBlockBreak(String playerName, Block block, BlockBreakEvent event) {
-        if (block == null) {
-            Log.logWarning(
-                    "Queueblockbreak: block is null - this shouldn't happen (please advise developer).  Player = "
-                            + playerName, HIGH);
-            return false;
-        }
+	public static MobArenaHandler getMobArenaHandler() {
+		return Dependencies.mobArenaHandler;
+	}
 
-        String message = playerName + "-broke-" + block.getType().toString();
-        if (OtherDropsConfig.gcustomBlockBreakToMcmmo && Dependencies.hasMcmmo()) {
-            Log.logInfo("Attempting to send BlockBreakEvent to mcMMO: " + message, HIGHEST);
-            BlockListener bl = new BlockListener(Dependencies.getMcmmo());
-            bl.onBlockBreak(event);
-        }
+	public static boolean hasWorldGuard() {
+		return Dependencies.worldGuard != null;
+	}
 
-        if (Dependencies.hasJobs()) {
-        	Log.logInfo("Attempting to send BlockBreakEvent to Jobs: " + message, HIGHEST);
-        	JobsPaymentListener jpl = new JobsPaymentListener(Dependencies.getJobs()); 
-        	jpl.onBlockBreak(event);
-        }
+	public static WorldGuardPlugin getWorldGuard() {
+		return Dependencies.worldGuard;
+	}
 
-        if (Dependencies.hasCoreProtect()) {
-            Log.logInfo("Attempting to log to CoreProtect: " + message, HIGHEST);
-            Dependencies.getCoreProtect().logRemoval(playerName, block.getLocation(), block.getType(), block.getData());
-        }
+	public static boolean hasVaultEcon() {
+		return Dependencies.vaultEcon != null;
+	}
 
-        if (hasPrism()) {
-            Log.logInfo("Attempting to log to Prism (" + message + ")", HIGHEST);
-            Prism.actionsRecorder.addToQueue(ActionFactory.create("block-break", block, playerName));
-        }
-        return true;
-    }
+	public static Economy getVaultEcon() {
+		return Dependencies.vaultEcon;
+	}
 
-    public static boolean hasTowny() {
-        return Dependencies.towny != null;
-    }
-    
-    public static Towny getTowny() {
-        return Dependencies.towny;
-    }
+	public static boolean hasMoneyDrop() {
+		return Dependencies.moneyDrop != null;
+	}
 
-    public static boolean hasJobs() {
-        return Dependencies.jobs != null;
-    }
-    
-    public static Jobs getJobs() {
-        return Dependencies.jobs;
-    }
+	public static MoneyDrop getMoneyDrop() {
+		return Dependencies.moneyDrop;
+	}
 
-    public static boolean hasGriefPrevention() {
-        return Dependencies.gp != null;
-    }
-    
-    public static GriefPrevention getGriefPrevention() {
-        return Dependencies.gp;
-    }
+	public static boolean hasHeroes() {
+		return Dependencies.heroes != null;
+	}
 
-    public static boolean hasNCP() {
-        return Dependencies.ncp != null;
-    }
-    
-    public static NoCheatPlus getNCP() {
-        return Dependencies.ncp;
-    }
+	public static Heroes getHeroes() {
+		return Dependencies.heroes;
+	}
 
-    public static boolean hasMobArena() {
-        return Dependencies.mobArena != null;
-    }
+	public static think.rpgitems.Plugin getRpgItems() {
+		return rpgItems;
+	}
 
-    public static MobArenaHandler getMobArenaHandler() {
-        return Dependencies.mobArenaHandler;
-    }
+	public static boolean hasRpgItems() {
+		return rpgItems != null;
+	}
 
-    public static boolean hasWorldGuard() {
-        return Dependencies.worldGuard != null;
-    }
+	public static mcMMO getMcmmo() {
+		return mcmmo;
+	}
 
-    public static WorldGuardPlugin getWorldGuard() {
-        return Dependencies.worldGuard;
-    }
-
-    public static boolean hasVaultEcon() {
-        return Dependencies.vaultEcon != null;
-    }
-
-    public static Economy getVaultEcon() {
-        return Dependencies.vaultEcon;
-    }
-
-    public static boolean hasMoneyDrop() {
-        return Dependencies.moneyDrop != null;
-    }
-
-    public static MoneyDrop getMoneyDrop() {
-        return Dependencies.moneyDrop;
-    }
-
-    public static boolean hasCoreProtect() {
-        return Dependencies.coreProtect != null;
-    }
-
-    public static CoreProtectAPI getCoreProtect() {
-        return Dependencies.coreProtect;
-    }
-
-    public static boolean hasHeroes() {
-        return Dependencies.heroes != null;
-    }
-
-    public static Heroes getHeroes() {
-        return Dependencies.heroes;
-    }
-
-    public static boolean hasMetrics() {
-        return Dependencies.metrics != null;
-    }
-
-    public static Metrics getMetrics() {
-        return Dependencies.metrics;
-    }
-
-    public static Prism getPrism() {
-        return prism;
-    }
-
-    public static boolean hasPrism() {
-        return prism != null;
-    }
-
-    public static think.rpgitems.Plugin getRpgItems() {
-        return rpgItems;
-    }
-
-    public static boolean hasRpgItems() {
-        return rpgItems != null;
-    }
-
-    public static mcMMO getMcmmo() {
-        return mcmmo;
-    }
-
-    public static boolean hasMcmmo() {
-        return mcmmo != null;
-    }
+	public static boolean hasMcmmo() {
+		return mcmmo != null;
+	}
 }

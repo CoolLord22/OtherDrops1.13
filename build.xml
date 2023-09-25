@@ -79,7 +79,6 @@
 	        <mkdir dir="bin" />
 	        <!--<copy file="${src}/plugin.yml" todir="bin" />-->
 
-			<property name="coreprotect-location" value="${dependencies}/CoreProtect.jar" />
 			<property name="griefprevention-location" value="${dependencies}/GriefPrevention.jar" />
 			<property name="heroes-location" value="${dependencies}/Heroes.jar" />
             <property name="jobs-location" value="${dependencies}/Jobs.jar" />
@@ -88,7 +87,6 @@
 			<property name="moneydrop-location" value="${dependencies}/MoneyDrop.jar" />
 			<property name="mythicmobs-location" value="${dependencies}/MythicMobs-4.5.5.jar" />
 			<property name="ncp-location" value="${dependencies}/NoCheatPlus.jar" />
-			<property name="prism-location" value="${dependencies}/Prism.jar" />
 			<property name="rpgitems-location" value="${dependencies}/rpgitems.jar" />
             <property name="towny-location" value="${dependencies}/Towny.jar" />
 			<property name="vault-location" value="${dependencies}/Vault.jar" />
@@ -102,7 +100,6 @@
 	            <pathelement location="${lib.bukkit}" />
 	            <pathelement location="${lib}/CustomBlockData.jar" />
 
-				<pathelement location="${coreprotect-location}" />
 				<pathelement location="${griefprevention-location}" />
 				<pathelement location="${heroes-location}" />
 				<pathelement location="${jobs-location}" />
@@ -111,7 +108,6 @@
 				<pathelement location="${moneydrop-location}" />
 				<pathelement location="${mythicmobs-location}" />
 				<pathelement location="${ncp-location}" />
-				<pathelement location="${prism-location}" />
 				<pathelement location="${rpgitems-location}" />
 	            <pathelement location="${towny-location}" />
 				<pathelement location="${vault-location}" />
