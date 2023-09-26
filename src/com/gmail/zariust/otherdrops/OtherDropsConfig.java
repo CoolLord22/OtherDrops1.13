@@ -45,7 +45,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
-import org.yaml.snakeyaml.scanner.ScannerException;
 
 import java.io.*;
 import java.util.*;
@@ -257,12 +256,6 @@ public class OtherDropsConfig {
 			if (actionParameterFound)
 				result.add("Note - 'action:' parameter is outdated (but still supported) - please use 'trigger:'");
 			result.add("Config loaded - total targets: " + this.dropTargets + " sections: " + this.dropSections + " failed: " + this.dropFailed);
-			sendMessage(sender, result);
-		} catch (ScannerException e) {
-			if (verbosity.exceeds(HIGH)) e.printStackTrace();
-			result.add("There was a syntax in your config file which has forced OtherDrops to abort loading!");
-			result.add("The error was:\n" + e.toString());
-			result.add("You can fix the error and reload with /odr.");
 			sendMessage(sender, result);
 		} catch (FileNotFoundException e) {
 			if (verbosity.exceeds(HIGH)) e.printStackTrace();
