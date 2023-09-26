@@ -16,15 +16,13 @@
 
 package com.gmail.zariust.odspecialevents;
 
-import java.util.List;
-import java.util.Map;
-
-import org.bukkit.World;
-import org.bukkit.block.Biome;
-
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
+import org.bukkit.World;
+import org.bukkit.block.Biome;
+
+import java.util.List;
 
 public class StormEvent extends SpecialResult {
     private int duration = 2400; // default duration = 2 minutes
@@ -65,13 +63,8 @@ public class StormEvent extends SpecialResult {
 
     @Override
     public boolean canRunFor(SimpleDrop drop) {
-        Map<Biome, Boolean> biomes = drop.getBiome();
-        // By using Boolean.TRUE I eliminate the need to check for null
-        // ZAR: nope, getting a null pointer error now.
-        if (biomes != null)
-            if (biomes.get(Biome.NETHER) == Boolean.TRUE)
-                return false;
-        return true;
+        Biome biome = drop.getTarget().getLocation().getBlock().getBiome();
+        return biome != Biome.NETHER;
     }
 
     @Override

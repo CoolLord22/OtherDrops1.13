@@ -16,15 +16,13 @@
 
 package com.gmail.zariust.odspecialevents;
 
-import java.util.List;
-import java.util.Map;
-
-import org.bukkit.World;
-import org.bukkit.block.Biome;
-
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
+import org.bukkit.World;
+import org.bukkit.block.Biome;
+
+import java.util.List;
 
 public class ThunderEvent extends SpecialResult {
     private int duration = 2400; // default duration = 2 minutes
@@ -65,23 +63,13 @@ public class ThunderEvent extends SpecialResult {
 
     @Override
     public boolean canRunFor(SimpleDrop drop) {
-        Map<Biome, Boolean> biomes = drop.getBiome();
-        // By using Boolean.TRUE I eliminate the need to check for null
-        // ZAR: nope, getting a null pointer error now so checking for null
-        if (biomes != null) {
-            if (biomes.get(Biome.NETHER) == Boolean.TRUE)
-                return false;
-            if (biomes.get(Biome.THE_END) == Boolean.TRUE)
-                return false;
-        }
-        return true;
+        Biome biome = drop.getTarget().getLocation().getBlock().getBiome();
+        return biome != Biome.NETHER && biome != Biome.THE_END;
     }
 
     @Override
     public boolean canRunFor(OccurredEvent drop) {
         Biome biome = drop.getBiome();
-        if (biome == Biome.NETHER || biome == Biome.THE_END)
-            return false;
-        return true;
+        return biome != Biome.NETHER && biome != Biome.THE_END;
     }
 }
