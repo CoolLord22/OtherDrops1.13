@@ -28,6 +28,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -87,6 +88,13 @@ public class DropRunner implements Runnable {
 
 		checkIfDenied();
 
+		if (currentEvent.getEvent() instanceof PlayerDropItemEvent) {
+			PlayerDropItemEvent event = (PlayerDropItemEvent) currentEvent.getEvent();
+			if(customDrop.getToolDamage() != null)
+				event.getItemDrop().getItemStack().setAmount(event.getItemDrop().getItemStack().getAmount() - 1);
+			currentEvent.getEvent().setCancelled(false);
+		}
+
 		if (!performDrop(who, location))
 			return;
 
@@ -123,7 +131,7 @@ public class DropRunner implements Runnable {
 		Agent used = currentEvent.getTool();
 		if (used != null) { // there's no tool for leaf decay
 			// Tool damage
-			if (customDrop.getToolDamage() != null) {
+			if (customDrop.getToolDamage() != null && !(currentEvent.getEvent() instanceof PlayerDropItemEvent)) {
 				used.damageTool(customDrop.getToolDamage(), customDrop.rng);
 			} else {
 				if (currentEvent.getEvent() instanceof BlockBreakEvent)

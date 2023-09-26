@@ -16,9 +16,14 @@
 
 package com.gmail.zariust.otherdrops.listener;
 
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.DropCreateException;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -29,12 +34,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
-import com.gmail.zariust.common.Verbosity;
-import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDrops;
-import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import java.util.HashSet;
-import org.bukkit.Material;
 
 public class OdPlayerListener implements Listener {
     private final OtherDrops parent;
@@ -102,6 +102,7 @@ public class OdPlayerListener implements Listener {
         if (!OtherDropsConfig.dropForItemDrop)
             return;
         if (event.getPlayer() != null) {
+            event.setCancelled(true);
             OccurredEvent drop = new OccurredEvent(event);
             parent.sectionManager.performDrop(drop);
         }
