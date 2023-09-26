@@ -1,19 +1,18 @@
 package com.gmail.zariust.otherdrops.things;
 
+import com.gmail.zariust.common.CMEnchantment;
+import com.gmail.zariust.common.CommonEnchantments;
+import com.gmail.zariust.common.CommonMaterial;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.data.Data;
+import com.gmail.zariust.otherdrops.data.ItemData;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-
-import com.gmail.zariust.common.CMEnchantment;
-import com.gmail.zariust.common.CommonEnchantments;
-import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.data.Data;
-import com.gmail.zariust.otherdrops.data.ItemData;
-import com.gmail.zariust.common.CommonMaterial;
 
 public class ODItem {
     public String               name;
@@ -64,6 +63,7 @@ public class ODItem {
             while (m.find()) {
                 String key = m.group(1);
                 String value = m.group(2);
+                value = value.replaceAll("slashCharPlaceholder", "/");
 
                 if (key != null && value != null) {
                     if (key.equals("~")) {

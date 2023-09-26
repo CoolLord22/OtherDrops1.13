@@ -16,12 +16,15 @@
 
 package com.gmail.zariust.otherdrops.drop;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-
+import com.gmail.zariust.common.CommonMaterial;
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.*;
+import com.gmail.zariust.otherdrops.data.Data;
+import com.gmail.zariust.otherdrops.listener.OdSpawnListener;
+import com.gmail.zariust.otherdrops.options.DoubleRange;
+import com.gmail.zariust.otherdrops.subject.Agent;
+import com.gmail.zariust.otherdrops.subject.PlayerSubject;
+import com.gmail.zariust.otherdrops.subject.Target;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -31,19 +34,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 
-import com.gmail.zariust.common.CommonMaterial;
-import com.gmail.zariust.common.Verbosity;
-import com.gmail.zariust.otherdrops.ConfigurationNode;
-import com.gmail.zariust.otherdrops.CustomMobSupport;
-import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDrops;
-import com.gmail.zariust.otherdrops.OtherDropsConfig;
-import com.gmail.zariust.otherdrops.data.Data;
-import com.gmail.zariust.otherdrops.listener.OdSpawnListener;
-import com.gmail.zariust.otherdrops.options.DoubleRange;
-import com.gmail.zariust.otherdrops.subject.Agent;
-import com.gmail.zariust.otherdrops.subject.PlayerSubject;
-import com.gmail.zariust.otherdrops.subject.Target;
+import java.util.*;
 
 public abstract class DropType {
     public enum DropCategory {
@@ -334,6 +325,9 @@ public abstract class DropType {
      */
     static String[] split(String drop) {
         String name, amount, chance, message = "";
+        if(drop.contains("&/")) {
+            drop = drop.replace("&/", "slashCharPlaceholder");
+        }
         String[] split = drop.split("/");
         switch (split.length) {
         case 4:
