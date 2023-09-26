@@ -658,20 +658,6 @@ public class OtherDropsCommand implements CommandExecutor {
 
         // Conditions
         messageMap.put("Agent", drop.getToolString()); // make null if "any"
-        messageMap.put("Worlds", drop.getWorldsString());
-        messageMap.put("Regions", drop.getRegionsString());
-        messageMap.put("Weather", drop.getWeatherString());
-        messageMap.put("Block faces", drop.getBlockFacesString());
-        messageMap.put("Biomes", drop.getBiomeString());
-        messageMap.put("Times", drop.getTimeString());
-        messageMap.put("Groups", drop.getGroupsString());
-        messageMap.put("Permissions", drop.getPermissionsString());
-        messageMap.put("Height", (drop.getHeight() == null) ? null : drop
-                .getHeight().toString());
-        messageMap.put("Attack range", (drop.getAttackRange() == null) ? null
-                : drop.getAttackRange().toString());
-        messageMap.put("Light level ", (drop.getLightLevel() == null) ? null
-                : drop.getLightLevel().toString());
         // Chance and delay
         messageMap.put("Chance", String.valueOf(drop.getChance())); // make null
                                                                     // if = 100
