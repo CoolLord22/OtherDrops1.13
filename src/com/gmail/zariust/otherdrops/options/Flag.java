@@ -20,6 +20,11 @@ import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.*;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
+import com.palmergames.bukkit.towny.object.TownyPermission;
+import com.palmergames.bukkit.towny.utils.PlayerCacheUtil;
+import me.ryanhamshire.GriefPrevention.Claim;
+import me.ryanhamshire.GriefPrevention.GriefPrevention;
+import me.ryanhamshire.GriefPrevention.PlayerData;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -52,7 +57,7 @@ public abstract class Flag implements Comparable<Flag> {
     			Player player = null;
     			if (event.getTool() instanceof PlayerSubject) {
     				player = ((PlayerSubject) event.getTool()).getPlayer();
-    				}
+                }
     			if (player != null) {
     				if (Dependencies.getWorldGuard().createProtectionQuery().testBlockPlace(player, event.getLocation(), event.getLocation().getBlock().getType())) {
     					Log.logInfo("Worldguard build permission allowed.", HIGHEST);
@@ -66,9 +71,6 @@ public abstract class Flag implements Comparable<Flag> {
     		}
     	};
 
-    // Register Mob Arena Flag - this should be registered even if mob arena
-    // cannot be found,
-    // as drop entries with this flag should be ignored if not in an arena.
     public final static Flag IN_MOB_ARENA = new Flag("IN_MOB_ARENA") {
     	@Override
     	public void matches(OccurredEvent event, boolean state, final FlagState result) {
@@ -93,6 +95,53 @@ public abstract class Flag implements Comparable<Flag> {
     		}
     	};
 
+    public final static Flag TOWNY_BUILD_PERMISSION = new Flag("TOWNY_BUILD_PERMISSION") {
+        @Override
+        public void matches(OccurredEvent event, boolean state, final FlagState result) {
+            if (Dependencies.hasTowny()) {
+                Player player = null;
+                if (event.getTool() instanceof PlayerSubject) {
+                    player = ((PlayerSubject) event.getTool()).getPlayer();
+                }
+                if (player != null) {
+                    if(PlayerCacheUtil.getCachePermission(player, event.getLocation(), event.getLocation().getBlock().getType(), TownyPermission.ActionType.BUILD)) {
+                        Log.logInfo("Towny build permission allowed.", HIGHEST);
+                        result.dropThis = true;
+                    } else {
+                        Log.logInfo("Towny build permission failed.", HIGHEST);
+                        result.dropThis = false;
+                    }
+                }
+            }
+        }
+    };
+
+    public final static Flag GRIEFPREVENTION_BUILD_PERMISSION = new Flag("GRIEFPREVENTION_BUILD_PERMISSION") {
+        @Override
+        public void matches(OccurredEvent event, boolean state, final FlagState result) {
+            if(Dependencies.hasGriefPrevention()) {
+                Player player = null;
+                if (event.getTool() instanceof PlayerSubject) {
+                    player = ((PlayerSubject) event.getTool()).getPlayer();
+                }
+                if (player != null) {
+                    PlayerData playerData = GriefPrevention.instance.dataStore.getPlayerData(player.getUniqueId());
+                    Claim claim = null;
+                    if(GriefPrevention.instance.dataStore.getClaimAt(event.getLocation(), true, playerData.lastClaim) != null)
+                        claim = GriefPrevention.instance.dataStore.getClaimAt(event.getLocation(), true, playerData.lastClaim);
+                    if(claim != null && claim.allowAccess(player) == null) {
+                        Log.logInfo("GriefPrevention claim permission allowed.", HIGHEST);
+                        result.dropThis = true;
+                    } else if(claim != null && claim.allowAccess(player) != null) {
+                        Log.logInfo("GriefPrevention claim permission failed.", HIGHEST);
+                        result.dropThis = false;
+                    }
+                }
+            }
+        }
+    };
+
+
     public final static class FlagState {
         public boolean dropThis         = true;
         public boolean continueDropping = true;
@@ -109,6 +158,8 @@ public abstract class Flag implements Comparable<Flag> {
         flags.put("IN_MOB_ARENA", IN_MOB_ARENA);
         flags.put("UNIQUE", UNIQUE);
         flags.put("WORLDGUARD_BUILD_PERMISSION", WORLDGUARD_BUILD_PERMISSION);
+        flags.put("TOWNY_BUILD_PERMISSION", TOWNY_BUILD_PERMISSION);
+        flags.put("GRIEFPREVENTION_BUILD_PERMISSION", GRIEFPREVENTION_BUILD_PERMISSION);
     }
 
     private Flag(String tag) {

@@ -14,11 +14,6 @@ import com.gmail.zariust.otherdrops.parameters.Trigger;
 import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 import com.gmail.zariust.otherdrops.subject.*;
-import com.palmergames.bukkit.towny.object.TownyPermission.ActionType;
-import com.palmergames.bukkit.towny.utils.PlayerCacheUtil;
-import me.ryanhamshire.GriefPrevention.Claim;
-import me.ryanhamshire.GriefPrevention.GriefPrevention;
-import me.ryanhamshire.GriefPrevention.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -82,9 +77,6 @@ public class DropRunner implements Runnable {
 		Log.logInfo("Starting SimpleDrop...", Verbosity.EXTREME);
 		Player who = getPlayer();
 		Location location = getLocation();
-
-		if(who != null && !checkIfNoPerms(who, location, currentEvent))
-			return;
 
 		checkIfDenied();
 
@@ -367,35 +359,6 @@ public class DropRunner implements Runnable {
 				}
 			}
 		}
-	}
-
-	public boolean checkIfNoPerms(Player who, Location location, OccurredEvent theEvent) {
-		boolean canBuild = true;
-
-		if(Dependencies.hasWorldGuard()) {
-			if(OtherDropsConfig.globalenablewgmatching) {
-				if(!Dependencies.getWorldGuard().createProtectionQuery().testBlockPlace(player, location, location.getBlock().getType()))
-					canBuild = false;
-			}
-		}
-
-		if(Dependencies.hasTowny())
-			if(!PlayerCacheUtil.getCachePermission(who, location, Material.DIRT, ActionType.DESTROY) || !PlayerCacheUtil.getCachePermission(who, location, Material.DIRT, ActionType.SWITCH) 
-					|| !PlayerCacheUtil.getCachePermission(who, location, Material.DIRT, ActionType.ITEM_USE) || !PlayerCacheUtil.getCachePermission(who, location, Material.DIRT, ActionType.BUILD))
-				canBuild = false;
-
-		if(Dependencies.hasGriefPrevention()) {
-			Dependencies.getGriefPrevention();
-			PlayerData playerData = GriefPrevention.instance.dataStore.getPlayerData(who.getUniqueId());
-			Claim claim = null;
-			if(GriefPrevention.instance.dataStore.getClaimAt(location, true, playerData.lastClaim) != null)
-				claim = GriefPrevention.instance.dataStore.getClaimAt(location, true, playerData.lastClaim);
-			if(claim != null && claim.allowAccess(who) == null)
-				canBuild = true;
-			else if (claim != null && claim.allowAccess(who) != null)
-				canBuild = false;
-		}
-		return canBuild;
 	}
 
 	/**
