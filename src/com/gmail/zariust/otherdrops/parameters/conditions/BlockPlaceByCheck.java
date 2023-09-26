@@ -1,14 +1,5 @@
 package com.gmail.zariust.otherdrops.parameters.conditions;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.bukkit.block.Block;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
-
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
@@ -19,6 +10,14 @@ import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.parameters.Condition;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.jeff_media.customblockdata.CustomBlockData;
+import org.bukkit.block.Block;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BlockPlaceByCheck extends Condition {
 
@@ -57,7 +56,7 @@ public class BlockPlaceByCheck extends Condition {
 
     @Override
     public List<Condition> parse(ConfigurationNode node) {
-        Map<String, Boolean> value = new HashMap<String, Boolean>();
+        Map<String, Boolean> value;
         value = parseConfig(node, null);
         if (value == null)
             return null;

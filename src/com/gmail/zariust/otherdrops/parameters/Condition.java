@@ -54,14 +54,25 @@ public abstract class Condition extends Parameter {
     abstract public List<Condition> parse(ConfigurationNode parseMe);
 
     public static void registerDefaultConditions() {
-        registerCondition(new MobSpawnerCheck(null, null));
-        registerCondition(new LoreNameCheck(null));
-        registerCondition(new SpawnedCheck(null));
+        registerCondition(new AttackRangeCheck(null));
+        registerCondition(new BiomeCheck(null));
+        registerCondition(new BlockFaceCheck(null));
         registerCondition(new BlockPlaceByCheck(null));
-        registerCondition(new JobNameCheck(null));
-        registerCondition(new ItemRequirementCheck(null));
         registerCondition(new CooldownCheck(null, null, null));
-        registerCondition(new PlayerSneakCheck(null));
         registerCondition(new DistanceCheck(null, null));
+        registerCondition(new HeightCheck(null));
+        registerCondition(new ItemRequirementCheck(null));
+        registerCondition(new JobNameCheck(null));
+        registerCondition(new LightLevelCheck(null));
+        registerCondition(new LoreNameCheck(null));
+        registerCondition(new MobSpawnerCheck(null, null));
+        registerCondition(new PermissionCheck(null));
+        registerCondition(new PermissionGroupCheck(null));
+        registerCondition(new PlayerSneakCheck(null));
+        registerCondition(new RegionCheck(null));
+        registerCondition(new SpawnedCheck(null));
+        registerCondition(new TimeCheck(null));
+        registerCondition(new WeatherCheck(null));
+        registerCondition(new WorldCheck(null));
     }
 }

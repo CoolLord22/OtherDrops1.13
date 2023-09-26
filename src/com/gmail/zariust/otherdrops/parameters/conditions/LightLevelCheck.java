@@ -10,27 +10,27 @@ import com.gmail.zariust.otherdrops.parameters.Condition;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HeightCheck extends Condition {
-    private final Comparative height;
+public class LightLevelCheck extends Condition {
+    private final Comparative lightLevel;
 
-    public HeightCheck(Comparative height) {
-        this.height = height;
+    public LightLevelCheck(Comparative lightLevel) {
+        this.lightLevel = lightLevel;
     }
 
     @Override
     protected boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
-        if (height == null)
+        if (lightLevel == null)
             return true;
-        return height.matches(occurrence.getLightLevel());
+        return lightLevel.matches(occurrence.getLightLevel());
     }
 
     @Override
     public List<Condition> parse(ConfigurationNode parseMe) {
-        Comparative result = Comparative.parseFrom(parseMe, "height", OtherDropsConfig.defaultHeight);
+        Comparative result = Comparative.parseFrom(parseMe, "lightlevel", OtherDropsConfig.defaultLightLevel);
         if(result == null)
             return null;
         List<Condition> conditionList = new ArrayList<>();
-        conditionList.add(new HeightCheck(result));
+        conditionList.add(new LightLevelCheck(result));
         return conditionList;
     }
 }

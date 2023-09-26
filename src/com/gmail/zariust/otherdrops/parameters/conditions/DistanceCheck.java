@@ -1,22 +1,17 @@
 package com.gmail.zariust.otherdrops.parameters.conditions;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.Location;
-
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.parameters.Condition;
+import org.bukkit.Location;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DistanceCheck extends Condition {
-
-    String name = "DistanceCheck";
-    String key = "distance";
-
     private Location locCheck = null;
     private Integer distance = 0;
 
@@ -50,9 +45,8 @@ public class DistanceCheck extends Condition {
     @Override
     public List<Condition> parse(ConfigurationNode node) {
         Location locationToMeasureAgainst = new Location(null, 0, 0, 0);
-        String loreName = node.getString("lorename");
         String getConfig = node.getString("distance");
-        Log.logInfo("Loading distance condition: " + getConfig + " lorename: " + loreName, Verbosity.HIGHEST);
+        Log.logInfo("Loading distance condition: " + getConfig, Verbosity.HIGHEST);
         if (getConfig == null)
             return null;
 

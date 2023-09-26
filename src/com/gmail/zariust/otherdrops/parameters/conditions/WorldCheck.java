@@ -1,55 +1,35 @@
 package com.gmail.zariust.otherdrops.parameters.conditions;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import com.gmail.zariust.otherdrops.ConfigurationNode;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.parameters.Condition;
+import org.bukkit.World;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class WorldCheck extends Condition {
-    private final Map<org.bukkit.World, Boolean> worlds;
+    private final Map<World, Boolean> worldMap;
 
-    public WorldCheck(List<String> list) {
-        this.worlds = null;
+    public WorldCheck(Map<World, Boolean> worldMap) {
+        this.worldMap = worldMap;
     }
 
     @Override
     public boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
-        org.bukkit.World world = occurrence.getWorld();
-
-        return CustomDrop.checkList(world, worlds);
+        return CustomDrop.checkList(occurrence.getWorld(), worldMap);
     }
-
-    // @Override
-    @SuppressWarnings("unchecked")
-    public List<Condition> parseInstance(Object object) {
-        if (object == null)
-            return null;
-
-        List<String> list = new ArrayList<String>();
-        if (object instanceof List)
-            list = (List<String>) object;
-        else
-            list = Collections.singletonList(object.toString());
-
-        List<Condition> conditionList = new ArrayList<Condition>();
-        conditionList.add(new WorldCheck(list));
-        return conditionList;
-    }
-
-    protected static List<Condition> parseInstance(ConfigurationNode node) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     @Override
     public List<Condition> parse(ConfigurationNode parseMe) {
-        // TODO Auto-generated method stub
-        return null;
+        Map<World, Boolean> result = OtherDropsConfig.parseWorldsFrom(parseMe);
+        if(result == null || result.isEmpty())
+            return null;
+        List<Condition> conditionList = new ArrayList<>();
+        conditionList.add(new WorldCheck(result));
+        return conditionList;
     }
 
 }

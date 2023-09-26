@@ -1,7 +1,7 @@
 package com.gmail.zariust.otherdrops.parameters.conditions;
 
 import com.gmail.zariust.otherdrops.ConfigurationNode;
-import com.gmail.zariust.otherdrops.Dependencies;
+import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
@@ -16,16 +16,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class PermissionCheck extends Condition {
-    private final Map<String, Boolean> permissionMap;
+public class PermissionGroupCheck extends Condition {
+    private final Map<String, Boolean> permissionGroupMap;
 
-    public PermissionCheck(Map<String, Boolean> permissionMap) {
-        this.permissionMap = permissionMap;
+    public PermissionGroupCheck(Map<String, Boolean> permissionGroupMap) {
+        this.permissionGroupMap = permissionGroupMap;
     }
 
     @Override
     protected boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
-        if (permissionMap == null)
+        if (permissionGroupMap == null)
             return true;
         Agent agent = occurrence.getTool();
         Player player = null;
@@ -37,37 +37,21 @@ public class PermissionCheck extends Condition {
                 if (shooter instanceof Player) {
                     player = (Player) shooter;
                 }
-            }
-            if (player == null)
-                return false; // if permissions is set and agent (or shooter) is
-            // not a player, fail
+            } else
+                return false; // if permissions is set and agent is not a
+            // player, fail
         }
 
         if (player == null)
             player = ((PlayerSubject) agent).getPlayer();
 
         boolean match = false;
-        for (String perm : permissionMap.keySet()) {
-            if (perm.startsWith("!")) {
-                perm = perm.substring(1);
-
-                if (Dependencies.hasPermission(player, perm)) {
-                    if (permissionMap.get(perm))
-                        match = true;
-                    else {
-                        return false;
-                    }
-                }
-            }
-
-            else {
-                if (Dependencies.hasPermission(player, "otherdrops.custom." + perm)) {
-                    if (permissionMap.get(perm))
-                        match = true;
-                    else {
-                        return false;
-                    }
-                }
+        for (String group : permissionGroupMap.keySet()) {
+            if (OtherDrops.inGroup(player, group)) {
+                if (permissionGroupMap.get(group))
+                    match = true;
+                else
+                    return false;
             }
         }
         return match;
@@ -75,11 +59,11 @@ public class PermissionCheck extends Condition {
 
     @Override
     public List<Condition> parse(ConfigurationNode parseMe) {
-        Map<String, Boolean> result = OtherDropsConfig.parsePermissionsFrom(parseMe);
+        Map<String, Boolean> result = OtherDropsConfig.parseGroupsFrom(parseMe);
         if(result == null || result.isEmpty())
             return null;
         List<Condition> conditionList = new ArrayList<>();
-        conditionList.add(new PermissionCheck(result));
+        conditionList.add(new PermissionGroupCheck(result));
         return conditionList;
     }
 }
