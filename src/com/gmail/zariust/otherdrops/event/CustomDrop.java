@@ -68,7 +68,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
         Double rolledValue = rng.nextDouble();
         boolean chancePassed = rolledValue <= chance / 100.0;
         if (!chancePassed) {
-            Log.logInfo("Drop failed due to chance (" + String.valueOf(chance)
+            Log.logInfo("Drop failed due to chance *matches* (" + String.valueOf(chance * fortuneMultiplier)
                     + ", rolled: " + rolledValue * 100 + ")", HIGHEST);
             return false;
         }
@@ -252,7 +252,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
         if (chancePassed) {
             return true;
         } else {
-            Log.logInfo("Drop failed due to chance (" + String.valueOf(chance)
+            Log.logInfo("Drop failed due to chance *exclusiveMap* (" + String.valueOf(chance)
                     + ", rolled: " + rolledValue * 100 + ")", HIGHEST);
             return false;
         }
