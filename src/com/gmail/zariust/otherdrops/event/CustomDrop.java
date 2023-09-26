@@ -16,59 +16,32 @@
 
 package com.gmail.zariust.otherdrops.event;
 
-import static com.gmail.zariust.common.Verbosity.HIGHEST;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.block.Biome;
-import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.event.ExclusiveMap.ExclusiveKey;
-import com.gmail.zariust.otherdrops.options.Comparative;
 import com.gmail.zariust.otherdrops.options.Flag;
 import com.gmail.zariust.otherdrops.options.IntRange;
-import com.gmail.zariust.otherdrops.options.Time;
-import com.gmail.zariust.otherdrops.options.Weather;
 import com.gmail.zariust.otherdrops.parameters.Action;
 import com.gmail.zariust.otherdrops.parameters.Condition;
 import com.gmail.zariust.otherdrops.parameters.Trigger;
 import com.gmail.zariust.otherdrops.subject.Agent;
-import com.gmail.zariust.otherdrops.subject.PlayerSubject;
-import com.gmail.zariust.otherdrops.subject.ProjectileAgent;
 import com.gmail.zariust.otherdrops.subject.Target;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+
+import java.util.*;
+
+import static com.gmail.zariust.common.Verbosity.HIGHEST;
 
 public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
     // Conditions
     private Map<Agent, Boolean>     tools;
-    private Map<World, Boolean>     worlds;
-    private Map<String, Boolean>    regions;
-    private Map<Weather, Boolean>   weather;
-    private Map<BlockFace, Boolean> faces;
-    private Map<Biome, Boolean>     biomes;
-    private Map<Time, Boolean>      times;
-    private Map<String, Boolean>    permissionGroups;                // obseleted
-                                                                      // - use
-                                                                      // permissions
-    private Map<String, Boolean>    permissions;
     private Set<Flag>               flags;
     private final Flag.FlagState    flagState = new Flag.FlagState();
-    private Comparative             height;
-    private Comparative             attackRange;
-    private Comparative             lightLevel;
     // Chance
     private double                  chance;
     private String                  exclusiveKey;
@@ -109,64 +82,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
             currentEvent = drop;
 
             if (!isTool(drop.getTool()))
-                return false; // TODO: log message is inside isTool check - do
-                              // this for all?
-            if (!isWorld(drop.getWorld())) {
-                Log.logInfo("CustomDrop.matches(): world match failed.",
-                        HIGHEST);
                 return false;
-            }
-            if (!isRegion(drop.getRegions())) {
-                Log.logInfo("CustomDrop.matches(): region match failed.",
-                        HIGHEST);
-                return false;
-            }
-            if (!isWeather(drop.getWeather())) {
-                Log.logInfo("CustomDrop.matches(): weather match failed.",
-                        HIGHEST);
-                return false;
-            }
-            if (!isBlockFace(drop.getFace())) {
-                Log.logInfo("CustomDrop.matches(): blockface match failed.",
-                        HIGHEST);
-                return false;
-            }
-            if (!isBiome(drop.getBiome())) {
-                Log.logInfo(
-                        "CustomDrop.matches(): biome match failed (current biome="
-                                + drop.getBiome() + ", list: " + biomes.toString() + ")", HIGHEST);
-                return false;
-            }
-            if (!isTime(drop.getTime())) {
-                Log.logInfo("CustomDrop.matches(): time match failed.", HIGHEST);
-                return false;
-            }
-            if (!isHeight(drop.getHeight())) {
-                Log.logInfo("CustomDrop.matches(): height match failed.",
-                        HIGHEST);
-                return false;
-            }
-            if (!isAttackInRange((int) drop.getAttackRange())) {
-                Log.logInfo("CustomDrop.matches(): range match failed.",
-                        HIGHEST);
-                return false;
-            }
-            if (!isLightEnough(drop.getLightLevel())) {
-                Log.logInfo("CustomDrop.matches(): lightlevel match failed.",
-                        HIGHEST);
-                return false;
-            }
-            if (!inGroup(drop.getTool())) {
-                Log.logInfo("CustomDrop.matches(): player group match failed.",
-                        HIGHEST);
-                return false;
-            }
-            if (!hasPermission(drop.getTool())) {
-                Log.logInfo(
-                        "CustomDrop.matches(): player permission match failed.",
-                        HIGHEST);
-                return false;
-            }
             if (!checkFlags(drop)) {
                 Log.logInfo("CustomDrop.matches(): a flag match failed.",
                         HIGHEST);
@@ -246,176 +162,6 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
         return positiveMatch;
     }
 
-    public void setWorlds(Map<World, Boolean> places) {
-        this.worlds = places;
-    }
-
-    public Map<World, Boolean> getWorlds() {
-        return worlds;
-    }
-
-    public String getWorldsString() {
-        return mapToString(worlds);
-    }
-
-    public boolean isWorld(World world) {
-        return checkList(world, worlds);
-    }
-
-    public void setRegions(Map<String, Boolean> areas) {
-        this.regions = areas;
-    }
-
-    public Map<String, Boolean> getRegions() {
-        return regions;
-    }
-
-    public String getRegionsString() {
-        return mapToString(regions);
-    }
-
-    /**
-     * Check if the current regions match the configured regions.
-     * 
-     * @param inRegions
-     *            - a set of regions the player is currently in
-     * @return true if the condition matches
-     */
-    public boolean isRegion(Set<String> inRegions) {
-        // if no regions configured then all is ok
-        if (regions == null)
-            return true;
-
-        Log.logInfo("Regioncheck: inRegions: " + inRegions.toString(),
-                Verbosity.HIGH);
-        Log.logInfo("Regioncheck: dropRegions: " + regions.toString(),
-                Verbosity.HIGH);
-
-        // save the config region keys in a temp list for some reason (can't
-        // remember)
-        HashSet<String> tempConfigRegionKeys = new HashSet<String>();
-        tempConfigRegionKeys.addAll(regions.keySet());
-
-        // set matched flag to false, since we know there's at least something
-        // in the customRegion condition
-        boolean matchedRegion = false;
-        int positiveRegions = 0;
-
-        // loop through each region within the customRegions and check if it
-        // matches all current regions
-        for (String dropRegion : tempConfigRegionKeys) {
-            dropRegion = dropRegion.toLowerCase(); // WorldGuard, at least,
-                                                   // stores regions in lower
-                                                   // case
-            // Check if the entry is an exception (ie. starts with "-")
-            Boolean exception = false;
-            if (dropRegion.startsWith("-")) {
-                Log.logInfo("Checking dropRegion exception: " + dropRegion,
-                        Verbosity.EXTREME);
-                exception = true;
-                dropRegion = dropRegion.substring(1);
-            } else {
-                positiveRegions++;
-                Log.logInfo("Checking dropRegion: " + dropRegion,
-                        Verbosity.EXTREME);
-            }
-
-            if (exception) {
-                if (inRegions.contains(dropRegion)) {
-                    Log.logInfo("Failed check: regions (exception: "
-                            + dropRegion + ")", Verbosity.HIGH);
-                    return false; // if this is an exception and you are in that
-                                  // region then all other checks are moot -
-                                  // hence immediate "return false"
-                } else {
-                    Log.logInfo("Exception check: region " + dropRegion
-                            + " passed", Verbosity.HIGHEST);
-                }
-            } else {
-                if (inRegions.contains(dropRegion)) {
-                    Log.logInfo("In dropRegion: " + dropRegion
-                            + ", setting match=TRUE", Verbosity.HIGHEST);
-                    matchedRegion = true;
-                } else {
-                    // OtherDrops.logInfo("Not in dropRegion: "+dropRegion+", setting match=FALSE",
-                    // Verbosity.HIGHEST);
-                    // matchedRegion = false;
-                }
-
-            }
-
-        }
-
-        // If there were only exception conditions then return true as we
-        // haven't been kicked by a matched exception
-        if (positiveRegions < 1)
-            matchedRegion = true;
-
-        Log.logInfo("Regioncheck: finished. match=" + matchedRegion,
-                Verbosity.HIGH);
-        return matchedRegion;
-    }
-
-    public void setWeather(Map<Weather, Boolean> sky) {
-        this.weather = sky;
-    }
-
-    public Map<Weather, Boolean> getWeather() {
-        return weather;
-    }
-
-    public String getWeatherString() {
-        return mapToString(weather);
-    }
-
-    public boolean isWeather(Weather sky) {
-        // return checkList(sky, weather); // TODO: (ZAR) doesn't work - but
-        // should, no?
-
-        if (weather == null)
-            return true;
-        boolean match = weather.get(null);
-        for (Weather type : weather.keySet()) {
-            if (type != null) {
-                if (type.matches(sky)) {
-                    if (weather.get(type))
-                        match = true;
-                    else
-                        return false;
-                }
-            }
-        }
-        return match;
-    }
-
-    public void setBlockFace(Map<BlockFace, Boolean> newFaces) {
-        this.faces = newFaces;
-    }
-
-    public Map<BlockFace, Boolean> getBlockFaces() {
-        return faces;
-    }
-
-    public String getBlockFacesString() {
-        return mapToString(faces);
-    }
-
-    public boolean isBlockFace(BlockFace face) {
-        return checkList(face, faces);
-    }
-
-    public void setBiome(Map<Biome, Boolean> biome) {
-        this.biomes = biome;
-    }
-
-    public Map<Biome, Boolean> getBiome() {
-        return biomes;
-    }
-
-    public String getBiomeString() {
-        return mapToString(biomes);
-    }
-
     public static <T> boolean checkList(T obj, Map<T, Boolean> list) {
         // Check if null - return true (this should only happen if no defaults
         // have been set)
@@ -437,184 +183,6 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
             return list.get(obj);
 
         return list.get(null);
-
-    }
-
-    public boolean isBiome(Biome biome) {
-        return checkList(biome, biomes);
-    }
-
-    public void setTime(Map<Time, Boolean> time) {
-        this.times = time;
-    }
-
-    public Map<Time, Boolean> getTime() {
-        return times;
-    }
-
-    public String getTimeString() {
-        return mapToString(times);
-    }
-
-    public boolean isTime(long time) {
-        if (times == null)
-            return true;
-        boolean match = false;
-        for (Time t : times.keySet()) {
-            if (t.contains(time)) {
-                if (times.get(t))
-                    match = true;
-                else
-                    return false;
-            }
-        }
-        return match;
-    }
-
-    public void setGroups(Map<String, Boolean> newGroups) {
-        this.permissionGroups = newGroups;
-    }
-
-    public Map<String, Boolean> getGroups() {
-        return permissionGroups;
-    }
-
-    public String getGroupsString() {
-        return mapToString(permissionGroups);
-    }
-
-    public boolean inGroup(Agent agent) {
-        if (permissionGroups == null)
-            return true;
-        Player player = null;
-
-        if (!(agent instanceof PlayerSubject)) {
-            if (agent instanceof ProjectileAgent) {
-                Entity shooter = ((ProjectileAgent) agent).getShooter()
-                        .getEntity();
-                if (shooter instanceof Player) {
-                    player = (Player) shooter;
-                }
-            } else
-                return false; // if permissions is set and agent is not a
-                              // player, fail
-        }
-
-        if (player == null)
-            player = ((PlayerSubject) agent).getPlayer();
-
-        boolean match = false;
-        for (String group : permissionGroups.keySet()) {
-            if (OtherDrops.inGroup(player, group)) {
-                if (permissionGroups.get(group))
-                    match = true;
-                else
-                    return false;
-            }
-        }
-        return match;
-    }
-
-    public void setPermissions(Map<String, Boolean> newPerms) {
-        this.permissions = newPerms;
-    }
-
-    public Map<String, Boolean> getPermissions() {
-        return permissions;
-    }
-
-    public String getPermissionsString() {
-        return mapToString(permissions);
-    }
-
-    public boolean hasPermission(Agent agent) {
-        if (permissions == null)
-            return true;
-        Player player = null;
-
-        if (!(agent instanceof PlayerSubject)) {
-            if (agent instanceof ProjectileAgent) {
-                Entity shooter = ((ProjectileAgent) agent).getShooter()
-                        .getEntity();
-                if (shooter instanceof Player) {
-                    player = (Player) shooter;
-                }
-            }
-            if (player == null)
-                return false; // if permissions is set and agent (or shooter) is
-                              // not a player, fail
-        }
-
-        if (player == null)
-            player = ((PlayerSubject) agent).getPlayer();
-
-        boolean match = false;
-        for (String perm : permissions.keySet()) {
-            if (perm.startsWith("!")) {
-                perm = perm.substring(1);
-                
-                if (Dependencies.hasPermission(player, perm)) {
-                    if (permissions.get(perm))
-                        match = true;
-                    else {
-                        return false;	
-                    }
-                }
-            } 
-            
-            else {
-            	if (Dependencies.hasPermission(player, "otherdrops.custom." + perm)) {
-                    if (permissions.get(perm))
-                        match = true;
-                    else {
-                        return false;	
-                    }
-                }
-            }
-        }
-        return match;
-    }
-
-    public void setHeight(Comparative h) {
-        this.height = h;
-    }
-
-    public Comparative getHeight() {
-        return height;
-    }
-
-    public boolean isHeight(int h) {
-        if (height == null)
-            return true;
-        return height.matches(h);
-    }
-
-    public void setAttackRange(Comparative range) {
-        this.attackRange = range;
-    }
-
-    public Comparative getAttackRange() {
-        return attackRange;
-    }
-
-    public boolean isAttackInRange(int range) {
-        if (attackRange == null)
-            return true;
-        return attackRange.matches(range);
-    }
-
-    public void setLightLevel(Comparative light) {
-        this.lightLevel = light;
-    }
-
-    public Comparative getLightLevel() {
-        return lightLevel;
-    }
-
-    public boolean isLightEnough(int light) {
-        if (lightLevel == null)
-            return true;
-        return lightLevel.matches(light);
     }
 
     public void setFlags(Set<Flag> newFlags) {
@@ -769,7 +337,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
         // }
     }
 
-    private String setToString(Set<?> set) {
+    private static String setToString(Set<?> set) {
         if (set.size() > 1)
             return set.toString();
         if (set.isEmpty())
@@ -785,11 +353,11 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
         return list.get(0).toString();
     }
 
-    private String mapToString(Map<?, Boolean> map) {
+    public static String mapToString(Map<?, Boolean> map) {
         return (map == null) ? null : setToString(stripFalse(map));
     }
 
-    private Set<?> stripFalse(Map<?, Boolean> map) {
+    private static Set<?> stripFalse(Map<?, Boolean> map) {
         Set<Object> set = new HashSet<Object>();
         for (Object key : map.keySet()) {
             if (map.get(key))
@@ -804,50 +372,10 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
         log.append(toString() + ": ");
         // Tool
         log.append(mapToString(tools));
-        // Faces
-        if (faces != null)
-            log.append(" on faces " + mapToString(faces));
         // Placeholder for drops info
         log.append(" now drops %d");
         // Chance
         log.append(" with " + Double.toString(chance) + "% chance");
-        // Worlds and regions
-        if (worlds != null) {
-            log.append(" in worlds " + mapToString(worlds));
-            if (regions != null)
-                log.append(" and regions " + mapToString(regions));
-        } else if (regions != null)
-            log.append(" in regions " + mapToString(regions));
-        // Other conditions
-        if (weather != null || biomes != null || times != null
-                || height != null || attackRange != null || lightLevel != null) {
-            log.append(" with conditions");
-            char sep = ':';
-            if (weather != null) {
-                log.append(sep + " " + mapToString(weather));
-                sep = ',';
-            }
-            if (biomes != null) {
-                log.append(sep + " " + mapToString(biomes));
-                sep = ',';
-            }
-            if (times != null) {
-                log.append(sep + " " + mapToString(times));
-                sep = ',';
-            }
-            if (height != null) {
-                log.append(sep + " " + height.toString());
-                sep = ',';
-            }
-            if (attackRange != null) {
-                log.append(sep + " " + attackRange.toString());
-                sep = ',';
-            }
-            if (lightLevel != null) {
-                log.append(sep + " " + lightLevel.toString());
-                sep = ',';
-            }
-        }
         return log.toString();
     }
 
