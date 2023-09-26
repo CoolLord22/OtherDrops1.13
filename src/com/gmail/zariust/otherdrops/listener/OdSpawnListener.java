@@ -1,8 +1,10 @@
 package com.gmail.zariust.otherdrops.listener;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
@@ -12,11 +14,8 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.metadata.FixedMetadataValue;
 
-import com.gmail.zariust.common.Verbosity;
-import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDrops;
-import com.gmail.zariust.otherdrops.OtherDropsConfig;
-import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import java.util.HashMap;
+import java.util.Map;
 
 public class OdSpawnListener implements Listener {
     private final OtherDrops                    parent;
@@ -38,7 +37,7 @@ public class OdSpawnListener implements Listener {
     public void onCreatureSpawn(CreatureSpawnEvent event) {
         if (event.isCancelled())
             return;
-        Log.logInfo("SpawnEvent: before checks.  Spawned by "
+        Log.logInfo("SpawnEvent: before checks. Spawned by "
                 + event.getSpawnReason().toString(), Verbosity.EXTREME);
 
         // This listener should only be registered if "spawned" condition
