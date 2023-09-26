@@ -16,15 +16,6 @@
 
 package com.gmail.zariust.otherdrops.subject;
 
-import static com.gmail.zariust.common.Verbosity.HIGHEST;
-
-import java.util.List;
-import java.util.Random;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
 import com.gmail.zariust.common.CMEnchantment;
 import com.gmail.zariust.common.CommonEnchantments;
 import com.gmail.zariust.common.CommonMaterial;
@@ -34,6 +25,14 @@ import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.ItemData;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
+import java.util.Random;
+
+import static com.gmail.zariust.common.Verbosity.HIGHEST;
 
 @ConfigOnly(PlayerSubject.class)
 public class ToolAgent implements Agent {
@@ -117,6 +116,10 @@ public class ToolAgent implements Agent {
 
     public List<CMEnchantment> getEnch() {
         return enchantments;
+    }
+
+    public ItemStack getActualTool() {
+        return actualTool;
     }
 
     @Override
