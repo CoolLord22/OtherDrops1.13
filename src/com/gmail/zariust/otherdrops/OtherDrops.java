@@ -17,26 +17,15 @@
 package com.gmail.zariust.otherdrops;
 
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.listener.*;
+import com.gmail.zariust.otherdrops.metrics.BStats;
+import com.gmail.zariust.otherdrops.options.Weather;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.TreeType;
 import org.bukkit.block.Biome;
-import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
@@ -51,25 +40,8 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 
-import com.gmail.zariust.common.Verbosity;
-import com.gmail.zariust.otherdrops.listener.JobsListener;
-import com.gmail.zariust.otherdrops.listener.OdBlockGrowListener;
-import com.gmail.zariust.otherdrops.listener.OdBlockListener;
-import com.gmail.zariust.otherdrops.listener.OdBlockPlaceListener;
-import com.gmail.zariust.otherdrops.listener.OdEntityListener;
-import com.gmail.zariust.otherdrops.listener.OdFishingListener;
-import com.gmail.zariust.otherdrops.listener.OdPlayerConsumeListener;
-import com.gmail.zariust.otherdrops.listener.OdPlayerJoinListener;
-import com.gmail.zariust.otherdrops.listener.OdPlayerListener;
-import com.gmail.zariust.otherdrops.listener.OdPlayerMoveListener;
-import com.gmail.zariust.otherdrops.listener.OdPlayerRespawnListener;
-import com.gmail.zariust.otherdrops.listener.OdProjectileHitListener;
-import com.gmail.zariust.otherdrops.listener.OdRedstoneListener;
-import com.gmail.zariust.otherdrops.listener.OdSpawnListener;
-import com.gmail.zariust.otherdrops.listener.OdVehicleListener;
-import com.gmail.zariust.otherdrops.listener.PlayerJoinUpdateChecker;
-import com.gmail.zariust.otherdrops.metrics.BStats;
-import com.gmail.zariust.otherdrops.options.Weather;
+import java.io.*;
+import java.util.*;
 
 public class OtherDrops extends JavaPlugin {
 	public static OtherDrops     plugin;
@@ -319,8 +291,8 @@ public class OtherDrops extends JavaPlugin {
 			registered += "Entity, ";
 			pm.registerEvents(new OdEntityListener(plugin), plugin);
 		}
-		if (OtherDropsConfig.dropForClick) {
-			registered += "Player (left/rightclick), ";
+		if (OtherDropsConfig.dropForClick || OtherDropsConfig.dropForItemDrop) {
+			registered += "Player (left/rightclick/item drop), ";
 			pm.registerEvents(new OdPlayerListener(plugin), plugin);
 		}
 		if (OtherDropsConfig.dropForFishing) {
