@@ -40,7 +40,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
-import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -51,7 +50,6 @@ import org.yaml.snakeyaml.scanner.ScannerException;
 import java.io.*;
 import java.util.*;
 
-import static com.gmail.zariust.common.CommonPlugin.enumValue;
 import static com.gmail.zariust.common.CommonPlugin.getConfigVerbosity;
 import static com.gmail.zariust.common.Verbosity.*;
 
@@ -96,14 +94,14 @@ public class OtherDropsConfig {
 	// Defaults
 	protected static Map<Biome, Boolean> defaultBiomes;
 	protected static Map<World, Boolean> defaultWorlds;
-	protected Map<String, Boolean> defaultRegions;
-	protected Map<Weather, Boolean> defaultWeather;
-	protected Map<Time, Boolean> defaultTime;
-	protected Map<String, Boolean> defaultPermissionGroups;
-	protected Map<String, Boolean> defaultPermissions;
-	protected Comparative defaultHeight;
-	protected Comparative defaultAttackRange;
-	protected Comparative defaultLightLevel;
+	protected static Map<String, Boolean> defaultRegions;
+	public static Map<Weather, Boolean> defaultWeather;
+	public static Map<Time, Boolean> defaultTime;
+	protected static Map<String, Boolean> defaultPermissionGroups;
+	protected static Map<String, Boolean> defaultPermissions;
+	public static Comparative defaultHeight;
+	public static Comparative defaultAttackRange;
+	public static Comparative defaultLightLevel;
 	protected List<Trigger> defaultTrigger;
 
 	// Variables for settings from config.yml
@@ -681,13 +679,13 @@ public class OtherDropsConfig {
 
 		if (defaults != null) {
 			Log.logInfo("Loading defaults... nodemap=" + defaults, HIGH);
-			defaultWorlds = parseWorldsFrom(defaults, null);
-			defaultRegions = parseRegionsFrom(defaults, null);
+			defaultWorlds = parseWorldsFrom(defaults);
+			defaultRegions = parseRegionsFrom(defaults);
 			defaultWeather = Weather.parseFrom(defaults, null);
-			defaultBiomes = parseBiomesFrom(defaults, null);
+			defaultBiomes = parseBiomesFrom(defaults);
 			defaultTime = Time.parseFrom(defaults, null);
-			defaultPermissionGroups = parseGroupsFrom(defaults, null);
-			defaultPermissions = parsePermissionsFrom(defaults, null);
+			defaultPermissionGroups = parseGroupsFrom(defaults);
+			defaultPermissions = parsePermissionsFrom(defaults);
 			defaultHeight = Comparative.parseFrom(defaults, "height", null);
 			defaultAttackRange = Comparative.parseFrom(defaults, "attackrange", null);
 			defaultLightLevel = Comparative.parseFrom(defaults, "lightlevel", null);
@@ -830,20 +828,8 @@ public class OtherDropsConfig {
 
 		// Read tool
 		drop.setTool(parseAgentFrom(node));
-		// Read faces
-		drop.setBlockFace(parseFacesFrom(node));
 
-		drop.setWorlds(parseWorldsFrom(node, defaultWorlds));
 		// Now read the stuff that might have a default; if null is returned, use the default
-		drop.setRegions(parseRegionsFrom(node, defaultRegions));
-		drop.setWeather(Weather.parseFrom(node, defaultWeather));
-		drop.setBiome(parseBiomesFrom(node, defaultBiomes));
-		drop.setTime(Time.parseFrom(node, defaultTime));
-		drop.setGroups(parseGroupsFrom(node, defaultPermissionGroups));
-		drop.setPermissions(parsePermissionsFrom(node, defaultPermissions));
-		drop.setHeight(Comparative.parseFrom(node, "height", defaultHeight));
-		drop.setAttackRange(Comparative.parseFrom(node, "attackrange", defaultAttackRange));
-		drop.setLightLevel(Comparative.parseFrom(node, "lightlevel", defaultLightLevel));
 		drop.setFlags(Flag.parseFrom(node));
 
 		// Read chance, delay, etc
@@ -1033,12 +1019,12 @@ public class OtherDropsConfig {
 			return new ArrayList<String>();
 		Object prop = null;
 		String key = null;
-		for (int i = 0; i < keys.length; i++) {
-			key = keys[i];
-			prop = node.get(key);
-			if (prop != null)
-				break;
-		}
+        for (String s : keys) {
+            key = s;
+            prop = node.get(key);
+            if (prop != null)
+                break;
+        }
 		List<String> list;
 		if (prop == null)
 			return new ArrayList<String>();
@@ -1099,11 +1085,11 @@ public class OtherDropsConfig {
 
 	}
 
-	private static Map<World, Boolean> parseWorldsFrom(ConfigurationNode node, Map<World, Boolean> def) {
+	public static Map<World, Boolean> parseWorldsFrom(ConfigurationNode node) {
 		List<String> worlds = getMaybeList(node, "world", "worlds");
 		List<String> worldsExcept = getMaybeList(node, "worldexcept", "worldsexcept");
 		if (worlds.isEmpty() && worldsExcept.isEmpty())
-			return def;
+			return defaultWorlds;
 		Map<World, Boolean> result = new HashMap<World, Boolean>();
 		result.put(null, containsAll(worlds));
 		for (String name : worlds) {
@@ -1139,34 +1125,10 @@ public class OtherDropsConfig {
 		return result;
 	}
 
-	// TODO: refactor parseWorldsFrom, Regions & Biomes as they are all very
-	// similar - (beware - fragile, breaks easy)
-	private Map<String, Boolean> parseRegionsFrom(ConfigurationNode node, Map<String, Boolean> def) {
-		List<String> regions = getMaybeList(node, "region", "regions");
-		List<String> regionsExcept = getMaybeList(node, "regionexcept",
-				"regionsexcept");
-		if (regions.isEmpty() && regionsExcept.isEmpty())
-			return def;
-		Map<String, Boolean> result = new HashMap<String, Boolean>();
-		for (String name : regions) {
-			if (name.startsWith("-")) {
-				result.put(name, false); // deliberately including the "-" sign
-			} else
-				result.put(name, true);
-		}
-		for (String name : regionsExcept) {
-			result.put(name, false);
-		}
-		if (result.isEmpty())
-			return null;
-		return result;
-	}
-
-	private Map<Biome, Boolean> parseBiomesFrom(ConfigurationNode node,
-			Map<Biome, Boolean> def) {
+	public static Map<Biome, Boolean> parseBiomesFrom(ConfigurationNode node) {
 		List<String> biomes = getMaybeList(node, "biome", "biomes");
 		if (biomes.isEmpty())
-			return def;
+			return defaultBiomes;
 		HashMap<Biome, Boolean> result = new HashMap<Biome, Boolean>();
 		result.put(null, containsAll(biomes));
 		for (String name : biomes) {
@@ -1197,74 +1159,39 @@ public class OtherDropsConfig {
 		return result;
 	}
 
-	private Map<String, Boolean> parseGroupsFrom(ConfigurationNode node, Map<String, Boolean> def) {
-		List<String> groups = getMaybeList(node, "permissiongroup",
-				"permissiongroups");
-		List<String> groupsExcept = getMaybeList(node, "permissiongroupexcept",
-				"permissiongroupsexcept");
-		if (groups.isEmpty() && groupsExcept.isEmpty())
+	public static Map<String, Boolean> parseGroupsFrom(ConfigurationNode node) {
+		List<String> groups = getMaybeList(node, "permissiongroup", "permissiongroups");
+		List<String> groupsExcept = getMaybeList(node, "permissiongroupexcept", "permissiongroupsexcept");
+		return getBooleanMap(groups, groupsExcept, defaultPermissionGroups);
+	}
+
+	public static Map<String, Boolean> parsePermissionsFrom(ConfigurationNode node) {
+		List<String> permissions = getMaybeList(node, "permission", "permissions");
+		List<String> permissionsExcept = getMaybeList(node, "permissionexcept", "permissionsexcept");
+		return getBooleanMap(permissions, permissionsExcept, defaultPermissions);
+	}
+
+	public static Map<String, Boolean> parseRegionsFrom(ConfigurationNode node) {
+		List<String> regions = getMaybeList(node, "region", "regions");
+		List<String> regionsExcept = getMaybeList(node, "regionexcept",
+				"regionsexcept");
+		return getBooleanMap(regions, regionsExcept, defaultRegions);
+	}
+
+	private static Map<String, Boolean> getBooleanMap(List<String> pos, List<String> neg, Map<String, Boolean> def) {
+		if (pos.isEmpty() && neg.isEmpty())
 			return def;
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
-		for (String name : groups) {
+		for (String name : pos) {
 			if (name.startsWith("-")) {
 				result.put(name, false);
 			} else
 				result.put(name, true);
 		}
-		for (String name : groupsExcept) {
+		for (String name : neg) {
 			result.put(name, false);
 		}
-		if (result.isEmpty())
-			return null;
-		return result;
-	}
-
-	private Map<String, Boolean> parsePermissionsFrom(ConfigurationNode node, Map<String, Boolean> def) {
-		List<String> permissions = getMaybeList(node, "permission",
-				"permissions");
-		List<String> permissionsExcept = getMaybeList(node, "permissionexcept",
-				"permissionsexcept");
-		if (permissions.isEmpty() && permissionsExcept.isEmpty())
-			return def;
-		Map<String, Boolean> result = new HashMap<String, Boolean>();
-		for (String name : permissions) {
-			if (name.startsWith("-")) {
-				result.put(name, false);
-			} else
-				result.put(name, true);
-		}
-		for (String name : permissionsExcept) {
-			result.put(name, false);
-		}
-		if (result.isEmpty())
-			return null;
-		return result;
-	}
-
-	private Map<BlockFace, Boolean> parseFacesFrom(ConfigurationNode node) {
-		List<String> faces = getMaybeList(node, "face", "faces");
-		if (faces.isEmpty())
-			return null;
-		HashMap<BlockFace, Boolean> result = new HashMap<BlockFace, Boolean>();
-		result.put(null, containsAll(faces));
-		for (String name : faces) {
-			BlockFace face = enumValue(BlockFace.class, name.toUpperCase());
-			if (face == null && name.startsWith("-")) {
-				result.put(null, true);
-				face = enumValue(BlockFace.class, name.substring(1)
-						.toUpperCase());
-				if (face == null) {
-					Log.logWarning("Invalid block face " + name
-							+ "; skipping...");
-					continue;
-				}
-				result.put(face, false);
-			} else
-				result.put(face, true);
-		}
-		if (result.isEmpty())
-			return null;
-		return result;
+        return result;
 	}
 
 	public static boolean containsAll(List<String> list) {
