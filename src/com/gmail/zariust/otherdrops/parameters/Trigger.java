@@ -16,22 +16,12 @@
 
 package com.gmail.zariust.otherdrops.parameters;
 
-import static com.gmail.zariust.common.Verbosity.NORMAL;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.gmail.zariust.otherdrops.*;
 import org.bukkit.plugin.Plugin;
 
-import com.gmail.zariust.otherdrops.ConfigurationNode;
-import com.gmail.zariust.otherdrops.Dependencies;
-import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDrops;
-import com.gmail.zariust.otherdrops.OtherDropsConfig;
+import java.util.*;
+
+import static com.gmail.zariust.common.Verbosity.NORMAL;
 
 /**
  * Represents an action that can be taken to lead to a drop.
@@ -41,6 +31,10 @@ public final class Trigger implements Comparable<Trigger> {
      * The basic action; breaking a block, or killing a creature.
      */
     public final static Trigger         BREAK          = new Trigger("BREAK");
+    /**
+     * Dropping an item
+     */
+    public final static Trigger         ITEM_DROP          = new Trigger("ITEM_DROP");
     /**
      * Leveling up a job from the JobsReborn plugin
      */
@@ -131,7 +125,7 @@ public final class Trigger implements Comparable<Trigger> {
 
     static {
         actions.put("BREAK", BREAK);
-        //actions.put("LEFTCLICK", HIT);
+        actions.put("ITEMDROP", ITEM_DROP);
         actions.put("RIGHTCLICK", RIGHT_CLICK);
         actions.put("LEAFDECAY", LEAF_DECAY);
         actions.put("FISHCAUGHT", FISH_CAUGHT);
@@ -152,7 +146,7 @@ public final class Trigger implements Comparable<Trigger> {
         actions.put("JOBSPAYMENT", JOBS_PAYMENT);
         
         owners.put("BREAK", OtherDrops.plugin);
-        //owners.put("LEFTCLICK", OtherDrops.plugin);
+        owners.put("ITEMDROP", OtherDrops.plugin);
         owners.put("RIGHTCLICK", OtherDrops.plugin);
         owners.put("LEAFDECAY", OtherDrops.plugin);
         owners.put("FISHCAUGHT", OtherDrops.plugin);

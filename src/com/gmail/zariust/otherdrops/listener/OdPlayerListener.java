@@ -16,12 +16,15 @@
 
 package com.gmail.zariust.otherdrops.listener;
 
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
+import com.gmail.zariust.otherdrops.event.DropCreateException;
 import org.bukkit.GameMode;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -90,5 +93,17 @@ public class OdPlayerListener implements Listener {
                 OccurredEvent drop = new OccurredEvent(event);
                 parent.sectionManager.performDrop(drop);
             }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onPlayerDrop(PlayerDropItemEvent event) throws DropCreateException {
+        if (event.isCancelled())
+            return;
+        if (!OtherDropsConfig.dropForItemDrop)
+            return;
+        if (event.getPlayer() != null) {
+            OccurredEvent drop = new OccurredEvent(event);
+            parent.sectionManager.performDrop(drop);
+        }
     }
 }

@@ -56,13 +56,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.player.PlayerFishEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -737,7 +731,16 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         setWeatherTimeHeight(location);
         setRegions();
     }
-    
+
+    public OccurredEvent(PlayerDropItemEvent evt) throws DropCreateException {
+        super(new PlayerSubject(evt.getItemDrop().getItemStack(), evt.getPlayer().getName(), evt.getPlayer()), Trigger.ITEM_DROP);
+        event = evt;
+        setLocationWorldBiomeLight(evt.getPlayer().getPlayer().getLocation().getBlock());
+        setWeatherTimeHeight(location);
+        setRegions();
+        tool = new PlayerSubject(evt.getItemDrop().getItemStack(), evt.getPlayer().getName(), evt.getPlayer());
+    }
+
     public OccurredEvent(PlayerMoveEvent evt, Block standingOn) {
 //        super(new PlayerSubject(evt.getPlayer()), Trigger.PLAYER_MOVE);
         super(new BlockTarget(standingOn), Trigger.PLAYER_MOVE);

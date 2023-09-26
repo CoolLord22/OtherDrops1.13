@@ -75,20 +75,21 @@ public class OtherDropsConfig {
 	// Triggers configured - these enable the appropriate listeners
 	// if a drop config is found using them.
 	public static boolean dropForBlocks;            // target type BLOCK or ANY
-	public static boolean dropForCreatures;            // target type CREATURE, PLAYER, or ANY
+	public static boolean dropForCreatures;         // target type CREATURE, PLAYER, or ANY
 	public static boolean dropForExplosions;        // target type EXPLOSION
-	public static boolean dropForClick;                // LEFT or RIGHT CLICK
-	public static boolean dropForFishing;            // FISH_CAUGHT or FAILED
-	public static boolean dropForSpawned;            // config uses spawned:
-	public static boolean dropForSpawnTrigger;        // config uses trigger: CREATURESPAWN
-	public static boolean dropForRedstoneTrigger;    // POWERUP or POWERDOWN
+	public static boolean dropForClick;             // LEFT or RIGHT CLICK
+	public static boolean dropForFishing;           // FISH_CAUGHT or FAILED
+	public static boolean dropForSpawned;           // config uses spawned:
+	public static boolean dropForSpawnTrigger;      // config uses trigger: CREATURESPAWN
+	public static boolean dropForRedstoneTrigger;   // POWERUP or POWERDOWN
 	public static boolean dropForPlayerJoin;        // PLAYERJOIN
-	public static boolean dropForPlayerRespawn;        // PLAYERRESPAWN
+	public static boolean dropForPlayerRespawn;     // PLAYERRESPAWN
 	public static boolean dropForPlayerConsume;
 	public static boolean dropForPlayerMove;
 	public static boolean dropForJobsLevelUp;
 	public static boolean dropForJobsPayment;
 	public static boolean dropForJobsExpGain;
+	public static boolean dropForItemDrop;
 
 
 	// Defaults
@@ -234,6 +235,7 @@ public class OtherDropsConfig {
 		dropForJobsLevelUp = false;
 		dropForJobsPayment = false;
 		dropForJobsExpGain = false;
+		dropForItemDrop = false;
 	}
 
 	// load
@@ -773,6 +775,8 @@ public class OtherDropsConfig {
 					dropForJobsExpGain = true;
 				} else if (trigger.equals(Trigger.JOBS_PAYMENT)) {
 					dropForJobsPayment = true;
+				} else if (trigger.equals(Trigger.ITEM_DROP)) {
+					dropForItemDrop = true;
 				}
 				// TODO: This reparses the same drop once for each listed
 				// trigger; a way that involves parsing only once? Would require
