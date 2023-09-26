@@ -1,15 +1,5 @@
 package com.gmail.zariust.otherdrops.parameters.conditions;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.bukkit.entity.Entity;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
@@ -17,6 +7,12 @@ import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.parameters.Condition;
+import org.bukkit.entity.Entity;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SpawnedCheck extends Condition {
 
@@ -29,37 +25,18 @@ public class SpawnedCheck extends Condition {
 
     @Override
     public boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
-        Entity entity = null;
-
+        Entity entity = occurrence.getVictim();
         Log.logInfo("SpawnedCheck - start", Verbosity.HIGHEST);
-        if (occurrence.getRealEvent() instanceof EntityDeathEvent) {
-            EntityDeathEvent edEvent = (EntityDeathEvent) occurrence
-                    .getRealEvent();
-            entity = edEvent.getEntity();
-        } else if (occurrence.getEvent() instanceof EntityDamageEvent) {
-            EntityDamageEvent edEvent = (EntityDamageEvent) occurrence
-                    .getEvent();
-            entity = edEvent.getEntity();
-        } else if (occurrence.getEvent() instanceof CreatureSpawnEvent) {
-            CreatureSpawnEvent edEvent = (CreatureSpawnEvent) occurrence
-                    .getEvent();
-            entity = edEvent.getEntity();
-        }
 
         if (entity != null) {
             String spawnReason = "";
             if (entity.getMetadata("CreatureSpawnedBy").size() > 0)
-                spawnReason = (String) entity.getMetadata("CreatureSpawnedBy")
-                        .get(0).value();
+                spawnReason = (String) entity.getMetadata("CreatureSpawnedBy").get(0).value();
 
-            Log.logInfo(
-                    "SpawnedCheck - checking: " + spawnReasonsStored.toString()
-                            + " vs actual: " + spawnReason, Verbosity.HIGHEST);
-            return CustomDrop.checkList(spawnReason.toUpperCase(),
-                    spawnReasonsStored);
+            Log.logInfo("SpawnedCheck - checking: " + spawnReasonsStored.toString() + " vs actual: " + spawnReason, Verbosity.HIGHEST);
+            return CustomDrop.checkList(spawnReason.toUpperCase(), spawnReasonsStored);
         } else {
-            Log.logInfo("SpawnCheck - failed, entity = null.",
-                    Verbosity.HIGHEST);
+            Log.logInfo("SpawnCheck - failed, entity = null.", Verbosity.HIGHEST);
             return false;
         }
     }
