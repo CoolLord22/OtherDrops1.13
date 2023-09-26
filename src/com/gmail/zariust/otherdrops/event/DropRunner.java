@@ -18,6 +18,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -238,7 +239,17 @@ public class DropRunner implements Runnable {
 				boolean dropNaturally = true; // TODO: How to make this
 				// specifiable in the config?
 				boolean spreadDrop = customDrop.getDropSpread();
-				amount = customDrop.quantity.getRandomIn(customDrop.rng);
+
+				double fortuneMultiplier = 1.0;
+				if(customDrop.getFortuneEnhance() && currentEvent.getTool() instanceof PlayerSubject) {
+					ItemStack tool = ((PlayerSubject) currentEvent.getTool()).getTool().getActualTool();
+					if(tool.containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS)) {
+						fortuneMultiplier = ((1.0)/ (tool.getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS) + 2.0)) + ((tool.getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS) + 1.0)/(2.0));
+						Log.logInfo("Found fortune! Multiplier is..." + fortuneMultiplier, HIGHEST);
+					}
+				}
+				amount = customDrop.quantity.getRandomIn(customDrop.rng) * fortuneMultiplier;
+
 				String eventName = getEventName();
 				DropFlags flags = DropType.flags(who, currentEvent.getTool(),
 						dropNaturally, spreadDrop, customDrop.rng, eventName, currentEvent.getSpawnedReason(), currentEvent.getVictimName()); // TODO:

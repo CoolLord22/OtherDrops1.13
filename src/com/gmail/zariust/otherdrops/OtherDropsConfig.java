@@ -102,6 +102,7 @@ public class OtherDropsConfig {
 	public static Comparative defaultHeight;
 	public static Comparative defaultAttackRange;
 	public static Comparative defaultLightLevel;
+	public static Boolean defaultFortuneEnhance;
 	protected List<Trigger> defaultTrigger;
 
 	// Variables for settings from config.yml
@@ -212,6 +213,7 @@ public class OtherDropsConfig {
 		defaultHeight = null;
 		defaultAttackRange = null;
 		defaultLightLevel = null;
+		defaultFortuneEnhance = null;
 	}
 
 	private void clearDropFor() {
@@ -684,6 +686,7 @@ public class OtherDropsConfig {
 			defaultHeight = Comparative.parseFrom(defaults, "height", null);
 			defaultAttackRange = Comparative.parseFrom(defaults, "attackrange", null);
 			defaultLightLevel = Comparative.parseFrom(defaults, "lightlevel", null);
+			defaultFortuneEnhance = defaults.getBoolean("fortune_enhance", null);
 			defaultTrigger = Trigger.parseFrom(defaults, defaultTrigger);
 
 			lootOverridesDefault = defaults.getBoolean("loot_overrides_default", globalLootOverridesDefault);
@@ -828,6 +831,9 @@ public class OtherDropsConfig {
 
 		// Now read the stuff that might have a default; if null is returned, use the default
 		drop.setFlags(Flag.parseFrom(node));
+
+		// Check if drop has fortune enhancer enabled
+		drop.setFortuneEnhance(node.getBoolean("fortune_enhance", defaultFortuneEnhance));
 
 		// Read chance, delay, etc
 		drop.setChance(parseChanceFrom(node, "chance"));

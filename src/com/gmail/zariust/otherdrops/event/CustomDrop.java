@@ -38,6 +38,8 @@ import java.util.*;
 import static com.gmail.zariust.common.Verbosity.HIGHEST;
 
 public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
+    // Fortune enhancer setting
+    private Boolean                 fortuneEnhance;
     // Conditions
     private Map<Agent, Boolean>     tools;
     private Set<Flag>               flags;
@@ -68,7 +70,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
         Double rolledValue = rng.nextDouble();
         boolean chancePassed = rolledValue <= chance / 100.0;
         if (!chancePassed) {
-            Log.logInfo("Drop failed due to chance *matches* (" + String.valueOf(chance * fortuneMultiplier)
+            Log.logInfo("Drop failed due to chance *matches* (" + String.valueOf(chance)
                     + ", rolled: " + rolledValue * 100 + ")", HIGHEST);
             return false;
         }
@@ -183,6 +185,14 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
             return list.get(obj);
 
         return list.get(null);
+    }
+
+    public void setFortuneEnhance(Boolean enabled) {
+        fortuneEnhance = enabled;
+    }
+
+    public Boolean getFortuneEnhance() {
+        return fortuneEnhance != null && fortuneEnhance;
     }
 
     public void setFlags(Set<Flag> newFlags) {
