@@ -1,10 +1,5 @@
 package com.gmail.zariust.otherdrops.parameters.conditions;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.inventory.ItemStack;
-
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
@@ -15,6 +10,10 @@ import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.ProjectileAgent;
 import com.gmail.zariust.otherdrops.things.ODVariables;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LoreNameCheck extends Condition {
 
@@ -45,7 +44,7 @@ public class LoreNameCheck extends Condition {
     }
 
     private boolean checkLoreName(PlayerSubject player, String parsedLorename) {
-        ItemStack item = player.getPlayer().getInventory().getItemInMainHand();
+        ItemStack item = player.getTool().getActualTool();
         if (item == null)
             return false; // not sure when item would be null but it can be
 

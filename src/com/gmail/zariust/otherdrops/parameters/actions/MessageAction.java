@@ -1,19 +1,5 @@
 package com.gmail.zariust.otherdrops.parameters.actions;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.inventory.ItemStack;
-
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
@@ -26,6 +12,15 @@ import com.gmail.zariust.otherdrops.subject.CreatureSubject;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.ProjectileAgent;
 import com.gmail.zariust.otherdrops.things.ODVariables;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.*;
 
 public class MessageAction extends Action {
     // message.player, message.radius@<r>, message.world, message.server
@@ -180,7 +175,7 @@ public class MessageAction extends Action {
                 toolName = occurence.getTool().getReadableName();
             if (occurence.getTool() instanceof PlayerSubject) {
                 toolName = ((PlayerSubject) occurence.getTool()).getTool().getReadableName();
-                ItemStack inHand = ((PlayerSubject) occurence.getTool()).getPlayer().getInventory().getItemInMainHand();
+                ItemStack inHand = ((PlayerSubject) occurence.getTool()).getTool().getActualTool();
                 if (inHand != null)
                     loreName = (inHand.getItemMeta() == null ? null : inHand.getItemMeta().getDisplayName());
                 if (loreName == null)
