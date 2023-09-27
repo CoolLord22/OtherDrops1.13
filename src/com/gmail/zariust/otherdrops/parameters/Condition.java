@@ -65,6 +65,7 @@ public abstract class Condition extends Parameter {
         registerCondition(new JobNameCheck(null));
         registerCondition(new LightLevelCheck(null));
         registerCondition(new LoreNameCheck(null));
+        registerCondition(new LoreLineCheck(null));
         registerCondition(new MobSpawnerCheck(null, null));
         registerCondition(new PermissionCheck(null));
         registerCondition(new PermissionGroupCheck(null));
