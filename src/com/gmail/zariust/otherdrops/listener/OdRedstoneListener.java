@@ -83,11 +83,10 @@ public class OdRedstoneListener implements Listener {
         		|| type == Material.STONE_BUTTON  || type == Material.ACACIA_BUTTON
         		|| type == Material.BIRCH_BUTTON  || type == Material.DARK_OAK_BUTTON
                 || type == Material.JUNGLE_BUTTON || type == Material.OAK_BUTTON
-                || type == Material.SPRUCE_BUTTON || type == Material.ACACIA_BUTTON
+                || type == Material.SPRUCE_BUTTON || type == Material.POWERED_RAIL
                 || type == Material.LEVER 		  || type == Material.TRIPWIRE_HOOK
                 || type == Material.PISTON 		  || type == Material.PISTON_HEAD
                 || type == Material.MOVING_PISTON || type == Material.STICKY_PISTON
-                || type == Material.POWERED_RAIL
                 || type == Material.REDSTONE_TORCH|| type == Material.REDSTONE_WALL_TORCH) {
             return true;
         }
