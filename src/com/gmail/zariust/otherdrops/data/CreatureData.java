@@ -33,22 +33,6 @@ import org.bukkit.entity.Player;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.data.entities.AgeableData;
-import com.gmail.zariust.otherdrops.data.entities.CreeperData;
-import com.gmail.zariust.otherdrops.data.entities.EndermanData;
-import com.gmail.zariust.otherdrops.data.entities.HorseData;
-import com.gmail.zariust.otherdrops.data.entities.LivingEntityData;
-import com.gmail.zariust.otherdrops.data.entities.OcelotData;
-import com.gmail.zariust.otherdrops.data.entities.PigData;
-import com.gmail.zariust.otherdrops.data.entities.PigZombieData;
-import com.gmail.zariust.otherdrops.data.entities.SheepData;
-import com.gmail.zariust.otherdrops.data.entities.SlimeData;
-import com.gmail.zariust.otherdrops.data.entities.VillagerData;
-import com.gmail.zariust.otherdrops.data.entities.WolfData;
-import com.gmail.zariust.otherdrops.data.entities.ZombieData;
-import com.gmail.zariust.otherdrops.data.entities.ZombieVillagerData;
-import com.gmail.zariust.otherdrops.data.entities.HuskData;
-import com.gmail.zariust.otherdrops.data.entities.DonkeyData;
 import com.gmail.zariust.otherdrops.data.entities.*;
 
 // Range only allowed for SHEEP, SLIME, and PIG_ZOMBIE

@@ -16,24 +16,20 @@
 
 package com.gmail.zariust.otherdrops.subject;
 
-import java.util.Random;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.ThrownPotion;
-import org.bukkit.inventory.Inventory;
-
-import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.entity.*;
+import org.bukkit.inventory.Inventory;
+
+import java.util.Random;
+
+import static com.gmail.zariust.common.Verbosity.HIGH;
 
 public class ProjectileAgent implements Agent {
     private LivingSubject creature;
@@ -258,33 +254,48 @@ public class ProjectileAgent implements Agent {
         @SuppressWarnings("unused")
 		String checkName = name.toUpperCase().replaceAll("[\\s-_]", "");
         // TODO: parse by projectile names for future compatibility
-        if (name.equals("FIRE") || name.equals("FIREBALL"))
-            mat = Material.FIRE_CHARGE;
-        else if (name.equals("POTION"))
-            mat = Material.POTION;
-        else if (name.equals("SNOWBALL"))
-            mat = Material.SNOWBALL;
-        else if (name.equals("EGG"))
-            mat = Material.EGG;
-        else if (name.equals("FISH") || name.equals("FISHINGROD"))
-            mat = Material.FISHING_ROD;
-        else if (name.equals("ARROW"))
-            mat = Material.ARROW;
-        else if (name.equals("SPECTRALARROW"))
-            mat = Material.SPECTRAL_ARROW;
-        else if (name.equals("TIPPEDARROW"))
-            mat = Material.TIPPED_ARROW;
-        else if (name.equals("ENDERPEARL"))
-            mat = Material.ENDER_PEARL;
-        else if (name.equals("WITHERSKULL"))
-            mat = Material.WITHER_SKELETON_SKULL;
-        else if (name.equals("EXPBOTTLE"))
-            mat = Material.EXPERIENCE_BOTTLE;
-        else if (name.equals("ANY"))
-            mat = null;
-        else {
-            Log.logInfo("Unknown projectile: " + name, Verbosity.NORMAL);
-            return null;
+        switch (name) {
+            case "FIRE":
+            case "FIREBALL":
+                mat = Material.FIRE_CHARGE;
+                break;
+            case "POTION":
+                mat = Material.POTION;
+                break;
+            case "SNOWBALL":
+                mat = Material.SNOWBALL;
+                break;
+            case "EGG":
+                mat = Material.EGG;
+                break;
+            case "FISH":
+            case "FISHINGROD":
+                mat = Material.FISHING_ROD;
+                break;
+            case "ARROW":
+                mat = Material.ARROW;
+                break;
+            case "SPECTRALARROW":
+                mat = Material.SPECTRAL_ARROW;
+                break;
+            case "TIPPEDARROW":
+                mat = Material.TIPPED_ARROW;
+                break;
+            case "ENDERPEARL":
+                mat = Material.ENDER_PEARL;
+                break;
+            case "WITHERSKULL":
+                mat = Material.WITHER_SKELETON_SKULL;
+                break;
+            case "EXPBOTTLE":
+                mat = Material.EXPERIENCE_BOTTLE;
+                break;
+            case "ANY":
+                mat = null;
+                break;
+            default:
+                Log.logInfo("Unknown projectile: " + name, Verbosity.NORMAL);
+                return null;
         }
         // Parse data, which is one of the following
         // - A EntityType constant (note that only GHAST and SKELETON will

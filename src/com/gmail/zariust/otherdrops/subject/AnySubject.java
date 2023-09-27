@@ -16,13 +16,6 @@
 
 package com.gmail.zariust.otherdrops.subject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.MaterialGroup;
 import com.gmail.zariust.common.Verbosity;
@@ -30,6 +23,12 @@ import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
+import org.bukkit.Location;
+import org.bukkit.Material;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 @ConfigOnly({ Agent.class, Target.class })
 public class AnySubject implements Agent, Target {
@@ -55,18 +54,21 @@ public class AnySubject implements Agent, Target {
 
     public static Agent parseAgent(String name) {
         name = name.toUpperCase();
-        if (name.equals("ANY") || name.equals("ALL"))
-            return new AnySubject();
-        else if (name.equals("ANY_OBJECT"))
-            return new PlayerSubject(true);
-        else if (name.equals("ANY_CREATURE"))
-            return new CreatureSubject();
-        else if (name.equals("ANY_DAMAGE"))
-            return new EnvironmentAgent();
-        else if (name.equals("ANY_PROJECTILE"))
-            return new ProjectileAgent();
-        else if (name.equals("ANY_EXPLOSION"))
-            return new ExplosionAgent();
+        switch (name) {
+            case "ANY":
+            case "ALL":
+                return new AnySubject();
+            case "ANY_OBJECT":
+                return new PlayerSubject(true);
+            case "ANY_CREATURE":
+                return new CreatureSubject();
+            case "ANY_DAMAGE":
+                return new EnvironmentAgent();
+            case "ANY_PROJECTILE":
+                return new ProjectileAgent();
+            case "ANY_EXPLOSION":
+                return new ExplosionAgent();
+        }
         MaterialGroup group = MaterialGroup.get(name);
         if (group != null)
             return new MaterialGroupAgent(group);

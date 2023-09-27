@@ -14,14 +14,8 @@ public class Cooldown {
 
     public static void addCooldown(String cooldownName, UUID playerID, long lengthInMillis) {
         PlayerCooldown pc = new PlayerCooldown(cooldownName, playerID, lengthInMillis);
-        Iterator<PlayerCooldown> it = cooldowns.iterator();
         // This section prevents duplicate cooldowns
-        while (it.hasNext()) {
-            PlayerCooldown iterated = it.next();
-            if (iterated.getUUID().equals(pc.getUUID()) && iterated.getCooldownName().equalsIgnoreCase(pc.getCooldownName())) {
-                it.remove();
-            }
-        }
+        cooldowns.removeIf(iterated -> iterated.getUUID().equals(pc.getUUID()) && iterated.getCooldownName().equalsIgnoreCase(pc.getCooldownName()));
         cooldowns.add(pc);
     }
 
@@ -38,14 +32,8 @@ public class Cooldown {
 
     public static void addGlobalCooldown(String cooldownName, long lengthInMillis) {
         PlayerCooldown pc = new PlayerCooldown(cooldownName, null, lengthInMillis);
-        Iterator<PlayerCooldown> it = cooldowns.iterator();
         // This section prevents duplicate cooldowns
-        while (it.hasNext()) {
-            PlayerCooldown iterated = it.next();
-            if (iterated.getCooldownName().equalsIgnoreCase(pc.getCooldownName())) {
-                it.remove();
-            }
-        }
+        cooldowns.removeIf(iterated -> iterated.getCooldownName().equalsIgnoreCase(pc.getCooldownName()));
         cooldowns.add(pc);
     }
 

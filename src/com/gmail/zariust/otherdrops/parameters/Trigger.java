@@ -285,7 +285,7 @@ public final class Trigger implements Comparable<Trigger> {
 
     @Override
     public int compareTo(Trigger other) {
-        return Integer.valueOf(ordinal).compareTo(other.ordinal);
+        return Integer.compare(ordinal, other.ordinal);
     }
 
     @Override

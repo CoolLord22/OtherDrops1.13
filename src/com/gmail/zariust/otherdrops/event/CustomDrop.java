@@ -233,7 +233,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
             }
             // Logic issue: if flags that are not active are processed we may
             // override continuedropping and dropthis settings...
-            if (match == true) {
+            if (match) {
                 flag.matches(drop, match, flagState);
                 shouldDrop = shouldDrop && flagState.dropThis;
             }

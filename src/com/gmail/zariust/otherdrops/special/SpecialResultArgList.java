@@ -272,10 +272,7 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
         list = new SpecialResultArgList("PING", "PONG", "CLANG", "PRANG",
                 "BOOM", "BANG", "SPLOOSH");
         System.out.println(list + " " + list.size());
-        for (String str : list) {
-            if (str.startsWith("P"))
-                list.remove(str);
-        }
+        list.removeIf(str -> str.startsWith("P"));
         System.out.println(list + " " + list.size());
         // // Testing concurrent addition (commented out because it throws an
         // exception, as it should)

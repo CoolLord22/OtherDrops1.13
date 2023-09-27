@@ -964,12 +964,7 @@ public class OtherDropsConfig {
 		if (dropEvents == null)
 			return; // We're done! Note, this means any new options must go
 		// above events!
-		ListIterator<SpecialResult> iter = dropEvents.listIterator();
-		while (iter.hasNext()) {
-			SpecialResult event = iter.next();
-			if (!event.canRunFor(drop))
-				iter.remove();
-		}
+        dropEvents.removeIf(event -> !event.canRunFor(drop));
 		drop.setEvents(dropEvents);
 	}
 

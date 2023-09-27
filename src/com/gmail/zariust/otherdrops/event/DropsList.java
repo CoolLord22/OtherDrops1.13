@@ -16,16 +16,10 @@
 
 package com.gmail.zariust.otherdrops.event;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.Flag;
+
+import java.util.*;
 
 public class DropsList implements Iterable<CustomDrop> {
     private List<CustomDrop>               list;
@@ -64,7 +58,7 @@ public class DropsList implements Iterable<CustomDrop> {
     public void sort() {
         // If we want to apply other sorting to the drops list, here is the
         // place to do so.
-        Collections.sort(list, new UniqueSorter());
+        list.sort(new UniqueSorter());
         // We also build up the exclusive keys data here
         keys = new HashMap<String, Map<Data, Double>>();
         for (CustomDrop event : list) {
@@ -80,8 +74,7 @@ public class DropsList implements Iterable<CustomDrop> {
             keys.get(key).put(data, cumul);
         }
         for (String key : keys.keySet()) {
-            double cumul = keys.get(key).containsKey(null) ? keys.get(key).get(
-                    null) : 0.0;
+            double cumul = keys.get(key).getOrDefault(null, 0.0);
             for (Data data : keys.get(key).keySet()) {
                 keys.get(key).put(data, cumul + keys.get(key).get(data));
                 if (keys.get(key).get(data) < 100)

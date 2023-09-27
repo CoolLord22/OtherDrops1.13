@@ -36,7 +36,7 @@ public class Comparative {
     public boolean matches(int v) {
         if (range != null)
             return range.contains(v);
-        return Integer.valueOf(v).compareTo(val) == compare;
+        return Integer.compare(v, val) == compare;
     }
 
     public static String[] splitRange(String range) {

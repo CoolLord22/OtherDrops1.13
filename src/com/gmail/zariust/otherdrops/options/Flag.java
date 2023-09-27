@@ -74,7 +74,7 @@ public abstract class Flag implements Comparable<Flag> {
     public final static Flag IN_MOB_ARENA = new Flag("IN_MOB_ARENA") {
     	@Override
     	public void matches(OccurredEvent event, boolean state, final FlagState result) {
-    		if (state == false) {
+    		if (!state) {
     			result.dropThis = true;
     			result.continueDropping = true;
     			} else {
@@ -220,7 +220,7 @@ public abstract class Flag implements Comparable<Flag> {
 
     @Override
     public final int compareTo(Flag other) {
-        return Integer.valueOf(ordinal).compareTo(other.ordinal);
+        return Integer.compare(ordinal, other.ordinal);
     }
 
     @Override
