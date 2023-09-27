@@ -164,7 +164,7 @@ public class ItemData implements Data, RangeableData {
 
     public enum ItemMetaType {
         LEATHER, SKULL, BOOK, ENCHANTED_BOOK, FIREWORK, POTION
-    };
+    }
 
     private static Data parseItemMeta(String state, ItemMetaType metaType) {
         // FIXME: add a safety check here

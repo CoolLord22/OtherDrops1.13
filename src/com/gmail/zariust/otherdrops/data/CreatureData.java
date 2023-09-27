@@ -223,7 +223,6 @@ public class CreatureData implements Data, RangeableData {
                 
                 e.printStackTrace();
             }
-            ;
 
             /*
              * Attempting to set a list of data classes so we can automatically
@@ -306,7 +305,6 @@ public class CreatureData implements Data, RangeableData {
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
             }
-            ;
             if (cData == null)
                 return new CreatureData(0);
 

@@ -70,7 +70,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
         Double rolledValue = rng.nextDouble();
         boolean chancePassed = rolledValue <= chance / 100.0;
         if (!chancePassed) {
-            Log.logInfo("Drop failed due to chance *matches* (" + String.valueOf(chance)
+            Log.logInfo("Drop failed due to chance *matches* (" + chance
                     + ", rolled: " + rolledValue * 100 + ")", HIGHEST);
             return false;
         }
@@ -159,7 +159,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
         if (!positiveMatch)
             Log.logInfo(
                     "Tool match = " + positiveMatch + " - tool="
-                            + String.valueOf(tool) + " tools="
+                            + tool + " tools="
                             + tools.toString(), HIGHEST);
         return positiveMatch;
     }
@@ -262,7 +262,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
         if (chancePassed) {
             return true;
         } else {
-            Log.logInfo("Drop failed due to chance *exclusiveMap* (" + String.valueOf(chance)
+            Log.logInfo("Drop failed due to chance *exclusiveMap* (" + chance
                     + ", rolled: " + rolledValue * 100 + ")", HIGHEST);
             return false;
         }
@@ -385,7 +385,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
         // Placeholder for drops info
         log.append(" now drops %d");
         // Chance
-        log.append(" with " + Double.toString(chance) + "% chance");
+        log.append(" with " + chance + "% chance");
         return log.toString();
     }
 

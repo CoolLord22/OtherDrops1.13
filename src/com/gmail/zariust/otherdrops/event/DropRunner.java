@@ -185,9 +185,9 @@ public class DropRunner implements Runnable {
 			Target toReplace = currentEvent.getTarget();
 			BlockTarget tempReplace = customDrop.getReplacementBlock();
 			BlockTarget ifFarmlandUpOneBlock;
-			BlockTarget getsBlockBeingChanged = new BlockTarget(toReplace.getLocation().getBlock());;
+			BlockTarget getsBlockBeingChanged = new BlockTarget(toReplace.getLocation().getBlock());
 
-			if(customDrop.getReplacementBlock().getMaterial() == null) {
+            if(customDrop.getReplacementBlock().getMaterial() == null) {
 				tempReplace = new BlockTarget(toReplace.getLocation().getBlock());
 			}
 

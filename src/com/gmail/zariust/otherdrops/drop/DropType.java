@@ -39,7 +39,7 @@ import java.util.*;
 public abstract class DropType {
     public enum DropCategory {
         ITEM, CREATURE, MONEY, GROUP, DENY, CONTENTS, DEFAULT, VEHICLE, EXPERIENCE
-    };
+    }
 
     public static class DropFlags {
         protected boolean naturally, spread;
@@ -80,7 +80,7 @@ public abstract class DropType {
             }
             return tool.getReadableName();
         }
-    };
+    }
 
     public boolean             overrideDefault;
     private final DropCategory cat;

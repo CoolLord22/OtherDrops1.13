@@ -145,7 +145,7 @@ public abstract class Flag implements Comparable<Flag> {
     public final static class FlagState {
         public boolean dropThis         = true;
         public boolean continueDropping = true;
-    };
+    }
 
     // LinkedHashMap because I want to preserve order
     private static Map<String, Flag> flags       = new LinkedHashMap<String, Flag>();

@@ -37,7 +37,7 @@ import com.gmail.zariust.otherdrops.subject.Target;
 public class VehicleData implements Data {
     public enum VehicleState {
         EMPTY, PLAYER, OCCUPIED
-    };
+    }
 
     CreatureDrop creature;
     // This flag has meaning only if creature is null
