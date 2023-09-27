@@ -191,7 +191,7 @@ public class DropRunner implements Runnable {
 				tempReplace = new BlockTarget(toReplace.getLocation().getBlock());
 			}
 
-			Log.logInfo("Replacing " + toReplace.toString() + " with "
+			Log.logInfo("Replacing " + toReplace + " with "
 					+ customDrop.getReplacementBlock().toString(),
 					Verbosity.HIGHEST);
 
@@ -400,7 +400,7 @@ public class DropRunner implements Runnable {
 			if (living != null)
 				Log.logInfo(
 						"droprunner.run: projectile agent detected... shooter = "
-								+ living.toString(), HIGHEST);
+								+ living, HIGHEST);
 			if (living instanceof PlayerSubject)
 				who = ((PlayerSubject) living).getPlayer();
 		}

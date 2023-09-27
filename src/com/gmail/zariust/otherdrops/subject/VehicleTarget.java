@@ -196,7 +196,7 @@ public class VehicleTarget implements Target {
     public String toString() {
         if (material == null)
             return "ANY_VEHICLE";
-        String ret = "VEHICLE_" + material.toString();
+        String ret = "VEHICLE_" + material;
         // TODO: Will data ever be null, or will it just be 0?
         if (data != null)
             ret += "@" + data.get(material);

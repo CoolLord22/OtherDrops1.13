@@ -126,7 +126,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         attackRange = measureRange(
                 location,
                 evt.getPlayer().getLocation(),
-                "Block '" + block.getType().toString() + "' broken by '"
+                "Block '" + block.getType() + "' broken by '"
                         + tool.toString() + "'");
         setRegions();
     }
@@ -158,13 +158,13 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         if (tool == null) {
             Log.logWarning(
                     "EntityDeathEvent: tool is null, this shouldn't happen! Entity:"
-                            + e.toString() + " lastDamage: "
-                            + e.getLastDamageCause().getCause().toString(),
+                            + e + " lastDamage: "
+                            + e.getLastDamageCause().getCause(),
                     Verbosity.NORMAL);
             return;
         }
         attackRange = measureRange(location, tool.getLocation(),
-                "Entity '" + e.toString() + "' killed by '" + tool.toString()
+                "Entity '" + e + "' killed by '" + tool.toString()
                         + "'");
         setRegions();
     }
@@ -179,7 +179,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
             EntityDamageByEntityEvent evt2 = (EntityDamageByEntityEvent) evt;
             setTool(evt2.getDamager());
             if (tool != null)
-                attackRange = measureRange(location, evt2.getDamager().getLocation(), "Entity '" + e.toString()+ "' damaged by '" + tool.toString() + "'");
+                attackRange = measureRange(location, evt2.getDamager().getLocation(), "Entity '" + e + "' damaged by '" + tool.toString() + "'");
         } else
             setTool(evt.getCause());
         setRegions();
@@ -205,10 +205,10 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
                             Verbosity.HIGH);
                 }
             } else {
-                Log.logInfo("Damager: " + evt2.getDamager().toString(),
+                Log.logInfo("Damager: " + evt2.getDamager(),
                         Verbosity.HIGH);
                 attackRange = measureRange(location, evt2.getDamager()
-                        .getLocation(), "Entity '" + e.toString()
+                        .getLocation(), "Entity '" + e
                         + "' damaged by '" + tool.toString() + "'");
             }
         } else
@@ -237,7 +237,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         if (evt.getAttacker() instanceof Player) {
             attackRange = measureRange(location, evt.getAttacker()
                     .getLocation(), "Vehicle '"
-                    + evt.getVehicle().getType().toString()
+                    + evt.getVehicle().getType()
                     + "' destroyed by '" + tool.toString() + "'");
         } else {
             attackRange = 0;
@@ -277,7 +277,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         setWeatherTimeHeight(location);
         attackRange = measureRange(location, evt.getPlayer().getLocation(),
                 "Player '" + evt.getPlayer().getName() + "' interacted with "
-                        + block.toString());
+                        + block);
         setTool(evt.getPlayer());
         setRegions();
     }
@@ -289,7 +289,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         setWeatherTimeHeight(location);
         attackRange = measureRange(location, evt.getPlayer().getLocation(),
                 "Player '" + evt.getPlayer().getName() + "' interacted with "
-                        + evt.getRightClicked().toString());
+                        + evt.getRightClicked());
         setTool(evt.getPlayer());
         setRegions();
     }
@@ -785,7 +785,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         attackRange = measureRange(
                 location,
                 evt.getPlayer().getLocation(),
-                "Block '" + block.getType().toString() + "' placed by '"
+                "Block '" + block.getType() + "' placed by '"
                         + tool.toString() + "'");
         setRegions();
     }

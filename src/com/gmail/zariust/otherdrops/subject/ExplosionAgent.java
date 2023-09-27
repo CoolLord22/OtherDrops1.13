@@ -176,7 +176,7 @@ public class ExplosionAgent implements Agent {
             return "EXPLOSION_"
                     + ((CreatureSubject) explosive).toString().replace(
                             "CREATURE_", "");
-        return "EXPLOSION_" + explosive.toString();
+        return "EXPLOSION_" + explosive;
     }
 
     @Override

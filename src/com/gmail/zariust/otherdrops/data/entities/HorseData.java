@@ -156,9 +156,9 @@ public class HorseData extends CreatureData {
     public String toString() {
         String val = "";
         if (horseColor != null)
-            val += "!!" + horseColor.toString();
+            val += "!!" + horseColor;
         if (horseStyle != null)
-            val += "!!" + horseStyle.toString();
+            val += "!!" + horseStyle;
         if (tamed != null) {
             val += "!";
             val += "!!" + (tamed ? "TAME" : "UNTAMED");

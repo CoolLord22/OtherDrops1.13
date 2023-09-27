@@ -90,7 +90,7 @@ public class PigZombieData extends CreatureData {
     public String toString() {
         String val = "";
         if (anger != null) {
-            val += "!!" + anger.toString();
+            val += "!!" + anger;
         }
         val += leData.toString();
         return val;

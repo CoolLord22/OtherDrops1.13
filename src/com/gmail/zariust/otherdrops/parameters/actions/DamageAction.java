@@ -210,7 +210,7 @@ public class DamageAction extends Action {
     private void damage(LivingEntity ent, DoubleRange damageRange, DamageType damageType, CustomDrop drop, LivingEntity attacker) {
         Double damageVal = damageRange.getRandomIn(OtherDrops.rng);
         Log.logInfo("Damaging entity: " + ent.toString() + " range="
-                + damageRange.toString() + " value=" + damageVal + " ("
+                + damageRange + " value=" + damageVal + " ("
                 + damageType.toString() + ")", Verbosity.HIGHEST);
         switch (damageType) {
         case NORMAL:
@@ -221,14 +221,14 @@ public class DamageAction extends Action {
                 EntityWrapper.setHealth(ent, newHealth);
             } else if (damageVal > 0) {
                 if (attacker != null) {
-                    Log.logInfo("Attacker found, " + attacker.toString(), Verbosity.HIGH);
+                    Log.logInfo("Attacker found, " + attacker, Verbosity.HIGH);
                     EntityWrapper.damage(ent, damageVal, attacker);
                 } else {
                     EntityWrapper.damage(ent, damageVal);
                 }
             } else if (damageVal == 0) {
                 if (attacker != null) {
-                    Log.logInfo("Attacker found, " + attacker.toString(), Verbosity.HIGH);
+                    Log.logInfo("Attacker found, " + attacker, Verbosity.HIGH);
                     EntityWrapper.damage(ent, damageVal, attacker); 
                 }
                 else {

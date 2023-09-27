@@ -173,7 +173,7 @@ public class OtherDrops extends JavaPlugin {
 			out = new BufferedWriter(new FileWriter(configFile));
 			for (PotionEffectType mat : PotionEffectType.values()) {
 				if (mat != null)
-					out.write(mat.getName().toString() + "\n");
+					out.write(mat.getName() + "\n");
 			}
 			out.close();
 		} catch (IOException exception) {
@@ -187,7 +187,7 @@ public class OtherDrops extends JavaPlugin {
 			out = new BufferedWriter(new FileWriter(configFile));
 			for (Material mat : Material.values()) {
 				if (mat != null)
-					out.write(mat.name().toString() + "\n");
+					out.write(mat.name() + "\n");
 			}
 			out.close();
 		} catch (IOException exception) {

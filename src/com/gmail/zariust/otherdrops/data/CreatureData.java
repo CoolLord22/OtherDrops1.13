@@ -107,7 +107,7 @@ public class CreatureData implements Data, RangeableData {
             }
         }
         DATAMAP = Collections.unmodifiableMap(aMap);
-        Log.logInfo("CreatureData map: " + aMap.toString(), Verbosity.EXTREME);
+        Log.logInfo("CreatureData map: " + aMap, Verbosity.EXTREME);
     }
     public int                                  data;
     private Boolean                             sheared;

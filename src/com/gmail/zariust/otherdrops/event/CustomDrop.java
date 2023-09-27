@@ -379,7 +379,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
     @Override
     public String getLogMessage() {
         StringBuilder log = new StringBuilder();
-        log.append(toString() + ": ");
+        log.append(this + ": ");
         // Tool
         log.append(mapToString(tools));
         // Placeholder for drops info

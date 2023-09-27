@@ -522,8 +522,8 @@ public class OtherDropsCommand implements CommandExecutor {
                     String spawnReason = "not set";
                     if (md != null && !md.isEmpty()) spawnReason = (String) md.get(0).value();
                     sender.sendMessage("OdId: mob details: "
-                            + mob.getType().toString() + "@"
-                            + CreatureData.parse(mob).toString()
+                            + mob.getType() + "@"
+                            + CreatureData.parse(mob)
                             + " spawnedby: " + spawnReason
                             + CustomMobSupport.getCustomMobName(le));
 
@@ -532,7 +532,7 @@ public class OtherDropsCommand implements CommandExecutor {
                 }
             } else {
                 String itemMsg = playerItem.getType() + "@" + playerItem.getDurability() + " maxdura:" + playerItem.getType().getMaxDurability() +
-                		" dura%:" + getDurabilityPercentage(playerItem) + " detail: " + playerItem.toString();
+                		" dura%:" + getDurabilityPercentage(playerItem) + " detail: " + playerItem;
                 if (playerItem.getItemMeta() != null && playerItem.getItemMeta().getDisplayName() != null)
                     itemMsg += " name: \"" + playerItem.getItemMeta().getDisplayName().replaceAll(" §", "&") + "\"";
                
@@ -540,11 +540,11 @@ public class OtherDropsCommand implements CommandExecutor {
                 sender.sendMessage("");
                 
                 Block block = player.getTargetBlock(new HashSet<Material>(), 100);
-                ((Player) sender).sendRawMessage(ChatColor.GREEN + "Block looked at is " + ChatColor.WHITE + block.toString()
-                        + " mat: " + block.getType().toString()
+                ((Player) sender).sendRawMessage(ChatColor.GREEN + "Block looked at is " + ChatColor.WHITE + block
+                        + " mat: " + block.getType()
                         + " lightlevel: " + block.getLightLevel()
                         + " lightfromsky: " + block.getLightFromSky()
-                        + " biome: " + block.getBiome().toString());
+                        + " biome: " + block.getBiome());
             }
 
             String itemFinalWriteData = "";

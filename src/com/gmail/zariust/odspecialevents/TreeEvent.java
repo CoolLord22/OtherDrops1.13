@@ -71,8 +71,7 @@ public class TreeEvent extends SpecialResult {
                 "Event (trees): generating tree. Force="
                         + forceTree
                         + ". Block at 'root' location is: "
-                        + where.clone().add(0, -1, 0).getBlock().getType()
-                                .toString(), HIGHEST);
+                        + where.clone().add(0, -1, 0).getBlock().getType(), HIGHEST);
         Block block = where.getBlock().getRelative(BlockFace.DOWN);
         BlockState state = block.getState();
         if (forceTree

@@ -288,7 +288,7 @@ public class SimpleData implements Data, RangeableData {
 		} catch (NullPointerException ex) {
 			Log.logWarning(
 					"SimpleData.get - nullpointer exception for material: "
-							+ mat.toString(), Verbosity.HIGH);
+							+ mat, Verbosity.HIGH);
 			// TODO: stacktrace on extreme only? if
 			// (OtherDrops.plugin.config.verbosity.exceeds(EXTREME)) {};
 		}

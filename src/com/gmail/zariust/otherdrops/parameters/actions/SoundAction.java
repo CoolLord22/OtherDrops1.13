@@ -109,7 +109,7 @@ public class SoundAction extends Action {
                 for (Sound loopValue : Sound.values()) {
                     if (CommonMaterial.fuzzyMatchString(value,
                             loopValue.toString())) {
-                        Log.logInfo("Matched sound " + loopValue.toString()
+                        Log.logInfo("Matched sound " + loopValue
                                 + " = " + value, Verbosity.HIGHEST);
                         sound = loopValue;
                     }

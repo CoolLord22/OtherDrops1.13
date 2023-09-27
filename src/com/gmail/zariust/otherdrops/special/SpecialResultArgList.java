@@ -252,7 +252,7 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
         list.add("STRING");
         list.add("CLANG");
         list.add("BOOM");
-        System.out.println(list.toString() + " " + list.size());
+        System.out.println(list + " " + list.size());
         SpecialResultArgList.Iterator iter1, iter2;
         iter1 = list.listIterator(2);
         iter2 = list.listIterator(2);
@@ -266,17 +266,17 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
         System.out.println("Removed through iter2");
         System.out.println("Advancing iter1 to " + iter1.next());
         System.out.println("Advancing iter2 to " + iter2.next());
-        System.out.println(list.toString() + " " + list.size());
+        System.out.println(list + " " + list.size());
         // More testing concurrent removal
         System.out.println("---");
         list = new SpecialResultArgList("PING", "PONG", "CLANG", "PRANG",
                 "BOOM", "BANG", "SPLOOSH");
-        System.out.println(list.toString() + " " + list.size());
+        System.out.println(list + " " + list.size());
         for (String str : list) {
             if (str.startsWith("P"))
                 list.remove(str);
         }
-        System.out.println(list.toString() + " " + list.size());
+        System.out.println(list + " " + list.size());
         // // Testing concurrent addition (commented out because it throws an
         // exception, as it should)
         // System.out.println("---");
@@ -291,14 +291,14 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
         // Testing typical application
         System.out.println("---");
         list = new SpecialResultArgList("RADIUS=3", "HEIGHT=5", "QUACK", "MOO");
-        System.out.println(list.toString() + " " + list.size());
+        System.out.println(list + " " + list.size());
         for (String arg : list) {
             if (arg.startsWith("RADIUS"))
                 list.remove(arg);
             else if (arg.startsWith("HEIGHT"))
                 list.remove(arg);
         }
-        System.out.println(list.toString() + " " + list.size());
+        System.out.println(list + " " + list.size());
         // Profiling
         System.out.println("---");
         Random rng = new Random();

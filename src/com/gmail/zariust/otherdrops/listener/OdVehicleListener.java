@@ -37,7 +37,7 @@ public class OdVehicleListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onVehicleDestroy(VehicleDestroyEvent event) {
         OccurredEvent drop = new OccurredEvent(event);
-        Log.logInfo("Vehicle drop occurance created. (" + drop.toString() + ")", HIGHEST);
+        Log.logInfo("Vehicle drop occurance created. (" + drop + ")", HIGHEST);
         parent.sectionManager.performDrop(drop);
     }
 }

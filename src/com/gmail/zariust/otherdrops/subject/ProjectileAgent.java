@@ -337,7 +337,7 @@ public class ProjectileAgent implements Agent {
         if (mat == null)
             ret = "ANY_PROJECTILE";
         else
-            ret = "PROJECTILE_" + mat.toString();
+            ret = "PROJECTILE_" + mat;
         if (dispenser)
             ret += "@DISPENSER";
         else if (creature != null) {

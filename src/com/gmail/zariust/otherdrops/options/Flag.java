@@ -207,7 +207,7 @@ public abstract class Flag implements Comparable<Flag> {
         for (String flag : list) {
             Flag newFlag = flags.get(flag.toUpperCase());
             if (newFlag != null) {
-                Log.logInfo("Adding valid flag: " + newFlag.toString(), Verbosity.HIGHEST);
+                Log.logInfo("Adding valid flag: " + newFlag, Verbosity.HIGHEST);
                 set.add(newFlag);
             } else {
                 Log.logInfo("Invalid flag, ignoring (" + flag + ")", Verbosity.NORMAL);

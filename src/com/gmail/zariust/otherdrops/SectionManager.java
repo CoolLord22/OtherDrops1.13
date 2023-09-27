@@ -90,7 +90,7 @@ public class SectionManager {
         if (OtherDropsConfig.verbosity.exceeds(HIGH))
             Log.logInfo(
                     "PerformDrop - potential drops found: "
-                            + customDrops.toString()
+                            + customDrops
                             + " tool: "
                             + (occurence.getTool() == null ? "" : occurence
                                     .getTool().toString()), HIGH);
@@ -127,7 +127,7 @@ public class SectionManager {
         List<SimpleDrop> scheduledDrops = gatherDrops(customDrops, occurence);
         if (OtherDropsConfig.verbosity.exceeds(HIGHEST))
             Log.logInfo(
-                    "PerformDrop: scheduled drops=" + scheduledDrops.toString(),
+                    "PerformDrop: scheduled drops=" + scheduledDrops,
                     HIGHEST);
 
         // check for any DEFAULT drops

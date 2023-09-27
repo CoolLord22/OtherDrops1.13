@@ -271,7 +271,7 @@ public final class Trigger implements Comparable<Trigger> {
                 result.add(act);
             else
                 Log.logWarning("Invalid action " + action + " (known actions: "
-                        + getValidActions().toString() + ")", NORMAL);
+                        + getValidActions() + ")", NORMAL);
         }
         if (result.isEmpty()) {
             if (def == null) {

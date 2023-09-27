@@ -79,7 +79,7 @@ public class MessageAction extends Action {
         if (message.isEmpty())
             return false;
 
-        Log.logInfo("Message action - messages = " + messages.toString()
+        Log.logInfo("Message action - messages = " + messages
                 + ", message=" + message + ", type=" + messageType.toString(),
                 Verbosity.HIGH);
 

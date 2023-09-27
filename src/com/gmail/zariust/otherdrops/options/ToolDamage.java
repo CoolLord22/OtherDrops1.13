@@ -70,7 +70,7 @@ public class ToolDamage {
                 fullyConsumed = true;
             else
                 stack.setAmount(count - take);
-            Log.logInfo("Tool consume: " + take + "x " + stack.toString()
+            Log.logInfo("Tool consume: " + take + "x " + stack
                     + " consumed (" + (count - take) + ") remaining.",
                     Verbosity.HIGH);
         }

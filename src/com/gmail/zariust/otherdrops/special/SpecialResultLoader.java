@@ -83,14 +83,14 @@ public class SpecialResultLoader {
                     }
                 } catch (Exception ex) {
                     Log.logWarning("Event file: " + f + " failed to load... ("
-                            + ex.toString() + ")", NORMAL);
+                            + ex + ")", NORMAL);
                     if (OtherDropsConfig.getVerbosity().exceeds(HIGH))
                         ex.printStackTrace();
                 }
             }
         }
         if (added)
-            Log.logInfo("Events loaded: " + loaded.toString(), HIGH);
+            Log.logInfo("Events loaded: " + loaded, HIGH);
     }
 
     private static SpecialResultHandler loadEvent(File file) {

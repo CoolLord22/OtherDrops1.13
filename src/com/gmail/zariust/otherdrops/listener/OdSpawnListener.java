@@ -38,7 +38,7 @@ public class OdSpawnListener implements Listener {
         if (event.isCancelled())
             return;
         Log.logInfo("SpawnEvent: before checks. Spawned by "
-                + event.getSpawnReason().toString(), Verbosity.EXTREME);
+                + event.getSpawnReason(), Verbosity.EXTREME);
 
         // This listener should only be registered if "spawned" condition
         // exists, so tag creature

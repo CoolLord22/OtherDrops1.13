@@ -266,10 +266,10 @@ public class LivingEntityData extends CreatureData {
 	public String toString() {
 		String val = "";
 		if (equip != null) {
-			val += "!!" + equip.toString();
+			val += "!!" + equip;
 		}
 		if (maxHealth != null) {
-			val += "%" + maxHealth.toString() + "h";
+			val += "%" + maxHealth + "h";
 		}
 		return val;
 	}

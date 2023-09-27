@@ -43,17 +43,17 @@ public class CreatureEquipment {
         String msg = "";
 
         if (head != null)
-            msg += "!!" + head.toString() + "%" + headChance.toString() + "%";
+            msg += "!!" + head + "%" + headChance.toString() + "%";
         if (chest != null)
-            msg += "!!" + chest.toString() + "%" + chestChance.toString() + "%";
+            msg += "!!" + chest + "%" + chestChance.toString() + "%";
         if (legs != null)
-            msg += "!!" + legs.toString() + "%" + legsChance.toString() + "%";
+            msg += "!!" + legs + "%" + legsChance.toString() + "%";
         if (handsMain != null)
-            msg += "!!" + handsMain.toString() + "%" + handsMainChance.toString() + "%";
+            msg += "!!" + handsMain + "%" + handsMainChance.toString() + "%";
         if (handsOff != null)
-            msg += "!!" + handsOff.toString() + "%" + handsOffChance.toString() + "%";
+            msg += "!!" + handsOff + "%" + handsOffChance.toString() + "%";
         if (boots != null)
-            msg += "!!" + boots.toString() + "%" + bootsChance.toString() + "%";
+            msg += "!!" + boots + "%" + bootsChance.toString() + "%";
 
         return msg;
     }

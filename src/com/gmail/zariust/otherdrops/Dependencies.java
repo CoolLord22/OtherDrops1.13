@@ -139,10 +139,10 @@ public class Dependencies {
 		boolean perm = who.hasPermission(permission);
 		if (!perm) {
 			Log.logInfo("SuperPerms - permission (" + permission
-					+ ") denied for " + who.toString(), HIGHEST);
+					+ ") denied for " + who, HIGHEST);
 		} else {
 			Log.logInfo("SuperPerms - permission (" + permission
-					+ ") allowed for " + who.toString(), HIGHEST);
+					+ ") allowed for " + who, HIGHEST);
 		}
 		return perm;
 	}

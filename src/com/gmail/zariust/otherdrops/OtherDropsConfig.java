@@ -262,31 +262,31 @@ public class OtherDropsConfig {
 		} catch (FileNotFoundException e) {
 			if (verbosity.exceeds(HIGH)) e.printStackTrace();
 			result.add("Config file not found!");
-			result.add("The error was:\n" + e.toString());
+			result.add("The error was:\n" + e);
 			result.add("You can fix the error and reload with /odr.");
 			sendMessage(sender, result);
 		} catch (IOException e) {
 			if (verbosity.exceeds(HIGH)) e.printStackTrace();
 			result.add("There was an IO error which has forced OtherDrops to abort loading!");
-			result.add("The error was:\n" + e.toString());
+			result.add("The error was:\n" + e);
 			result.add("You can fix the error and reload with /odr.");
 			sendMessage(sender, result);
 		} catch (InvalidConfigurationException e) {
 			if (verbosity.exceeds(HIGH)) e.printStackTrace();
 			result.add("Config is invalid!");
-			result.add("The error was:\n" + e.toString());
+			result.add("The error was:\n" + e);
 			result.add("You can fix the error and reload with /odr.");
 			sendMessage(sender, result);
 		} catch (NullPointerException e) {
 			result.add("Config load failed!");
-			result.add("The error was:\n" + e.toString());
+			result.add("The error was:\n" + e);
 			if (verbosity.exceeds(Verbosity.NORMAL)) e.printStackTrace();
 			result.add("Please try the latest version & report this issue to the developer if the problem remains.");
 			sendMessage(sender, result);
 		} catch (Exception e) {
 			if (verbosity.exceeds(HIGH)) e.printStackTrace();
 			result.add("Config load failed!  Something went wrong.");
-			result.add("The error was:\n" + e.toString());
+			result.add("The error was:\n" + e);
 			result.add("If you can fix the error, reload with /odr.");
 			sendMessage(sender, result);
 		}
@@ -535,8 +535,7 @@ public class OtherDropsConfig {
 							config.getMapList("defaults")).get(0);
 		} else {
 			System.out.println("list: "
-					+ config.getConfigurationSection("defaults").getKeys(true)
-					.toString());
+					+ config.getConfigurationSection("defaults").getKeys(true));
 			ConfigurationSection defaultsSection = config
 					.getConfigurationSection("defaults");
 			for (String key : config.getConfigurationSection("defaults")
@@ -712,7 +711,7 @@ public class OtherDropsConfig {
 				// FIXME: Find a way to say which trigger was invalid
 				Log.logWarning("No recognized trigger for block " + blockName
 						+ "; skipping (known triggers: "
-						+ Trigger.getValidActions().toString() + ")", NORMAL);
+						+ Trigger.getValidActions() + ")", NORMAL);
 				continue;
 			}
 			for (Trigger trigger : triggers) {
@@ -1064,7 +1063,7 @@ public class OtherDropsConfig {
 			return null;
 		}
 		if (!mat.isBlock() && !(this.globalAllowAnyReplacementBlock)) {
-			Log.logWarning("Error in 'replacementblock' - " + mat.toString() + " is not a block-type.");
+			Log.logWarning("Error in 'replacementblock' - " + mat + " is not a block-type.");
 			return null;
 		}
 

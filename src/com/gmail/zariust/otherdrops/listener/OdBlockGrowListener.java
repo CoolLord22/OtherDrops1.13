@@ -34,7 +34,7 @@ public class OdBlockGrowListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockGrow(BlockGrowEvent event) {
-        Log.dMsg("BLOCKGROW: "+event.getBlock().toString()+ " state: "+event.getNewState().getType().toString());
+        Log.dMsg("BLOCKGROW: "+ event.getBlock() + " state: "+ event.getNewState().getType());
         OccurredEvent drop = new OccurredEvent(event);
         parent.sectionManager.performDrop(drop);
     }

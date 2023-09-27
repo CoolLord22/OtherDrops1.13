@@ -45,7 +45,7 @@ public class OdEntityListener implements Listener {
     public void onEntityDamage(EntityDamageEvent event) {
         if (event.isCancelled())
             return;
-        Log.logInfo("OnEntityDamage (victim: " + event.getEntity().toString()
+        Log.logInfo("OnEntityDamage (victim: " + event.getEntity()
                 + ")", EXTREME);
 
         // Check if the damager is a player - if so, weapon is the held tool
@@ -66,18 +66,18 @@ public class OdEntityListener implements Listener {
         // TODO: use get getLastDamageCause rather than checking on each
         // getdamage?
         Log.logInfo("*** OnEntityDeath, before checks (victim: "
-                + event.getEntity().toString() + ")", HIGHEST);
+                + event.getEntity() + ")", HIGHEST);
         Entity entity = event.getEntity();
 
         // If there's no damage record, ignore
         if (entity.getLastDamageCause() == null) {
-            Log.logWarning("OnEntityDeath: entity " + entity.toString()
+            Log.logWarning("OnEntityDeath: entity " + entity
                     + " has no 'lastDamageCause'.", HIGH);
             return;
         }
 
         OccurredEvent drop = new OccurredEvent(event);
-        Log.logInfo("EntityDeath drop occurance created. (" + drop.toString()
+        Log.logInfo("EntityDeath drop occurance created. (" + drop
                 + ")", HIGHEST);
         parent.sectionManager.performDrop(drop);
     }

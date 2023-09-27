@@ -211,7 +211,7 @@ public class ParticleAction extends Action {
         } catch (NumberFormatException ex) {
             Log.logInfo("Particleeffect: invalid radius (" + split[3] + ")");
         }
-        System.out.println(ParticleEffect.ParticleType.valueOf(split[0]).toString());
+        System.out.println(ParticleEffect.ParticleType.valueOf(split[0]));
         ParticleEffect effect = new ParticleEffect(ParticleEffect.ParticleType.valueOf(split[0]));
 
         effect.setSpeed(speed);

@@ -124,8 +124,8 @@ public class CreatureSubject extends LivingSubject {
             boolean match = (creature == tool.creature);
             Log.logInfo(
                     "CreatureSubject.match - data = null. creature: "
-                            + creature.toString() + ", tool.creature: "
-                            + tool.creature.toString() + ", match=" + match,
+                            + creature + ", tool.creature: "
+                            + tool.creature + ", match=" + match,
                     EXTREME);
             return match;
         }
@@ -221,7 +221,7 @@ public class CreatureSubject extends LivingSubject {
     public String toString() {
         if (creature == null)
             return "ANY_CREATURE";
-        String ret = "CREATURE_" + creature.toString();
+        String ret = "CREATURE_" + creature;
         // TODO: Will data ever be null, or will it just be 0?
         if (data != null) {
             String dataString = data.get(creature);

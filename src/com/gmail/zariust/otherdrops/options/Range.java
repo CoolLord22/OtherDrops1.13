@@ -113,7 +113,7 @@ public abstract class Range<T extends Number & Comparable<T>> {
     public String toString() {
         if (min.equals(max))
             return min.toString();
-        return min.toString() + "~" + max.toString();
+        return min + "~" + max.toString();
     }
 
     public abstract T getRandomIn(Random rng);

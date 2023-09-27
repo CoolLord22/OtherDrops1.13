@@ -209,8 +209,8 @@ public class CreatureDrop extends DropType {
         }
         Data data = CreatureData.parse(creature, state);
         Log.logInfo(
-                "Parsing the creature drop... creature=" + creature.toString()
-                        + " data=" + data.toString(), EXTREME);
+                "Parsing the creature drop... creature=" + creature
+                        + " data=" + data, EXTREME);
         return new CreatureDrop(amount, creature, data, chance, passenger,
                 displayName);
     }
