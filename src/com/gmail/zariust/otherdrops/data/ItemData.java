@@ -174,7 +174,7 @@ public class ItemData implements Data, RangeableData {
 
         if (!state.isEmpty() && !state.equals("0")) {
             String separator = "=";
-            String split[] = state.split(separator);
+            String[] split = state.split(separator);
             String subMinusDurability = "";
 
             for (String sub : split) {

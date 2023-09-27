@@ -179,7 +179,7 @@ public class CreatureSubject extends LivingSubject {
 
         // name = name.toUpperCase().replace("CREATURE_", "");
         String customName = displayName;
-        String split[] = name.split("~", 2);
+        String[] split = name.split("~", 2);
         name = split[0];
         if (split.length > 1) {
             customName = split[1];

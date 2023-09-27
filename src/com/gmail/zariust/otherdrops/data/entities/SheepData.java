@@ -81,13 +81,13 @@ public class SheepData extends CreatureData {
         DyeColor color = null;
 
         if (!state.isEmpty() && !state.equals("0")) {
-            String splitAge[] = state
+            String[] splitAge = state
                     .split(OtherDropsConfig.CreatureDataSeparator);
             
-            String splitShear[] = state
+            String[] splitShear = state
                     .split(OtherDropsConfig.CreatureDataSeparator);
             
-            String splitColor[] = state
+            String[] splitColor = state
                     .split(OtherDropsConfig.CreatureDataSeparator);
 
             

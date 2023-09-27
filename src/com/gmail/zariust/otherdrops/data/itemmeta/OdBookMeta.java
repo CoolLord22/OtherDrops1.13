@@ -33,7 +33,7 @@ public class OdBookMeta extends OdItemMeta {
     }
 
     public static OdItemMeta parse(String state) {
-        String split[] = state.split(":");
+        String[] split = state.split(":");
 
         String title = "";
         String author = "";

@@ -177,12 +177,12 @@ public class LivingEntityData extends CreatureData {
 		String newState = state;
 
 		if (!state.isEmpty() && !state.equals("0")) {
-			String customNameSplit[] = state.split("~", 2);
+			String[] customNameSplit = state.split("~", 2);
 			newState = customNameSplit[0];
 			if (customNameSplit.length > 1)
 				customName = customNameSplit[1];
 
-			String split[] = newState.split(OtherDropsConfig.CreatureDataSeparator);
+			String[] split = newState.split(OtherDropsConfig.CreatureDataSeparator);
 
 			for (String sub : split) {
 				if (sub.matches("(?i)[0-9.]+hp?")) {
@@ -206,10 +206,10 @@ public class LivingEntityData extends CreatureData {
 	private static CreatureEquipment parseEquipmentString(String sub,
 			CreatureEquipment passEquip) {
 		CreatureEquipment equip = passEquip;
-		String subSplit[] = sub.split(":", 3);
+		String[] subSplit = sub.split(":", 3);
 
 		if (subSplit.length == 3) {
-			String split[] = subSplit[2].split("%"); // split out the drop
+			String[] split = subSplit[2].split("%"); // split out the drop
 			// chance, if any
 			String slot = split[0];
 			float chance = 100; // default to 100% drop chance

@@ -84,7 +84,7 @@ public class EndermanData extends CreatureData {
                 .parseFromString(state);
 
         if (!state.isEmpty() && !state.equals("0")) {
-            String split[] = state
+            String[] split = state
                     .split(OtherDropsConfig.CreatureDataSeparator);
 
             for (String sub : split) {
