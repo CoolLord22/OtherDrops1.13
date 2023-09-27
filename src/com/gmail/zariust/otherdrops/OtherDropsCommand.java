@@ -520,7 +520,7 @@ public class OtherDropsCommand implements CommandExecutor {
 
                     List<MetadataValue> md = le.getMetadata("CreatureSpawnedBy");
                     String spawnReason = "not set";
-                    if (md != null && md.size() > 0) spawnReason = (String) md.get(0).value();
+                    if (md != null && !md.isEmpty()) spawnReason = (String) md.get(0).value();
                     sender.sendMessage("OdId: mob details: "
                             + mob.getType().toString() + "@"
                             + CreatureData.parse(mob).toString()

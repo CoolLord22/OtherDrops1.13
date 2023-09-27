@@ -57,7 +57,7 @@ public class OdBookMeta extends OdItemMeta {
                 pages.add(page);
         }
 
-        if (!author.isEmpty() || !title.isEmpty() || !(pages.size() == 0))
+        if (!author.isEmpty() || !title.isEmpty() || !(pages.isEmpty()))
             return new OdBookMeta(author, title, pages);
         else
             return null;

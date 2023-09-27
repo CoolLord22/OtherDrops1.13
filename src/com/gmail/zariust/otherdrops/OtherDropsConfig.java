@@ -530,7 +530,7 @@ public class OtherDropsConfig {
 		ConfigurationNode defaultsNode = null;
 		if (config.getConfigurationSection("defaults") == null) {
 			if (config.getMapList("defaults") != null)
-				if (config.getMapList("defaults").size() > 0)
+				if (!config.getMapList("defaults").isEmpty())
 					defaultsNode = ConfigurationNode.parse(
 							config.getMapList("defaults")).get(0);
 		} else {
@@ -623,7 +623,7 @@ public class OtherDropsConfig {
 
 				// Check if drop contains actual mappings or just a string
 				Object nodeValue = node.get(blockName);
-				if (drops.size() == 0 && nodeValue != null) {
+				if (drops.isEmpty() && nodeValue != null) {
 					// This section supports "TARGET: [drops]" short-format
 					// by grabbing the string/list/map and stashing it in a mapping to the drop parameter
 					String parameterName = "drop";

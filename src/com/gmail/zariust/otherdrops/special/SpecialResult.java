@@ -96,7 +96,7 @@ public abstract class SpecialResult {
     public String toString() {
         StringBuilder event = new StringBuilder();
         event.append(tag);
-        if (usedArgs.size() == 0)
+        if (usedArgs.isEmpty())
             return event.toString();
         event.append("@");
         event.append(usedArgs.get(0));

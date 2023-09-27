@@ -30,7 +30,7 @@ public class SpawnedCheck extends Condition {
 
         if (entity != null) {
             String spawnReason = "";
-            if (entity.getMetadata("CreatureSpawnedBy").size() > 0)
+            if (!entity.getMetadata("CreatureSpawnedBy").isEmpty())
                 spawnReason = (String) entity.getMetadata("CreatureSpawnedBy").get(0).value();
 
             Log.logInfo("SpawnedCheck - checking: " + spawnReasonsStored.toString() + " vs actual: " + spawnReason, Verbosity.HIGHEST);

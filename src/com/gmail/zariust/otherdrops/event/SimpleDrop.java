@@ -208,7 +208,7 @@ public class SimpleDrop extends CustomDrop {
     }
 
     public String getMessagesString() {
-        if (messages.size() == 0)
+        if (messages.isEmpty())
             return "(none)";
         else if (messages.size() == 1)
             return quoted(messages.get(0));
