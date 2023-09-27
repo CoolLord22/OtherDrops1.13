@@ -1,19 +1,5 @@
 package com.gmail.zariust.otherdrops.parameters.actions;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
@@ -23,6 +9,15 @@ import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.parameters.Action;
 import com.gmail.zariust.otherdrops.subject.CreatureSubject;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
+import java.util.*;
 
 public class PotionAction extends Action {
     // "potioneffect: "
@@ -190,7 +185,7 @@ public class PotionAction extends Action {
         return actions;
     }
 
-    private static PotionEffect getEffect(String effects) {
+    public static PotionEffect getEffect(String effects) {
         String[] split = effects.split("@");
         int duration = 100;
         int strength = 4;

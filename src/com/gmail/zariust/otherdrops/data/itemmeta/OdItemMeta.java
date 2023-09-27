@@ -12,19 +12,20 @@ public abstract class OdItemMeta {
 
     public static OdItemMeta parse(String sub, ItemData.ItemMetaType metaType) {
         switch (metaType) {
-        case BOOK:
-            return OdBookMeta.parse(sub);
-        case LEATHER:
-            return OdLeatherArmorMeta.parse(sub);
-        case SKULL:
-            return OdSkullMeta.parse(sub);
-        case ENCHANTED_BOOK:
-            return OdEnchantedBookMeta.parse(sub);
-        case FIREWORK:
-            return OdFireworkMeta.parse(sub);
-        default:
-            break;
-
+            case POTION:
+                return OdPotionMeta.parse(sub);
+            case BOOK:
+                return OdBookMeta.parse(sub);
+            case LEATHER:
+                return OdLeatherArmorMeta.parse(sub);
+            case SKULL:
+                return OdSkullMeta.parse(sub);
+            case ENCHANTED_BOOK:
+                return OdEnchantedBookMeta.parse(sub);
+            case FIREWORK:
+                return OdFireworkMeta.parse(sub);
+            default:
+                break;
         }
         return null;
     }

@@ -16,18 +16,17 @@
 
 package com.gmail.zariust.otherdrops.data;
 
-import static com.gmail.zariust.common.Verbosity.EXTREME;
-
+import com.gmail.zariust.common.CommonMaterial;
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.data.itemmeta.OdItemMeta;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.gmail.zariust.common.CommonMaterial;
-import com.gmail.zariust.common.Verbosity;
-import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.data.itemmeta.OdItemMeta;
+import static com.gmail.zariust.common.Verbosity.EXTREME;
 
 public class ItemData implements Data, RangeableData {
     private int       data;
@@ -129,30 +128,33 @@ public class ItemData implements Data, RangeableData {
             return RangeData.parse(state);
         Integer data = 0;
         switch (mat) {
-        case PLAYER_HEAD:
-        	return parseItemMeta(state, ItemMetaType.SKULL);
-        case SPAWNER:
-            return SpawnerData.parse(state);
-        case LEATHER_BOOTS:
-        case LEATHER_CHESTPLATE:
-        case LEATHER_HELMET:
-        case LEATHER_LEGGINGS:
-            return parseItemMeta(state, ItemMetaType.LEATHER);
-        case WRITTEN_BOOK:
-            return parseItemMeta(state, ItemMetaType.BOOK);
-        case ENCHANTED_BOOK:
-            return parseItemMeta(state, ItemMetaType.ENCHANTED_BOOK);
-        case FIREWORK_ROCKET:
-        case FIREWORK_STAR:
-            return parseItemMeta(state, ItemMetaType.FIREWORK);
-        default:
-            if (mat.isBlock()) {
-                data = CommonMaterial.parseBlockOrItemData(mat, state);
-                break;
-            }
-            if (!state.isEmpty())
-                throw new IllegalArgumentException("Illegal data for " + mat
-                        + ": " + state);
+            case POTION:
+            case LINGERING_POTION:
+            case SPLASH_POTION:
+                return parseItemMeta(state, ItemMetaType.POTION);
+            case PLAYER_HEAD:
+                return parseItemMeta(state, ItemMetaType.SKULL);
+            case SPAWNER:
+                return SpawnerData.parse(state);
+            case LEATHER_BOOTS:
+            case LEATHER_CHESTPLATE:
+            case LEATHER_HELMET:
+            case LEATHER_LEGGINGS:
+                return parseItemMeta(state, ItemMetaType.LEATHER);
+            case WRITTEN_BOOK:
+                return parseItemMeta(state, ItemMetaType.BOOK);
+            case ENCHANTED_BOOK:
+                return parseItemMeta(state, ItemMetaType.ENCHANTED_BOOK);
+            case FIREWORK_ROCKET:
+            case FIREWORK_STAR:
+                return parseItemMeta(state, ItemMetaType.FIREWORK);
+            default:
+                if (mat.isBlock()) {
+                    data = CommonMaterial.parseBlockOrItemData(mat, state);
+                    break;
+                }
+                if (!state.isEmpty())
+                    throw new IllegalArgumentException("Illegal data for " + mat + ": " + state);
         }
         if (state.equalsIgnoreCase("THIS"))
             return new ItemData(-1, state);
@@ -161,7 +163,7 @@ public class ItemData implements Data, RangeableData {
     }
 
     public enum ItemMetaType {
-        LEATHER, SKULL, BOOK, ENCHANTED_BOOK, FIREWORK
+        LEATHER, SKULL, BOOK, ENCHANTED_BOOK, FIREWORK, POTION
     };
 
     private static Data parseItemMeta(String state, ItemMetaType metaType) {
