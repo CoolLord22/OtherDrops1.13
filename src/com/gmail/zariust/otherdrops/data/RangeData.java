@@ -90,7 +90,7 @@ public class RangeData implements Data {
             if (val > 0)
                 ((Slime) mob).setSize(val);
             break;
-        case PIG_ZOMBIE:
+        case ZOMBIFIED_PIGLIN:
             if (val > 0)
                 ((PigZombie) mob).setAnger(val);
             break;

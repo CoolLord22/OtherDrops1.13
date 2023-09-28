@@ -17,11 +17,10 @@
 package com.gmail.zariust.otherdrops.data;
 
 import com.gmail.zariust.otherdrops.Log;
-
 import org.bukkit.Material;
 import org.bukkit.Note;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.NoteBlock;
+import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 

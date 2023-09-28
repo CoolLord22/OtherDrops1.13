@@ -16,14 +16,14 @@
 
 package com.gmail.zariust.otherdrops.options;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.bukkit.block.Biome;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
+import org.bukkit.block.Biome;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public enum Weather {
     RAIN(true), SNOW(true), THUNDER(true), CLEAR(false), CLOUD(true), NONE(
@@ -51,27 +51,32 @@ public enum Weather {
         if (biome == null)
             biome = Biome.PLAINS;
         switch (biome) {
-        case NETHER:
-        case THE_END:
-        case DESERT:
-            return NONE;
-        case SNOWY_BEACH:
-        case SNOWY_MOUNTAINS:
-        case SNOWY_TAIGA:
-        case SNOWY_TAIGA_HILLS:
-        case SNOWY_TAIGA_MOUNTAINS:
-        case SNOWY_TUNDRA:
-        case ICE_SPIKES:
-        case DEEP_FROZEN_OCEAN:
-        case FROZEN_OCEAN:
-        case FROZEN_RIVER:
-            if (hasStorm)
-                return SNOW;
-            return CLEAR;
-        default:
-            if (hasStorm)
-                return thundering ? THUNDER : RAIN;
-            return CLEAR;
+            case NETHER_WASTES:
+            case CRIMSON_FOREST:
+            case WARPED_FOREST:
+            case SOUL_SAND_VALLEY:
+            case BASALT_DELTAS:
+            case THE_END:
+            case DESERT:
+                return NONE;
+            case GROVE:
+            case JAGGED_PEAKS:
+            case FROZEN_PEAKS:
+            case SNOWY_BEACH:
+            case SNOWY_TAIGA:
+            case SNOWY_PLAINS:
+            case SNOWY_SLOPES:
+            case ICE_SPIKES:
+            case DEEP_FROZEN_OCEAN:
+            case FROZEN_OCEAN:
+            case FROZEN_RIVER:
+                if (hasStorm)
+                    return SNOW;
+                return CLEAR;
+            default:
+                if (hasStorm)
+                    return thundering ? THUNDER : RAIN;
+                return CLEAR;
         }
     }
 

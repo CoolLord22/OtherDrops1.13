@@ -16,6 +16,7 @@
 
 package com.gmail.zariust.odspecialevents;
 
+import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
@@ -64,13 +65,13 @@ public class StormEvent extends SpecialResult {
     @Override
     public boolean canRunFor(SimpleDrop drop) {
         Biome biome = drop.getTarget().getLocation().getBlock().getBiome();
-        return biome != Biome.NETHER;
+        return !OtherDrops.NetherBiomes.contains(biome);
     }
 
     @Override
     public boolean canRunFor(OccurredEvent drop) {
         Biome biome = drop.getBiome();
-        if (biome == Biome.NETHER)
+        if (OtherDrops.NetherBiomes.contains(biome))
             return false;
         return true;
     }

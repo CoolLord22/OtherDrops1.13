@@ -16,6 +16,7 @@
 
 package com.gmail.zariust.odspecialevents;
 
+import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
@@ -64,12 +65,12 @@ public class ThunderEvent extends SpecialResult {
     @Override
     public boolean canRunFor(SimpleDrop drop) {
         Biome biome = drop.getTarget().getLocation().getBlock().getBiome();
-        return biome != Biome.NETHER && biome != Biome.THE_END;
+        return !OtherDrops.NetherBiomes.contains(biome) && biome != Biome.THE_END;
     }
 
     @Override
     public boolean canRunFor(OccurredEvent drop) {
         Biome biome = drop.getBiome();
-        return biome != Biome.NETHER && biome != Biome.THE_END;
+        return !OtherDrops.NetherBiomes.contains(biome) && biome != Biome.THE_END;
     }
 }

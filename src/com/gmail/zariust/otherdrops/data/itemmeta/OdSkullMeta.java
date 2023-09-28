@@ -69,7 +69,7 @@ public class OdSkullMeta extends OdItemMeta {
                         creatureType == EntityType.MUSHROOM_COW || creatureType == EntityType.SLIME ||
                 		creatureType == EntityType.SPIDER || creatureType == EntityType.SQUID ||
                 		creatureType == EntityType.VILLAGER || creatureType == EntityType.ZOMBIE ||
-                		creatureType == EntityType.CAVE_SPIDER || creatureType == EntityType.PIG_ZOMBIE)
+                		creatureType == EntityType.CAVE_SPIDER || creatureType == EntityType.ZOMBIFIED_PIGLIN)
                     valueToReturn = "MHF_" + creatureType.toString().replaceAll("[\\s-_]", "");
                 if(creatureType == EntityType.IRON_GOLEM)
                 	valueToReturn = "MHF_Golem";

@@ -16,14 +16,10 @@
 
 package com.gmail.zariust.common;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.bukkit.entity.EntityType;
+
+import java.util.*;
+
 import static org.bukkit.entity.EntityType.*;
 
 public enum CreatureGroup {
@@ -31,7 +27,7 @@ public enum CreatureGroup {
     		PILLAGER, RAVAGER, SHULKER, SILVERFISH, SKELETON, SLIME, STRAY, VEX, VINDICATOR, WARDEN, WITCH, WITHER, WITHER_SKELETON, ZOGLIN, ZOMBIE, ZOMBIE_VILLAGER), 
     
     CREATURE_FRIENDLY(ALLAY, BAT, CAMEL, CAT, CHICKEN, COD, COW, DONKEY, FOX, FROG, HORSE, MUSHROOM_COW, MULE, OCELOT, PARROT, PIG, PUFFERFISH, RABBIT, SHEEP, SALMON, SKELETON_HORSE,
-            SNIFFER, SNOW_GOLEM, SQUID, STRIDER, TADPOLE, TROPICAL_FISH, TURTLE, VILLAGER, WANDERING_TRADER, ZOMBIE_HORSE), 
+            SNIFFER, SNOWMAN, SQUID, STRIDER, TADPOLE, TROPICAL_FISH, TURTLE, VILLAGER, WANDERING_TRADER, ZOMBIE_HORSE),
     
     CREATURE_NEUTRAL(BEE, DOLPHIN, ENDERMAN, GOAT, IRON_GOLEM, LLAMA, PANDA, PIGLIN, POLAR_BEAR, WOLF, ZOMBIFIED_PIGLIN), 
     

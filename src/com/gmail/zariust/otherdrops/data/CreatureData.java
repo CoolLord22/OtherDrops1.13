@@ -16,7 +16,11 @@
 
 package com.gmail.zariust.otherdrops.data;
 
-import static com.gmail.zariust.common.Verbosity.EXTREME;
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.data.entities.*;
+import org.bukkit.block.BlockState;
+import org.bukkit.entity.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
@@ -24,16 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.block.BlockState;
-import org.bukkit.entity.Ageable;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-
-import com.gmail.zariust.common.Verbosity;
-import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.data.entities.*;
+import static com.gmail.zariust.common.Verbosity.EXTREME;
 
 // Range only allowed for SHEEP, SLIME, and PIG_ZOMBIE
 public class CreatureData implements Data, RangeableData {
@@ -57,7 +52,7 @@ public class CreatureData implements Data, RangeableData {
         aMap.put(EntityType.ZOMBIE_VILLAGER, ZombieVillagerData.class);
         aMap.put(EntityType.HUSK, HuskData.class);
         
-        aMap.put(EntityType.PIG_ZOMBIE, PigZombieData.class); // extends Zombie
+        aMap.put(EntityType.ZOMBIFIED_PIGLIN, PigZombieData.class); // extends Zombie
         aMap.put(EntityType.CREEPER, CreeperData.class);
         // Specific data (+Ageable(+LivingEntity))
         aMap.put(EntityType.OCELOT, OcelotData.class);
