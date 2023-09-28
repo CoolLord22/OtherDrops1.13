@@ -16,8 +16,6 @@
 
 package com.gmail.zariust.otherdrops;
 
-import java.util.Set;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
@@ -28,6 +26,11 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Set;
+import java.util.UUID;
 
 public class PlayerConsoleWrapper implements ConsoleCommandSender {
     private static final ConsoleCommandSender console = Bukkit.getConsoleSender();
@@ -127,8 +130,18 @@ public class PlayerConsoleWrapper implements ConsoleCommandSender {
     }
 
     @Override
-    public void sendMessage(String[] arg0) {
+    public void sendMessage(@NotNull String[] arg0) {
 		throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void sendMessage(@Nullable UUID uuid, @NotNull String s) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void sendMessage(@Nullable UUID uuid, @NotNull String... strings) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -155,6 +168,11 @@ public class PlayerConsoleWrapper implements ConsoleCommandSender {
     @Override
     public void sendRawMessage(String arg0) {
 		throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void sendRawMessage(@Nullable UUID uuid, @NotNull String s) {
+
     }
 
     @Override

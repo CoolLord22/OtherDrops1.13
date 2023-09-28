@@ -37,13 +37,13 @@
 	    
 	    $ ant -Dlib.bukkit.version="0.0.1-r746" build
 	    -->
-	    <last id="lib.bukkit.jar">
+	    <last id="lib.spigot.jar">
 	        <sort>
-	            <fileset dir="${lib}" includes="bukkit-*.jar" />
+	            <fileset dir="${lib}" includes="spigot-*.jar" />
 	        </sort>
 	    </last>
-	    <property name="lib.bukkit.jar" refid="lib.bukkit.jar" />
-	    <propertyregex property="lib.bukkit.version" input="${lib.bukkit.jar}" regexp="([\d\.-R]+-r\d+)\.jar$" select="\1" />
+	    <property name="lib.spigot.jar" refid="lib.spigot.jar" />
+	    <propertyregex property="lib.spigot.version" input="${lib.spigot.jar}" regexp="([\d\.-R]+-r\d+)\.jar$" select="\1" />
 
     	<buildnumber/>
 	    <property name="output-jar" value="${ant.project.name}1.13Plus-b${build.number}.jar" />
@@ -54,7 +54,7 @@
 	    <!-- These custom settings work if you set them to run before any other build targets -->
 	    <target name="celtic">
 	        <property name="dependencies" value="../lib" />
-	        <property name="lib.bukkit" location="${dependencies}/bukkit.jar" />
+	        <property name="lib.spigot" location="${dependencies}/spigot.jar" />
 	        <property name="export-dir" value="../../plugins/" />
 	        <property name="economy-dir" value="${dependencies}/economy" />
 	        <property name="iConomy" value="iConomy" />
@@ -62,13 +62,13 @@
 
 	    <target name="zarius">
 	        <property name="dependencies" value="dependencies" />
-	        <property name="lib.bukkit" location="lib/bukkit.jar" />
+	        <property name="lib.spigot" location="lib/spigot.jar" />
 	        <property name="export-dir" value="/home/zarius/Games/Minecraft/Servers/Ifami/Testing/plugins/" />
 	    </target>
 
 	    <!-- Default setting (if custom setting above not set) -->
 	    <target name="default">
-	        <property name="lib.bukkit" location="${lib}/bukkit.jar" />
+	        <property name="lib.spigot" location="${lib}/spigot.jar" />
 	        <property name="dependencies" value="dependencies" />
 	        <property name="economy-dir" value="${dependencies}/EconomyRegister" />
 	        <property name="iConomy" value="iCo" />
@@ -97,7 +97,7 @@
 
 	        <path id="classpath">
 	            <pathelement location="bin" />
-	            <pathelement location="${lib.bukkit}" />
+	            <pathelement location="${lib.spigot}" />
 	            <pathelement location="${lib}/CustomBlockData.jar" />
 
 				<pathelement location="${griefprevention-location}" />

@@ -16,50 +16,25 @@
 
 package com.gmail.zariust.otherdrops;
 
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
 
-import org.bukkit.Achievement;
-import org.bukkit.SoundCategory;
-import org.bukkit.Bukkit;
-import org.bukkit.DyeColor;
-import org.bukkit.Effect;
-import org.bukkit.EntityEffect;
-import org.bukkit.FluidCollisionMode;
-import org.bukkit.GameMode;
-import org.bukkit.Instrument;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Note;
-import org.bukkit.Particle;
-import org.bukkit.Server;
-import org.bukkit.Sound;
-import org.bukkit.Statistic;
-import org.bukkit.WeatherType;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.PistonMoveReaction;
+import org.bukkit.block.*;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.sign.Side;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Pose;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Villager;
+import org.bukkit.entity.*;
 import org.bukkit.entity.memory.MemoryKey;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -75,10 +50,13 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.profile.PlayerProfile;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("deprecation")
 public class PlayerWrapper implements Player {
@@ -218,6 +196,11 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public boolean isClimbing() {
+        return false;
+    }
+
+    @Override
     public int getSleepTicks() {
         return caller.getSleepTicks();
     }
@@ -268,6 +251,26 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public int getArrowCooldown() {
+        return 0;
+    }
+
+    @Override
+    public void setArrowCooldown(int i) {
+
+    }
+
+    @Override
+    public int getArrowsInBody() {
+        return 0;
+    }
+
+    @Override
+    public void setArrowsInBody(int i) {
+
+    }
+
+    @Override
     public int getMaximumNoDamageTicks() {
         return caller.getMaximumNoDamageTicks();
     }
@@ -285,6 +288,16 @@ public class PlayerWrapper implements Player {
     @Override
     public void setNoDamageTicks(int ticks) {
         caller.setNoDamageTicks(ticks);
+    }
+
+    @Override
+    public int getNoActionTicks() {
+        return 0;
+    }
+
+    @Override
+    public void setNoActionTicks(int i) {
+
     }
 
     @Override
@@ -340,6 +353,36 @@ public class PlayerWrapper implements Player {
     @Override
     public void setFireTicks(int ticks) {
         caller.setFireTicks(ticks);
+    }
+
+    @Override
+    public void setVisualFire(boolean b) {
+
+    }
+
+    @Override
+    public boolean isVisualFire() {
+        return false;
+    }
+
+    @Override
+    public int getFreezeTicks() {
+        return 0;
+    }
+
+    @Override
+    public int getMaxFreezeTicks() {
+        return 0;
+    }
+
+    @Override
+    public void setFreezeTicks(int i) {
+
+    }
+
+    @Override
+    public boolean isFrozen() {
+        return false;
     }
 
     @Override
@@ -402,6 +445,12 @@ public class PlayerWrapper implements Player {
         return caller.getUniqueId();
     }
 
+    @NotNull
+    @Override
+    public PlayerProfile getPlayerProfile() {
+        return null;
+    }
+
     @Override
     public boolean isOnline() {
         return caller.isOnline();
@@ -438,8 +487,49 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public void sendRawMessage(@Nullable UUID uuid, @NotNull String s) {
+
+    }
+
+    @Override
     public void kickPlayer(String message) {
         caller.kickPlayer(message);
+    }
+
+    @Nullable
+    @Override
+    public BanEntry<PlayerProfile> ban(@Nullable String s, @Nullable Date date, @Nullable String s1, boolean b) {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public BanEntry<PlayerProfile> ban(@Nullable String s, @Nullable Instant instant, @Nullable String s1, boolean b) {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public BanEntry<PlayerProfile> ban(@Nullable String s, @Nullable Duration duration, @Nullable String s1, boolean b) {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public BanEntry<InetAddress> banIp(@Nullable String s, @Nullable Date date, @Nullable String s1, boolean b) {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public BanEntry<InetAddress> banIp(@Nullable String s, @Nullable Instant instant, @Nullable String s1, boolean b) {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public BanEntry<InetAddress> banIp(@Nullable String s, @Nullable Duration duration, @Nullable String s1, boolean b) {
+        return null;
     }
 
     @Override
@@ -503,19 +593,39 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
-    public boolean sendChunkChange(Location loc, int sx, int sy, int sz,
-            byte[] data) {
-        return caller.sendChunkChange(loc, sx, sy, sz, data);
-    }
-
-    @Override
     public void sendMap(MapView map) {
         caller.sendMap(map);
     }
 
     @Override
+    public void sendHurtAnimation(float v) {
+
+    }
+
+    @Override
+    public void addCustomChatCompletions(@NotNull Collection<String> collection) {
+
+    }
+
+    @Override
+    public void removeCustomChatCompletions(@NotNull Collection<String> collection) {
+
+    }
+
+    @Override
+    public void setCustomChatCompletions(@NotNull Collection<String> collection) {
+
+    }
+
+    @Override
     public void updateInventory() {
         caller.updateInventory();
+    }
+
+    @Nullable
+    @Override
+    public GameMode getPreviousGameMode() {
+        return null;
     }
 
     @Override
@@ -584,6 +694,24 @@ public class PlayerWrapper implements Player {
         return caller.isBanned();
     }
 
+    @Nullable
+    @Override
+    public BanEntry<PlayerProfile> ban(@Nullable String s, @Nullable Date date, @Nullable String s1) {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public BanEntry<PlayerProfile> ban(@Nullable String s, @Nullable Instant instant, @Nullable String s1) {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public BanEntry<PlayerProfile> ban(@Nullable String s, @Nullable Duration duration, @Nullable String s1) {
+        return null;
+    }
+
     @Override
     public boolean isWhitelisted() {
         return caller.isWhitelisted();
@@ -630,6 +758,53 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public int getSaturatedRegenRate() {
+        return 0;
+    }
+
+    @Override
+    public void setSaturatedRegenRate(int i) {
+
+    }
+
+    @Override
+    public int getUnsaturatedRegenRate() {
+        return 0;
+    }
+
+    @Override
+    public void setUnsaturatedRegenRate(int i) {
+
+    }
+
+    @Override
+    public int getStarvationRate() {
+        return 0;
+    }
+
+    @Override
+    public void setStarvationRate(int i) {
+
+    }
+
+    @Nullable
+    @Override
+    public Location getLastDeathLocation() {
+        return null;
+    }
+
+    @Override
+    public void setLastDeathLocation(@Nullable Location location) {
+
+    }
+
+    @Nullable
+    @Override
+    public Firework fireworkBoost(@NotNull ItemStack itemStack) {
+        return null;
+    }
+
+    @Override
     public void setLevel(int lvl) {
         caller.setLevel(lvl);
     }
@@ -642,6 +817,16 @@ public class PlayerWrapper implements Player {
     @Override
     public void setTotalExperience(int xp) {
         caller.setTotalExperience(xp);
+    }
+
+    @Override
+    public void sendExperienceChange(float v) {
+
+    }
+
+    @Override
+    public void sendExperienceChange(float v, int i) {
+
     }
 
     @Override
@@ -768,6 +953,21 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public void hideEntity(@NotNull Plugin plugin, @NotNull Entity entity) {
+
+    }
+
+    @Override
+    public void showEntity(@NotNull Plugin plugin, @NotNull Entity entity) {
+
+    }
+
+    @Override
+    public boolean canSee(@NotNull Entity entity) {
+        return false;
+    }
+
+    @Override
     public void hidePlayer(Player arg0) {
         throw new UnsupportedOperationException("Not supported yet."); 
 
@@ -823,6 +1023,11 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public boolean breakBlock(@NotNull Block block) {
+        return false;
+    }
+
+    @Override
     public void closeInventory() {
         throw new UnsupportedOperationException("Not supported yet."); 
 
@@ -870,6 +1075,16 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public int getEnchantmentSeed() {
+        return 0;
+    }
+
+    @Override
+    public void setEnchantmentSeed(int i) {
+
+    }
+
+    @Override
     public <T extends Projectile> T launchProjectile(Class<? extends T> arg0) {
         throw new UnsupportedOperationException("Not supported yet."); 
     }
@@ -877,6 +1092,24 @@ public class PlayerWrapper implements Player {
     @Override
     public EntityType getType() {
         throw new UnsupportedOperationException("Not supported yet."); 
+    }
+
+    @NotNull
+    @Override
+    public Sound getSwimSound() {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public Sound getSwimSplashSound() {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public Sound getSwimHighSpeedSplashSound() {
+        return null;
     }
 
     @Override
@@ -929,6 +1162,16 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public void sendMessage(@Nullable UUID uuid, @NotNull String s) {
+
+    }
+
+    @Override
+    public void sendMessage(@Nullable UUID uuid, @NotNull String... strings) {
+
+    }
+
+    @Override
     public Entity getVehicle() {
         throw new UnsupportedOperationException("Not supported yet."); 
     }
@@ -947,6 +1190,11 @@ public class PlayerWrapper implements Player {
     @Override
     public int getExpToLevel() {
         throw new UnsupportedOperationException("Not supported yet."); 
+    }
+
+    @Override
+    public float getAttackCooldown() {
+        return 0;
     }
 
     @Override
@@ -1036,6 +1284,26 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public void playSound(@NotNull Entity entity, @NotNull Sound sound, float v, float v1) {
+
+    }
+
+    @Override
+    public void playSound(@NotNull Entity entity, @NotNull String s, float v, float v1) {
+
+    }
+
+    @Override
+    public void playSound(@NotNull Entity entity, @NotNull Sound sound, @NotNull SoundCategory soundCategory, float v, float v1) {
+
+    }
+
+    @Override
+    public void playSound(@NotNull Entity entity, @NotNull String s, @NotNull SoundCategory soundCategory, float v, float v1) {
+
+    }
+
+    @Override
     public void playSound(Location location, Sound sound, SoundCategory category, float volume, float pitch) {
         throw new UnsupportedOperationException("Not supported yet."); 
 
@@ -1083,6 +1351,16 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public void setVisibleByDefault(boolean b) {
+
+    }
+
+    @Override
+    public boolean isVisibleByDefault() {
+        return false;
+    }
+
+    @Override
     public void setCustomName(String arg0) {
         throw new UnsupportedOperationException("Not supported yet."); 
 
@@ -1110,9 +1388,24 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public boolean isInWater() {
+        return false;
+    }
+
+    @Override
     public void resetPlayerWeather() {
         throw new UnsupportedOperationException("Not supported yet."); 
         
+    }
+
+    @Override
+    public int getExpCooldown() {
+        return 0;
+    }
+
+    @Override
+    public void setExpCooldown(int i) {
+
     }
 
     @Override
@@ -1126,6 +1419,27 @@ public class PlayerWrapper implements Player {
             IllegalStateException {
         throw new UnsupportedOperationException("Not supported yet."); 
         
+    }
+
+    @Nullable
+    @Override
+    public WorldBorder getWorldBorder() {
+        return null;
+    }
+
+    @Override
+    public void setWorldBorder(@Nullable WorldBorder worldBorder) {
+
+    }
+
+    @Override
+    public void sendHealthUpdate(double v, int i, float v1) {
+
+    }
+
+    @Override
+    public void sendHealthUpdate() {
+
     }
 
     @Override
@@ -1149,6 +1463,16 @@ public class PlayerWrapper implements Player {
     @Override
     public void setHealth(double arg0) {
         throw new UnsupportedOperationException("Not supported yet."); 
+
+    }
+
+    @Override
+    public double getAbsorptionAmount() {
+        return 0;
+    }
+
+    @Override
+    public void setAbsorptionAmount(double v) {
 
     }
 
@@ -1338,6 +1662,16 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public void stopSound(@NotNull SoundCategory soundCategory) {
+
+    }
+
+    @Override
+    public void stopAllSounds() {
+
+    }
+
+    @Override
     public void resetTitle() {
         throw new UnsupportedOperationException("Not supported yet."); 
     }
@@ -1454,6 +1788,26 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public void attack(@NotNull Entity entity) {
+
+    }
+
+    @Override
+    public void swingMainHand() {
+
+    }
+
+    @Override
+    public void swingOffHand() {
+
+    }
+
+    @Override
+    public void playHurtAnimation(float v) {
+
+    }
+
+    @Override
     public void setCollidable(boolean bln) {
         throw new UnsupportedOperationException("Not supported yet."); 
     }
@@ -1461,6 +1815,12 @@ public class PlayerWrapper implements Player {
     @Override
     public boolean isCollidable() {
         throw new UnsupportedOperationException("Not supported yet."); 
+    }
+
+    @NotNull
+    @Override
+    public Set<UUID> getCollidableExemptions() {
+        return null;
     }
 
     @Override
@@ -1516,6 +1876,12 @@ public class PlayerWrapper implements Player {
     @Override
     public boolean isHandRaised() {
         throw new UnsupportedOperationException("Not supported yet."); 
+    }
+
+    @Nullable
+    @Override
+    public ItemStack getItemInUse() {
+        return null;
     }
 
     @Override
@@ -1586,7 +1952,12 @@ public class PlayerWrapper implements Player {
 		
 	}
 
-	@Override
+    @Override
+    public boolean dropItem(boolean b) {
+        return false;
+    }
+
+    @Override
 	public boolean addPassenger(Entity arg0) {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
@@ -1641,7 +2012,22 @@ public class PlayerWrapper implements Player {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
-	@Override
+    @Override
+    public void setResourcePack(@NotNull String s, @Nullable byte[] bytes, @Nullable String s1) {
+
+    }
+
+    @Override
+    public void setResourcePack(@NotNull String s, @Nullable byte[] bytes, boolean b) {
+
+    }
+
+    @Override
+    public void setResourcePack(@NotNull String s, @Nullable byte[] bytes, @Nullable String s1, boolean b) {
+
+    }
+
+    @Override
 	public void showPlayer(Plugin arg0, Player arg1) {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
@@ -1661,7 +2047,42 @@ public class PlayerWrapper implements Player {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
-	@Override
+    @Override
+    public void sendBlockChanges(@NotNull Collection<BlockState> collection) {
+
+    }
+
+    @Override
+    public void sendBlockChanges(@NotNull Collection<BlockState> collection, boolean b) {
+
+    }
+
+    @Override
+    public void sendBlockDamage(@NotNull Location location, float v) {
+
+    }
+
+    @Override
+    public void sendBlockDamage(@NotNull Location location, float v, @NotNull Entity entity) {
+
+    }
+
+    @Override
+    public void sendBlockDamage(@NotNull Location location, float v, int i) {
+
+    }
+
+    @Override
+    public void sendEquipmentChange(@NotNull LivingEntity livingEntity, @NotNull EquipmentSlot equipmentSlot, @Nullable ItemStack itemStack) {
+
+    }
+
+    @Override
+    public void sendEquipmentChange(@NotNull LivingEntity livingEntity, @NotNull Map<EquipmentSlot, ItemStack> map) {
+
+    }
+
+    @Override
 	public boolean isRiptiding() {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
@@ -1732,7 +2153,18 @@ public class PlayerWrapper implements Player {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
-	@Override
+    @Override
+    public boolean hasDiscoveredRecipe(@NotNull NamespacedKey namespacedKey) {
+        return false;
+    }
+
+    @NotNull
+    @Override
+    public Set<NamespacedKey> getDiscoveredRecipes() {
+        return null;
+    }
+
+    @Override
 	public BlockFace getFacing() {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
@@ -1767,7 +2199,12 @@ public class PlayerWrapper implements Player {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
-	@Override
+    @Override
+    public int getPing() {
+        return 0;
+    }
+
+    @Override
 	public Location getBedLocation() {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
@@ -1797,12 +2234,81 @@ public class PlayerWrapper implements Player {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
-	@Override
+    @Nullable
+    @Override
+    public Sound getHurtSound() {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public Sound getDeathSound() {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public Sound getFallDamageSound(int i) {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public Sound getFallDamageSoundSmall() {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public Sound getFallDamageSoundBig() {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public Sound getDrinkingSound(@NotNull ItemStack itemStack) {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public Sound getEatingSound(@NotNull ItemStack itemStack) {
+        return null;
+    }
+
+    @Override
+    public boolean canBreatheUnderwater() {
+        return false;
+    }
+
+    @NotNull
+    @Override
+    public EntityCategory getCategory() {
+        return null;
+    }
+
+    @Override
+    public void setInvisible(boolean b) {
+
+    }
+
+    @Override
+    public boolean isInvisible() {
+        return false;
+    }
+
+    @Override
 	public Pose getPose() {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
-	@Override
+    @NotNull
+    @Override
+    public SpawnCategory getSpawnCategory() {
+        return null;
+    }
+
+    @Override
 	public PersistentDataContainer getPersistentDataContainer() {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
@@ -1812,9 +2318,39 @@ public class PlayerWrapper implements Player {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
-	@Override
+    @Override
+    public void openSign(@NotNull Sign sign) {
+
+    }
+
+    @Override
+    public void openSign(@NotNull Sign sign, @NotNull Side side) {
+
+    }
+
+    @Override
+    public void showDemoScreen() {
+
+    }
+
+    @Override
+    public boolean isAllowingServerListings() {
+        return false;
+    }
+
+    @Override
 	public void sendSignChange(Location arg0, String[] arg1, DyeColor arg2) throws IllegalArgumentException {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
+
+    @Override
+    public void sendSignChange(@NotNull Location location, @Nullable String[] strings, @NotNull DyeColor dyeColor, boolean b) throws IllegalArgumentException {
+
+    }
+
+    @Override
+    public void sendBlockUpdate(@NotNull Location location, @NotNull TileState tileState) throws IllegalArgumentException {
+
+    }
 
 }
