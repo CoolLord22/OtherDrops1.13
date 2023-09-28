@@ -16,31 +16,27 @@
 
 package com.gmail.zariust.common;
 
-import static org.bukkit.Material.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.gmail.zariust.otherdrops.OtherDrops;
 import org.bukkit.Material;
 
-import com.gmail.zariust.otherdrops.OtherDrops;
+import java.util.*;
+
+import static org.bukkit.Material.*;
 
 public enum MaterialGroup {
     // Blocks
     ANY_REDSTONE_TORCH(REDSTONE_TORCH, REDSTONE_WALL_TORCH),
     ANY_PISTON(STICKY_PISTON, PISTON_HEAD, PISTON, MOVING_PISTON),
     ANY_LEAVES(ACACIA_LEAVES, BIRCH_LEAVES, DARK_OAK_LEAVES, JUNGLE_LEAVES, OAK_LEAVES, SPRUCE_LEAVES),
+    ANY_LOGS,
     ANY_RAIL(RAIL, POWERED_RAIL, DETECTOR_RAIL, ACTIVATOR_RAIL),
     
     // Records
     ANY_RECORD(MUSIC_DISC_WARD, MUSIC_DISC_WAIT, MUSIC_DISC_STRAD, MUSIC_DISC_STAL, MUSIC_DISC_MELLOHI, MUSIC_DISC_MALL, MUSIC_DISC_FAR, MUSIC_DISC_CHIRP, MUSIC_DISC_CAT, MUSIC_DISC_BLOCKS, MUSIC_DISC_11, MUSIC_DISC_13),
    
     // Tools
-    ANY_SPADE(WOODEN_SHOVEL, STONE_SHOVEL, GOLDEN_SHOVEL, IRON_SHOVEL, DIAMOND_SHOVEL), 
+    ANY_SHOVEL(WOODEN_SHOVEL, STONE_SHOVEL, GOLDEN_SHOVEL, IRON_SHOVEL, DIAMOND_SHOVEL),
+    ANY_SPADE(ANY_SHOVEL),
     ANY_AXE(WOODEN_AXE, STONE_AXE, GOLDEN_AXE, IRON_AXE, DIAMOND_AXE),
     ANY_HOE(WOODEN_HOE, STONE_HOE, GOLDEN_HOE, IRON_HOE, DIAMOND_HOE),
     ANY_PICKAXE(WOODEN_PICKAXE, STONE_PICKAXE, GOLDEN_PICKAXE, IRON_PICKAXE, DIAMOND_PICKAXE),
@@ -54,28 +50,54 @@ public enum MaterialGroup {
     ANY_BOOTS(LEATHER_BOOTS, CHAINMAIL_BOOTS, GOLDEN_BOOTS, IRON_BOOTS, DIAMOND_BOOTS),
     
     // Wildcards
-    ANY_TOOL(Arrays.asList(FLINT_AND_STEEL, BOW, FISHING_ROD, SADDLE), ANY_SPADE, ANY_AXE, ANY_HOE, ANY_PICKAXE, ANY_SWORD, ANY_BUCKET), 
+    ANY_TOOL(Arrays.asList(FLINT_AND_STEEL, BOW, FISHING_ROD, SADDLE), ANY_SHOVEL, ANY_AXE, ANY_HOE, ANY_PICKAXE, ANY_SWORD, ANY_BUCKET),
     ANY_WEAPON(Arrays.asList(BOW, ARROW), ANY_SWORD), 
     ANY_ARMOR(ANY_HELMET, ANY_CHESTPLATE, ANY_LEGGINGS, ANY_BOOTS), 
     ANY_ARMOUR(ANY_ARMOR), 
-    ANY_PROJECTILE(FIRE, SNOWBALL, EGG, ARROW, FISHING_ROD, ENDER_PEARL),
-    	 
-    	 
-    	 
-    	 
-    
+    ANY_PROJECTILE(FIRE_CHARGE, SNOWBALL, EGG, ARROW, FISHING_ROD, ENDER_PEARL),
+
     // Add any new ones before this line
-    ANY_ITEM, ANY_BLOCK, ANY_OBJECT;
+    ANY_ITEM, ANY_BLOCK, ANY_OBJECT, ANY_SIGN;
     private static Map<String, MaterialGroup> lookup = new HashMap<String, MaterialGroup>();
     private ArrayList<Material>               mat;
 
     static {
         for (Material mat : Material.values()) {
             ANY_OBJECT.mat.add(mat);
-            if (mat.isBlock())
+            if (mat.isBlock()) {
                 ANY_BLOCK.mat.add(mat);
-            else
+                if(mat.name().contains("_SIGN"))
+                    ANY_SIGN.mat.add(mat);
+                if(mat.name().contains("_LEAVES"))
+                    ANY_LEAVES.mat.add(mat);
+                if(mat.name().contains("_LOG"))
+                    ANY_LOGS.mat.add(mat);
+            }
+            else {
                 ANY_ITEM.mat.add(mat);
+                if(mat.name().contains("_SHOVEL"))
+                    ANY_SHOVEL.mat.add(mat);
+                else if(mat.name().contains("_HOE"))
+                    ANY_HOE.mat.add(mat);
+                else if(mat.name().contains("_AXE"))
+                    ANY_AXE.mat.add(mat);
+                else if(mat.name().contains("_PICKAXE"))
+                    ANY_PICKAXE.mat.add(mat);
+                else if(mat.name().contains("_SWORD"))
+                    ANY_SWORD.mat.add(mat);
+                else if(mat.name().contains("_BUCKET"))
+                    ANY_BUCKET.mat.add(mat);
+                else if(mat.name().contains("_HELMET"))
+                    ANY_HELMET.mat.add(mat);
+                else if(mat.name().contains("_CHESTPLATE"))
+                    ANY_CHESTPLATE.mat.add(mat);
+                else if(mat.name().contains("_LEGGINGS"))
+                    ANY_LEGGINGS.mat.add(mat);
+                else if(mat.name().contains("_BOOTS"))
+                    ANY_BOOTS.mat.add(mat);
+                else if(mat.name().contains("MUSIC_DISC"))
+                    ANY_RECORD.mat.add(mat);
+            }
         }
         for (MaterialGroup group : values())
             lookup.put(group.name(), group);
