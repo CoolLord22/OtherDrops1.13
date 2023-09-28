@@ -16,12 +16,6 @@
 
 package com.gmail.zariust.otherdrops;
 
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.*;
-
 import org.bukkit.*;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
@@ -38,8 +32,8 @@ import org.bukkit.entity.*;
 import org.bukkit.entity.memory.MemoryKey;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.inventory.InventoryView.Property;
 import org.bukkit.inventory.*;
+import org.bukkit.inventory.InventoryView.Property;
 import org.bukkit.map.MapView;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.permissions.Permissible;
@@ -57,6 +51,12 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
 
 @SuppressWarnings("deprecation")
 public class PlayerWrapper implements Player {
@@ -626,11 +626,6 @@ public class PlayerWrapper implements Player {
     @Override
     public GameMode getPreviousGameMode() {
         return null;
-    }
-
-    @Override
-    public void awardAchievement(Achievement achievement) {
-        caller.awardAchievement(achievement);
     }
 
     @Override
@@ -1993,18 +1988,8 @@ public class PlayerWrapper implements Player {
 	}
 
 	@Override
-	public boolean hasAchievement(Achievement arg0) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	@Override
 	public void hidePlayer(Plugin arg0, Player arg1) {
 		throw new UnsupportedOperationException("Not supported yet.");		
-	}
-
-	@Override
-	public void removeAchievement(Achievement arg0) {
-		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override

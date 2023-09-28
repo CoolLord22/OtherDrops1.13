@@ -51,24 +51,9 @@
 
 	    <property name="debuglevel" value="source,lines" />
 
-	    <!-- These custom settings work if you set them to run before any other build targets -->
-	    <target name="celtic">
-	        <property name="dependencies" value="../lib" />
-	        <property name="lib.spigot" location="${dependencies}/spigot.jar" />
-	        <property name="export-dir" value="../../plugins/" />
-	        <property name="economy-dir" value="${dependencies}/economy" />
-	        <property name="iConomy" value="iConomy" />
-	    </target>
-
-	    <target name="zarius">
-	        <property name="dependencies" value="dependencies" />
-	        <property name="lib.spigot" location="lib/spigot.jar" />
-	        <property name="export-dir" value="/home/zarius/Games/Minecraft/Servers/Ifami/Testing/plugins/" />
-	    </target>
-
 	    <!-- Default setting (if custom setting above not set) -->
 	    <target name="default">
-	        <property name="lib.spigot" location="${lib}/spigot.jar" />
+			<property name="lib.spigot" location="${lib}/spigot.jar" />
 	        <property name="dependencies" value="dependencies" />
 	        <property name="economy-dir" value="${dependencies}/EconomyRegister" />
 	        <property name="iConomy" value="iCo" />
@@ -97,7 +82,9 @@
 
 	        <path id="classpath">
 	            <pathelement location="bin" />
-	            <pathelement location="${lib.spigot}" />
+				<pathelement location="${lib.spigot}" />
+				<pathelement location="${lib}/spigot-server.jar" />
+				<pathelement location="${lib}/authlib-1.5.21.jar" />
 	            <pathelement location="${lib}/CustomBlockData.jar" />
 
 				<pathelement location="${griefprevention-location}" />
