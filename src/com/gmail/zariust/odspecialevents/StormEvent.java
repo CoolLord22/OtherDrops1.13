@@ -65,13 +65,13 @@ public class StormEvent extends SpecialResult {
     @Override
     public boolean canRunFor(SimpleDrop drop) {
         Biome biome = drop.getTarget().getLocation().getBlock().getBiome();
-        return !OtherDrops.NetherBiomes.contains(biome);
+        return !OtherDrops.NetherBiomes.contains(biome.name());
     }
 
     @Override
     public boolean canRunFor(OccurredEvent drop) {
         Biome biome = drop.getBiome();
-        if (OtherDrops.NetherBiomes.contains(biome))
+        if (OtherDrops.NetherBiomes.contains(biome.name()))
             return false;
         return true;
     }

@@ -65,12 +65,12 @@ public class ThunderEvent extends SpecialResult {
     @Override
     public boolean canRunFor(SimpleDrop drop) {
         Biome biome = drop.getTarget().getLocation().getBlock().getBiome();
-        return !OtherDrops.NetherBiomes.contains(biome) && biome != Biome.THE_END;
+        return !OtherDrops.NetherBiomes.contains(biome.name()) && biome != Biome.THE_END;
     }
 
     @Override
     public boolean canRunFor(OccurredEvent drop) {
         Biome biome = drop.getBiome();
-        return !OtherDrops.NetherBiomes.contains(biome) && biome != Biome.THE_END;
+        return !OtherDrops.NetherBiomes.contains(biome.name()) && biome != Biome.THE_END;
     }
 }

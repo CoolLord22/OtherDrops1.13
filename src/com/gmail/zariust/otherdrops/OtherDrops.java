@@ -21,10 +21,7 @@ import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.listener.*;
 import com.gmail.zariust.otherdrops.metrics.BStats;
 import com.gmail.zariust.otherdrops.options.Weather;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.TreeType;
+import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
@@ -47,7 +44,7 @@ public class OtherDrops extends JavaPlugin {
 	public Log log = null;
 	public SectionManager sectionManager;
 
-	public static List<Biome> NetherBiomes = new ArrayList<>(Arrays.asList(Biome.NETHER_WASTES, Biome.CRIMSON_FOREST, Biome.WARPED_FOREST, Biome.SOUL_SAND_VALLEY, Biome.BASALT_DELTAS));
+	public static List<String> NetherBiomes = new ArrayList<>(Arrays.asList("NETHER", "NETHER_WASTES", "CRIMSON_FOREST", "WARPED_FOREST", "SOUL_SAND_VALLEY", "BASALT_DELTAS"));
 
 	// Global random number generator - used throughout the whole plugin
 	public static Random         rng    = new Random();
