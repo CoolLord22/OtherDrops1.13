@@ -19,6 +19,8 @@ package com.gmail.zariust.otherdrops.data;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.entities.*;
+import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.*;
 
@@ -40,22 +42,22 @@ public class CreatureData implements Data, RangeableData {
 		Map<EntityType, List<Class<?>>> aMap = new HashMap<>();
 
         // Specific data
-        aMap.put(EntityType.AXOLOTL, Arrays.asList(AxolotlData.class));
-        aMap.put(EntityType.CAT, Arrays.asList(CatData.class));
-        aMap.put(EntityType.CREEPER, Arrays.asList(CreeperData.class));
-        aMap.put(EntityType.ENDERMAN, Arrays.asList(EndermanData.class));
-        aMap.put(EntityType.FOX, Arrays.asList(FoxData.class));
-        aMap.put(EntityType.FROG, Arrays.asList(FrogData.class));
-        aMap.put(EntityType.HORSE, Arrays.asList(HorseData.class));
-        aMap.put(EntityType.LLAMA, Arrays.asList(LlamaData.class));
-        aMap.put(EntityType.PARROT, Arrays.asList(ParrotData.class));
-        aMap.put(EntityType.ZOMBIFIED_PIGLIN, Arrays.asList(PigZombieData.class));
-        aMap.put(EntityType.RABBIT, Arrays.asList(RabbitData.class));
-        aMap.put(EntityType.SHEEP, Arrays.asList(SheepData.class));
-        aMap.put(EntityType.SLIME, Arrays.asList(SlimeData.class));
-        aMap.put(EntityType.MAGMA_CUBE, Arrays.asList(SlimeData.class));
-        aMap.put(EntityType.VILLAGER, Arrays.asList(VillagerData.class));
-        aMap.put(EntityType.WOLF, Arrays.asList(WolfData.class));
+        put(aMap,"AXOLOTL", AxolotlData.class);
+        put(aMap,"CAT", CatData.class);
+        put(aMap,"CREEPER", CreeperData.class);
+        put(aMap,"ENDERMAN", EndermanData.class);
+        put(aMap, "FOX", FoxData.class);
+        put(aMap, "FROG", FrogData.class);
+        put(aMap, "HORSE", HorseData.class);
+        put(aMap, "LLAMA", LlamaData.class);
+        put(aMap, "PARROT", ParrotData.class);
+        put(aMap, "ZOMBIFIED_PIGLIN", PigZombieData.class);
+        put(aMap, "RABBIT", RabbitData.class);
+        put(aMap, "SHEEP", SheepData.class);
+        put(aMap, "SLIME", SlimeData.class);
+        put(aMap, "MAGMA_CUBE", SlimeData.class);
+        put(aMap, "VILLAGER", VillagerData.class);
+        put(aMap, "WOLF", WolfData.class);
 
         // Scan through all entity types and if there's no current mapping
         // then check if it's an Ageable or LivingEntity and assign a mapping
@@ -75,8 +77,13 @@ public class CreatureData implements Data, RangeableData {
                 if (Tameable.class.isAssignableFrom(typeClass))
                     data.add(TameableData.class);
 
-                if (Steerable.class.isAssignableFrom(typeClass))
-                    data.add(SteerableData.class);
+                String[] serverVersion = (Bukkit.getBukkitVersion().split("-")[0]).split("\\.");
+                if(Integer.parseInt(serverVersion[0]) >= 1)
+                    if(Integer.parseInt(serverVersion[1]) >= 16) {
+                        Log.logInfo(ChatColor.RED + "Found server version " + serverVersion[0] + "." + serverVersion[1] + " >= 1.16, enabling steerable data!", Verbosity.HIGH);
+                        if (Steerable.class.isAssignableFrom(typeClass))
+                            data.add(SteerableData.class);
+                    }
 
                 aMap.put(type, data);
             }
@@ -86,6 +93,20 @@ public class CreatureData implements Data, RangeableData {
     }
     public int                                  data;
     private Boolean                             sheared;
+
+
+    private static void put(Map<EntityType, List<Class<?>>> aMap, String entityType, Class<?> classToAdd) {
+        try {
+            EntityType type = EntityType.valueOf(entityType);
+            ArrayList<Class<?>> data = new ArrayList<>();
+            if(aMap.containsKey(type))
+                data = new ArrayList<>(aMap.get(type));
+            data.add(classToAdd);
+            aMap.put(type, data);
+        } catch (IllegalArgumentException e) {
+            Log.logInfo("Invalid entity found in CreatureData, could be older Minecraft version (can ignore): " + entityType, Verbosity.HIGHEST);
+        }
+    }
 
     public CreatureData(int mobData) {
         this(mobData, null);
