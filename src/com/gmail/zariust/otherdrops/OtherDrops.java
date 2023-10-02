@@ -140,7 +140,9 @@ public class OtherDrops extends JavaPlugin {
 		writeNames(SpawnReason.class);
 		writeNames(TreeType.class);
 		writeNames(DamageCause.class);
+		writeNames(DyeColor.class);
 		writeNames(Profession.class);
+		writeNames(Villager.Type.class);
 		writeNames("Horse.Color", Horse.Color.class);
 		writeNames("Horse.Style", Horse.Style.class);
 
@@ -231,7 +233,6 @@ public class OtherDrops extends JavaPlugin {
 
 		for (Enum<?> stuff : e.getEnumConstants()) {
 			list.add(stuff.toString());
-
 		}
 
 		try {
