@@ -16,20 +16,19 @@
 
 package com.gmail.zariust.otherdrops.subject;
 
-import java.util.Random;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+
+import java.util.Random;
 
 public class ExplosionAgent implements Agent {
     private Object explosive;
@@ -56,8 +55,7 @@ public class ExplosionAgent implements Agent {
         this(null, boom);
     }
 
-    // TODO: Entity -> Explosive (if the API changes so Creeper implements
-    // Explosive)
+    // TODO: Figure out if this needs to have mythicmob support?
     public ExplosionAgent(Entity boom) { // Actual explosion
         this(new CreatureSubject(boom), CommonEntity
                 .getExplosiveType(boom));
