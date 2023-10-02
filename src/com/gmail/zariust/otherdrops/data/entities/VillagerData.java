@@ -13,11 +13,11 @@ import com.gmail.zariust.otherdrops.data.Data;
 
 public class VillagerData extends CreatureData {
     Profession  prof    = null; // null = wildcard
-    AgeableData ageData = null;
+    Villager.Type type = null;
 
-    public VillagerData(Profession prof, AgeableData ageData) {
+    public VillagerData(Profession prof, Villager.Type type) {
         this.prof = prof;
-        this.ageData = ageData;
+        this.type = type;
     }
 
     @Override
@@ -25,7 +25,8 @@ public class VillagerData extends CreatureData {
         if (mob instanceof Villager) {
             if (prof != null)
                 ((Villager) mob).setProfession(prof);
-            ageData.setOn(mob, owner);
+            if(type != null)
+                ((Villager) mob).setVillagerType(type);
         }
     }
 
@@ -36,11 +37,12 @@ public class VillagerData extends CreatureData {
 
         VillagerData vd = (VillagerData) d;
 
-        if (!ageData.matches(vd.ageData))
-            return false;
-
         if (this.prof != null)
             if (this.prof != vd.prof)
+                return false;
+
+        if (this.type != null)
+            if (this.type != vd.type)
                 return false;
 
         return true;
@@ -48,8 +50,7 @@ public class VillagerData extends CreatureData {
 
     public static CreatureData parseFromEntity(Entity entity) {
         if (entity instanceof Villager) {
-            return new VillagerData(((Villager) entity).getProfession(),
-                    (AgeableData) AgeableData.parseFromEntity(entity));
+            return new VillagerData(((Villager) entity).getProfession(),((Villager) entity).getVillagerType());
         } else {
             Log.logInfo("VillagerData: error, parseFromEntity given different creature - this shouldn't happen.");
             return null;
@@ -61,9 +62,8 @@ public class VillagerData extends CreatureData {
         // state example: BLACK_CAT!BABY!WILD, or TAME!REDCAT!ADULT (order
         // doesn't matter)
         @SuppressWarnings("unused")
-		Boolean adult = null;
         Profession thisProf = null;
-        AgeableData ageData = (AgeableData) AgeableData.parseFromString(state);
+        Villager.Type thisType = null;
 
         if (!state.isEmpty() && !state.equals("0")) {
             String[] split = state
@@ -74,16 +74,19 @@ public class VillagerData extends CreatureData {
 
                 // loop through types looking for match
                 for (Profession type : Profession.values()) {
-                    if (sub.equals(type.name().toLowerCase()
-                            .replaceAll("[\\s-_]", "")))
+                    if (sub.equals(type.name().toLowerCase().replaceAll("[\\s-_]", "")))
                         thisProf = type;
                 }
-                if (thisProf == null)
+                for (Villager.Type type : Villager.Type.values()) {
+                    if (sub.equals(type.name().toLowerCase().replaceAll("[\\s-_]", "")))
+                        thisType = type;
+                }
+                if (thisProf == null && thisType == null)
                     Log.logInfo("VillagerData: type not found (" + sub + ")");
             }
         }
 
-        return new VillagerData(thisProf, ageData);
+        return new VillagerData(thisProf, thisType);
     }
 
     @Override
@@ -91,7 +94,8 @@ public class VillagerData extends CreatureData {
         String val = "";
         if (prof != null)
             val += prof.toString();
-        val += ageData.toString();
+        if (type != null)
+            val += type.toString();
         return val;
     }
 
