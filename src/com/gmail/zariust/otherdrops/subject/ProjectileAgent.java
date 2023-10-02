@@ -22,6 +22,8 @@ import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
+import io.lumine.mythic.bukkit.MythicBukkit;
+import io.lumine.mythic.core.mobs.ActiveMob;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.*;
@@ -102,9 +104,13 @@ public class ProjectileAgent implements Agent {
             return null;
         else if (shooter instanceof Player)
             return new PlayerSubject((Player) shooter);
-        else
+        else {
+            ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(shooter.getUniqueId()).orElse(null);
+            if(mythicMob != null) {
+                return new MythicMobSubject(shooter);
+            }
             return new CreatureSubject(shooter);
-
+        }
     }
 
     private static Data getShooterData(LivingEntity shooter) {

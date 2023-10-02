@@ -16,50 +16,6 @@
 
 package com.gmail.zariust.otherdrops.event;
 
-import static com.gmail.zariust.common.Verbosity.HIGHEST;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.block.Biome;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.entity.ComplexEntityPart;
-import org.bukkit.entity.EnderDragonPart;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Explosive;
-import org.bukkit.entity.FallingBlock;
-import org.bukkit.entity.Fireball;
-import org.bukkit.entity.LightningStrike;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Painting;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.TNTPrimed;
-import org.bukkit.entity.Vehicle;
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockFromToEvent;
-import org.bukkit.event.block.BlockGrowEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.block.BlockRedstoneEvent;
-import org.bukkit.event.block.LeavesDecayEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.player.*;
-import org.bukkit.event.vehicle.VehicleDestroyEvent;
-import org.bukkit.inventory.ItemStack;
-
 import com.gamingmesh.jobs.api.JobsExpGainEvent;
 import com.gamingmesh.jobs.api.JobsLevelUpEvent;
 import com.gamingmesh.jobs.api.JobsPaymentEvent;
@@ -69,21 +25,35 @@ import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
 import com.gmail.zariust.otherdrops.options.Weather;
 import com.gmail.zariust.otherdrops.parameters.Trigger;
-import com.gmail.zariust.otherdrops.subject.Agent;
-import com.gmail.zariust.otherdrops.subject.BlockTarget;
-import com.gmail.zariust.otherdrops.subject.CreatureSubject;
-import com.gmail.zariust.otherdrops.subject.EnvironmentAgent;
-import com.gmail.zariust.otherdrops.subject.ExplosionAgent;
-import com.gmail.zariust.otherdrops.subject.PlayerSubject;
-import com.gmail.zariust.otherdrops.subject.ProjectileAgent;
-import com.gmail.zariust.otherdrops.subject.Target;
-import com.gmail.zariust.otherdrops.subject.VehicleTarget;
+import com.gmail.zariust.otherdrops.subject.*;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.internal.platform.WorldGuardPlatform;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-
+import io.lumine.mythic.bukkit.MythicBukkit;
+import io.lumine.mythic.core.mobs.ActiveMob;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.entity.*;
+import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
+import org.bukkit.event.block.*;
+import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.player.*;
+import org.bukkit.event.vehicle.VehicleDestroyEvent;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static com.gmail.zariust.common.Verbosity.HIGHEST;
 
 /**
  * An actual drop that has occurred and may match one of the configured drops.
@@ -869,8 +839,13 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
             // TODO: Is there any use in passing the lightning entity through
             // here?
             tool = new EnvironmentAgent(DamageCause.LIGHTNING);
-        else if (damager instanceof LivingEntity)
-            tool = new CreatureSubject(damager);
+        else if (damager instanceof LivingEntity) {
+            ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(damager.getUniqueId()).orElse(null);
+            if(mythicMob != null) {
+                tool = new MythicMobSubject(damager);
+            }
+            else tool = new CreatureSubject(damager);
+        }
         else if (damager instanceof Explosive)
             tool = new ExplosionAgent(damager);
     }
@@ -887,7 +862,11 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
                 tool = new ProjectileAgent((Projectile) e.getDamager());
                 return;
             } else if (e.getDamager() instanceof LivingEntity) {
-                tool = new CreatureSubject(e.getDamager());
+                ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(e.getDamager().getUniqueId()).orElse(null);
+                if(mythicMob != null) {
+                    tool = new MythicMobSubject(e.getDamager());
+                }
+                else tool = new CreatureSubject(e.getDamager());
                 return;
             } else {
                 // The only other one I can think of is lightning, which would
@@ -914,8 +893,14 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     private static Target getEntityTarget(Entity what) {
         if (what instanceof Player)
             return new PlayerSubject((Player) what);
-        else if (what instanceof LivingEntity)
+        else if (what instanceof LivingEntity) {
+            Entity bukkitEntity = (LivingEntity) what;
+            ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(bukkitEntity.getUniqueId()).orElse(null);
+            if(mythicMob != null) {
+                return new MythicMobSubject(what);
+            }
             return new CreatureSubject(what);
+        }
         else if (what instanceof Vehicle)
             return new VehicleTarget((Vehicle) what);
         else if (what instanceof Painting)
@@ -1220,7 +1205,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         if (getTarget() instanceof PlayerSubject) {
             return ((PlayerSubject) getTarget()).getPlayer().getName();
         } else if (this.getTarget() instanceof CreatureSubject) {
-            return ((CreatureSubject) this.getTarget()).getReadableName();
+            return this.getTarget().getReadableName();
         }
         return "";
     }
