@@ -21,14 +21,12 @@ import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.listener.*;
 import com.gmail.zariust.otherdrops.metrics.BStats;
 import com.gmail.zariust.otherdrops.options.Weather;
-import org.bukkit.*;
-import org.bukkit.block.Biome;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
-import org.bukkit.entity.Villager.Profession;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -133,26 +131,25 @@ public class OtherDrops extends JavaPlugin {
 	// been injected by mods - I realise it could be improved a lot but it's better than nothing :)
 	private void exportEnumLists() {
 		Log.logInfo("OtherDrops printing export lists.", Verbosity.HIGH);
-		writeNames(Material.class);
-		writeNames(Biome.class);
-		writeNames(EntityType.class);
+		writeNames(null,"org.bukkit.Material");
+		writeNames(null,"org.bukkit.block.Biome");
+		writeNames(null,"org.bukkit.entity.EntityType");
 		writeNames(Weather.class);
-		writeNames(SpawnReason.class);
-		writeNames(TreeType.class);
-		writeNames(DamageCause.class);
-		writeNames(DyeColor.class);
-		writeNames(Profession.class);
-		writeNames(Villager.Type.class);
-		writeNames("Horse.Color", Horse.Color.class);
-		writeNames("Horse.Style", Horse.Style.class);
+		writeNames(null,"org.bukkit.event.entity.CreatureSpawnEvent$SpawnReason");
+		writeNames(null,"org.bukkit.event.entity.EntityDamageEvent$DamageCause");
+		writeNames(null,"org.bukkit.DyeColor");
+		writeNames(null,"org.bukkit.entity.Villager$Profession");
+		writeNames(null,"org.bukkit.entity.Villager$Type");
+		writeNames("Horse.Color", "org.bukkit.entity.Horse$Color");
+		writeNames("Horse.Style", "org.bukkit.entity.Horse$Style");
 
-		writeNames("Axolotl.Variant", Axolotl.Variant.class);
-		writeNames("Cat.Type", Cat.Type.class);
-		writeNames("Fox.Type", Fox.Type.class);
-		writeNames("Frog.Variant", Frog.Variant.class);
-		writeNames("Llama.Color", Llama.Color.class);
-		writeNames("Parrot.Variant", Parrot.Variant.class);
-		writeNames("Rabbit.Type", Rabbit.Type.class);
+		writeNames("Axolotl.Variant", "org.bukkit.entity.Axolotl$Variant");
+		writeNames("Cat.Type", "org.bukkit.entity.Cat$Type");
+		writeNames("Fox.Type", "org.bukkit.entity.Fox$Type");
+		writeNames("Frog.Variant", "org.bukkit.entity.Frog$Variant");
+		writeNames("Llama.Color", "org.bukkit.entity.Llama$Color");
+		writeNames("Parrot.Variant", "org.bukkit.entity.Parrot$Variant");
+		writeNames("Rabbit.Type", "org.bukkit.entity.Rabbit$Type");
 
 		File folder = new File("plugins" + File.separator + "OtherDrops");
 		BufferedWriter out = null;
@@ -223,6 +220,20 @@ public class OtherDrops extends JavaPlugin {
 			exception.printStackTrace();
 		}
 	}
+
+	public static void writeNames(String fileName, String className) {
+		try {
+			Class<?> cls = Class.forName(className);
+			Class<? extends Enum<?>> Annotation;
+			if(cls.isEnum()) {
+				if(fileName != null)
+					writeNames(fileName, (Class<? extends Enum<?>>) cls);
+				writeNames((Class<? extends Enum<?>>) cls);
+			}
+		} catch (ClassNotFoundException e) {
+            Log.logWarning("Could not find class for known_lists: " + className);
+        }
+    }
 
 	public static void writeNames(Class<? extends Enum<?>> e) {
 		writeNames(e.getSimpleName(), e);
