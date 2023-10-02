@@ -70,7 +70,7 @@
 			<property name="mcmmo-location" value="${dependencies}/mcMMO.jar" />
 			<property name="mobarena-location" value="${dependencies}/MobArena.jar" />
 			<property name="moneydrop-location" value="${dependencies}/MoneyDrop.jar" />
-			<property name="mythicmobs-location" value="${dependencies}/MythicMobs-4.5.5.jar" />
+			<property name="mythicmobs-location" value="${dependencies}/MythicMobs.jar" />
 			<property name="ncp-location" value="${dependencies}/NoCheatPlus.jar" />
 			<property name="rpgitems-location" value="${dependencies}/rpgitems.jar" />
             <property name="towny-location" value="${dependencies}/Towny.jar" />
