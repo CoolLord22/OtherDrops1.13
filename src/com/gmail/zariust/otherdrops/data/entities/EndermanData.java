@@ -19,13 +19,10 @@ import com.gmail.zariust.otherdrops.data.SimpleData;
 public class EndermanData extends CreatureData {
     private BlockData 	 bd       = null;
     private Boolean      canCarry = null;
-    LivingEntityData     leData   = null;
 
-    public EndermanData(BlockData type, Boolean canCarry,
-            LivingEntityData leData) {
+    public EndermanData(BlockData type, Boolean canCarry) {
         this.bd = type;
         this.canCarry = canCarry;
-        this.leData = leData;
     }
 
     @SuppressWarnings("unused")
@@ -37,8 +34,6 @@ public class EndermanData extends CreatureData {
                 ((Enderman) mob).setCarriedBlock(bd);
             if (this.canCarry != null)
                 ((Enderman) mob).setCanPickupItems(canCarry);
-
-            leData.setOn(mob, owner);
         }
     }
 
@@ -55,18 +50,12 @@ public class EndermanData extends CreatureData {
         if (this.canCarry != null)
             if (this.canCarry != vd.canCarry)
                 return false;
-
-        if (!leData.matches(vd.leData))
-            return false;
-
         return true;
     }
 
     public static CreatureData parseFromEntity(Entity entity) {
         if (entity instanceof Enderman) {
-            return new EndermanData(((Enderman) entity).getCarriedBlock(),
-                    ((Enderman) entity).getCanPickupItems(),
-                    (LivingEntityData) LivingEntityData.parseFromEntity(entity));
+            return new EndermanData(((Enderman) entity).getCarriedBlock(), ((Enderman) entity).getCanPickupItems());
         } else {
             Log.logInfo("EndermanData: error, parseFromEntity given different creature - this shouldn't happen.");
             return null;
@@ -75,13 +64,9 @@ public class EndermanData extends CreatureData {
     }
 
 	public static CreatureData parseFromString(String state) {
-
         Log.logInfo("EndermanData: parsing from string.", Verbosity.HIGHEST);
         BlockData blockData = null;
         Boolean canCarry = null;
-
-        LivingEntityData leData = (LivingEntityData) LivingEntityData
-                .parseFromString(state);
 
         if (!state.isEmpty() && !state.equals("0")) {
             String[] split = state
@@ -109,19 +94,8 @@ public class EndermanData extends CreatureData {
                 }
             }
         }
-        return new EndermanData(blockData, canCarry, leData);
+        return new EndermanData(blockData, canCarry);
     }
-
-    /*
-     * split = state.split("/"); Material material =
-     * Material.getMaterial(split[0]); if (material == null) { try { material =
-     * Material.getMaterial(Integer.parseInt(split[0])); }
-     * catch(NumberFormatException e) { return new CreatureData(0); } } Data
-     * data = new SimpleData(); if(split.length > 1) data =
-     * SimpleData.parse(material, split[1]); else data = new SimpleData(); int
-     * md = (data.getData() << 8) | material.getId(); return new
-     * CreatureData(md);
-     */
 
 	@Override
     public String toString() {
@@ -132,16 +106,8 @@ public class EndermanData extends CreatureData {
         if (canCarry != null) {
             val += (canCarry ? "!!carry" : "!!nocarry");
         }
-        val += leData.toString();
         return val;
     }
-
-    /*
-     * if(data > 0) { int id = data & 0xF, d = data >> 8; Material material =
-     * Material.getMaterial(id); Data data = new SimpleData(d); String dataStr =
-     * data.get(material); result = material.toString(); if(!dataStr.isEmpty())
-     * result += "/" + dataStr; return result; }
-     */
 
     @Override
     public String get(Enum<?> creature) {

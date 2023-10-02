@@ -13,11 +13,9 @@ import com.gmail.zariust.otherdrops.data.Data;
 
 public class PigZombieData extends CreatureData {
     Integer    anger  = null; // null = wildcard
-    ZombieData leData = null;
 
-    public PigZombieData(Integer type, ZombieData leData) {
+    public PigZombieData(Integer type) {
         this.anger = type;
-        this.leData = leData;
     }
 
     @Override
@@ -26,7 +24,6 @@ public class PigZombieData extends CreatureData {
             PigZombie z = (PigZombie) mob;
             if (anger != null)
                 z.setAnger(anger);
-            leData.setOn(mob, owner);
         }
     }
 
@@ -40,16 +37,12 @@ public class PigZombieData extends CreatureData {
             if (this.anger != vd.anger)
                 return false;
 
-        if (!leData.matches(vd.leData))
-            return false;
-
         return true;
     }
 
     public static CreatureData parseFromEntity(Entity entity) {
         if (entity instanceof PigZombie) {
-            return new PigZombieData(((PigZombie) entity).getAnger(),
-                    (ZombieData) ZombieData.parseFromEntity(entity));
+            return new PigZombieData(((PigZombie) entity).getAnger());
         } else {
             Log.logInfo("PigZombieData: error, parseFromEntity given different creature - this shouldn't happen.");
             return null;
@@ -60,7 +53,6 @@ public class PigZombieData extends CreatureData {
     public static CreatureData parseFromString(String state) {
         Log.logInfo("PigZombieData: parsing from string.", Verbosity.HIGHEST);
         Integer anger = null;
-        ZombieData leData = (ZombieData) ZombieData.parseFromString(state);
 
         // TODO: support range:
 
@@ -83,7 +75,7 @@ public class PigZombieData extends CreatureData {
 
         }
 
-        return new PigZombieData(anger, leData);
+        return new PigZombieData(anger);
     }
 
     @Override
@@ -92,7 +84,6 @@ public class PigZombieData extends CreatureData {
         if (anger != null) {
             val += "!!" + anger;
         }
-        val += leData.toString();
         return val;
     }
 

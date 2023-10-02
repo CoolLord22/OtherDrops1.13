@@ -23,10 +23,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.*;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.gmail.zariust.common.Verbosity.EXTREME;
 
@@ -34,55 +31,54 @@ import static com.gmail.zariust.common.Verbosity.EXTREME;
 public class CreatureData implements Data, RangeableData {
 
     // Create a map of entity types against data objects
-	private static final Map<EntityType, Class<?>> DATAMAP;
+	private static final Map<EntityType, List<Class<?>>> DATAMAP;
 
     // Map of EntityTypes to new class based creature data, for ease of lookup
     // later on
     // note: there should be only one line per entity, or things could get messy
     static {
-		Map<EntityType, Class<?>> aMap = new HashMap<EntityType, Class<?>>();
+		Map<EntityType, List<Class<?>>> aMap = new HashMap<>();
 
-        // Note: due to difficulties with alternate coding all specific data
-        // classes need to manually include a call to either LivingEntityData or
-        // AgeableData
-
-        // Specific data (+LivingEntity)
-        aMap.put(EntityType.ZOMBIE, ZombieData.class); // includes
-                                                       // LivingEntityData
-        aMap.put(EntityType.ZOMBIE_VILLAGER, ZombieVillagerData.class);
-        aMap.put(EntityType.HUSK, HuskData.class);
-        
-        aMap.put(EntityType.ZOMBIFIED_PIGLIN, PigZombieData.class); // extends Zombie
-        aMap.put(EntityType.CREEPER, CreeperData.class);
-        // Specific data (+Ageable(+LivingEntity))
-        aMap.put(EntityType.OCELOT, OcelotData.class);
-        aMap.put(EntityType.PIG, PigData.class);
-        aMap.put(EntityType.SHEEP, SheepData.class);
-        aMap.put(EntityType.VILLAGER, VillagerData.class);
-        aMap.put(EntityType.WOLF, WolfData.class);
-        aMap.put(EntityType.SLIME, SlimeData.class);
-        aMap.put(EntityType.MAGMA_CUBE, SlimeData.class);
-        aMap.put(EntityType.ENDERMAN, EndermanData.class);
-        aMap.put(EntityType.HORSE, HorseData.class);
-        aMap.put(EntityType.DONKEY, DonkeyData.class);
-        aMap.put(EntityType.MULE, MuleData.class);
-        aMap.put(EntityType.ZOMBIE_HORSE, ZombieHorseData.class);
-        aMap.put(EntityType.SKELETON_HORSE, SkeletonHorseData.class);
+        // Specific data
+        aMap.put(EntityType.AXOLOTL, Arrays.asList(AxolotlData.class));
+        aMap.put(EntityType.CAT, Arrays.asList(CatData.class));
+        aMap.put(EntityType.CREEPER, Arrays.asList(CreeperData.class));
+        aMap.put(EntityType.ENDERMAN, Arrays.asList(EndermanData.class));
+        aMap.put(EntityType.FOX, Arrays.asList(FoxData.class));
+        aMap.put(EntityType.FROG, Arrays.asList(FrogData.class));
+        aMap.put(EntityType.HORSE, Arrays.asList(HorseData.class));
+        aMap.put(EntityType.LLAMA, Arrays.asList(LlamaData.class));
+        aMap.put(EntityType.PARROT, Arrays.asList(ParrotData.class));
+        aMap.put(EntityType.ZOMBIFIED_PIGLIN, Arrays.asList(PigZombieData.class));
+        aMap.put(EntityType.RABBIT, Arrays.asList(RabbitData.class));
+        aMap.put(EntityType.SHEEP, Arrays.asList(SheepData.class));
+        aMap.put(EntityType.SLIME, Arrays.asList(SlimeData.class));
+        aMap.put(EntityType.MAGMA_CUBE, Arrays.asList(SlimeData.class));
+        aMap.put(EntityType.VILLAGER, Arrays.asList(VillagerData.class));
+        aMap.put(EntityType.WOLF, Arrays.asList(WolfData.class));
 
         // Scan through all entity types and if there's no current mapping
         // then check if it's an Ageable or LivingEntity and assign a mapping
         for (EntityType type : EntityType.values()) {
-            if (aMap.get(type) == null) {
-                Class<?> typeClass = type.getEntityClass();
-                if (typeClass != null) {
-                    if (Ageable.class.isAssignableFrom(type.getEntityClass())) {
-                        aMap.put(type, AgeableData.class);
-                    } else if (LivingEntity.class.isAssignableFrom(type
-                            .getEntityClass())) {
-                        aMap.put(type, LivingEntityData.class);
-                    }
-                }
+            Class<?> typeClass = type.getEntityClass();
+            if (typeClass != null) {
+                ArrayList<Class<?>> data = new ArrayList<>();
+                if(aMap.containsKey(type))
+                    data = new ArrayList<>(aMap.get(type));
 
+                if (Ageable.class.isAssignableFrom(typeClass))
+                    data.add(AgeableData.class);
+
+                if (LivingEntity.class.isAssignableFrom(typeClass))
+                    data.add(LivingEntityData.class);
+
+                if (Tameable.class.isAssignableFrom(typeClass))
+                    data.add(TameableData.class);
+
+                if (Steerable.class.isAssignableFrom(typeClass))
+                    data.add(SteerableData.class);
+
+                aMap.put(type, data);
             }
         }
         DATAMAP = Collections.unmodifiableMap(aMap);
@@ -90,8 +86,6 @@ public class CreatureData implements Data, RangeableData {
     }
     public int                                  data;
     private Boolean                             sheared;
-    @SuppressWarnings("unused")
-	private List<CreatureData>                  subData;
 
     public CreatureData(int mobData) {
         this(mobData, null);
@@ -104,10 +98,6 @@ public class CreatureData implements Data, RangeableData {
 
     public CreatureData() {
         this(0);
-    }
-
-    public CreatureData(List<CreatureData> dataList) {
-        this.subData = dataList;
     }
 
     @Override
@@ -183,39 +173,15 @@ public class CreatureData implements Data, RangeableData {
         if (DATAMAP.get(creature) != null) {
             CreatureData cData = null;
             try {
-                cData = (CreatureData) DATAMAP.get(creature)
-                        .getMethod("parseFromString", String.class)
-                        .invoke(null, state);
-            } catch (IllegalArgumentException e) {
-                
-                e.printStackTrace();
-            } catch (SecurityException e) {
-                
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                
+                MultipleEntityData multipleData = new MultipleEntityData();
+                for(Class<?> classType : DATAMAP.get(creature)) {
+                    multipleData.add((CreatureData) classType.getMethod("parseFromString", String.class).invoke(null, state));
+                }
+                cData = multipleData;
+            } catch (IllegalArgumentException | NoSuchMethodException | InvocationTargetException |
+                     IllegalAccessException | SecurityException e) {
                 e.printStackTrace();
             }
-
-            /*
-             * Attempting to set a list of data classes so we can automatically
-             * cover livingentity/ageable/specific data Doesn't work currently!
-             * Difficult to work out how to compare two
-             * 
-             * List<CreatureData> dataList = new ArrayList<CreatureData>();
-             * dataList.add(cData); if
-             * (LivingEntity.class.isAssignableFrom(creature.getEntityClass()))
-             * { dataList.add(LivingEntityData.parseFromString(state)); } if
-             * (Ageable.class.isAssignableFrom(creature.getEntityClass())) {
-             * dataList.add(AgeableData.parseFromString(state)); } return new
-             * CreatureData(dataList);
-             */
 
             if (cData == null)
                 return new CreatureData(0);
@@ -270,18 +236,13 @@ public class CreatureData implements Data, RangeableData {
         if (DATAMAP.get(entity.getType()) != null) {
             CreatureData cData = null;
             try {
-                cData = (CreatureData) DATAMAP.get(entity.getType())
-                        .getMethod("parseFromEntity", Entity.class)
-                        .invoke(null, entity);
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
+                MultipleEntityData multipleData = new MultipleEntityData();
+                for(Class<?> classType : DATAMAP.get(entity.getType())) {
+                    multipleData.add((CreatureData) classType.getMethod("parseFromEntity", Entity.class).invoke(null, entity));
+                }
+                cData = multipleData;
+            } catch (IllegalArgumentException | SecurityException | IllegalAccessException | InvocationTargetException |
+                     NoSuchMethodException e) {
                 e.printStackTrace();
             }
             if (cData == null)

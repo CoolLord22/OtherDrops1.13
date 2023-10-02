@@ -13,11 +13,9 @@ import com.gmail.zariust.otherdrops.data.Data;
 
 public class SlimeData extends CreatureData {
     Integer          slimeSize = null; // null = wildcard
-    LivingEntityData leData    = null;
 
-    public SlimeData(Integer type, LivingEntityData leData) {
+    public SlimeData(Integer type) {
         this.slimeSize = type;
-        this.leData = leData;
     }
 
     @Override
@@ -26,7 +24,6 @@ public class SlimeData extends CreatureData {
             Slime z = (Slime) mob;
             if (slimeSize != null)
                 z.setSize(slimeSize);
-            leData.setOn(mob, owner);
         }
     }
 
@@ -40,16 +37,12 @@ public class SlimeData extends CreatureData {
             if (this.slimeSize != vd.slimeSize)
                 return false;
 
-        if (!leData.matches(vd.leData))
-            return false;
-
         return true;
     }
 
     public static CreatureData parseFromEntity(Entity entity) {
         if (entity instanceof Slime) {
-            return new SlimeData(((Slime) entity).getSize(),
-                    (LivingEntityData) LivingEntityData.parseFromEntity(entity));
+            return new SlimeData(((Slime) entity).getSize());
         } else {
             Log.logInfo("SlimeData: error, parseFromEntity given different creature - this shouldn't happen.");
             return null;
@@ -60,8 +53,6 @@ public class SlimeData extends CreatureData {
     public static CreatureData parseFromString(String state) {
         Log.logInfo("SlimeData: parsing from string.", Verbosity.HIGHEST);
         Integer slimeSize = null;
-        LivingEntityData leData = (LivingEntityData) LivingEntityData
-                .parseFromString(state);
 
         if (!state.isEmpty() && !state.equals("0")) {
             String[] split = state
@@ -81,7 +72,7 @@ public class SlimeData extends CreatureData {
                     slimeSize = Integer.valueOf(sub);
             }
         }
-        return new SlimeData(slimeSize, leData);
+        return new SlimeData(slimeSize);
     }
 
     @Override
@@ -100,7 +91,6 @@ public class SlimeData extends CreatureData {
                 slimeSizeMsg = "HUGE";
             val += "!!" + slimeSizeMsg;
         }
-        val += leData.toString();
         return val;
     }
 

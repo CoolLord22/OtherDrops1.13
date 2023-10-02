@@ -13,19 +13,10 @@ import com.gmail.zariust.otherdrops.data.Data;
 public class HorseData extends CreatureData {
     Horse.Color horseColor = null; // null = wildcard
     Horse.Style horseStyle = null; // null = wildcard
-    Boolean tamed = null;
 
-    AgeableData ageData = null;
-
-    public HorseData(Horse.Color horseColor, Horse.Style horseStyle, Boolean thisTamed, AgeableData ageData) {
+    public HorseData(Horse.Color horseColor, Horse.Style horseStyle) {
         this.horseColor = horseColor;
         this.horseStyle = horseStyle;
-        this.tamed = thisTamed;
-        this.ageData = ageData;
-    }
-
-    public HorseData(String state) {
-        // TODO Auto-generated constructor stub
     }
 
     @Override
@@ -36,12 +27,6 @@ public class HorseData extends CreatureData {
                 z.setColor(horseColor);
             if (horseStyle != null)
                 z.setStyle(horseStyle);
-
-            if (tamed != null)
-                if (tamed)
-                    z.setOwner(owner);
-
-            ageData.setOn(mob, owner);
         }
     }
 
@@ -52,9 +37,6 @@ public class HorseData extends CreatureData {
 
         HorseData vd = (HorseData) d;
 
-        if (!ageData.matches(vd.ageData))
-            return false;
-
         if (this.horseColor != null)
             if (this.horseColor != vd.horseColor)
                 return false;
@@ -62,17 +44,13 @@ public class HorseData extends CreatureData {
         if (this.horseStyle != null)
             if (this.horseStyle != vd.horseStyle)
                 return false;
-        
-        if (this.tamed != null)
-            if (this.tamed != vd.tamed)
-                return false;
 
         return true;
     }
 
     public static CreatureData parseFromEntity(Entity entity) {
         if (entity instanceof Horse) {
-            return new HorseData(((Horse) entity).getColor(), ((Horse) entity).getStyle(), ((Horse) entity).isTamed(), (AgeableData) AgeableData.parseFromEntity(entity));
+            return new HorseData(((Horse) entity).getColor(), ((Horse) entity).getStyle());
         } else {
             Log.logInfo("HorseData: error, parseFromEntity given different creature - this shouldn't happen.");
             return null;
@@ -81,13 +59,9 @@ public class HorseData extends CreatureData {
     }
 
     public static CreatureData parseFromString(String state) {
-        // return getData(state);
-
         Horse.Color thisColor = null; // null = wildcard
         Horse.Style thisStyle = null; // null = wildcard
-        Boolean thisTamed = null;
 
-        AgeableData ageData = (AgeableData) AgeableData.parseFromString(state);
 
         if (!state.isEmpty() && !state.equals("0")) {
             String[] split = state
@@ -95,13 +69,6 @@ public class HorseData extends CreatureData {
 
             for (String sub : split) {
                 sub = sub.toLowerCase().replaceAll("[\\s-_]", "");
-                if (sub.contains("!tamed")) {
-                    thisTamed = true;
-                }
-                if (sub.contains("!untamed")) {
-                    thisTamed = false;
-                }
-
                 //start color matching
                 if (sub.contains("!colorblack")) {
                 	thisColor = (Horse.Color.BLACK);
@@ -143,13 +110,7 @@ public class HorseData extends CreatureData {
             }
         }
 
-        return new HorseData(thisColor, thisStyle, thisTamed, ageData);
-    }
-
-    @SuppressWarnings("unused")
-	private static CreatureData getData(String state) {
-        return new HorseData(state);
-
+        return new HorseData(thisColor, thisStyle);
     }
 
     @Override
@@ -159,11 +120,6 @@ public class HorseData extends CreatureData {
             val += "!!" + horseColor;
         if (horseStyle != null)
             val += "!!" + horseStyle;
-        if (tamed != null) {
-            val += "!";
-            val += "!!" + (tamed ? "TAME" : "UNTAMED");
-        }
-        val += ageData.toString();
         return val;
     }
 

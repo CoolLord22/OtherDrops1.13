@@ -14,11 +14,9 @@ public class CreeperData extends CreatureData {
     Creeper          dummy;         // used to represent main Entity class for
                                      // this data object
     Boolean          powered = null; // null = wildcard
-    LivingEntityData leData  = null;
 
-    public CreeperData(Boolean powered, LivingEntityData leData) {
+    public CreeperData(Boolean powered) {
         this.powered = powered;
-        this.leData = leData;
     }
 
     @Override
@@ -28,7 +26,6 @@ public class CreeperData extends CreatureData {
                 if (powered) {
                     ((Creeper) mob).setPowered(true);
                 }
-            leData.setOn(mob, owner);
         }
     }
 
@@ -42,9 +39,6 @@ public class CreeperData extends CreatureData {
             if (this.powered != vd.powered)
                 return false;
 
-        if (!leData.matches(vd.leData))
-            return false;
-
         return true;
     }
 
@@ -52,8 +46,7 @@ public class CreeperData extends CreatureData {
         if (entity == null)
             return null;
         if (entity instanceof Creeper) {
-            return new CreeperData(((Creeper) entity).isPowered(),
-                    (LivingEntityData) LivingEntityData.parseFromEntity(entity));
+            return new CreeperData(((Creeper) entity).isPowered());
         } else {
             Log.logInfo("CreeperData: error, parseFromEntity given different creature - this shouldn't happen.");
             return null;
@@ -79,7 +72,7 @@ public class CreeperData extends CreatureData {
             }
         }
 
-        return new CreeperData(powered, leData);
+        return new CreeperData(powered);
     }
 
     @Override
@@ -88,7 +81,6 @@ public class CreeperData extends CreatureData {
         if (powered != null) {
             val += powered ? "POWERED" : "UNPOWERED";
         }
-        val += leData.toString();
 
         return val;
     }

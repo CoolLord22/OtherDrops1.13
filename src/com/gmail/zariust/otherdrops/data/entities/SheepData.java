@@ -15,15 +15,13 @@ import com.gmail.zariust.otherdrops.data.Data;
 public class SheepData extends CreatureData {
     Boolean     sheared = null; // null = wildcard
     DyeColor    color   = null;
-    Boolean     adult = null;
 
     @SuppressWarnings("deprecation")
-	public SheepData(Boolean sheared, DyeColor color, Boolean adult) {
+	public SheepData(Boolean sheared, DyeColor color) {
         this.sheared = sheared;
         this.color = color;
         if (color != null)
             data = color.getWoolData();
-        this.adult = adult;
     }
 
     @Override
@@ -35,9 +33,6 @@ public class SheepData extends CreatureData {
                     z.setSheared(true);
             if (color != null)
                 z.setColor(color);
-            if (adult != null)
-                if (!adult)
-                    z.setBaby();
         }
     }
 
@@ -47,9 +42,6 @@ public class SheepData extends CreatureData {
             return false;
         
         SheepData vd = (SheepData) d;
-        if (this.adult != null)
-            if (this.adult != vd.adult)
-                return false;
 
         if (this.sheared != null)
             if (this.sheared != vd.sheared)
@@ -65,8 +57,7 @@ public class SheepData extends CreatureData {
     public static CreatureData parseFromEntity(Entity entity) {
         if (entity instanceof Sheep) {
             return new SheepData(((Sheep) entity).isSheared(),
-                    ((Sheep) entity).getColor(),
-                    (((Sheep) entity).isAdult()));
+                    ((Sheep) entity).getColor());
         } else {
             Log.logInfo("SheepData: error, parseFromEntity given different creature - this shouldn't happen.");
             return null;
@@ -173,7 +164,7 @@ public class SheepData extends CreatureData {
             }
         }
 
-        return new SheepData(sheared, color, adult);
+        return new SheepData(sheared, color);
     }
 
     @Override
@@ -186,10 +177,6 @@ public class SheepData extends CreatureData {
         if (color != null) {
             val += "!";
             val += color.toString();
-        }
-        if (adult != null) {
-            val += "!";
-            val += adult ? "ADULT" : "BABY";
         }
         return val;
     }
