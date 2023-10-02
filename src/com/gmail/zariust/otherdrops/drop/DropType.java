@@ -25,6 +25,10 @@ import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.subject.Agent;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
+import io.lumine.mythic.api.mobs.MythicMob;
+import io.lumine.mythic.bukkit.BukkitAdapter;
+import io.lumine.mythic.bukkit.MythicBukkit;
+import io.lumine.mythic.core.mobs.ActiveMob;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -38,7 +42,7 @@ import java.util.*;
 
 public abstract class DropType {
     public enum DropCategory {
-        ITEM, CREATURE, MONEY, GROUP, DENY, CONTENTS, DEFAULT, VEHICLE, EXPERIENCE
+        ITEM, CREATURE, MONEY, GROUP, DENY, CONTENTS, DEFAULT, VEHICLE, EXPERIENCE, MYTHIC
     }
 
     public static class DropFlags {
@@ -225,6 +229,27 @@ public abstract class DropType {
         return dropCreatureWithRider(where, owner, type, data, null, null, "", "");
     }
 
+    // Drop a MythicMob item/mob
+    protected static DropResult drop(Location where, String mythicDrop) {
+        DropResult dropResult = new DropResult();
+        if(mythicDrop.contains("ITEM@")) {
+            if(MythicBukkit.inst().getItemManager().getItem(mythicDrop.replace("ITEM@", "")).isPresent()) {
+                return drop(where, MythicBukkit.inst().getItemManager().getItemStack(mythicDrop.replace("ITEM@", "")), true);
+            }
+        } else if(mythicDrop.contains("MOB@")) {
+            if(MythicBukkit.inst().getMobManager().getMythicMob(mythicDrop.replace("MOB@", "")).isPresent()) {
+                MythicMob mob = MythicBukkit.inst().getMobManager().getMythicMob(mythicDrop.replace("MOB@", "")).orElse(null);
+                if(mob != null) {
+                    ActiveMob mythicMob = mob.spawn(BukkitAdapter.adapt(where),1);
+                    Entity entity = mythicMob.getEntity().getBukkitEntity();
+                    dropResult.addDropped(entity);
+                    dropResult.setQuantity(1);
+                }
+            }
+        }
+        return dropResult;
+    }
+
     protected static DropResult dropCreatureWithRider(Location where,
             Player owner, EntityType type, Data data, CreatureDrop ride,
             Entity passenger, String eventName, String spawnReason) {
@@ -399,22 +424,20 @@ public abstract class DropType {
                 return dropType;
 
             if (name.toUpperCase().startsWith("VEHICLE_"))
-                return VehicleDrop.parse(name, defaultData,
-                        amount.toIntRange(), chance);
+                return VehicleDrop.parse(name, defaultData, amount.toIntRange(), chance);
             else if (name.toUpperCase().startsWith("MONEY"))
                 return MoneyDrop.parse(name, defaultData, amount, chance);
+            else if (name.toUpperCase().startsWith("MYTHIC_"))
+                return new MythicDrop(name.replaceAll("MYTHIC_", ""), amount.toIntRange(), chance);
             else if (name.toUpperCase().startsWith("XP"))
-                return ExperienceDrop.parse(name, defaultData,
-                        amount.toIntRange(), chance);
+                return ExperienceDrop.parse(name, defaultData, amount.toIntRange(), chance);
             else if (name.toUpperCase().equals("CONTENTS"))
                 return new ContentsDrop();
             else if (name.toUpperCase().equals("DEFAULT"))
                 return new ItemDrop((Material) null);
-            else if (name.toUpperCase().equals("THIS")
-                    || name.toUpperCase().equals("SELF"))
+            else if (name.toUpperCase().equals("THIS") || name.toUpperCase().equals("SELF"))
                 return new SelfDrop(amount.toIntRange(), chance);
-            return ItemDrop.parse(originalName, defaultData,
-                    amount.toIntRange(), chance);
+            return ItemDrop.parse(originalName, defaultData, amount.toIntRange(), chance);
         }
     }
 
