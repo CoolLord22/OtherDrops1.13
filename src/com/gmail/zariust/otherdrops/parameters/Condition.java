@@ -6,6 +6,8 @@ import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.parameters.conditions.*;
+import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -57,7 +59,12 @@ public abstract class Condition extends Parameter {
         registerCondition(new AttackRangeCheck(null));
         registerCondition(new BiomeCheck(null));
         registerCondition(new BlockFaceCheck(null));
-        registerCondition(new BlockPlaceByCheck(null));
+        String[] serverVersion = (Bukkit.getBukkitVersion().split("-")[0]).split("\\.");
+        if(Integer.parseInt(serverVersion[0]) >= 1)
+            if(Integer.parseInt(serverVersion[1]) >= 14) {
+                Log.logInfo(ChatColor.RED + "Found server version " + serverVersion[0] + "." + serverVersion[1] + " >= 1.14, enabling block place check!", Verbosity.HIGH);
+                registerCondition(new BlockPlaceByCheck(null));
+            }
         registerCondition(new CooldownCheck(null, null, null));
         registerCondition(new DistanceCheck(null, null));
         registerCondition(new HeightCheck(null));
