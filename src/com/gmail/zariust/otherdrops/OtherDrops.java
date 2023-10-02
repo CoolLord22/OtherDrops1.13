@@ -27,10 +27,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.TreeType;
 import org.bukkit.block.Biome;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Horse;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Rabbit;
+import org.bukkit.entity.*;
 import org.bukkit.entity.Villager.Profession;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
@@ -145,10 +142,17 @@ public class OtherDrops extends JavaPlugin {
 		writeNames(Weather.class);
 		writeNames(SpawnReason.class);
 		writeNames(TreeType.class);
-		writeNames(Profession.class);
 		writeNames(DamageCause.class);
+		writeNames(Profession.class);
 		writeNames("Horse.Color", Horse.Color.class);
 		writeNames("Horse.Style", Horse.Style.class);
+
+		writeNames("Axolotl.Variant", Axolotl.Variant.class);
+		writeNames("Cat.Type", Cat.Type.class);
+		writeNames("Fox.Type", Fox.Type.class);
+		writeNames("Frog.Variant", Frog.Variant.class);
+		writeNames("Llama.Color", Llama.Color.class);
+		writeNames("Parrot.Variant", Parrot.Variant.class);
 		writeNames("Rabbit.Type", Rabbit.Type.class);
 
 		File folder = new File("plugins" + File.separator + "OtherDrops");
