@@ -16,43 +16,12 @@
 
 package com.gmail.zariust.common;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.bukkit.Material;
 import org.bukkit.TreeSpecies;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Boat;
-import org.bukkit.entity.DragonFireball;
-import org.bukkit.entity.Egg;
-import org.bukkit.entity.EnderPearl;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Fireball;
-import org.bukkit.entity.FishHook;
-import org.bukkit.entity.LargeFireball;
-import org.bukkit.entity.LingeringPotion;
-import org.bukkit.entity.Minecart;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.SmallFireball;
-import org.bukkit.entity.Snowball;
-import org.bukkit.entity.SpectralArrow;
-import org.bukkit.entity.SplashPotion;
-import org.bukkit.entity.TNTPrimed;
-import org.bukkit.entity.ThrownExpBottle;
-import org.bukkit.entity.ThrownPotion;
-import org.bukkit.entity.TippedArrow;
-import org.bukkit.entity.Trident;
-import org.bukkit.entity.WitherSkull;
-import org.bukkit.entity.minecart.CommandMinecart;
-import org.bukkit.entity.minecart.ExplosiveMinecart;
-import org.bukkit.entity.minecart.HopperMinecart;
-import org.bukkit.entity.minecart.PoweredMinecart;
-import org.bukkit.entity.minecart.StorageMinecart;
+import org.bukkit.entity.*;
+import org.bukkit.entity.minecart.*;
+
+import java.util.*;
 
 //import static org.bukkit.Material.*;
 
@@ -105,12 +74,11 @@ public final class CommonEntity {
         Map<String, String> replacer = new HashMap<String, String>();
         replacer.put("mooshroom", "mushroomcow");
         replacer.put("endermen", "enderman");
-        replacer.put("cat", "ocelot");
         replacer.put("zombiepig", "pigzombie");
         replacer.put("pigman", "pigzombie");
         replacer.put("zombiepigman", "pigzombie");
         replacer.put("dog", "wolf");
-        replacer.put("snowman", "wolf");
+        replacer.put("snowgolem", "snowman");
         replacer.put("lavaslime", "magmacube");
         replacer.put("magmaslime", "magmacube");
 
