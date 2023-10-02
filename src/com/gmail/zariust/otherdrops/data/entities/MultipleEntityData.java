@@ -51,6 +51,7 @@ public class MultipleEntityData extends CreatureData {
         String val = "";
         for(CreatureData data : subData.values()) {
             val += data.toString();
+            val += "!";
         }
         return val;
     }
