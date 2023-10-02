@@ -67,104 +67,32 @@ public class SheepData extends CreatureData {
 
     public static CreatureData parseFromString(String state) {
         Log.logInfo("SheepData: parsing from string.", Verbosity.HIGHEST);
-        Boolean adult = null;
         Boolean sheared = null;
-        DyeColor color = null;
+        DyeColor thisColor = null;
 
         if (!state.isEmpty() && !state.equals("0")) {
-            String[] splitAge = state
-                    .split(OtherDropsConfig.CreatureDataSeparator);
+            String[] splitState = state.split(OtherDropsConfig.CreatureDataSeparator);
             
-            String[] splitShear = state
-                    .split(OtherDropsConfig.CreatureDataSeparator);
-            
-            String[] splitColor = state
-                    .split(OtherDropsConfig.CreatureDataSeparator);
+            for (String sub : splitState) {
+            	sub = sub.toLowerCase().replaceAll("[\\s-_]", "");
 
-            
-            for (String subAge : splitAge) {
-                subAge = subAge.toLowerCase().replaceAll("[\\s-_]", "");
-                
-                if (subAge.contains("!adult"))
-                    adult = true;
-                else if (subAge.contains("!baby"))
-                    adult = false;
-                else {
-                	adult = null;
-                }
-            }
-            
-            for (String subShear : splitShear) {
-            	subShear = subShear.toLowerCase().replaceAll("[\\s-_]", "");
-
-                if (subShear.contains("!sheared"))
+                if (sub.contains("!sheared"))
                 	sheared = true;
-                else if (subShear.contains("!unsheared"))
+                else if (sub.contains("!unsheared"))
                 	sheared = false;
                 else {
                 	sheared = null;
                 }
-                	
-            }
-            
-            for (String subColor : splitColor) {
-            	subColor = subColor.toLowerCase().replaceAll("[\\s-_]", "");
-                if (subColor.contains("!white"))
-                	color = DyeColor.WHITE;
-                
-                else if (subColor.contains("!orange"))
-                	color = DyeColor.ORANGE;
-                
-                else if (subColor.contains("!magenta"))
-                	color = DyeColor.MAGENTA;
-                
-                else if (subColor.contains("!lightblue"))
-                	color = DyeColor.LIGHT_BLUE;
-                
-                else if (subColor.contains("!yellow"))
-                	color = DyeColor.YELLOW;
-                
-                else if (subColor.contains("!lime"))
-                	color = DyeColor.LIME;
-                
-                else if (subColor.contains("!pink"))
-                	color = DyeColor.PINK;
-                
-                else if (subColor.contains("!gray"))
-                	color = DyeColor.GRAY;
-                
-                else if (subColor.contains("!silver"))
-                	color = DyeColor.LIGHT_GRAY;
-                
-                else if (subColor.contains("!cyan"))
-                	color = DyeColor.CYAN;
-                
-                else if (subColor.contains("!purple"))
-                	color = DyeColor.PURPLE;
-                
-                else if (subColor.contains("!blue"))
-                	color = DyeColor.BLUE;
-                
-                else if (subColor.contains("!brown"))
-                	color = DyeColor.BROWN;
-                
-                else if (subColor.contains("!green"))
-                	color = DyeColor.GREEN;
-                
-                else if (subColor.contains("!red"))
-                	color = DyeColor.RED;
-                
-                else if (subColor.contains("!black"))
-                	color = DyeColor.BLACK;
-                
-                else {
-                	color = null;
+                for(DyeColor color : DyeColor.values()) {
+                    if (sub.replaceAll("!", "").equals(color.name().toLowerCase().replaceAll("[\\s-_]", "")))
+                        thisColor = color;
                 }
-                
+                if (sheared == null && thisColor == null)
+                    Log.logInfo("SheepData: invalid data passed (" + sub + ")");
             }
         }
 
-        return new SheepData(sheared, color);
+        return new SheepData(sheared, thisColor);
     }
 
     @Override

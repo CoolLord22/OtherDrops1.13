@@ -76,12 +76,13 @@ public class WolfData extends CreatureData {
                 else if (sub.matches("neutral"))
                     angry = false;
                 else {
-                    try {
-                        collarColor = DyeColor.valueOf(sub.toUpperCase());
-                    } catch (IllegalArgumentException e) {
-                        // do nothing
+                    for(DyeColor color : DyeColor.values()) {
+                        if (sub.replaceAll("!", "").equals(color.name().toLowerCase().replaceAll("[\\s-_]", "")))
+                            collarColor = color;
                     }
                 }
+                if (angry == null && collarColor == null)
+                    Log.logInfo("WolfData: invalid data passed (" + sub + ")");
             }
         }
 

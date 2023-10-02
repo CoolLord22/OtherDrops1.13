@@ -5,7 +5,10 @@ import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import org.bukkit.DyeColor;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Cat;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 
 public class CatData extends CreatureData {
     Cat.Type type  = null; // null = wildcard
@@ -69,13 +72,12 @@ public class CatData extends CreatureData {
                     if (sub.equals(type.name().toLowerCase().replaceAll("[\\s-_]", "")))
                         thisType = type;
                 }
-                try {
-                    collarColor = DyeColor.valueOf(sub.toUpperCase());
-                } catch (IllegalArgumentException e) {
-                    // do nothing
+                for(DyeColor color : DyeColor.values()) {
+                    if (sub.replaceAll("!", "").equals(color.name().toLowerCase().replaceAll("[\\s-_]", "")))
+                        collarColor = color;
                 }
                 if (thisType == null && collarColor == null)
-                    Log.logInfo("CatData: type not found (" + sub + ")");
+                    Log.logInfo("CatData: invalid data passed (" + sub + ")");
             }
         }
 
