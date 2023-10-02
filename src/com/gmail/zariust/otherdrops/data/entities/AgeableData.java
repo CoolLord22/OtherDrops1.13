@@ -19,11 +19,9 @@ import com.gmail.zariust.otherdrops.data.Data;
  */
 public class AgeableData extends CreatureData {
     Boolean          adult  = null; // null = wildcard
-    LivingEntityData leData = null;
 
-    public AgeableData(Boolean adult, LivingEntityData leData) {
+    public AgeableData(Boolean adult) {
         this.adult = adult;
-        this.leData = leData;
     }
 
     @Override
@@ -33,8 +31,6 @@ public class AgeableData extends CreatureData {
             if (adult != null)
                 if (adult == false)
                     z.setBaby();
-
-            leData.setOn(mob, owner);
         }
     }
 
@@ -49,16 +45,12 @@ public class AgeableData extends CreatureData {
             if (this.adult != vd.adult)
                 return false;
 
-        if (!leData.matches(vd.leData))
-            return false;
-
         return true;
     }
 
     public static CreatureData parseFromEntity(Entity entity) {
         if (entity instanceof Ageable) {
-            return new AgeableData(((Ageable) entity).isAdult(),
-                    (LivingEntityData) LivingEntityData.parseFromEntity(entity));
+            return new AgeableData(((Ageable) entity).isAdult());
         } else {
             Log.logInfo("AgeableData: error, parseFromEntity given different creature - this shouldn't happen.");
             return null;
@@ -70,8 +62,6 @@ public class AgeableData extends CreatureData {
         // state example: VILLAGER!BABY, BABY, BABY!NORMAL (order doesn't
         // matter)
         Boolean adult = null;
-        LivingEntityData leData = (LivingEntityData) LivingEntityData
-                .parseFromString(state);
 
         if (!state.isEmpty() && !state.equals("0")) {
             String[] split = state
@@ -86,7 +76,7 @@ public class AgeableData extends CreatureData {
             }
         }
 
-        return new AgeableData(adult, leData);
+        return new AgeableData(adult);
     }
 
     @Override
@@ -96,7 +86,6 @@ public class AgeableData extends CreatureData {
             val += "!";
             val += adult ? "ADULT" : "BABY";
         }
-        val += leData.toString();
         return val;
     }
 
