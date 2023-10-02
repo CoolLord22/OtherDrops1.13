@@ -1,9 +1,10 @@
 package com.gmail.zariust.otherdrops.metrics;
 
+import com.gmail.zariust.otherdrops.OtherDrops;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import com.gmail.zariust.otherdrops.OtherDrops;
 
 public class BStats {
 	private final OtherDrops plugin;
@@ -51,7 +52,7 @@ public class BStats {
      */
     public static void incrementTriggerCounts(String triggerString) {
         if (triggerCounts.get(triggerString) == null) {
-            triggerCounts.put(triggerString, new Integer(1));
+            triggerCounts.put(triggerString, 1);
         } else {
             triggerCounts.put(triggerString,
                     triggerCounts.get(triggerString) + 1);
