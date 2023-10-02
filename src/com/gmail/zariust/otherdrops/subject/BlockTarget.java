@@ -27,6 +27,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.CommandBlock;
 import org.bukkit.block.data.Ageable;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.inventory.InventoryHolder;
 
@@ -123,6 +124,9 @@ public class BlockTarget implements Target {
         default:
             if(block.getBlockData() instanceof Ageable) {
                 return new SimpleData(((Ageable) block.getBlockData()).getAge());
+            }
+            if(block.getBlockData() instanceof Levelled) {
+                return new SimpleData(((Levelled) block.getBlockData()).getLevel());
             }
             return new SimpleData(block.getData());
         }
