@@ -16,17 +16,16 @@
 
 package com.gmail.zariust.otherdrops.subject;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-
+import com.gmail.zariust.otherdrops.data.Data;
+import com.gmail.zariust.otherdrops.options.ToolDamage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.gmail.zariust.otherdrops.data.Data;
-import com.gmail.zariust.otherdrops.options.ToolDamage;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 public class PlayerSubject extends LivingSubject {
     private ToolAgent tool;
