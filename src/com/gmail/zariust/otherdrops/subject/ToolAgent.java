@@ -222,8 +222,10 @@ public class ToolAgent implements Agent {
         return parse(name, state, null, "", null);
     }
 
-    public static Agent parse(String name, String state,
-            List<CMEnchantment> enchPass, String loreName, List<String> loreText) {
+    public static Agent parse(String name, String state, List<CMEnchantment> enchPass, String loreName, List<String> loreText) {
+        if(name.startsWith("MYTHIC_ITEM")) {
+            return new MythicItemAgent(state);
+        }
         name = name.toUpperCase();
         state = state.toUpperCase();
 
@@ -231,16 +233,14 @@ public class ToolAgent implements Agent {
 
         Material mat = CommonMaterial.matchMaterial(name);
         if (mat == null) {
-            Log.logInfo("Unrecognized tool: " + name
-                    + (state.isEmpty() ? "" : "@" + state), HIGHEST);
+            Log.logInfo("Unrecognized tool: " + name + (state.isEmpty() ? "" : "@" + state), HIGHEST);
             return null;
         }
 
         // If "state" is empty then no data defined, make sure we don't use 0 as
         // data otherwise later matching fails
         if (state.isEmpty())
-            return new ToolAgent(mat, null, enchPass, quantityRequired,
-                    loreName, loreText);
+            return new ToolAgent(mat, null, enchPass, quantityRequired, loreName, loreText);
 
         // Parse data, which could be an integer or an appropriate enum name
         try {
@@ -256,8 +256,7 @@ public class ToolAgent implements Agent {
             return null;
         }
         if (data != null)
-            return new ToolAgent(mat, data, enchPass, quantityRequired,
-                    loreName, loreText);
+            return new ToolAgent(mat, data, enchPass, quantityRequired, loreName, loreText);
         return new ToolAgent(mat, null, enchPass, quantityRequired, loreName, loreText);
     }
 
