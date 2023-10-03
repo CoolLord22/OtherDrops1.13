@@ -63,7 +63,7 @@ public class MythicMobData implements Data {
     }
     @Override
     public String toString() {
-        String val = "MYTHIC_";
+        String val = "MYTHIC_MOB@";
         if (mythicMobType != null) {
             val += mythicMobType;
         }

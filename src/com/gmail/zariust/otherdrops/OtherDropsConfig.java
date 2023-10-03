@@ -1274,8 +1274,8 @@ public class OtherDropsConfig {
 			return AnySubject.parseAgent(name);
 		else if (upperName.equals("PLAYER"))
 			return PlayerSubject.parse(data);
-		else if (upperName.startsWith("MYTHIC_"))
-			return MythicMobSubject.parse(name.replaceAll("MYTHIC_", ""));
+		else if (upperName.startsWith("MYTHIC_MOB@"))
+			return MythicMobSubject.parse(name.replaceAll("MYTHIC_MOB@", ""));
 		else if (upperName.equals("PLAYERGROUP"))
 			return new GroupSubject(data);
 		else if (upperName.startsWith("DAMAGE_"))
@@ -1326,8 +1326,8 @@ public class OtherDropsConfig {
 			return new GroupSubject(data);
 		else if (upperName.startsWith("ANY") || upperName.equals("ALL"))
 			return AnySubject.parseTarget(upperName);
-		else if (upperName.startsWith("MYTHIC_"))
-			return MythicMobSubject.parse(name.replaceAll("MYTHIC_", ""));
+		else if (upperName.startsWith("MYTHIC_MOB@"))
+			return MythicMobSubject.parse(name.replaceAll("MYTHIC_MOB@", ""));
 		else if (upperName.startsWith("VEHICLE")
 				|| upperName.matches("BOAT|MINECART|BOAT_SPRUCE|BOAT_JUNGLE|BOAT_BIRCH|BOAT_ACACIA|BOAT_DARK_OAk"))
 			return VehicleTarget.parse(
