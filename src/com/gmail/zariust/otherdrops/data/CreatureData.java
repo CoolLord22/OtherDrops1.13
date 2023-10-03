@@ -19,8 +19,6 @@ package com.gmail.zariust.otherdrops.data;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.entities.*;
-import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.*;
 
@@ -59,15 +57,6 @@ public class CreatureData implements Data, RangeableData {
         put(aMap, "VILLAGER", VillagerData.class);
         put(aMap, "WOLF", WolfData.class);
 
-        boolean toAddSteerable = false;
-
-        String[] serverVersion = (Bukkit.getBukkitVersion().split("-")[0]).split("\\.");
-        if(Integer.parseInt(serverVersion[0]) >= 1)
-            if(Integer.parseInt(serverVersion[1]) >= 16) {
-                Log.logInfo(ChatColor.RED + "Found server version " + serverVersion[0] + "." + serverVersion[1] + " >= 1.16, enabling steerable data!", Verbosity.HIGH);
-                toAddSteerable = true;
-            }
-
         // Scan through all entity types and if there's no current mapping
         // then check if it's an Ageable or LivingEntity and assign a mapping
         for (EntityType type : EntityType.values()) {
@@ -86,9 +75,8 @@ public class CreatureData implements Data, RangeableData {
                 if (Tameable.class.isAssignableFrom(typeClass))
                     data.add(TameableData.class);
 
-                if(toAddSteerable)
-                    if (Steerable.class.isAssignableFrom(typeClass))
-                        data.add(SteerableData.class);
+                if (Steerable.class.isAssignableFrom(typeClass))
+                    data.add(SteerableData.class);
 
                 aMap.put(type, data);
             }
