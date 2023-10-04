@@ -70,7 +70,7 @@ public abstract class Condition extends Parameter {
         registerCondition(new PermissionCheck(null));
         registerCondition(new PermissionGroupCheck(null));
         registerCondition(new PlayerSneakCheck(null));
-        registerCondition(new PotionEffectCondition(null, null));
+        registerCondition(new PotionEffectCondition(null));
         registerCondition(new RegionCheck(null));
         registerCondition(new SpawnedCheck(null));
         registerCondition(new TimeCheck(null));

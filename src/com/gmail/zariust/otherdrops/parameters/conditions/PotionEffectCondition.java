@@ -8,7 +8,8 @@ import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.options.Comparative;
 import com.gmail.zariust.otherdrops.parameters.Condition;
-import org.bukkit.entity.Player;
+import com.gmail.zariust.otherdrops.things.ODPotionEffect;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -18,32 +19,51 @@ import java.util.List;
 import java.util.Map;
 
 public class PotionEffectCondition extends Condition {
-    private final Map<PotionEffectType, Boolean> potionEffectFlagMap;
-    private final Map<PotionEffectType, Comparative> potionEffectAmplifierMap;
+    public enum PotionTarget {
+        ATTACKER, VICTIM
+    }
 
-    public PotionEffectCondition(Map<PotionEffectType, Boolean> potionEffectFlagMap, Map<PotionEffectType, Comparative> potionEffectAmplifierMap) {
-        this.potionEffectFlagMap = potionEffectFlagMap;
-        this.potionEffectAmplifierMap = potionEffectAmplifierMap;
+    static Map<String, PotionTarget> matches = new HashMap<>();
+    static {
+        matches.put("potionrequirement", PotionTarget.ATTACKER);
+        matches.put("potionrequirement.attacker", PotionTarget.ATTACKER);
+        matches.put("potionrequirement.victim", PotionTarget.VICTIM);
+        Log.logInfo("Creating potion requirement map." + matches.toString());
+    }
+
+    private final List<ODPotionEffect> potionEffects;
+
+    public PotionEffectCondition(List<ODPotionEffect> potionEffects) {
+        this.potionEffects = potionEffects;
     }
 
     @Override
     protected boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
-        if(potionEffectFlagMap == null || potionEffectFlagMap.isEmpty())
+        if(potionEffects == null || potionEffects.isEmpty())
             return true;
-        Player player = occurrence.getPlayerAttacker();
-        for(PotionEffectType effect : potionEffectFlagMap.keySet()) {
-            Log.logInfo("Checking for potion: " + effect.getName(), Verbosity.HIGHEST);
-            if(potionEffectFlagMap.get(effect)) { // Potion is required
-                if(!player.hasPotionEffect(effect))  // Player does not have effect
-                    return false;
-                PotionEffect playerEffect = player.getPotionEffect(effect);
-                if(!potionEffectAmplifierMap.get(effect).matches(playerEffect.getAmplifier() + 1)) // Amplifier doesn't match
-                    return false;
-            } else { // Player SHOULD NOT have potion effect
-                if(player.hasPotionEffect(effect)) { // Player has the effect
-                    PotionEffect playerEffect = player.getPotionEffect(effect);
-                    if(potionEffectAmplifierMap.get(effect).matches(playerEffect.getAmplifier() + 1)) { // Make sure amplifier is same
+
+        for(ODPotionEffect potionEffect : potionEffects) {
+            LivingEntity target = null;
+
+            if(potionEffect.getTarget() == PotionTarget.ATTACKER)
+                target = occurrence.getAttacker();
+            else if(potionEffect.getTarget() == PotionTarget.VICTIM)
+                target = occurrence.getVictim();
+
+            if(target != null) {
+                Log.logInfo("Checking for potion: " + potionEffect + " targetting " + target.getName(), Verbosity.HIGHEST);
+                if(potionEffect.getFlag()) { // Potion is required
+                    if(!target.hasPotionEffect(potionEffect.getType()))  // Entity does not have effect
                         return false;
+                    PotionEffect entityEffect = target.getPotionEffect(potionEffect.getType());
+                    if(!potionEffect.getAmplifier().matches(entityEffect.getAmplifier() + 1)) // Amplifier doesn't match
+                        return false;
+                } else { // Entity SHOULD NOT have potion effect
+                    if(target.hasPotionEffect(potionEffect.getType())) { // Player has the effect
+                        PotionEffect entityEffect = target.getPotionEffect(potionEffect.getType());
+                        if(potionEffect.getAmplifier().matches(entityEffect.getAmplifier() + 1)) { // Make sure amplifier is same
+                            return false;
+                        }
                     }
                 }
             }
@@ -53,43 +73,42 @@ public class PotionEffectCondition extends Condition {
 
     @Override
     public List<Condition> parse(ConfigurationNode parseMe) {
-        Map<PotionEffectType, Boolean> potionEffectFlag = new HashMap<>();
-        Map<PotionEffectType, Comparative> potionEffectAmplifier = new HashMap<>();
+        List<Condition> conditionList = new ArrayList<Condition>();
+        List<ODPotionEffect> potionEffects = new ArrayList<>();
 
-        List<String> input = OtherDropsConfig.getMaybeList(parseMe, "potionrequirement");
-        if (input.isEmpty())
-            return null;
+        for (String key : matches.keySet()) {
+            List<String> input = OtherDropsConfig.getMaybeList(parseMe, key);
+            if (input.isEmpty())
+                continue;
 
-        for (String potion : input) {
-            PotionEffectType effect;
-            Comparative amplifier = null;
+            for (String potion : input) {
+                PotionEffectType effect;
+                Comparative amplifier = null;
 
-            boolean flag = true;
-            if (potion.startsWith("-")) {
-                potion = potion.substring(1);
-                flag = false;
-            }
+                boolean flag = true;
+                if (potion.startsWith("-")) {
+                    potion = potion.substring(1);
+                    flag = false;
+                }
 
-            String[] split = potion.split("@");
+                String[] split = potion.split("@");
 
-            if(split.length > 1)
-                amplifier = Comparative.parse(split[1]);
+                if(split.length > 1)
+                    amplifier = Comparative.parse(split[1]);
 
-            if(amplifier == null)
-                amplifier = Comparative.parse(">0");
+                if(amplifier == null)
+                    amplifier = Comparative.parse(">0");
 
-            effect = PotionEffectType.getByName(split[0]);
+                effect = PotionEffectType.getByName(split[0]);
 
-
-            if (effect != null) {
-                Log.logInfo("Found potion effect: " + effect.getName() + " requiring amplifier " + amplifier, Verbosity.HIGHEST);
-                potionEffectFlag.put(effect, flag);
-                potionEffectAmplifier.put(effect, amplifier);
+                if (effect != null) {
+                    Log.logInfo("Found potion requirement: " + effect.getName() + " with amplifier " + amplifier + " targeting " + matches.get(key), Verbosity.HIGHEST);
+                    potionEffects.add(new ODPotionEffect(effect, flag, amplifier, matches.get(key)));
+                }
             }
         }
 
-        List<Condition> conditionList = new ArrayList<Condition>();
-        conditionList.add(new PotionEffectCondition(potionEffectFlag, potionEffectAmplifier));
+        conditionList.add(new PotionEffectCondition(potionEffects));
         return conditionList;
     }
 }
