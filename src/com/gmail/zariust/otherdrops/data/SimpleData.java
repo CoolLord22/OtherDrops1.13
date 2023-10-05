@@ -24,7 +24,9 @@ import org.bukkit.CropState;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Painting;
 import org.bukkit.entity.Player;
@@ -85,8 +87,16 @@ public class SimpleData implements Data, RangeableData {
 
 	@Override
 	public void setOn(BlockState state) {
-		MaterialData mat = new MaterialData(state.getType(), (byte) data);
-		state.setData(mat);
+		if(state.getBlockData() instanceof Ageable tempData) {
+			tempData.setAge(data);
+			state.setBlockData(tempData);
+		} else if(state.getBlockData() instanceof Levelled tempData) {
+			tempData.setLevel(data);
+			state.setBlockData(tempData);
+		} else {
+			MaterialData mat = new MaterialData(state.getType(), (byte) data);
+			state.setData(mat);
+		}
 	}
 
 	@Override
