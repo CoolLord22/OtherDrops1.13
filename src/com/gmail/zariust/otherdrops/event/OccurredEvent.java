@@ -16,6 +16,7 @@
 
 package com.gmail.zariust.otherdrops.event;
 
+import com.gamingmesh.jobs.Jobs;
 import com.gamingmesh.jobs.api.JobsExpGainEvent;
 import com.gamingmesh.jobs.api.JobsLevelUpEvent;
 import com.gamingmesh.jobs.api.JobsPaymentEvent;
@@ -79,6 +80,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     private boolean     overrideEquipment;
     private String spawnedReason;
     private String jobName;
+    private int jobLevel = -1;
 
     // Constructors
     public OccurredEvent(BlockBreakEvent evt) {
@@ -678,7 +680,8 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     public OccurredEvent(JobsLevelUpEvent evt) {
     	super(new PlayerSubject(evt.getPlayer().getPlayer()), Trigger.JOBS_LEVEL_UP);
     	event = evt;
-    	setJobName(evt.getJobName());
+    	setJobName(evt.getJob().getName());
+        setJobLevel(evt.getLevel());
         setLocationWorldBiomeLight(evt.getPlayer().getPlayer().getLocation().getBlock());
         setWeatherTimeHeight(location);
         setRegions();
@@ -695,7 +698,8 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     public OccurredEvent(JobsExpGainEvent evt) {
     	super(new PlayerSubject(evt.getPlayer().getPlayer()), Trigger.JOBS_EXP_GAIN);
     	event = evt;
-    	setJobName(evt.getJob().getName());
+        setJobName(evt.getJob().getName());
+        setJobLevel(Jobs.getPlayerManager().getJobsPlayer(evt.getPlayer().getUniqueId()).getJobProgression(evt.getJob()).getLevel());
         setLocationWorldBiomeLight(evt.getPlayer().getPlayer().getLocation().getBlock());
         setWeatherTimeHeight(location);
         setRegions();
@@ -1199,6 +1203,14 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
 
     public void setJobName(String job) {
         this.jobName = job;
+    }
+
+    public int getJobLevel() {
+        return jobLevel;
+    }
+
+    public void setJobLevel(int level) {
+        this.jobLevel = level;
     }
 
 
