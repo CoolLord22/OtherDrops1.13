@@ -27,9 +27,9 @@ public class MythicItemAgent extends ToolAgent {
             return false;
 
         if(mythicItem != null) {
-            Log.logWarning("Checking mythic tool");
             ItemStack playerItem = ((PlayerSubject) other).getTool().getActualTool();
             ItemStack mythicItemStack = Dependencies.getMythicMobs().getItemManager().getItemStack(mythicItem);
+            Log.logInfo("Checking mythic tool: " + mythicItemStack + " vs player tool: " + playerItem, Verbosity.HIGHEST);
             if(mythicItemStack != null) {
                 if(playerItem.getType() != mythicItemStack.getType())
                     return false;
