@@ -26,6 +26,7 @@ import com.herocraftonline.heroes.Heroes;
 import com.palmergames.bukkit.towny.Towny;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import fr.neatmonster.nocheatplus.NoCheatPlus;
+import io.lumine.mythic.bukkit.MythicBukkit;
 import me.drakespirit.plugins.moneydrop.MoneyDrop;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import net.milkbowl.vault.economy.Economy;
@@ -40,15 +41,14 @@ import static com.gmail.zariust.common.Verbosity.*;
 @SuppressWarnings("unused")
 public class Dependencies {
 	// Plugin Dependencies
-	private static WorldGuardPlugin worldGuard      = null; // for WorldGuard
-	// support
+	private static WorldGuardPlugin worldGuard      = null; // for WorldGuard support
 	private static Towny	 		towny 			= null;
 	private static WildStacker	    wildStacker 	= null;
+	private static MythicBukkit 	mythicMobs	 	= null;
 	private static Jobs	 			jobs 			= null;
 	private static NoCheatPlus		ncp 			= null;
 	private static GriefPrevention  gp 				= null;
 
-	boolean                         enabled;
 	private static MobArena         mobArena        = null;
 	private static MobArenaHandler  mobArenaHandler = null; // for MobArena
 	private static MoneyDrop        moneyDrop       = null; // for MoneyDrop
@@ -77,6 +77,7 @@ public class Dependencies {
 		try {
 			towny = (Towny) getPlugin("Towny");
 			wildStacker = (WildStacker) getPlugin("WildStacker");
+			mythicMobs = (MythicBukkit) getPlugin("MythicMobs");
 			gp = (GriefPrevention) getPlugin("GriefPrevention");
 			jobs = (Jobs) getPlugin("Jobs");
 			ncp = (NoCheatPlus) getPlugin("NoCheatPlus");
@@ -193,6 +194,14 @@ public class Dependencies {
 
 	public static Towny getTowny() {
 		return Dependencies.towny;
+	}
+
+	public static boolean hasMythicMobs() {
+		return Dependencies.mythicMobs != null;
+	}
+
+	public static MythicBukkit getMythicMobs() {
+		return Dependencies.mythicMobs;
 	}
 
 	public static boolean hasJobs() {
