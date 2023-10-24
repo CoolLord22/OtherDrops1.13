@@ -27,7 +27,6 @@ import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
 import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.BukkitAdapter;
-import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -233,12 +232,12 @@ public abstract class DropType {
     protected static DropResult drop(Location where, String mythicDrop) {
         DropResult dropResult = new DropResult();
         if(mythicDrop.contains("ITEM@")) {
-            if(MythicBukkit.inst().getItemManager().getItem(mythicDrop.replace("ITEM@", "")).isPresent()) {
-                return drop(where, MythicBukkit.inst().getItemManager().getItemStack(mythicDrop.replace("ITEM@", "")), true);
+            if(Dependencies.getMythicMobs().getItemManager().getItem(mythicDrop.replace("ITEM@", "")).isPresent()) {
+                return drop(where, Dependencies.getMythicMobs().getItemManager().getItemStack(mythicDrop.replace("ITEM@", "")), true);
             }
         } else if(mythicDrop.contains("MOB@")) {
-            if(MythicBukkit.inst().getMobManager().getMythicMob(mythicDrop.replace("MOB@", "")).isPresent()) {
-                MythicMob mob = MythicBukkit.inst().getMobManager().getMythicMob(mythicDrop.replace("MOB@", "")).orElse(null);
+            if(Dependencies.getMythicMobs().getMobManager().getMythicMob(mythicDrop.replace("MOB@", "")).isPresent()) {
+                MythicMob mob = Dependencies.getMythicMobs().getMobManager().getMythicMob(mythicDrop.replace("MOB@", "")).orElse(null);
                 if(mob != null) {
                     ActiveMob mythicMob = mob.spawn(BukkitAdapter.adapt(where),1);
                     Entity entity = mythicMob.getEntity().getBukkitEntity();

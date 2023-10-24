@@ -1,8 +1,8 @@
 package com.gmail.zariust.otherdrops.data;
 
 import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
-import io.lumine.mythic.bukkit.MythicBukkit;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -12,11 +12,13 @@ public class MythicMobData implements Data {
     String mythicMobType = null;
 
     public MythicMobData(String mythicMobType) {
-        if(!MythicBukkit.inst().getMobManager().getMythicMob(mythicMobType).isPresent()) {
-            Log.logInfo("Invalid mythic mob specified/could not be found: " + mythicMobType, Verbosity.HIGHEST);
-            return;
+        if(Dependencies.hasMythicMobs()) {
+            if(!Dependencies.getMythicMobs().getMobManager().getMythicMob(mythicMobType).isPresent()) {
+                Log.logInfo("Invalid mythic mob specified/could not be found: " + mythicMobType, Verbosity.HIGHEST);
+                return;
+            }
+            this.mythicMobType = mythicMobType;
         }
-        this.mythicMobType = mythicMobType;
     }
 
     @Override

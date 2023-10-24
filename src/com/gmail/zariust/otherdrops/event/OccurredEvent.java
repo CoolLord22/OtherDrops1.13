@@ -30,7 +30,6 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.internal.platform.WorldGuardPlatform;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -840,9 +839,11 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
             // here?
             tool = new EnvironmentAgent(DamageCause.LIGHTNING);
         else if (damager instanceof LivingEntity) {
-            ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(damager.getUniqueId()).orElse(null);
-            if(mythicMob != null) {
-                tool = new MythicMobSubject(damager);
+            if(Dependencies.hasMythicMobs()) {
+                ActiveMob mythicMob = Dependencies.getMythicMobs().getMobManager().getActiveMob(damager.getUniqueId()).orElse(null);
+                if(mythicMob != null) {
+                    tool = new MythicMobSubject(damager);
+                }
             }
             else tool = new CreatureSubject(damager);
         }
@@ -862,9 +863,11 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
                 tool = new ProjectileAgent((Projectile) e.getDamager());
                 return;
             } else if (e.getDamager() instanceof LivingEntity) {
-                ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(e.getDamager().getUniqueId()).orElse(null);
-                if(mythicMob != null) {
-                    tool = new MythicMobSubject(e.getDamager());
+                if(Dependencies.hasMythicMobs()) {
+                    ActiveMob mythicMob = Dependencies.getMythicMobs().getMobManager().getActiveMob(e.getDamager().getUniqueId()).orElse(null);
+                    if(mythicMob != null) {
+                        tool = new MythicMobSubject(e.getDamager());
+                    }
                 }
                 else tool = new CreatureSubject(e.getDamager());
                 return;
@@ -895,9 +898,11 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
             return new PlayerSubject((Player) what);
         else if (what instanceof LivingEntity) {
             Entity bukkitEntity = (LivingEntity) what;
-            ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(bukkitEntity.getUniqueId()).orElse(null);
-            if(mythicMob != null) {
-                return new MythicMobSubject(what);
+            if(Dependencies.hasMythicMobs()) {
+                ActiveMob mythicMob = Dependencies.getMythicMobs().getMobManager().getActiveMob(bukkitEntity.getUniqueId()).orElse(null);
+                if(mythicMob != null) {
+                    return new MythicMobSubject(what);
+                }
             }
             return new CreatureSubject(what);
         }

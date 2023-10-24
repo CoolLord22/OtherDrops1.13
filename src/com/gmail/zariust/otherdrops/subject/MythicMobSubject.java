@@ -1,10 +1,10 @@
 package com.gmail.zariust.otherdrops.subject;
 
 import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.MythicMobData;
-import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -18,7 +18,7 @@ import java.util.List;
 import static com.gmail.zariust.common.Verbosity.HIGH;
 
 public class MythicMobSubject extends CreatureSubject {
-    private final Data data; // MythicMobData
+    private Data data = null; // MythicMobData
     private Entity entity = null;
 
     public MythicMobSubject(Data data) {
@@ -26,9 +26,11 @@ public class MythicMobSubject extends CreatureSubject {
     }
 
     public MythicMobSubject(Entity entity) {
-        this.entity = entity;
-        ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(entity.getUniqueId()).orElse(null);
-        this.data = new MythicMobData(mythicMob.getMobType());
+        if(Dependencies.hasMythicMobs()) {
+            this.entity = entity;
+            ActiveMob mythicMob = Dependencies.getMythicMobs().getMobManager().getActiveMob(entity.getUniqueId()).orElse(null);
+            this.data = new MythicMobData(mythicMob.getMobType());
+        }
     }
 
     @Override

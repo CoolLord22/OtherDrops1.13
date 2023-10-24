@@ -1,8 +1,8 @@
 package com.gmail.zariust.otherdrops.subject;
 
 import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
-import io.lumine.mythic.bukkit.MythicBukkit;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
@@ -12,11 +12,13 @@ public class MythicItemAgent extends ToolAgent {
     private String mythicItem = null;
 
     public MythicItemAgent(String mythicItem) {
-        if(!MythicBukkit.inst().getItemManager().getItem(mythicItem).isPresent()) {
-            Log.logInfo("Invalid mythic item tool specified/could not be found: " + mythicItem, Verbosity.HIGHEST);
-            return;
+        if(Dependencies.hasMythicMobs()) {
+            if(!Dependencies.getMythicMobs().getItemManager().getItem(mythicItem).isPresent()) {
+                Log.logInfo("Invalid mythic item tool specified/could not be found: " + mythicItem, Verbosity.HIGHEST);
+                return;
+            }
+            this.mythicItem = mythicItem;
         }
-        this.mythicItem = mythicItem;
     }
     
     @Override
@@ -27,7 +29,7 @@ public class MythicItemAgent extends ToolAgent {
         if(mythicItem != null) {
             Log.logWarning("Checking mythic tool");
             ItemStack playerItem = ((PlayerSubject) other).getTool().getActualTool();
-            ItemStack mythicItemStack = MythicBukkit.inst().getItemManager().getItemStack(mythicItem);
+            ItemStack mythicItemStack = Dependencies.getMythicMobs().getItemManager().getItemStack(mythicItem);
             if(mythicItemStack != null) {
                 if(playerItem.getType() != mythicItemStack.getType())
                     return false;

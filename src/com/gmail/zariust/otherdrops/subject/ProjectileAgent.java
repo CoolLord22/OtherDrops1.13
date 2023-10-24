@@ -18,11 +18,11 @@ package com.gmail.zariust.otherdrops.subject;
 
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
-import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -105,9 +105,11 @@ public class ProjectileAgent implements Agent {
         else if (shooter instanceof Player)
             return new PlayerSubject((Player) shooter);
         else {
-            ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(shooter.getUniqueId()).orElse(null);
-            if(mythicMob != null) {
-                return new MythicMobSubject(shooter);
+            if(Dependencies.hasMythicMobs()) {
+                ActiveMob mythicMob = Dependencies.getMythicMobs().getMobManager().getActiveMob(shooter.getUniqueId()).orElse(null);
+                if(mythicMob != null) {
+                    return new MythicMobSubject(shooter);
+                }
             }
             return new CreatureSubject(shooter);
         }
