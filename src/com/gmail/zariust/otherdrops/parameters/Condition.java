@@ -62,7 +62,7 @@ public abstract class Condition extends Parameter {
         registerCondition(new DistanceCheck(null, null));
         registerCondition(new HeightCheck(null));
         registerCondition(new ItemRequirementCheck(null));
-        registerCondition(new JobNameCheck(null));
+        registerCondition(new JobNameCheck(null, null));
         registerCondition(new LightLevelCheck(null));
         registerCondition(new LoreNameCheck(null));
         registerCondition(new LoreLineCheck(null));
