@@ -28,7 +28,6 @@ public class PotionEffectCondition extends Condition {
         matches.put("potionrequirement", PotionTarget.ATTACKER);
         matches.put("potionrequirement.attacker", PotionTarget.ATTACKER);
         matches.put("potionrequirement.victim", PotionTarget.VICTIM);
-        Log.logInfo("Creating potion requirement map." + matches.toString());
     }
 
     private final List<ODPotionEffect> potionEffects;
