@@ -52,7 +52,7 @@ public class OtherDrops extends JavaPlugin {
 	protected boolean            enableBlockTo;
 	protected boolean            disableEntityDrops;
 	private BStats metrics;
-	public static Updater updateChecker;
+	public Updater updateChecker;
 
 
 	public OtherDrops() {
@@ -78,9 +78,7 @@ public class OtherDrops extends JavaPlugin {
 			exportEnumLists();
 		if (OtherDropsConfig.globalUpdateChecking) {
 			updateChecker = new Updater(this);
-			for(String line : updateChecker.checkForUpdate()) {
-				Log.logInfoNoVerbosity(line);
-			}
+			updateChecker.checkForUpdate(null);
 		}
 		metrics = new BStats(this);
 		metrics.registerMetrics();
@@ -293,7 +291,7 @@ public class OtherDrops extends JavaPlugin {
 		PluginManager pm = Bukkit.getServer().getPluginManager();
 		String registered = "Loaded listeners: ";
 
-		pm.registerEvents(new PlayerJoinUpdateChecker(), plugin);
+		pm.registerEvents(new PlayerJoinUpdateChecker(plugin), plugin);
 
 		if (OtherDropsConfig.dropForBlocks) {
 			registered += "Block, ";

@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import com.gmail.zariust.common.Verbosity;
+import org.bukkit.entity.Player;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
@@ -28,7 +29,7 @@ public class Updater {
 		this.localPluginVersion = javaPlugin.getDescription().getVersion();
 	}
 
-	public List<String> checkForUpdate() { 
+	public void checkForUpdate(Player p) {
 		List<String> UPDATE_MSG = new ArrayList<String>();
 		//The request is executed asynchronously as to not block the main thread.
 		Bukkit.getScheduler().runTaskAsynchronously(javaPlugin, () -> {
@@ -48,14 +49,23 @@ public class Updater {
 				//Check if the requested version is the same as the one in your plugin.yml.
 				if (localPluginVersion.equals(spigotPluginVersion)) {
 					UPDATE_MSG.add(ChatColor.GREEN + "Hooray! You are running the latest version!");
-				}
-
-				else if(Integer.parseInt(spigotPluginVersion.replaceAll("\\.","")) > Integer.parseInt(localPluginVersion.replaceAll("\\.",""))) {
+				} else if(spigotPluginVersion.contains("b")) {
+					Double spigot = Double.parseDouble(spigotPluginVersion.substring(0, spigotPluginVersion.indexOf("-b")));
+					Double local = Double.parseDouble(localPluginVersion.substring(0, localPluginVersion.indexOf("-b")));
+					if(spigot > local) {
+						UPDATE_MSG.add(ChatColor.YELLOW + "A new release is available! " + ChatColor.RED + "Latest Version: " + ChatColor.GREEN + spigotPluginVersion + ChatColor.RED + " Your Version: " + ChatColor.GREEN + localPluginVersion);
+						UPDATE_MSG.add(ChatColor.YELLOW + "Please download latest version from: " + ChatColor.GREEN + "https://www.spigotmc.org/resources/63497/updates");
+					} else if(spigot.equals(local) && Integer.parseInt(spigotPluginVersion.substring(spigotPluginVersion.indexOf("b") + 1)) > Integer.parseInt(localPluginVersion.substring(localPluginVersion.indexOf("b") + 1))) {
+						UPDATE_MSG.add(ChatColor.YELLOW + "A new build is available! " + ChatColor.RED + "Latest Version: " + ChatColor.GREEN + spigotPluginVersion + ChatColor.RED + " Your Version: " + ChatColor.GREEN + localPluginVersion);
+						UPDATE_MSG.add(ChatColor.YELLOW + "Please download latest version from: " + ChatColor.GREEN + "https://www.spigotmc.org/resources/63497/updates");
+					} else {
+						UPDATE_MSG.add(ChatColor.RED + "Latest Version: " + ChatColor.GREEN + spigotPluginVersion + ChatColor.RED + " Your Version: " + ChatColor.GREEN + localPluginVersion);
+						UPDATE_MSG.add(ChatColor.RED + "Beta builds aren't always stable. Use at your own risk!");
+					}
+				} else if(Integer.parseInt(spigotPluginVersion.replaceAll("\\.","")) > Integer.parseInt(localPluginVersion.substring(0, localPluginVersion.indexOf("-b")).replaceAll("\\.",""))) {
 					UPDATE_MSG.add(ChatColor.RED + "Latest Version: " + ChatColor.GREEN + spigotPluginVersion + ChatColor.RED + " Your Version: " + ChatColor.GREEN + localPluginVersion);
 					UPDATE_MSG.add(ChatColor.YELLOW + "Please download latest version from: " + ChatColor.GREEN + "https://www.spigotmc.org/resources/otherdrops-best-free-drop-manager.51793/updates");
-				}
-
-				else {
+				} else {
 					UPDATE_MSG.add(ChatColor.RED + "Latest Version: " + ChatColor.GREEN + spigotPluginVersion + ChatColor.RED + " Your Version: " + ChatColor.GREEN + localPluginVersion);
 					UPDATE_MSG.add(ChatColor.RED + "Beta builds aren't always stable. Use at your own risk!");
 				}
@@ -64,7 +74,15 @@ public class Updater {
 				if(OtherDropsConfig.getVerbosity().exceeds(Verbosity.HIGHEST))
 					e.printStackTrace();
 			}
+			if(!UPDATE_MSG.isEmpty()) {
+				for(String line : UPDATE_MSG) {
+					if(p == null)
+						Log.logInfo(line, Verbosity.LOW);
+					if(p != null)
+						if(!line.contains("Hooray"))
+							p.sendMessage(ChatColor.GREEN + "[OtherDrops] " + line);
+				}
+			}
 		});
-		return UPDATE_MSG;
 	}
 }
