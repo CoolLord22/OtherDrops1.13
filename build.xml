@@ -38,6 +38,8 @@
 	<target name="init" depends="default">
 		<echo message="Building ${ant.project.name} ${version} against Bukkit..." />
 		<mkdir dir="bin" />
+		<delete file="bin/plugin.yml" />
+		<copy file="${rsrc}/plugin.yml" todir="bin" />
 
 		<property name="griefprevention-location" value="${dependencies}/GriefPrevention.jar" />
 		<property name="heroes-location" value="${dependencies}/Heroes.jar" />
@@ -78,9 +80,9 @@
 		</path>
 
 		<echo message="Replacing version information in plugin.yml..." />
-		<replace file="${rsrc}/plugin.yml">
-			<replacefilter token="$project.version" value="${version}" />
-			<replacefilter token="$project.build" value="${build.number}" />
+		<replace file="bin/plugin.yml">
+			<replacefilter token="$version" value="${version}" />
+			<replacefilter token="$build" value="${build.number}" />
 		</replace>
 	</target>
 
@@ -130,7 +132,6 @@
 		<jar destfile="${output-jar}">
 			<zipgroupfileset dir="lib" includes="CustomBlockData.jar" />
 			<fileset dir="bin/" excludes="**/odspecials/*.class" />
-			<fileset dir="rsrc/" includes="plugin.yml" />
 			<fileset dir="OtherDrops/" />
 		</jar>
 	</target>
