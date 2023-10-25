@@ -39,7 +39,7 @@ public class TameableData extends CreatureData {
 
     public static CreatureData parseFromEntity(Entity entity) {
         if (entity instanceof Tameable) {
-            return new AgeableData(((Tameable) entity).isTamed());
+            return new TameableData(((Tameable) entity).isTamed());
         } else {
             Log.logInfo("TameableData: error, parseFromEntity given different creature - this shouldn't happen.");
             return null;
@@ -48,8 +48,6 @@ public class TameableData extends CreatureData {
     }
 
     public static CreatureData parseFromString(String state) {
-        // state example: VILLAGER!BABY, BABY, BABY!NORMAL (order doesn't
-        // matter)
         Boolean tamed = null;
 
         if (!state.isEmpty() && !state.equals("0")) {
