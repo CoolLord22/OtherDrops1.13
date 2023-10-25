@@ -23,7 +23,10 @@ public class MultipleEntityData extends CreatureData {
         if(d instanceof MultipleEntityData) {
             MultipleEntityData inputData = (MultipleEntityData) d;
             for(Map.Entry<Class<?>, CreatureData> entry : subData.entrySet()) {
-                Log.logInfo("Comparing data " + entry.getValue().getClass() + " " + entry.getValue() + " against " + d, Verbosity.HIGHEST);
+                String value = entry.getValue().toString();
+                if(value.isEmpty())
+                    value = "*";
+                Log.logInfo("Comparing data " + entry.getValue().getClass().getSimpleName() + " " + value + " against " + inputData.getDataFromType(entry.getKey()), Verbosity.HIGHEST);
                 if(!entry.getValue().matches(inputData.getDataFromType(entry.getKey())))
                     return false;
             }
