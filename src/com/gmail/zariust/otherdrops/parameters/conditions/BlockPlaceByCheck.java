@@ -56,20 +56,10 @@ public class BlockPlaceByCheck extends Condition {
 
     @Override
     public List<Condition> parse(ConfigurationNode node) {
-        Map<String, Boolean> value;
-        value = parseConfig(node, null);
-        if (value == null)
-            return null;
-
-        List<Condition> conditionList = new ArrayList<Condition>();
-        conditionList.add(new BlockPlaceByCheck(value));
-        return conditionList;
-    }
-
-    public static Map<String, Boolean> parseConfig(ConfigurationNode node, Map<String, Boolean> def) {
         List<String> placedBy = OtherDropsConfig.getMaybeList(node, "placedby");
         if (placedBy.isEmpty())
-            return def;
+            return null;
+
         HashMap<String, Boolean> result = new HashMap<String, Boolean>();
         result.put(null, OtherDropsConfig.containsAll(placedBy));
         for (String name : placedBy) {
@@ -81,7 +71,9 @@ public class BlockPlaceByCheck extends Condition {
                 result.put(name, true);
             }
         }
-        return result;
-    }
 
+        List<Condition> conditionList = new ArrayList<>();
+        conditionList.add(new BlockPlaceByCheck(result));
+        return conditionList;
+    }
 }

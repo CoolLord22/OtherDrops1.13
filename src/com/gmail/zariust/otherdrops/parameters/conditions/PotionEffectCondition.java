@@ -108,6 +108,9 @@ public class PotionEffectCondition extends Condition {
             }
         }
 
+        if(potionEffects.isEmpty())
+            return null;
+
         conditionList.add(new PotionEffectCondition(potionEffects));
         return conditionList;
     }
