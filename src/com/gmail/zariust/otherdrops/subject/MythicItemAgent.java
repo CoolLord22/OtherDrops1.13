@@ -31,15 +31,20 @@ public class MythicItemAgent extends ToolAgent {
             ItemStack mythicItemStack = Dependencies.getMythicMobs().getItemManager().getItemStack(mythicItem);
             Log.logInfo("Checking mythic tool: " + mythicItemStack + " vs player tool: " + playerItem, Verbosity.HIGHEST);
             if(mythicItemStack != null) {
-                if(playerItem.getType() != mythicItemStack.getType())
+                if(playerItem.getType() != mythicItemStack.getType()) { // if the two materials are not equal
+                    Log.logInfo("MythicToolCheck - failed (different materials).", Verbosity.HIGHEST);
                     return false;
-                if(!mythicItemStack.hasItemMeta())
+                }
+                if(!mythicItemStack.hasItemMeta()) { // if mythic item has no custom data, the check should pass
+                    Log.logInfo("MythicToolCheck - passed (no meta on MythicItem).", Verbosity.HIGHEST);
                     return true;
-                if(playerItem.hasItemMeta()) {
+                }
+                if(playerItem.hasItemMeta()) { // if the item has meta, lets check to make sure they match
                     ItemMeta thisMeta = playerItem.getItemMeta();
                     ItemMeta stackMeta = mythicItemStack.getItemMeta();
                     ((Damageable) thisMeta).setDamage(0);
                     ((Damageable) stackMeta).setDamage(0);
+                    Log.logInfo("MythicToolCheck - returned value: " + Bukkit.getItemFactory().equals(thisMeta, stackMeta), Verbosity.HIGHEST);
                     return Bukkit.getItemFactory().equals(thisMeta, stackMeta);
                 }
             }
