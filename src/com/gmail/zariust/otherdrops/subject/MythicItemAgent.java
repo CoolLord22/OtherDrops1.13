@@ -34,12 +34,12 @@ public class MythicItemAgent extends ToolAgent {
                 if(playerItem.getType() != mythicItemStack.getType()) { // if the two materials are not equal
                     Log.logInfo("MythicToolCheck - failed (different materials).", Verbosity.HIGHEST);
                     return false;
-                }
-                if(!mythicItemStack.hasItemMeta()) { // if mythic item has no custom data, the check should pass
+                } else if(!mythicItemStack.hasItemMeta()) { // if mythic item has no custom data, the check should pass
                     Log.logInfo("MythicToolCheck - passed (no meta on MythicItem).", Verbosity.HIGHEST);
                     return true;
-                }
-                if(playerItem.hasItemMeta()) { // if the item has meta, lets check to make sure they match
+                } else { // mythic item has meta, lets check that it matches the player's item
+                    if(!playerItem.hasItemMeta()) // player item had no meta
+                        return false;
                     ItemMeta thisMeta = playerItem.getItemMeta();
                     ItemMeta stackMeta = mythicItemStack.getItemMeta();
                     ((Damageable) thisMeta).setDamage(0);
