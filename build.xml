@@ -26,11 +26,16 @@
 	<target name="clean">
 		<delete dir="bin" />
 		<delete dir="${ant.project.name}/events" includes="**/*" />
-		<delete file="${output-jar}" />
+		<delete>
+			<fileset dir="." includes="${ant.project.name}${version}-b*.jar"/>
+		</delete>
 	</target>
 
 	<!-- Default setting (if custom setting above not set) -->
 	<target name="default">
+		<delete>
+			<fileset dir="." includes="${ant.project.name}${version}-b*.jar"/>
+		</delete>
 		<property name="lib.spigot" location="${lib}/spigot.jar" />
 		<property name="dependencies" value="dependencies" />
 	</target>
