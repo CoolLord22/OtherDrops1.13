@@ -69,7 +69,6 @@ public class OtherDrops extends JavaPlugin {
 			deleteDirectories(oldFolder);
 		}
 		initLogger();
-		registerCommands();
 		if (OtherDropsConfig.exportEnumLists)
 			exportEnumLists();
 		if (OtherDropsConfig.globalUpdateChecking) {
@@ -129,7 +128,7 @@ public class OtherDrops extends JavaPlugin {
 		writeNames(null,"org.bukkit.Material");
 		writeNames(null,"org.bukkit.block.Biome");
 		writeNames(null,"org.bukkit.entity.EntityType");
-		writeNames(Weather.class);
+		writeNames(null, Weather.class);
 		writeNames(null,"org.bukkit.event.entity.CreatureSpawnEvent$SpawnReason");
 		writeNames(null,"org.bukkit.event.entity.EntityDamageEvent$DamageCause");
 		writeNames(null,"org.bukkit.DyeColor");
@@ -223,16 +222,12 @@ public class OtherDrops extends JavaPlugin {
 			if(cls.isEnum()) {
 				if(fileName != null)
 					writeNames(fileName, (Class<? extends Enum<?>>) cls);
-				writeNames((Class<? extends Enum<?>>) cls);
+				writeNames(cls.getSimpleName(), (Class<? extends Enum<?>>) cls);
 			}
 		} catch (ClassNotFoundException e) {
             Log.logWarning("Could not find class for known_lists: " + className);
         }
     }
-
-	public static void writeNames(Class<? extends Enum<?>> e) {
-		writeNames(e.getSimpleName(), e);
-	}
 
 	public static void writeNames(String filename, Class<? extends Enum<?>> e) {
 		List<String> list = new ArrayList<String>();
@@ -257,7 +252,7 @@ public class OtherDrops extends JavaPlugin {
 		}
 	}
 
-	private void registerCommands() {
+	public void registerCommands() {
 		this.getCommand("od").setExecutor(new OtherDropsCommand(this));
 	}
 

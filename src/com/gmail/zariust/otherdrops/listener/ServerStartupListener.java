@@ -18,5 +18,6 @@ public class ServerStartupListener implements Listener {
 		Log.logInfo("Server startup finished, parsing config values.");
 		plugin.registerParameters();
 		plugin.initConfig();
+		plugin.registerCommands();
 	}
 }
