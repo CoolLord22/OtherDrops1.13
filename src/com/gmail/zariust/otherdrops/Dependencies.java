@@ -197,7 +197,7 @@ public class Dependencies {
 	}
 
 	public static boolean hasMythicMobs() {
-		return Dependencies.mythicMobs != null;
+		return Dependencies.mythicMobs != null && mythicMobs.getMobManager() != null && mythicMobs.getItemManager() != null;
 	}
 
 	public static MythicBukkit getMythicMobs() {
