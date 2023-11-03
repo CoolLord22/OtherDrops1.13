@@ -25,7 +25,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.PluginManager;
@@ -49,8 +49,6 @@ public class OtherDrops extends JavaPlugin {
 
 	// Config stuff
 	public OtherDropsConfig      config = null;
-	protected boolean            enableBlockTo;
-	protected boolean            disableEntityDrops;
 	private BStats metrics;
 	public Updater updateChecker;
 
@@ -71,8 +69,6 @@ public class OtherDrops extends JavaPlugin {
 			deleteDirectories(oldFolder);
 		}
 		initLogger();
-		registerParameters();
-		initConfig();
 		registerCommands();
 		if (OtherDropsConfig.exportEnumLists)
 			exportEnumLists();
@@ -82,7 +78,8 @@ public class OtherDrops extends JavaPlugin {
 		}
 		metrics = new BStats(this);
 		metrics.registerMetrics();
-		Log.logInfo("OtherDrops loaded.");
+		Bukkit.getServer().getPluginManager().registerEvents(new ServerStartupListener(this), this);
+		Log.logInfo("OtherDrops pre-loading finished, waiting for server startup event to parse config.");
 	}
 
 	public void copyFiles(File[] files) {
@@ -264,7 +261,7 @@ public class OtherDrops extends JavaPlugin {
 		this.getCommand("od").setExecutor(new OtherDropsCommand(this));
 	}
 
-	private void initConfig() {
+	public void initConfig() {
 		// Create the data folder (if not there already) and load the config
 		getDataFolder().mkdirs();
 		config = new OtherDropsConfig(this);
@@ -277,7 +274,7 @@ public class OtherDrops extends JavaPlugin {
 		this.log = new Log(this);
 	}
 
-	private void registerParameters() {
+	public void registerParameters() {
 		com.gmail.zariust.otherdrops.parameters.Action.registerDefaultActions();
 		com.gmail.zariust.otherdrops.parameters.Condition.registerDefaultConditions();
 	}
