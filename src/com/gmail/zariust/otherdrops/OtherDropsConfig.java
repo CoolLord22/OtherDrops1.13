@@ -1143,9 +1143,11 @@ public class OtherDropsConfig {
 				if (name.equalsIgnoreCase(biomeMatch.name())) {
 					result.put(biomeMatch, !biomeNegated);
 					matched = true;
+					break;
 				} else if (name.equalsIgnoreCase("ALL") || name.equalsIgnoreCase("ANY")) {
 					result.put(null, true);
 					matched = true;
+					break;
 				}
 				Log.logInfo("Biome match: checking " + name + " against " + biomeMatch.name() + ", match = " + matched, HIGHEST);
 			}
