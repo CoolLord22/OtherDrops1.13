@@ -27,6 +27,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Levelled;
+import org.bukkit.block.data.type.Beehive;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Painting;
 import org.bukkit.entity.Player;
@@ -92,6 +93,9 @@ public class SimpleData implements Data, RangeableData {
 			state.setBlockData(tempData);
 		} else if(state.getBlockData() instanceof Levelled tempData) {
 			tempData.setLevel(data);
+			state.setBlockData(tempData);
+		} else if(state.getBlockData() instanceof Beehive tempData) {
+			tempData.setHoneyLevel(data);
 			state.setBlockData(tempData);
 		} else {
 			MaterialData mat = new MaterialData(state.getType(), (byte) data);

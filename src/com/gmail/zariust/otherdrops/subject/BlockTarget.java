@@ -28,6 +28,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.CommandBlock;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.Levelled;
+import org.bukkit.block.data.type.Beehive;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.inventory.InventoryHolder;
 
@@ -122,11 +123,12 @@ public class BlockTarget implements Target {
         case JUKEBOX:
             return new RecordData(block.getState());
         default:
-            if(block.getBlockData() instanceof Ageable) {
-                return new SimpleData(((Ageable) block.getBlockData()).getAge());
-            }
-            if(block.getBlockData() instanceof Levelled) {
-                return new SimpleData(((Levelled) block.getBlockData()).getLevel());
+            if(block.getBlockData() instanceof Ageable tempData) {
+                return new SimpleData(tempData.getAge());
+            } else if(block.getBlockData() instanceof Levelled tempData) {
+                return new SimpleData(tempData.getLevel());
+            } else if(block.getBlockData() instanceof Beehive tempData) {
+                return new SimpleData(tempData.getHoneyLevel());
             }
             return new SimpleData(block.getData());
         }
