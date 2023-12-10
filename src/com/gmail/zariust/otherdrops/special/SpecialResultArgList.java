@@ -16,13 +16,9 @@
 
 package com.gmail.zariust.otherdrops.special;
 
-import java.util.AbstractSequentialList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.ConcurrentModificationException;
-import java.util.ListIterator;
-import java.util.NoSuchElementException;
-import java.util.Random;
+import com.gmail.zariust.otherdrops.Log;
+
+import java.util.*;
 
 public class SpecialResultArgList extends AbstractSequentialList<String> {
     public class Iterator implements ListIterator<String> {
@@ -252,52 +248,52 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
         list.add("STRING");
         list.add("CLANG");
         list.add("BOOM");
-        System.out.println(list + " " + list.size());
+        Log.logInfoNoVerbosity(list + " " + list.size());
         SpecialResultArgList.Iterator iter1, iter2;
         iter1 = list.listIterator(2);
         iter2 = list.listIterator(2);
-        System.out.println("iter1 and iter2 pointing at element 2");
-        System.out.println("iter1: " + iter1.next() + ", iter2: "
+        Log.logInfoNoVerbosity("iter1 and iter2 pointing at element 2");
+        Log.logInfoNoVerbosity("iter1: " + iter1.next() + ", iter2: "
                 + iter2.next());
         iter1.remove();
-        System.out.println("Removed through iter1");
-        System.out.println("Advancing iter2 to " + iter2.next());
+        Log.logInfoNoVerbosity("Removed through iter1");
+        Log.logInfoNoVerbosity("Advancing iter2 to " + iter2.next());
         iter2.remove();
-        System.out.println("Removed through iter2");
-        System.out.println("Advancing iter1 to " + iter1.next());
-        System.out.println("Advancing iter2 to " + iter2.next());
-        System.out.println(list + " " + list.size());
+        Log.logInfoNoVerbosity("Removed through iter2");
+        Log.logInfoNoVerbosity("Advancing iter1 to " + iter1.next());
+        Log.logInfoNoVerbosity("Advancing iter2 to " + iter2.next());
+        Log.logInfoNoVerbosity(list + " " + list.size());
         // More testing concurrent removal
-        System.out.println("---");
+        Log.logInfoNoVerbosity("---");
         list = new SpecialResultArgList("PING", "PONG", "CLANG", "PRANG",
                 "BOOM", "BANG", "SPLOOSH");
-        System.out.println(list + " " + list.size());
+        Log.logInfoNoVerbosity(list + " " + list.size());
         list.removeIf(str -> str.startsWith("P"));
-        System.out.println(list + " " + list.size());
+        Log.logInfoNoVerbosity(list + " " + list.size());
         // // Testing concurrent addition (commented out because it throws an
         // exception, as it should)
-        // System.out.println("---");
+        // Log.logInfoNoVerbosity("---");
         // list = new
         // DropEventArgList("PING","PONG","CLANG","PRANG","BOOM","BANG","SPLOOSH");
-        // System.out.println(list.toString() + " " + list.size());
+        // Log.logInfoNoVerbosity(list.toString() + " " + list.size());
         // int i = 1;
         // for(String str : list) {
         // list.add(i, str + "ED");
         // }
-        // System.out.println(list.toString() + " " + list.size());
+        // Log.logInfoNoVerbosity(list.toString() + " " + list.size());
         // Testing typical application
-        System.out.println("---");
+        Log.logInfoNoVerbosity("---");
         list = new SpecialResultArgList("RADIUS=3", "HEIGHT=5", "QUACK", "MOO");
-        System.out.println(list + " " + list.size());
+        Log.logInfoNoVerbosity(list + " " + list.size());
         for (String arg : list) {
             if (arg.startsWith("RADIUS"))
                 list.remove(arg);
             else if (arg.startsWith("HEIGHT"))
                 list.remove(arg);
         }
-        System.out.println(list + " " + list.size());
+        Log.logInfoNoVerbosity(list + " " + list.size());
         // Profiling
-        System.out.println("---");
+        Log.logInfoNoVerbosity("---");
         Random rng = new Random();
         profile(rng, 10);
         profile(rng, 100);
@@ -306,7 +302,7 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
     }
 
     private static void profile(Random rng, int n) {
-        System.out.println("Add and remove " + n + " elements:");
+        Log.logInfoNoVerbosity("Add and remove " + n + " elements:");
         SpecialResultArgList list = new SpecialResultArgList();
         long start = System.currentTimeMillis();
         for (int i = 0; i < n; i++) {
@@ -319,7 +315,7 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
         }
         long end = System.currentTimeMillis();
         long add = end - start;
-        System.out.println("Time taken to add: " + add + "ms");
+        Log.logInfoNoVerbosity("Time taken to add: " + add + "ms");
         assert list.size() == n;
         SpecialResultArgList.Iterator iter = list.listIterator();
         start = System.currentTimeMillis();
@@ -329,7 +325,7 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
         }
         end = System.currentTimeMillis();
         long remove = end - start;
-        System.out.println("Time taken to remove: " + remove + "ms");
-        System.out.println("Total time: " + (add + remove) + "ms");
+        Log.logInfoNoVerbosity("Time taken to remove: " + remove + "ms");
+        Log.logInfoNoVerbosity("Total time: " + (add + remove) + "ms");
     }
 }

@@ -1,17 +1,5 @@
 package com.gmail.zariust.otherdrops.parameters.actions;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
@@ -20,6 +8,13 @@ import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.parameters.Action;
 import com.gmail.zariust.otherdrops.subject.CreatureSubject;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+
+import java.util.*;
 
 public class ParticleAction extends Action {
     // "particleeffect: "
@@ -211,7 +206,6 @@ public class ParticleAction extends Action {
         } catch (NumberFormatException ex) {
             Log.logInfo("Particleeffect: invalid radius (" + split[3] + ")");
         }
-        System.out.println(ParticleEffect.ParticleType.valueOf(split[0]));
         ParticleEffect effect = new ParticleEffect(ParticleEffect.ParticleType.valueOf(split[0]));
 
         effect.setSpeed(speed);

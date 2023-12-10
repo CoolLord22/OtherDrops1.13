@@ -129,16 +129,6 @@ public class ToolAgent implements Agent {
         ToolAgent tool = (ToolAgent) other;
         return isEqual(tool);
     }
-
-    public void printTool() {
-    	System.out.println(getReadableName());
-    	if(enchantments != null) {
-        	System.out.println("Enchantments: ");
-        	for(CMEnchantment ench : enchantments) {
-        		System.out.println("	" + ench.getEnch().getName() + " # " + ench.getLevel());
-        	}	
-    	}
-    }
     
     @Override
     public boolean matches(Subject other) {

@@ -534,7 +534,7 @@ public class OtherDropsConfig {
 					defaultsNode = ConfigurationNode.parse(
 							config.getMapList("defaults")).get(0);
 		} else {
-			System.out.println("list: "
+			Log.logInfoNoVerbosity("list: "
 					+ config.getConfigurationSection("defaults").getKeys(true));
 			ConfigurationSection defaultsSection = config
 					.getConfigurationSection("defaults");
