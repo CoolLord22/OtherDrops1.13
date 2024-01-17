@@ -46,9 +46,9 @@ public abstract class Flag implements Comparable<Flag> {
     			Log.logInfo("UNIQUE flag found...",Verbosity.HIGHEST); 
     			result.dropThis = true;
     			result.continueDropping = false;
-    			}
-    		}
-    	};
+            }
+        }
+    };
 
     public final static Flag WORLDGUARD_BUILD_PERMISSION = new Flag("WORLDGUARD_BUILD_PERMISSION") {
     	@Override
@@ -141,10 +141,21 @@ public abstract class Flag implements Comparable<Flag> {
         }
     };
 
+    public final static Flag DROP_TO_INVENTORY = new Flag("DROP_TO_INVENTORY") {
+        @Override
+        public void matches(OccurredEvent event, boolean state, final FlagState result) {
+            if(state) {
+                Log.logInfo("DROP_TO_INVENTORY flag found");
+                result.dropToInventory = false;
+            }
+        }
+    };
+
 
     public final static class FlagState {
         public boolean dropThis         = true;
         public boolean continueDropping = true;
+        public boolean dropToInventory  = true;
     }
 
     // LinkedHashMap because I want to preserve order
@@ -160,6 +171,7 @@ public abstract class Flag implements Comparable<Flag> {
         flags.put("WORLDGUARD_BUILD_PERMISSION", WORLDGUARD_BUILD_PERMISSION);
         flags.put("TOWNY_BUILD_PERMISSION", TOWNY_BUILD_PERMISSION);
         flags.put("GRIEFPREVENTION_BUILD_PERMISSION", GRIEFPREVENTION_BUILD_PERMISSION);
+        flags.put("DROP_TO_INVENTORY", DROP_TO_INVENTORY);
     }
 
     private Flag(String tag) {
