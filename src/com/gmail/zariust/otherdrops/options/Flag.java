@@ -146,7 +146,7 @@ public abstract class Flag implements Comparable<Flag> {
         public void matches(OccurredEvent event, boolean state, final FlagState result) {
             if(state) {
                 Log.logInfo("DROP_TO_INVENTORY flag found");
-                result.dropToInventory = false;
+                result.dropToInventory = true;
             }
         }
     };
@@ -155,7 +155,7 @@ public abstract class Flag implements Comparable<Flag> {
     public final static class FlagState {
         public boolean dropThis         = true;
         public boolean continueDropping = true;
-        public boolean dropToInventory  = true;
+        public boolean dropToInventory  = false;
     }
 
     // LinkedHashMap because I want to preserve order

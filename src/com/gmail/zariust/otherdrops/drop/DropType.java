@@ -229,8 +229,7 @@ public abstract class DropType {
     }
 
     // Drop a creature!
-    protected static DropResult drop(Location where, Player owner,
-            EntityType type, Data data) {
+    protected static DropResult drop(Location where, Player owner, EntityType type, Data data) {
         return dropCreatureWithRider(where, owner, type, data, null, null, "", "");
     }
 
@@ -239,7 +238,7 @@ public abstract class DropType {
         DropResult dropResult = new DropResult();
         if(mythicDrop.contains("ITEM@")) {
             if(Dependencies.getMythicMobs().getItemManager().getItem(mythicDrop.replace("ITEM@", "")).isPresent()) {
-                if(p != null) {
+                if(p != null && toInventory) {
                     return drop(p, Dependencies.getMythicMobs().getItemManager().getItemStack(mythicDrop.replace("ITEM@", "")), where, true);
                 }
                 return drop(where, Dependencies.getMythicMobs().getItemManager().getItemStack(mythicDrop.replace("ITEM@", "")), true);
