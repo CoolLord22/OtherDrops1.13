@@ -16,8 +16,13 @@
 
 package com.gmail.zariust.otherdrops.data;
 
-import java.util.List;
-
+import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.drop.CreatureDrop;
+import com.gmail.zariust.otherdrops.drop.DropResult;
+import com.gmail.zariust.otherdrops.drop.DropType;
+import com.gmail.zariust.otherdrops.drop.DropType.DropFlags;
+import com.gmail.zariust.otherdrops.options.IntRange;
+import com.gmail.zariust.otherdrops.subject.Target;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
@@ -26,13 +31,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
 
-import com.gmail.zariust.otherdrops.OtherDrops;
-import com.gmail.zariust.otherdrops.drop.CreatureDrop;
-import com.gmail.zariust.otherdrops.drop.DropResult;
-import com.gmail.zariust.otherdrops.drop.DropType;
-import com.gmail.zariust.otherdrops.drop.DropType.DropFlags;
-import com.gmail.zariust.otherdrops.options.IntRange;
-import com.gmail.zariust.otherdrops.subject.Target;
+import java.util.List;
 
 public class VehicleData implements Data {
     public enum VehicleState {

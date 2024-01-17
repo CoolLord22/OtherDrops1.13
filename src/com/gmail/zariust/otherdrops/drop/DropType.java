@@ -131,10 +131,7 @@ public abstract class DropType {
 
         if (chance < 100.0) {
             double rolledChance = flags.rng.nextDouble();
-            Log.logInfo("Rolling chance: checking " + rolledChance + " <= "
-                    + (chance / 100) + " ("
-                    + (!(rolledChance > chance / 100.0)) + ")",
-                    Verbosity.HIGHEST);
+            Log.logInfo("Rolling chance: checking " + rolledChance + " <= " + (chance / 100) + " (" + (!(rolledChance > chance / 100.0)) + ")", Verbosity.HIGHEST);
             if (rolledChance > chance / 100.0) {
                 Log.logInfo("Failed roll, returning...", Verbosity.HIGHEST);
                 return DropResult.fromQuantity(-1);
@@ -147,8 +144,7 @@ public abstract class DropType {
 
     private Location calculateOffsetLocation(Location from, Location offset) {
         if (offset != null) {
-            offset.setWorld(from.getWorld()); // To avoid "differing world"
-                                              // errors
+            offset.setWorld(from.getWorld()); // To avoid "differing world" errors
             return from.clone().add(offset);
         } else {
             return from.clone();
@@ -158,8 +154,7 @@ public abstract class DropType {
     // Exclusive Drop should call here to skip chance & offsetlocation
     // note: exclusivedrop is a "chance distribution" and chance values have
     // already been checked, so skip if exclusivedrop
-    protected DropResult dropLocal(Target target, Location where,
-            double amount, DropFlags flags) {
+    protected DropResult dropLocal(Target target, Location where, double amount, DropFlags flags) {
         DropResult dropResult = new DropResult();
         int quantity = calculateQuantity(amount, flags.rng);
         // OtherDrops.logInfo("Calling performDrop...",Verbosity.HIGHEST);
@@ -170,8 +165,7 @@ public abstract class DropType {
     }
 
     // Methods to override!
-    protected abstract DropResult performDrop(Target source, Location at,
-            DropFlags flags);
+    protected abstract DropResult performDrop(Target source, Location at, DropFlags flags);
 
     public abstract double getAmount();
 
@@ -184,8 +178,7 @@ public abstract class DropType {
         String result = getName();
         DoubleRange amount = getAmountRange();
         if (amount.getMin() != 1 || amount.getMax() != 1)
-            result += "/"
-                    + (isQuantityInteger() ? amount.toIntRange() : amount);
+            result += "/" + (isQuantityInteger() ? amount.toIntRange() : amount);
         if (chance < 100 || chance > 100)
             result += "/" + chance + "%";
         return result;
@@ -206,12 +199,10 @@ public abstract class DropType {
     }
 
     // Drop an item!
-    protected static DropResult drop(Location where, ItemStack stack,
-            boolean naturally) {
+    protected static DropResult drop(Location where, ItemStack stack, boolean naturally) {
         DropResult dropResult = new DropResult();
         if (stack.getType() == Material.AIR)
-            return DropResult.fromQuantity(1); // don't want to crash clients
-                                               // with air item entities
+            return DropResult.fromQuantity(1); // don't want to crash clients with air item entities
         World in = where.getWorld();
         if (naturally)
             dropResult.addDropped(in.dropItemNaturally(where, stack));
@@ -249,9 +240,7 @@ public abstract class DropType {
         return dropResult;
     }
 
-    protected static DropResult dropCreatureWithRider(Location where,
-            Player owner, EntityType type, Data data, CreatureDrop ride,
-            Entity passenger, String eventName, String spawnReason) {
+    protected static DropResult dropCreatureWithRider(Location where, Player owner, EntityType type, Data data, CreatureDrop ride, Entity passenger, String eventName, String spawnReason) {
         if (spawnReason == null) spawnReason = "";
         
         DropResult dropResult = new DropResult();
@@ -259,12 +248,8 @@ public abstract class DropType {
         
         Log.dMsg("DROP MOB: spawnreason: " + spawnReason);
         // if this drop is due to a natural spawn, ensure the OD mob limit is not exceeeded
-        if (owner == null && (spawnReason.isEmpty() || spawnReason.equalsIgnoreCase("natural"))
-                && in.getLivingEntities().size() > OtherDropsConfig.globalCustomSpawnLimit) {
-            Log.logInfo("Warning: cannot spawn mob as custom_spawn_limit ("
-                    + OtherDropsConfig.globalCustomSpawnLimit
-                    + ") exceeded (current count="
-                    + in.getLivingEntities().size() + ").", Verbosity.HIGHEST);
+        if (owner == null && (spawnReason.isEmpty() || spawnReason.equalsIgnoreCase("natural")) && in.getLivingEntities().size() > OtherDropsConfig.globalCustomSpawnLimit) {
+            Log.logInfo("Warning: cannot spawn mob as custom_spawn_limit (" + OtherDropsConfig.globalCustomSpawnLimit + ") exceeded (current count=" + in.getLivingEntities().size() + ").", Verbosity.HIGHEST);
             return dropResult;
         }
         Entity mob = null;
@@ -274,8 +259,7 @@ public abstract class DropType {
         // (here) and only needs
         // to store one entry
         if (!spawnReason.equals("odd")) {
-            OdSpawnListener.otherdropsSpawned.put(
-                    OdSpawnListener.getSpawnLocKey(spawnLoc), type);
+            OdSpawnListener.otherdropsSpawned.put(OdSpawnListener.getSpawnLocKey(spawnLoc), type);
         }
 
         String mobSpawnError = "";
@@ -283,30 +267,23 @@ public abstract class DropType {
             mob = in.spawnEntity(spawnLoc, type);
         } catch (Exception e) {
             mobSpawnError = e.getLocalizedMessage();
-            // e.printStackTrace();
         }
         try {
-            if (mob == null)
-            {
-                // attempt custom mob loading
+            if (mob == null) {
                 CustomMobSupport.spawnCustomMob(type.toString(), spawnLoc);
             }
             data.setOn(mob, owner);
-            mob.setMetadata("CreatureSpawnedBy", new FixedMetadataValue(
-                    OtherDrops.plugin, "OtherDrops"));
+            mob.setMetadata("CreatureSpawnedBy", new FixedMetadataValue(OtherDrops.plugin, "OtherDrops"));
             dropResult.addDropped(mob);
             if (passenger != null)
                 mob.addPassenger(passenger);
 
             if (ride != null) {
-                dropResult.add(dropCreatureWithRider(where, owner,
-                        ride.getCreature(), ride.getData(),
-                        ride.getPassenger(), mob, eventName, spawnReason));
+                dropResult.add(dropCreatureWithRider(where, owner, ride.getCreature(), ride.getData(), ride.getPassenger(), mob, eventName, spawnReason));
             }
             dropResult.setQuantity(1);
         } catch (Exception e) {
             Log.logInfo("DropType (entityspawn): failed to set entity data '" + type.toString() + "' at location: '" + spawnLoc + "' (reason: " + e.getLocalizedMessage() + ", " + mobSpawnError + ")", Verbosity.HIGH);
-            // e.printStackTrace();
         }
         return dropResult;
     }
@@ -314,8 +291,7 @@ public abstract class DropType {
     @SuppressWarnings("rawtypes")
     public static DropType parseFrom(ConfigurationNode node) {
         Object drop = node.get("drop");
-        String colour = OtherDropsConfig.getStringFrom(node, "color", "colour",
-                "data");
+        String colour = OtherDropsConfig.getStringFrom(node, "color", "colour", "data");
         if (colour == null)
             colour = "0";
         if (drop == null)
@@ -330,8 +306,7 @@ public abstract class DropType {
             for (Object obj : ((Map) drop).keySet())
                 dropList.add(obj.toString());
             return DropListExclusive.parse(dropList, colour);
-        } else if (drop instanceof Set) { // Probably'll never happen, but
-                                          // whatever
+        } else if (drop instanceof Set) { // Probably'll never happen, but whatever
             List<String> dropList = new ArrayList<String>();
             for (Object obj : ((Set) drop))
                 dropList.add(obj.toString());
@@ -411,14 +386,11 @@ public abstract class DropType {
         // with ^ to indicate ALL
         // - One of the special keywords DEFAULT, DENY, MONEY, CONTENTS
         if (name.toUpperCase().startsWith("ANY_")) {
-            return DropListExclusive.parse(name, defaultData,
-                    amount.toIntRange(), chance);
+            return DropListExclusive.parse(name, defaultData, amount.toIntRange(), chance);
         } else if (name.toUpperCase().startsWith("^ANY_") || name.toUpperCase().startsWith("EVERY_")) {
-            return DropListInclusive.parse(name, defaultData,
-                    amount.toIntRange(), chance);
+            return DropListInclusive.parse(name, defaultData, amount.toIntRange(), chance);
         } else {
-            DropType dropType = CreatureDrop.parse(originalName, defaultData,
-                    amount.toIntRange(), chance);
+            DropType dropType = CreatureDrop.parse(originalName, defaultData, amount.toIntRange(), chance);
             if (dropType != null)
                 return dropType;
 

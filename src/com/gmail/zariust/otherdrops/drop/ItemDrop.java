@@ -16,19 +16,6 @@
 
 package com.gmail.zariust.otherdrops.drop;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
 import com.gmail.zariust.common.CMEnchantment;
 import com.gmail.zariust.common.CommonEnchantments;
 import com.gmail.zariust.common.CommonEntity;
@@ -42,6 +29,17 @@ import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.subject.Target;
 import com.gmail.zariust.otherdrops.things.ODItem;
 import com.gmail.zariust.otherdrops.things.ODVariables;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemDrop extends DropType {
     private final Material            material;
@@ -78,30 +76,23 @@ public class ItemDrop extends DropType {
         this(mat == null ? null : new ItemStack(mat, 1, (short) data), percent);
     }
 
-    public ItemDrop(IntRange amount, Material mat, double percent,
-            List<CMEnchantment> enchantment, String loreName) {
+    public ItemDrop(IntRange amount, Material mat, double percent, List<CMEnchantment> enchantment, String loreName) {
         this(amount, mat, 0, percent, enchantment, loreName);
     }
 
-    public ItemDrop(IntRange amount, Material mat, double percent,
-            List<CMEnchantment> enchantment) {
+    public ItemDrop(IntRange amount, Material mat, double percent, List<CMEnchantment> enchantment) {
         this(amount, mat, 0, percent, enchantment, "");
     }
 
-    public ItemDrop(IntRange amount, Material mat, int data, double percent,
-            List<CMEnchantment> enchantment, String loreName) {
-        this(amount, mat, new ItemData(data), percent, enchantment, loreName,
-                null);
+    public ItemDrop(IntRange amount, Material mat, int data, double percent, List<CMEnchantment> enchantment, String loreName) {
+        this(amount, mat, new ItemData(data), percent, enchantment, loreName, null);
     }
 
     public ItemDrop(ItemStack stack, double percent) {
-        this(new IntRange(stack == null ? 1 : stack.getAmount()),
-                stack == null ? null : stack.getType(), stack == null ? null
-                        : new ItemData(stack), percent, null, "", null);
+        this(new IntRange(stack == null ? 1 : stack.getAmount()), stack == null ? null : stack.getType(), stack == null ? null : new ItemData(stack), percent, null, "", null);
     }
 
-    public ItemDrop(IntRange amount, Material mat, Data data, double percent,
-            List<CMEnchantment> enchPass, String loreName, List<String> loreList) { // Rome
+    public ItemDrop(IntRange amount, Material mat, Data data, double percent, List<CMEnchantment> enchPass, String loreName, List<String> loreList) { // Rome
         super(DropCategory.ITEM, percent);
         quantity = amount;
         material = mat;
@@ -131,8 +122,7 @@ public class ItemDrop extends DropType {
 
     @Override
     protected DropResult performDrop(Target source, Location where, DropFlags flags) {
-        DropResult dropResult = DropResult
-                .getFromOverrideDefault(this.overrideDefault);
+        DropResult dropResult = DropResult.getFromOverrideDefault(this.overrideDefault);
         if (material == null || quantity.getMax() == 0)
             return dropResult;
         // Material AIR = drop NOTHING so always override
@@ -141,12 +131,10 @@ public class ItemDrop extends DropType {
 
         ItemStack stack = getItem(source, flags); // get the item stack with relevant
                                            // enchantments and/or metadata
-        int count = 1; // if DropSpread is false we drop a single (multi-item)
-                       // stack
+        int count = 1; // if DropSpread is false we drop a single (multi-item) stack
 
         if (flags.spread) { // if DropSpread is true, then
-            stack.setAmount(1); // set amount to 1 as we're going to drop single
-                                // items one by one
+            stack.setAmount(1); // set amount to 1 as we're going to drop single items one by one
             count = rolledQuantity; // set #times to drop = #items to be dropped
         }
         Player playerReceivingItem = flags.recipient;
@@ -177,27 +165,26 @@ public class ItemDrop extends DropType {
      * @param source
      */
     private void setItemMeta(ItemStack stack, Target source, DropFlags flags) {
-        if ((durability instanceof ItemData)
-                && ((ItemData) durability).itemMeta != null) {
+        if ((durability instanceof ItemData) && ((ItemData) durability).itemMeta != null) {
             stack = ((ItemData) durability).itemMeta.setOn(stack, source);
         }
         
         if(flags != null) {
             if (stack != null && displayName != null && !(displayName.isEmpty())) {
-                    ItemMeta im = stack.getItemMeta();
+                ItemMeta im = stack.getItemMeta();
 
-                    String victimName = flags.victim; // TODO: fix these
-                    String parsedLoreName = parseLore(displayName, flags, victimName);
+                String victimName = flags.victim; // TODO: fix these
+                String parsedLoreName = parseLore(displayName, flags, victimName);
 
-                    im.setDisplayName(parsedLoreName);
-                    if (lore != null && !lore.isEmpty()) {
-                        List<String> parsedLore = new ArrayList<String>();
-                        for (String line : lore) {
-                            parsedLore.add(parseLore(line, flags, victimName));
-                        }
-                        im.setLore(parsedLore);
+                im.setDisplayName(parsedLoreName);
+                if (lore != null && !lore.isEmpty()) {
+                    List<String> parsedLore = new ArrayList<String>();
+                    for (String line : lore) {
+                        parsedLore.add(parseLore(line, flags, victimName));
                     }
-                    stack.setItemMeta(im);
+                    im.setLore(parsedLore);
+                }
+                stack.setItemMeta(im);
             }
         }
     }
@@ -215,10 +202,8 @@ public class ItemDrop extends DropType {
             if (source == null)
                 return (short) 0;
             String[] dataSplit = source.toString().split("@");
-            if (material.toString().equalsIgnoreCase("monster_egg")) { // spawn
-                                                                       // egg
-                EntityType creatureType = CommonEntity
-                        .getCreatureEntityType(dataSplit[0]);
+            if (material.toString().equalsIgnoreCase("monster_egg")) { // spawn egg
+                EntityType creatureType = CommonEntity.getCreatureEntityType(dataSplit[0]);
                 if (creatureType != null)
                     itemData = creatureType.getTypeId();
             } else {
@@ -231,8 +216,7 @@ public class ItemDrop extends DropType {
                 }
             }
             if (itemData == -1)
-                itemData = 0; // reset to default data if we weren't able to
-                              // parse anything else
+                itemData = 0; // reset to default data if we weren't able to parse anything else
         }
         return (short) itemData;
     }
@@ -283,19 +267,16 @@ public class ItemDrop extends DropType {
         return parsedLoreName;
     }
 
-    public static DropType parse(String drop, String defaultData,
-            IntRange amount, double chance) {
+    public static DropType parse(String drop, String defaultData, IntRange amount, double chance) {
         ODItem item = ODItem.parseItem(drop, defaultData);
         Material mat = item.getMaterial();
         if (mat == null)
             return null;
         Data data = item.getData();
         if (data == null)
-            return null; // Data should only be null if invalid for this type,
-                         // so don't continue
+            return null; // Data should only be null if invalid for this type, so don't continue
 
-        return new ItemDrop(amount, mat, data, chance, item.enchantments,
-                item.displayname, item.lore);
+        return new ItemDrop(amount, mat, data, chance, item.enchantments, item.displayname, item.lore);
     }
 
     @Override
@@ -307,8 +288,7 @@ public class ItemDrop extends DropType {
         if (durability != null) {
             String dataString = durability.get(material);
             if (dataString != null)
-                ret += (dataString.isEmpty()) ? "" : "@"
-                        + durability.get(material);
+                ret += (dataString.isEmpty()) ? "" : "@" + durability.get(material);
         }
         return ret;
     }

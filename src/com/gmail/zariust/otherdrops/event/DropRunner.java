@@ -93,7 +93,7 @@ public class DropRunner implements Runnable {
 
 		if(Dependencies.hasWildStacker() && currentEvent.getVictim() instanceof LivingEntity) {
 			StackedEntity se = WildStackerAPI.getStackedEntity(currentEvent.getVictim());
-			List<ItemStack> tempLoot = new ArrayList<ItemStack>();
+			List<ItemStack> tempLoot = new ArrayList<>();
 
 			ItemStack air = new ItemStack(Material.AIR);
 			tempLoot.add(air);
@@ -255,34 +255,25 @@ public class DropRunner implements Runnable {
 						dropNaturally, spreadDrop, customDrop.rng, eventName, currentEvent.getSpawnedReason(), currentEvent.getVictimName()); // TODO:
 				// add
 				// tool
-				DropResult dropResult = customDrop.getDropped().drop(location,
-						target, customDrop.getOffset(), amount, flags);
+				DropResult dropResult = customDrop.getDropped().drop(location, target, customDrop.getOffset(), amount, flags);
 				droppedQuantity = dropResult.getQuantity();
-				Log.logInfo(
-						"Override default is: "
-								+ dropResult.getOverrideDefault(), HIGHEST);
+				Log.logInfo("Override default is: " + dropResult.getOverrideDefault(), HIGHEST);
 				if (dropResult.getOverrideDefault())
 					currentEvent.setOverrideDefault(true);
-				currentEvent.setOverrideDefaultXp(dropResult
-						.getOverrideDefaultXp());
+				currentEvent.setOverrideDefaultXp(dropResult.getOverrideDefaultXp());
 
-				Log.logInfo("SimpleDrop: dropped "
-						+ customDrop.getDropped().toString() + " x " + amount
-						+ " (dropped: " + droppedQuantity + ")", HIGHEST);
+				Log.logInfo("SimpleDrop: dropped " + customDrop.getDropped().toString() + " x " + amount + " (dropped: " + droppedQuantity + ")", HIGHEST);
 				if (droppedQuantity < 0) { // If the embedded chance roll fails,
 					// assume default and bail out!
-					Log.logInfo("Drop failed... setting cancelled to false",
-							Verbosity.HIGHEST);
+					Log.logInfo("Drop failed... setting cancelled to false", Verbosity.HIGHEST);
 					currentEvent.setCancelled(false);
 					return false;
 				}
 
 				// If the drop chance was 100% and no replacement block is
 				// specified, make it air
-				double chance = max(customDrop.getChance(), customDrop
-						.getDropped().getChance());
-				if (customDrop.getReplacementBlock() == null && chance >= 100.0
-						&& target.overrideOn100Percent()) {
+				double chance = max(customDrop.getChance(), customDrop.getDropped().getChance());
+				if (customDrop.getReplacementBlock() == null && chance >= 100.0 && target.overrideOn100Percent()) {
 					if (target instanceof LivingSubject) { // need to be careful
 						// not to replace
 						// creatures with air
@@ -308,9 +299,7 @@ public class DropRunner implements Runnable {
 				setFishingDropVelocity(who, dropResult);
 			} else {
 				// DEFAULT event - set cancelled to false
-				Log.logInfo(
-						"Performdrop: DEFAULT, so undo event cancellation.",
-						Verbosity.HIGHEST);
+				Log.logInfo("Performdrop: DEFAULT, so undo event cancellation.", Verbosity.HIGHEST);
 				currentEvent.setCancelled(false);
 				// TODO: some way of setting it so that if we've set false here
 				// we don't set true on the same occureddrop?
