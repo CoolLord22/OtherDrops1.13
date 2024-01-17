@@ -239,6 +239,7 @@ public class DropRunner implements Runnable {
 				boolean dropNaturally = true; // TODO: How to make this
 				// specifiable in the config?
 				boolean spreadDrop = customDrop.getDropSpread();
+				boolean dropToInventory = customDrop.getFlagState().dropToInventory;
 
 				double fortuneMultiplier = 1.0;
 				if(customDrop.getFortuneEnhance() && currentEvent.getTool() instanceof PlayerSubject) {
@@ -251,8 +252,7 @@ public class DropRunner implements Runnable {
 				amount = customDrop.quantity.getRandomIn(customDrop.rng) * fortuneMultiplier;
 
 				String eventName = getEventName();
-				DropFlags flags = DropType.flags(who, currentEvent.getTool(),
-						dropNaturally, spreadDrop, customDrop.rng, eventName, currentEvent.getSpawnedReason(), currentEvent.getVictimName()); // TODO:
+				DropFlags flags = DropType.flags(who, currentEvent.getTool(), dropToInventory, dropNaturally, spreadDrop, customDrop.rng, eventName, currentEvent.getSpawnedReason(), currentEvent.getVictimName()); // TODO:
 				// add
 				// tool
 				DropResult dropResult = customDrop.getDropped().drop(location, target, customDrop.getOffset(), amount, flags);

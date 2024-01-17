@@ -45,7 +45,7 @@ public abstract class DropType {
     }
 
     public static class DropFlags {
-        protected boolean naturally, spread;
+        protected boolean naturally, spread, dropToInventory;
         protected Random  rng;
         protected Player  recipient;
         protected String  victim;
@@ -53,8 +53,9 @@ public abstract class DropType {
         protected String  eventType;
         protected String  spawnReason;        
 
-        protected DropFlags(boolean n, boolean s, Random ran, Player who,
+        protected DropFlags(boolean d, boolean n, boolean s, Random ran, Player who,
                 Agent tool, String eventType, String spawnReason, String victim) {
+            dropToInventory = d;
             naturally = n;
             spread = s;
             rng = ran;
@@ -115,9 +116,8 @@ public abstract class DropType {
         return chance;
     }
 
-    public static DropFlags flags(Player recipient, Agent tool,
-            boolean naturally, boolean spread, Random rng, String eventType, String spawnReason, String victim) {
-        return new DropFlags(naturally, spread, rng, recipient, tool, eventType, spawnReason, victim);
+    public static DropFlags flags(Player recipient, Agent tool, boolean dropToInventory, boolean naturally, boolean spread, Random rng, String eventType, String spawnReason, String victim) {
+        return new DropFlags(dropToInventory, naturally, spread, rng, recipient, tool, eventType, spawnReason, victim);
     }
 
     // Drop now! Return false if the roll fails
@@ -125,8 +125,7 @@ public abstract class DropType {
     // This is a wrapper for the specific droptype's "performDrop" - parse
     // overall chance first
     // then call performDrop "quantity" (from quantity: parameter) times over
-    public DropResult drop(Location from, Target target, Location offset,
-            double amount, DropFlags flags) {
+    public DropResult drop(Location from, Target target, Location offset, double amount, DropFlags flags) {
         Location offsetLocation = calculateOffsetLocation(from, offset);
 
         if (chance < 100.0) {
@@ -198,6 +197,22 @@ public abstract class DropType {
         return intPart;
     }
 
+    // Give a player an item!
+    protected static DropResult drop(Player who, ItemStack stack, Location where, boolean naturally) {
+        DropResult dropResult = new DropResult();
+        HashMap<Integer, ItemStack> notGiven = who.getInventory().addItem(stack);
+        who.updateInventory();
+
+        if(!notGiven.isEmpty()) {
+            for(Integer key : notGiven.keySet()) {
+                dropResult.addWithoutOverride(drop(where, notGiven.get(key), naturally));
+            }
+        }
+
+        dropResult.setQuantity(stack.getAmount());
+        return dropResult;
+    }
+
     // Drop an item!
     protected static DropResult drop(Location where, ItemStack stack, boolean naturally) {
         DropResult dropResult = new DropResult();
@@ -220,10 +235,13 @@ public abstract class DropType {
     }
 
     // Drop a MythicMob item/mob
-    protected static DropResult drop(Location where, String mythicDrop) {
+    protected static DropResult drop(Player p, Location where, String mythicDrop, boolean toInventory) {
         DropResult dropResult = new DropResult();
         if(mythicDrop.contains("ITEM@")) {
             if(Dependencies.getMythicMobs().getItemManager().getItem(mythicDrop.replace("ITEM@", "")).isPresent()) {
+                if(p != null) {
+                    return drop(p, Dependencies.getMythicMobs().getItemManager().getItemStack(mythicDrop.replace("ITEM@", "")), where, true);
+                }
                 return drop(where, Dependencies.getMythicMobs().getItemManager().getItemStack(mythicDrop.replace("ITEM@", "")), true);
             }
         } else if(mythicDrop.contains("MOB@")) {

@@ -132,7 +132,7 @@ public class VehicleData implements Data {
                 return;
             mob = witness;
         } else {
-            DropFlags flags = DropType.flags(witness, null, true, false,
+            DropFlags flags = DropType.flags(witness, null, false,true, false,
                     OtherDrops.rng, "", "", "");
             DropResult dropResult = creature.drop(entity.getLocation(),
                     (Target) null, (Location) null, 1, flags);

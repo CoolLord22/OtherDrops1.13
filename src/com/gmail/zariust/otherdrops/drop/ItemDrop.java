@@ -139,14 +139,8 @@ public class ItemDrop extends DropType {
         }
         Player playerReceivingItem = flags.recipient;
         while (count-- > 0) {
-        	if(!OtherDropsConfig.globalFallToGround && playerReceivingItem != null) {
-        		HashMap<Integer, ItemStack> notGiven = playerReceivingItem.getInventory().addItem(stack);
-        		playerReceivingItem.updateInventory();
-        		if(!notGiven.isEmpty()) {
-        			for(Integer key : notGiven.keySet()) {
-                        dropResult.addWithoutOverride(drop(where, notGiven.get(key), flags.naturally));
-        			}
-        		}
+        	if((!OtherDropsConfig.globalFallToGround || flags.dropToInventory) && playerReceivingItem != null) {
+                dropResult.addWithoutOverride(drop(playerReceivingItem, stack, where, flags.naturally));
         	}
         	else {
                 dropResult.addWithoutOverride(drop(where, stack, flags.naturally));

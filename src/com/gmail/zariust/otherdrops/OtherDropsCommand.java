@@ -297,7 +297,7 @@ public class OtherDropsCommand implements CommandExecutor {
                 }
 
                 DropFlags flags = DropType.flags(dsl.player, (dsl.player == null ? null : new PlayerSubject(
-                        dsl.player)), true, false, OtherDrops.rng, "odd", "odd", "");
+                        dsl.player)), false, true, false, OtherDrops.rng, "odd", "odd", "");
                 DropResult dropResult = drop.drop(dsl.loc, (Target) null,
                         (Location) null, 1, flags);
 

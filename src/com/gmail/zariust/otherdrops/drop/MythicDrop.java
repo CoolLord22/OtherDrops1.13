@@ -1,9 +1,11 @@
 package com.gmail.zariust.otherdrops.drop;
 
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.subject.Target;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 public class MythicDrop extends DropType {
     private final String mythicDrop;
@@ -21,8 +23,14 @@ public class MythicDrop extends DropType {
         DropResult dropResult = DropResult.fromOverride(this.overrideDefault);
         rolledQuantity = quantity.getRandomIn(flags.rng);
         int amount = rolledQuantity;
+        Player playerReceivingItem = flags.recipient;
         while (amount-- > 0) {
-            dropResult.addWithoutOverride(drop(at, mythicDrop));
+            if((!OtherDropsConfig.globalFallToGround || flags.dropToInventory) && playerReceivingItem != null) {
+                dropResult.addWithoutOverride(drop(playerReceivingItem, at, mythicDrop, true));
+            }
+            else {
+                dropResult.addWithoutOverride(drop(playerReceivingItem, at, mythicDrop, false));
+            }
         }
 
         return dropResult;
