@@ -12,7 +12,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.gmail.zariust.common.Verbosity.HIGH;
@@ -71,7 +71,14 @@ public class MythicMobSubject extends CreatureSubject {
 
     @Override
     public List<Target> canMatch() {
-        return Collections.singletonList(this);
+        List<Target> all = new ArrayList<Target>();
+        all.add(this);
+        if(((MythicMobData) data).getMythicMobType().equalsIgnoreCase("ANY")) {
+            for(String s : Dependencies.getMythicMobs().getMobManager().getMobNames()) {
+                all.add(new MythicMobSubject(new MythicMobData(s)));
+            }
+        }
+        return all;
     }
 
     @Override

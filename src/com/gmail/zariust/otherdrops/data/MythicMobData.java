@@ -13,7 +13,7 @@ public class MythicMobData implements Data {
 
     public MythicMobData(String mythicMobType) {
         if(Dependencies.hasMythicMobs()) {
-            if(!Dependencies.getMythicMobs().getMobManager().getMythicMob(mythicMobType).isPresent()) {
+            if(!mythicMobType.equalsIgnoreCase("ANY") && !Dependencies.getMythicMobs().getMobManager().getMythicMob(mythicMobType).isPresent()) {
                 Log.logInfo("Invalid mythic mob specified/could not be found: " + mythicMobType, Verbosity.HIGHEST);
                 return;
             }
@@ -34,8 +34,11 @@ public class MythicMobData implements Data {
         if (!(d instanceof MythicMobData))
             return false;
 
-        if(this.mythicMobType != null)
+        if(this.mythicMobType != null) {
+            if(this.mythicMobType.equalsIgnoreCase("ANY") || ((MythicMobData) d).mythicMobType.equalsIgnoreCase("ANY"))
+                return true;
             return this.mythicMobType.equalsIgnoreCase(((MythicMobData) d).mythicMobType);
+        }
 
         return true;
     }
