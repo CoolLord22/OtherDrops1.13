@@ -1,20 +1,15 @@
 package com.gmail.zariust.otherdrops.things;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.options.IntRange;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class ODVariables {
     Map<String, String> variables = new HashMap<String, String>();
@@ -37,6 +32,11 @@ public class ODVariables {
 
     public ODVariables setVictimName(String val) {
         variables.put("%v", val);
+        return this;
+    }
+
+    public ODVariables setVictimUUID(String val) {
+        variables.put("%uuid", val);
         return this;
     }
 

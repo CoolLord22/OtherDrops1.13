@@ -157,6 +157,7 @@ public class MessageAction extends Action {
         String quantityString = "";
         String deathMessage = "";
         String loreName = "";
+        String entUUID = "";
 
         if (drop != null) {
             if (drop instanceof SimpleDrop) {
@@ -203,6 +204,9 @@ public class MessageAction extends Action {
                 }
             }
             victimName = occurence.getTarget().getReadableName();
+            if(occurence.getVictim() != null) {
+                entUUID = occurence.getVictim().getUniqueId().toString();
+            }
 
             if (occurence.getRealEvent() instanceof PlayerDeathEvent) {
                 PlayerDeathEvent ede = (PlayerDeathEvent) occurence.getRealEvent();
@@ -211,6 +215,6 @@ public class MessageAction extends Action {
             }
         }
 
-        return new ODVariables().setPlayerName(playerName).setVictimName(victimName).setDropName(dropName).setToolName(toolName).setQuantity(quantityString).setDeathMessage(deathMessage).setloreName(loreName).setLocation(occurence.getLocation()).parse(msg);
+        return new ODVariables().setVictimUUID(entUUID).setPlayerName(playerName).setVictimName(victimName).setDropName(dropName).setToolName(toolName).setQuantity(quantityString).setDeathMessage(deathMessage).setloreName(loreName).setLocation(occurence.getLocation()).parse(msg);
     }
 }
