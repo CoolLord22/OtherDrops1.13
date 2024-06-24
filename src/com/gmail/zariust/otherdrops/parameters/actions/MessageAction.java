@@ -17,6 +17,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -204,15 +205,15 @@ public class MessageAction extends Action {
                 }
             }
             victimName = occurence.getTarget().getReadableName();
-            if(occurence.getVictim() != null) {
+
+            if(occurence.getVictim() != null)
                 entUUID = occurence.getVictim().getUniqueId().toString();
-            }
 
-            if (occurence.getRealEvent() instanceof PlayerDeathEvent) {
-                PlayerDeathEvent ede = (PlayerDeathEvent) occurence.getRealEvent();
-
+            if (occurence.getRealEvent() instanceof PlayerDeathEvent ede)
                 deathMessage = ede.getDeathMessage();
-            }
+
+            if (occurence.getRealEvent() instanceof CreatureSpawnEvent ede)
+                entUUID = ede.getEntity().getUniqueId().toString();
         }
 
         return new ODVariables().setVictimUUID(entUUID).setPlayerName(playerName).setVictimName(victimName).setDropName(dropName).setToolName(toolName).setQuantity(quantityString).setDeathMessage(deathMessage).setloreName(loreName).setLocation(occurence.getLocation()).parse(msg);
