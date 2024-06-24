@@ -35,6 +35,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -47,6 +48,7 @@ public class ItemDrop extends DropType {
     private final IntRange            quantity;
     private int                       rolledQuantity;
     private final List<CMEnchantment> enchantments;
+    private final List<ItemFlag>      itemFlags;
 
     public ItemDrop(Material mat) {
         this(mat, 100.0);
@@ -85,14 +87,14 @@ public class ItemDrop extends DropType {
     }
 
     public ItemDrop(IntRange amount, Material mat, int data, double percent, List<CMEnchantment> enchantment, String loreName) {
-        this(amount, mat, new ItemData(data), percent, enchantment, loreName, null);
+        this(amount, mat, new ItemData(data), percent, enchantment, loreName, null, null);
     }
 
     public ItemDrop(ItemStack stack, double percent) {
-        this(new IntRange(stack == null ? 1 : stack.getAmount()), stack == null ? null : stack.getType(), stack == null ? null : new ItemData(stack), percent, null, "", null);
+        this(new IntRange(stack == null ? 1 : stack.getAmount()), stack == null ? null : stack.getType(), stack == null ? null : new ItemData(stack), percent, null, "", null, null);
     }
 
-    public ItemDrop(IntRange amount, Material mat, Data data, double percent, List<CMEnchantment> enchPass, String loreName, List<String> loreList) { // Rome
+    public ItemDrop(IntRange amount, Material mat, Data data, double percent, List<CMEnchantment> enchPass, String loreName, List<String> loreList, List<ItemFlag> itemFlags) { // Rome
         super(DropCategory.ITEM, percent);
         quantity = amount;
         material = mat;
@@ -100,6 +102,7 @@ public class ItemDrop extends DropType {
         this.enchantments = enchPass;
         this.displayName = ODVariables.preParse(loreName);
         this.lore = ODVariables.preParse(loreList);
+        this.itemFlags = itemFlags;
     }
 
     /**
@@ -116,6 +119,13 @@ public class ItemDrop extends DropType {
         rolledQuantity = quantity.getRandomIn(OtherDrops.rng);
         ItemStack stack = new ItemStack(material, rolledQuantity, data);
         stack = CommonEnchantments.applyEnchantments(stack, enchantments);
+        if(itemFlags != null && !itemFlags.isEmpty()) {
+            ItemMeta meta = stack.getItemMeta();
+            for(ItemFlag flag : itemFlags) {
+                meta.addItemFlags(flag);
+            }
+            stack.setItemMeta(meta);
+        }
         setItemMeta(stack, source, flags);
         return stack;
     }
@@ -270,7 +280,7 @@ public class ItemDrop extends DropType {
         if (data == null)
             return null; // Data should only be null if invalid for this type, so don't continue
 
-        return new ItemDrop(amount, mat, data, chance, item.enchantments, item.displayname, item.lore);
+        return new ItemDrop(amount, mat, data, chance, item.enchantments, item.displayname, item.lore, item.itemFlags);
     }
 
     @Override

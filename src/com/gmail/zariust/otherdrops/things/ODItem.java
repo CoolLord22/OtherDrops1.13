@@ -3,11 +3,13 @@ package com.gmail.zariust.otherdrops.things;
 import com.gmail.zariust.common.CMEnchantment;
 import com.gmail.zariust.common.CommonEnchantments;
 import com.gmail.zariust.common.CommonMaterial;
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.ItemData;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemFlag;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,7 @@ public class ODItem {
     private String              dataString;
     public String               enchantmentString;
     public List<CMEnchantment>  enchantments = new ArrayList<CMEnchantment>();
+    public List<ItemFlag>       itemFlags = new ArrayList<>();
     public String               displayname;
     public final List<String>   lore         = new ArrayList<String>();
     private Material            material;
@@ -73,6 +76,8 @@ public class ODItem {
                         // displayname found, treat next as lore
                     	value = ChatColor.translateAlternateColorCodes('&', value);
                         item.lore.add(value);
+                    } else if (getItemFlag(value) != null) {
+                        item.itemFlags.add(getItemFlag(value));
                     } else {
                         // first check for enchantment
                         List<CMEnchantment> ench = CommonEnchantments
@@ -176,6 +181,15 @@ public class ODItem {
 
     public static ODItem parseItem(String blockName) {
         return parseItem(blockName, "");
+    }
+
+    private static ItemFlag getItemFlag(String flagName) {
+        for (ItemFlag value : ItemFlag.values()) {
+            if(value.toString().replaceAll("_", "").equalsIgnoreCase(flagName.replaceAll("_", "")))
+                return value;
+        }
+        Log.logInfo("ODItem Parsing: ItemFlag not found: " + flagName, Verbosity.HIGH);
+        return null;
     }
 
 }
