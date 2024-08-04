@@ -52,6 +52,7 @@ public class OtherDrops extends JavaPlugin {
 	private BStats metrics;
 	public Updater updateChecker;
 
+	public static Set<NamespacedKey> bossBars = new HashSet<>();
 
 	public OtherDrops() {
 		plugin = this;
@@ -276,6 +277,9 @@ public class OtherDrops extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
+		for (NamespacedKey bar : bossBars) {
+			Bukkit.removeBossBar(bar);
+		}
 		Log.logInfo("Unloaded.");
 	}
 
