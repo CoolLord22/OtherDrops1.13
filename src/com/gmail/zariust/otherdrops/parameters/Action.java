@@ -42,6 +42,7 @@ public abstract class Action extends Parameter {
         registerAction(new PlayerAction(null, null, null));
         registerAction(new PotionAction(null, null, true));
         registerAction(new SoundAction(null, null));
+        registerAction(new SpecialMessageAction(null, null));
     }
 
 }
