@@ -47,4 +47,9 @@ public class ItemStackAgent extends ToolAgent {
         }
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "ITEM_STACK@" + identifier;
+    }
 }
