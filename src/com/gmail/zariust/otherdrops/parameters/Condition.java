@@ -60,6 +60,7 @@ public abstract class Condition extends Parameter {
         registerCondition(new BlockPlaceByCheck(null));
         registerCondition(new CooldownCheck(null, null, null));
         registerCondition(new DistanceCheck(null, null));
+        registerCondition(new FishhookBiomeCheck(null));
         registerCondition(new HeightCheck(null));
         registerCondition(new ItemRequirementCheck(null));
         registerCondition(new JobNameCheck(null, null));
