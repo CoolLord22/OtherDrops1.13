@@ -13,13 +13,7 @@ public class MythicItemAgent extends ToolAgent {
 
     public MythicItemAgent(ItemStack item, String mythicItem) {
         super(item);
-        if(Dependencies.hasMythicMobs()) {
-            if(!Dependencies.getMythicMobs().getItemManager().getItem(mythicItem).isPresent()) {
-                Log.logInfo("Invalid mythic item tool specified/could not be found: " + mythicItem, Verbosity.HIGHEST);
-                return;
-            }
-            this.mythicItem = mythicItem;
-        }
+        this.mythicItem = mythicItem;
     }
     
     @Override
