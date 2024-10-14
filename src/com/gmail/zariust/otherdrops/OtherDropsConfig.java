@@ -16,6 +16,7 @@
 
 package com.gmail.zariust.otherdrops;
 
+import com.gmail.zariust.common.CommonItemstack;
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.MaterialGroup;
 import com.gmail.zariust.common.Verbosity;
@@ -189,6 +190,9 @@ public class OtherDropsConfig {
 	// "MyMod.Mobname" to work (otherwise OtherDrops sees only "MyMod").
 	private boolean configKeysGetDeep;
 
+	// New file to serialize itemstacks
+	public static CommonItemstack commonItemstack;
+
 	public OtherDropsConfig(OtherDrops instance) {
 		parent = instance;
 		blocksHash = new DropsMap();
@@ -199,6 +203,8 @@ public class OtherDropsConfig {
 		dropForFishing = false;
 
 		defaultDropSpread = true;
+
+		commonItemstack = new CommonItemstack(parent);
 	}
 
 	private void clearDefaults() {
@@ -247,7 +253,6 @@ public class OtherDropsConfig {
 			// make sure all files exist, if not export from jar file
 			firstRun();
 			clearDropFor();
-			OtherDrops.loadedItems.clear();
 			// load initial config settings, verbosity, etc, this needs to be
 			// before dependencies & drops files
 			loadConfig();
@@ -379,6 +384,8 @@ public class OtherDropsConfig {
 		blocksHash.clear(); // clear here to avoid issues on /obr reloading
 		loadedDropFiles.clear();
 		clearDefaults();
+		OtherDrops.loadedItems.clear(); // Clear loaded items
+		commonItemstack.loadItemStacks(); // Load in ODItems
 
 		String filename = "otherdrops-config.yml";
 		if (!(new File(parent.getDataFolder(), filename).exists()))
