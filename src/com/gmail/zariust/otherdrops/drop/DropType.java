@@ -28,20 +28,20 @@ import com.gmail.zariust.otherdrops.subject.Target;
 import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.core.mobs.ActiveMob;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.plugin.Plugin;
 
 import java.util.*;
 
 public abstract class DropType {
     public enum DropCategory {
-        ITEM, CREATURE, MONEY, GROUP, DENY, CONTENTS, DEFAULT, VEHICLE, EXPERIENCE, MYTHIC
+        ITEM, CREATURE, MONEY, GROUP, DENY, CONTENTS, DEFAULT, VEHICLE, EXPERIENCE, MYTHIC, NAMESPACE_ITEM
     }
 
     public static class DropFlags {
@@ -417,6 +417,24 @@ public abstract class DropType {
                 return MoneyDrop.parse(name, defaultData, amount, chance);
             else if (name.toUpperCase().startsWith("MYTHIC_"))
                 return new MythicDrop(name.replaceAll("MYTHIC_", ""), amount.toIntRange(), chance);
+            else if (name.toUpperCase().startsWith("NAMESPACE_ITEM@")) {
+                String input = name.replaceAll("NAMESPACE_ITEM@", "");
+                String[] inputSplit = input.toLowerCase().split(":");
+                if (inputSplit.length == 2) {
+                    Plugin plugin = Bukkit.getPluginManager().getPlugin(inputSplit[0]);
+                    if (plugin != null) {
+                        NamespacedKey recipeKey = NamespacedKey.fromString(input);
+                        if (recipeKey != null) {
+                            Recipe recipe = Bukkit.getRecipe(recipeKey);
+                            if (recipe != null) {
+                                return new NamespaceItemDrop(inputSplit[0], inputSplit[1], recipe.getResult(), amount.toIntRange(), chance);
+                            }
+                        }
+                    }
+                }
+                Log.logWarning("Invalid registered namespace item identifier: " + input);
+                return null;
+            }
             else if (name.toUpperCase().startsWith("XP"))
                 return ExperienceDrop.parse(name, defaultData, amount.toIntRange(), chance);
             else if (name.toUpperCase().equals("CONTENTS"))
