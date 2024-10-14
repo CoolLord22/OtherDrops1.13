@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class BiomeCheck extends Condition {
-    private final Map<Biome, Boolean> biomeMap;
+    protected final Map<Biome, Boolean> biomeMap;
 
     public BiomeCheck(Map<Biome, Boolean> biomeMap) {
         this.biomeMap = biomeMap;
