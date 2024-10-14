@@ -56,6 +56,7 @@ import java.util.Map.Entry;
 
 public class OtherDropsCommand implements CommandExecutor {
     private enum OBCommand {
+        SAVEITEM("saveitem", "si", "otherdrops.admin.saveitem"),
         ID("id", "i", "otherdrops.admin.id"),
         WRITE("write", "w", "otherdrops.admin.id"),
         RELOAD("reload", "r", "otherdrops.admin.reloadconfig"),
@@ -150,6 +151,9 @@ public class OtherDropsCommand implements CommandExecutor {
             return true;
 
         switch (cmd) {
+        case SAVEITEM:
+            cmdSaveItem(sender, args);
+            break;
         case ID:
             cmdId(sender, args);
             break;
@@ -618,6 +622,24 @@ public class OtherDropsCommand implements CommandExecutor {
             ((Player) sender).sendRawMessage(ChatColor.GREEN + "The item config is:§r " + ChatColor.WHITE + itemFinalWriteData.replaceAll("§", "&"));
         }
     }
+
+    private void cmdSaveItem(CommandSender sender, String[] args) {
+        if (args.length > 0) {
+            String key = args[0];
+            if (sender instanceof Player player) {
+                ItemStack playerItem = player.getInventory().getItemInMainHand();
+                if(OtherDropsConfig.commonItemstack.saveItemStack(key, playerItem)) {
+                    ((Player) sender).sendRawMessage(ChatColor.GREEN + "Successfully saved item " + key);
+                    return;
+                }
+                else
+                    ((Player) sender).sendRawMessage(ChatColor.RED + "An error occurred, please check console!");
+            }
+        }
+
+        sender.sendMessage(ChatColor.RED + "Must be a player, usage: /od saveitem <key>");
+    }
+
     /*
      * "/od show" command - shows conditions and triggers for the specified
      * block
