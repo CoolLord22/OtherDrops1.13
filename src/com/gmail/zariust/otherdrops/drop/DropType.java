@@ -432,7 +432,12 @@ public abstract class DropType {
                         if (recipeKey != null) {
                             Recipe recipe = Bukkit.getRecipe(recipeKey);
                             if (recipe != null) {
-                                return new NamespaceItemDrop(inputSplit[0], inputSplit[1], recipe.getResult(), amount.toIntRange(), chance);
+                                ItemStack loadedItem = recipe.getResult();
+
+                                String itemIdentifier = "NAMESPACE_" + inputSplit[0] + "_" + inputSplit[1];
+                                OtherDrops.loadedItems.put(new NamespacedKey(OtherDrops.plugin, itemIdentifier), loadedItem);
+                                Log.logInfo("Saving item: " + loadedItem, Verbosity.HIGHEST);
+                                return new ItemStackDrop(loadedItem, itemIdentifier, amount.toIntRange(), chance);
                             }
                         }
                     }
