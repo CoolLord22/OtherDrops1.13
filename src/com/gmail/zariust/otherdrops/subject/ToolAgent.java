@@ -36,6 +36,7 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.plugin.Plugin;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 import static com.gmail.zariust.common.Verbosity.HIGHEST;
@@ -103,17 +104,6 @@ public class ToolAgent implements Agent {
         this.quantityRequired = quantity;
     }
 
-    private boolean isEqual(ToolAgent tool) {
-        if (tool == null)
-            return false;
-        if (id == null)
-            return true; // null means ANY_OBJECT
-        if (data == null)
-            return (id.equals(tool.id)); // no data to check (wildcard) so just check
-                                    // id versus tool.id
-        return id.equals(tool.id) && data.equals(tool.data);
-    }
-
     private boolean isMatch(ToolAgent tool) {
         if (tool == null)
             return false;
@@ -130,10 +120,25 @@ public class ToolAgent implements Agent {
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof ToolAgent))
+        if (!(other instanceof ToolAgent tool))
             return false;
-        ToolAgent tool = (ToolAgent) other;
-        return isEqual(tool);
+
+        if(!Objects.equals(id, tool.id))
+            return false;
+
+        if(!Objects.equals(loreName, tool.loreName))
+            return false;
+
+        if(!Objects.equals(loreText, tool.loreText))
+            return false;
+
+        if(!Objects.equals(quantityRequired, tool.quantityRequired))
+            return false;
+
+        if(!Objects.equals(actualTool, tool.actualTool))
+            return false;
+
+        return true; // assume if everything has passed by now we are matching
     }
     
     @Override
