@@ -224,7 +224,7 @@ public abstract class DropType {
         else
             dropResult.addDropped(in.dropItem(where, stack));
 
-        dropResult.setQuantity(1);
+        dropResult.setQuantity(stack.getAmount());
         return dropResult;
     }
 
