@@ -180,12 +180,8 @@ public class ToolAgent implements Agent {
                 return false;
         }
 
-        if (id == null)
-            return true;
-        else if (quantityRequired > tool.getTool().quantityRequired
-                && id.toString() != "AIR") {
-            Log.logInfo("Toolagent check: quantity required failed.",
-                    Verbosity.HIGHEST);
+        if (quantityRequired > tool.getTool().quantityRequired && !Objects.equals(id.toString(), "AIR")) {
+            Log.logInfo("Toolagent check: quantity required failed.", Verbosity.HIGHEST);
             return false;
         }
         if (data == null)
