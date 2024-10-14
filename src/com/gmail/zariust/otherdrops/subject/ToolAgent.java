@@ -22,6 +22,7 @@ import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.ItemData;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
@@ -224,7 +225,12 @@ public class ToolAgent implements Agent {
                     Log.logInfo("Invalid mythic item tool specified/could not be found: " + state, Verbosity.HIGHEST);
                     return null;
                 }
-                return new MythicItemAgent(Dependencies.getMythicMobs().getItemManager().getItemStack(state), state);
+                ItemStack loadedItem = Dependencies.getMythicMobs().getItemManager().getItemStack(state);
+
+                String itemIdentifier = "MYTHIC_" + state;
+                OtherDrops.loadedItems.put(new NamespacedKey(OtherDrops.plugin, itemIdentifier), loadedItem);
+                Log.logInfo("Saving item: " + loadedItem, Verbosity.HIGHEST);
+                return new ItemStackAgent(loadedItem, itemIdentifier);
             }
         } else if(name.startsWith("NAMESPACE_ITEM")) {
             String[] inputSplit = state.toLowerCase().split(":");
@@ -235,7 +241,12 @@ public class ToolAgent implements Agent {
                     if (recipeKey != null) {
                         Recipe recipe = Bukkit.getRecipe(recipeKey);
                         if (recipe != null) {
-                            return new NamespaceItemAgent(recipe.getResult(), state);
+                            ItemStack loadedItem = recipe.getResult();
+
+                            String itemIdentifier = "NAMESPACE_" + inputSplit[0] + "_" + inputSplit[1];
+                            OtherDrops.loadedItems.put(new NamespacedKey(OtherDrops.plugin, itemIdentifier), loadedItem);
+                            Log.logInfo("Saving item: " + loadedItem, Verbosity.HIGHEST);
+                            return new ItemStackAgent(loadedItem, itemIdentifier);
                         }
                     }
                 }
