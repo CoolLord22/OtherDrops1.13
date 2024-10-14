@@ -23,6 +23,7 @@ import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.ItemData;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
@@ -233,6 +234,13 @@ public class ToolAgent implements Agent {
                 Log.logInfo("Saving item: " + loadedItem, Verbosity.HIGHEST);
                 return new ItemStackAgent(loadedItem, itemIdentifier);
             }
+        } else if(name.startsWith("OD_ITEM")) {
+            ItemStack loadedItem = OtherDropsConfig.commonItemstack.getItemStack(state);
+            if (loadedItem != null) {
+                return new ItemStackAgent(loadedItem, "OD_ITEM_" + state);
+            }
+            Log.logInfo("Invalid OD_ITEM specified/could not be found: " + state, Verbosity.HIGHEST);
+            return null;
         } else if(name.startsWith("NAMESPACE_ITEM")) {
             String[] inputSplit = state.toLowerCase().split(":");
             if (inputSplit.length == 2) {

@@ -445,6 +445,13 @@ public abstract class DropType {
                 Log.logWarning("Invalid registered namespace item identifier: " + input);
                 return null;
             }
+            else if (name.toUpperCase().startsWith("OD_ITEM@")) {
+                String input = name.replaceAll("OD_ITEM@", "");
+                ItemStack loadedItem = OtherDropsConfig.commonItemstack.getItemStack(input);
+                if (loadedItem != null) {
+                    return new ItemStackDrop(loadedItem, "OD_ITEM_" + input, amount.toIntRange(), chance);
+                }
+            }
             else if (name.toUpperCase().startsWith("XP"))
                 return ExperienceDrop.parse(name, defaultData, amount.toIntRange(), chance);
             else if (name.toUpperCase().equals("CONTENTS"))
