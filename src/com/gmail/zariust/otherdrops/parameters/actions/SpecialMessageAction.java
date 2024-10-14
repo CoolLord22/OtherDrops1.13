@@ -1,6 +1,8 @@
 package com.gmail.zariust.otherdrops.parameters.actions;
 
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
@@ -23,7 +25,7 @@ public class SpecialMessageAction extends Action {
 
     // TODO: Add logger messages
     public enum SendType {
-        ATTACKER, VICTIM, RADIUS, WORLD, SERVER;
+        VICTIM, ATTACKER, RADIUS, WORLD, SERVER;
 
         public static SendType fromString(String s) {
             for (SendType type : SendType.values()) {
@@ -31,7 +33,13 @@ public class SpecialMessageAction extends Action {
                     return type;
                 }
             }
+            Log.logInfo("SpecialMessageAction - Invalid send-to type specified: (" + s + ") defaulting to ATTACKER.", Verbosity.NORMAL);
             return ATTACKER;
+        }
+
+        @Override
+        public String toString() {
+            return name();
         }
     }
 
@@ -90,6 +98,7 @@ public class SpecialMessageAction extends Action {
     @Override
     public boolean act(CustomDrop drop, OccurredEvent occurrence) {
         Set<Player> players = new HashSet<>();
+        Log.logInfo("Gathering players for send-to type: " + sendType.toString(), Verbosity.HIGH);
         switch (sendType) {
             case ATTACKER:
                 if (occurrence.getPlayerAttacker() != null)
@@ -159,18 +168,18 @@ public class SpecialMessageAction extends Action {
     @Override
     public List<Action> parse(ConfigurationNode parseMe) {
         List<ODBar> tempMessages = new ArrayList<>();
-        SendType sendType = SendType.ATTACKER;
+        Set<SendType> sendTypes = new HashSet<>();
 
         if(parseMe.getKeys().contains("actionbar")) {
             ConfigurationNode newNode = parseMe.getConfigurationNode("actionbar");
-            sendType = SendType.fromString(newNode.getString("sendto"));
+            sendTypes.add(SendType.fromString(newNode.getString("sendto")));
             String message = newNode.getString("message", "");
 
             tempMessages.add(new ODActionBar(message));
         }
         if(parseMe.getKeys().contains("bossbar")) {
             ConfigurationNode newNode = parseMe.getConfigurationNode("bossbar");
-            sendType = SendType.fromString(newNode.getString("sendto"));
+            sendTypes.add(SendType.fromString(newNode.getString("sendto")));
             String message = newNode.getString("message", "");
             BarColor barColor = BarColor.valueOf(newNode.getString("color", "RED").toUpperCase());
             BarStyle barStyle = BarStyle.valueOf(newNode.getString("style", "SOLID").toUpperCase());
@@ -181,7 +190,7 @@ public class SpecialMessageAction extends Action {
         }
         if(parseMe.getKeys().contains("title")) {
             ConfigurationNode newNode = parseMe.getConfigurationNode("title");
-            sendType = SendType.fromString(newNode.getString("sendto"));
+            sendTypes.add(SendType.fromString(newNode.getString("sendto")));
             String title = newNode.getString("title", "");
             String subtitle = newNode.getString("subtitle", "");
             Integer fadeIn = newNode.getInt("fadein", 10);
@@ -191,6 +200,12 @@ public class SpecialMessageAction extends Action {
             tempMessages.add(new ODTitleMessage(fadeIn, stay, fadeOut, title, subtitle));
         }
 
-        return List.of(new SpecialMessageAction(tempMessages, sendType));
+        SendType toSend = SendType.VICTIM;
+        for(SendType type : sendTypes) {
+            if(type.ordinal() > toSend.ordinal())
+                toSend = type;
+        }
+
+        return List.of(new SpecialMessageAction(tempMessages, toSend));
     }
 }
