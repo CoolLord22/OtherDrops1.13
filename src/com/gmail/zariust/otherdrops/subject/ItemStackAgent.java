@@ -10,11 +10,11 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemStackAgent extends ToolAgent {
-    private String itemIdentifier = null;
+    private String identifier = null;
 
-    public ItemStackAgent(ItemStack item, String itemIdentifier) {
+    public ItemStackAgent(ItemStack item, String identifier) {
         super(item);
-        this.itemIdentifier = itemIdentifier;
+        this.identifier = identifier;
     }
 
     @Override
@@ -22,9 +22,9 @@ public class ItemStackAgent extends ToolAgent {
         if (!(other instanceof PlayerSubject))
             return false;
 
-        if(itemIdentifier != null) {
+        if(identifier != null) {
             ItemStack playerItem = ((PlayerSubject) other).getTool().getActualTool();
-            ItemStack compareItem = OtherDrops.loadedItems.get(new NamespacedKey(OtherDrops.plugin, itemIdentifier));
+            ItemStack compareItem = OtherDrops.loadedItems.get(new NamespacedKey(OtherDrops.plugin, identifier));
             Log.logInfo("Checking ItemStack tool: " + compareItem + " vs player tool: " + playerItem, Verbosity.HIGHEST);
             if(compareItem != null) {
                 if(playerItem.getType() != compareItem.getType()) { // if the two materials are not equal
