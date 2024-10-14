@@ -41,7 +41,7 @@ import java.util.*;
 
 public abstract class DropType {
     public enum DropCategory {
-        ITEM, CREATURE, MONEY, GROUP, DENY, CONTENTS, DEFAULT, VEHICLE, EXPERIENCE, MYTHIC, NAMESPACE_ITEM
+        ITEM, CREATURE, MONEY, GROUP, DENY, CONTENTS, DEFAULT, VEHICLE, EXPERIENCE, MYTHIC_CREATURE, ITEM_STACK
     }
 
     public static class DropFlags {
@@ -233,27 +233,18 @@ public abstract class DropType {
         return dropCreatureWithRider(where, owner, type, data, null, null, "", "");
     }
 
-    // Drop a MythicMob item/mob
-    protected static DropResult drop(Player p, Location where, String mythicDrop, boolean toInventory) {
+    // Drop a MythicMob creature
+    protected static DropResult drop(Location where, String mythicCreature) {
         DropResult dropResult = new DropResult();
-        if(mythicDrop.contains("ITEM@")) {
-            if(Dependencies.getMythicMobs().getItemManager().getItem(mythicDrop.replace("ITEM@", "")).isPresent()) {
-                if(p != null && toInventory) {
-                    return drop(p, Dependencies.getMythicMobs().getItemManager().getItemStack(mythicDrop.replace("ITEM@", "")), where, true);
-                }
-                return drop(where, Dependencies.getMythicMobs().getItemManager().getItemStack(mythicDrop.replace("ITEM@", "")), true);
-            }
-        } else if(mythicDrop.contains("MOB@")) {
-            if(Dependencies.getMythicMobs().getMobManager().getMythicMob(mythicDrop.replace("MOB@", "")).isPresent()) {
-                MythicMob mob = Dependencies.getMythicMobs().getMobManager().getMythicMob(mythicDrop.replace("MOB@", "")).orElse(null);
+            if(Dependencies.getMythicMobs().getMobManager().getMythicMob(mythicCreature).isPresent()) {
+                MythicMob mob = Dependencies.getMythicMobs().getMobManager().getMythicMob(mythicCreature).orElse(null);
                 if(mob != null) {
-                    ActiveMob mythicMob = mob.spawn(BukkitAdapter.adapt(where),1);
-                    Entity entity = mythicMob.getEntity().getBukkitEntity();
+                    ActiveMob activeMob = mob.spawn(BukkitAdapter.adapt(where),1);
+                    Entity entity = activeMob.getEntity().getBukkitEntity();
                     dropResult.addDropped(entity);
-                    dropResult.setQuantity(1);
+                    dropResult.setQuantity(dropResult.getQuantity() + 1);
                 }
             }
-        }
         return dropResult;
     }
 
@@ -415,8 +406,22 @@ public abstract class DropType {
                 return VehicleDrop.parse(name, defaultData, amount.toIntRange(), chance);
             else if (name.toUpperCase().startsWith("MONEY"))
                 return MoneyDrop.parse(name, defaultData, amount, chance);
-            else if (name.toUpperCase().startsWith("MYTHIC_"))
-                return new MythicDrop(name.replaceAll("MYTHIC_", ""), amount.toIntRange(), chance);
+            else if (name.toUpperCase().startsWith("MYTHIC_ITEM@")) {
+                String input = name.replaceAll("MYTHIC_ITEM@", "");
+                if(Dependencies.getMythicMobs().getItemManager().getItem(input).isPresent()) {
+                    ItemStack loadedItem = Dependencies.getMythicMobs().getItemManager().getItemStack(input);
+
+                    String itemIdentifier = "MYTHIC_" + input;
+                    OtherDrops.loadedItems.put(new NamespacedKey(OtherDrops.plugin, itemIdentifier), loadedItem);
+                    Log.logInfo("Saving item: " + loadedItem, Verbosity.HIGHEST);
+                    return new ItemStackDrop(loadedItem, itemIdentifier, amount.toIntRange(), chance);
+                }
+                Log.logWarning("Invalid MythicItem: " + input);
+                return null;
+            }
+            else if (name.toUpperCase().startsWith("MYTHIC_MOB@")) {
+                return new MythicCreatureDrop(name.replaceAll("MYTHIC_", ""), amount.toIntRange(), chance);
+            }
             else if (name.toUpperCase().startsWith("NAMESPACE_ITEM@")) {
                 String input = name.replaceAll("NAMESPACE_ITEM@", "");
                 String[] inputSplit = input.toLowerCase().split(":");
