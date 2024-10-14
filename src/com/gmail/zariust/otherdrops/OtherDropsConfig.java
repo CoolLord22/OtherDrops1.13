@@ -1131,7 +1131,15 @@ public class OtherDropsConfig {
 	}
 
 	public static Map<Biome, Boolean> parseBiomesFrom(ConfigurationNode node) {
-		List<String> biomes = getMaybeList(node, "biome", "biomes");
+		return parseMaybeBiomesFrom(node, "biome", "biomes");
+	}
+
+	public static Map<Biome, Boolean> parseFishingBiomesFrom(ConfigurationNode node) {
+		return parseMaybeBiomesFrom(node, "hookbiome", "hookbiomes", "fishhookbiome", "fishhookbiomes");
+	}
+
+	public static Map<Biome, Boolean> parseMaybeBiomesFrom(ConfigurationNode node, String... keys) {
+		List<String> biomes = getMaybeList(node, keys);
 		if (biomes.isEmpty())
 			return defaultBiomes;
 		HashMap<Biome, Boolean> result = new HashMap<Biome, Boolean>();
