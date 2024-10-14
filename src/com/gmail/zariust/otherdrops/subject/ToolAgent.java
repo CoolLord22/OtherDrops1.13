@@ -214,7 +214,13 @@ public class ToolAgent implements Agent {
 
     public static Agent parse(String name, String state, List<CMEnchantment> enchPass, String loreName, List<String> loreText) {
         if(name.startsWith("MYTHIC_ITEM")) {
-            return new MythicItemAgent(state);
+            if(Dependencies.hasMythicMobs()) {
+                if(!Dependencies.getMythicMobs().getItemManager().getItem(state).isPresent()) {
+                    Log.logInfo("Invalid mythic item tool specified/could not be found: " + state, Verbosity.HIGHEST);
+                    return null;
+                }
+                return new MythicItemAgent(Dependencies.getMythicMobs().getItemManager().getItemStack(state), state);
+            }
         }
         name = name.toUpperCase();
         state = state.toUpperCase();

@@ -11,7 +11,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class MythicItemAgent extends ToolAgent {
     private String mythicItem = null;
 
-    public MythicItemAgent(String mythicItem) {
+    public MythicItemAgent(ItemStack item, String mythicItem) {
+        super(item);
         if(Dependencies.hasMythicMobs()) {
             if(!Dependencies.getMythicMobs().getItemManager().getItem(mythicItem).isPresent()) {
                 Log.logInfo("Invalid mythic item tool specified/could not be found: " + mythicItem, Verbosity.HIGHEST);
