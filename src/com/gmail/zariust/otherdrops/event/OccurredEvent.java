@@ -65,6 +65,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     private Weather     weather;
     private BlockFace   face;
     private Biome       biome;
+    private Biome       fishingBiome;
     private long        time;
     private int         height;
     private double      attackRange;
@@ -560,6 +561,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         setWeatherTimeHeight(location);
         setTool(evt.getPlayer());
         setRegions();
+        fishingBiome = evt.getHook().getLocation().getBlock().getBiome();
     }
 
     // Yes, this needs to be a separate constructor as the "super" has to be on
@@ -571,6 +573,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         setWeatherTimeHeight(location);
         setTool(evt.getPlayer());
         setRegions();
+        fishingBiome = evt.getHook().getLocation().getBlock().getBiome();
     }
 
     public OccurredEvent(CreatureSpawnEvent evt) {
@@ -989,6 +992,13 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
      */
     public Biome getBiome() {
         return biome;
+    }
+
+    /**
+     * @return The biome in which the fishing hook occurred.
+     */
+    public Biome getFishingBiome() {
+        return fishingBiome;
     }
 
     /**
