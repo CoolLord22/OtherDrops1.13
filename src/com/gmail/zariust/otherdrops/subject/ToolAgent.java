@@ -20,14 +20,19 @@ import com.gmail.zariust.common.CMEnchantment;
 import com.gmail.zariust.common.CommonEnchantments;
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.ItemData;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
+import org.bukkit.plugin.Plugin;
 
 import java.util.List;
 import java.util.Random;
@@ -221,6 +226,22 @@ public class ToolAgent implements Agent {
                 }
                 return new MythicItemAgent(Dependencies.getMythicMobs().getItemManager().getItemStack(state), state);
             }
+        } else if(name.startsWith("NAMESPACE_ITEM")) {
+            String[] inputSplit = state.toLowerCase().split(":");
+            if (inputSplit.length == 2) {
+                Plugin plugin = Bukkit.getPluginManager().getPlugin(inputSplit[0]);
+                if (plugin != null) {
+                    NamespacedKey recipeKey = NamespacedKey.fromString(state);
+                    if (recipeKey != null) {
+                        Recipe recipe = Bukkit.getRecipe(recipeKey);
+                        if (recipe != null) {
+                            return new NamespaceItemAgent(recipe.getResult(), state);
+                        }
+                    }
+                }
+            }
+            Log.logWarning("Invalid registered namespace item identifier: " + state);
+            return null;
         }
         name = name.toUpperCase();
         state = state.toUpperCase();
