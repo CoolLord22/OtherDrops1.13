@@ -247,6 +247,7 @@ public class OtherDropsConfig {
 			// make sure all files exist, if not export from jar file
 			firstRun();
 			clearDropFor();
+			OtherDrops.loadedItems.clear();
 			// load initial config settings, verbosity, etc, this needs to be
 			// before dependencies & drops files
 			loadConfig();

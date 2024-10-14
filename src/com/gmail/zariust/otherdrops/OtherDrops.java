@@ -27,6 +27,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -53,6 +54,7 @@ public class OtherDrops extends JavaPlugin {
 	public Updater updateChecker;
 
 	public static Set<NamespacedKey> bossBars = new HashSet<>();
+	public static Map<NamespacedKey, ItemStack> loadedItems = new HashMap<>();
 
 	public OtherDrops() {
 		plugin = this;
