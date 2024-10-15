@@ -542,12 +542,9 @@ public class OtherDropsConfig {
 					defaultsNode = ConfigurationNode.parse(
 							config.getMapList("defaults")).get(0);
 		} else {
-			Log.logInfoNoVerbosity("list: "
-					+ config.getConfigurationSection("defaults").getKeys(true));
-			ConfigurationSection defaultsSection = config
-					.getConfigurationSection("defaults");
-			for (String key : config.getConfigurationSection("defaults")
-					.getKeys(true)) {
+			Log.logInfo("list: " + config.getConfigurationSection("defaults").getKeys(true), Verbosity.NORMAL);
+			ConfigurationSection defaultsSection = config.getConfigurationSection("defaults");
+			for (String key : config.getConfigurationSection("defaults").getKeys(true)) {
 				map.put(key, defaultsSection.get(key));
 			}
 			defaultsNode = new ConfigurationNode(map);
