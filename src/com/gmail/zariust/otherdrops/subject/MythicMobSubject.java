@@ -5,7 +5,6 @@ import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.MythicMobData;
-import io.lumine.mythic.core.mobs.ActiveMob;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -25,12 +24,10 @@ public class MythicMobSubject extends CreatureSubject {
         this.data = data;
     }
 
-    public MythicMobSubject(Entity entity) {
-        if(Dependencies.hasMythicMobs()) {
-            this.entity = entity;
-            ActiveMob mythicMob = Dependencies.getMythicMobs().getMobManager().getActiveMob(entity.getUniqueId()).orElse(null);
-            this.data = new MythicMobData(mythicMob.getMobType());
-        }
+    public MythicMobSubject(Entity entity, String mobType) {
+        this.entity = entity;
+        MythicMobData md = new MythicMobData(mobType);
+        this.data = md.getMythicMobType() == null ? null : md;
     }
 
     @Override
