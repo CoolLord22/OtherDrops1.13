@@ -104,7 +104,8 @@ public class MythicMobSubject extends CreatureSubject {
         if (data == null || data.isEmpty())
             return new MythicMobSubject((Data) null);
         Log.logInfo("Parsing MythicMob subject: " + data, Verbosity.HIGHEST);
-        return new MythicMobSubject(new MythicMobData(data));
+        MythicMobData md = new MythicMobData(data);
+        return md.getMythicMobType() == null ? null : new MythicMobSubject(md);
     }
 
     public LivingEntity getEntity() {
