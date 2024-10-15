@@ -72,12 +72,6 @@ public class OtherDrops extends JavaPlugin {
 			deleteDirectories(oldFolder);
 		}
 		initLogger();
-		if (OtherDropsConfig.exportEnumLists)
-			exportEnumLists();
-		if (OtherDropsConfig.globalUpdateChecking) {
-			updateChecker = new Updater(this);
-			updateChecker.checkForUpdate(null);
-		}
 		metrics = new BStats(this);
 		metrics.registerMetrics();
 		Bukkit.getServer().getPluginManager().registerEvents(new ServerStartupListener(this), this);
@@ -126,7 +120,7 @@ public class OtherDrops extends JavaPlugin {
 
 	// Exports known enum lists to text files as this can assist in viewing what values are available to use and/or new values that have
 	// been injected by mods - I realise it could be improved a lot but it's better than nothing :)
-	private void exportEnumLists() {
+    public void exportEnumLists() {
 		Log.logInfo("OtherDrops printing export lists.", Verbosity.HIGH);
 		writeNames(null,"org.bukkit.Material");
 		writeNames(null,"org.bukkit.block.Biome");
