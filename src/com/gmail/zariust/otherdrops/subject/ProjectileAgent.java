@@ -108,7 +108,7 @@ public class ProjectileAgent implements Agent {
             if(Dependencies.hasMythicMobs()) {
                 ActiveMob mythicMob = Dependencies.getMythicMobs().getMobManager().getActiveMob(shooter.getUniqueId()).orElse(null);
                 if(mythicMob != null) {
-                    return new MythicMobSubject(shooter);
+                    return new MythicMobSubject(shooter, mythicMob.getMobType());
                 }
             }
             return new CreatureSubject(shooter);
