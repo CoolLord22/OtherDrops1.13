@@ -73,11 +73,12 @@ public class MythicMobSubject extends CreatureSubject {
     public List<Target> canMatch() {
         List<Target> all = new ArrayList<Target>();
         all.add(this);
-        if(((MythicMobData) data).getMythicMobType().equalsIgnoreCase("ANY")) {
-            for(String s : Dependencies.getMythicMobs().getMobManager().getMobNames()) {
-                all.add(new MythicMobSubject(new MythicMobData(s)));
+        if(((MythicMobData) data).getMythicMobType() != null)
+            if(((MythicMobData) data).getMythicMobType().equalsIgnoreCase("ANY")) {
+                for(String s : Dependencies.getMythicMobs().getMobManager().getMobNames()) {
+                    all.add(new MythicMobSubject(new MythicMobData(s)));
+                }
             }
-        }
         return all;
     }
 
