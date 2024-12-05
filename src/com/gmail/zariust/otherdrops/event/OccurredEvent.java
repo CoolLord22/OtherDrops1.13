@@ -850,9 +850,10 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
                 ActiveMob mythicMob = Dependencies.getMythicMobs().getMobManager().getActiveMob(damager.getUniqueId()).orElse(null);
                 if(mythicMob != null) {
                     tool = new MythicMobSubject(damager, mythicMob.getMobType());
+                    return;
                 }
             }
-            else tool = new CreatureSubject(damager);
+            tool = new CreatureSubject(damager);
         }
         else if (damager instanceof Explosive)
             tool = new ExplosionAgent(damager);
@@ -874,9 +875,10 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
                     ActiveMob mythicMob = Dependencies.getMythicMobs().getMobManager().getActiveMob(e.getDamager().getUniqueId()).orElse(null);
                     if(mythicMob != null) {
                         tool = new MythicMobSubject(e.getDamager(), mythicMob.getMobType());
+                        return;
                     }
                 }
-                else tool = new CreatureSubject(e.getDamager());
+                tool = new CreatureSubject(e.getDamager());
                 return;
             } else {
                 // The only other one I can think of is lightning, which would
