@@ -420,7 +420,7 @@ public abstract class DropType {
                 return null;
             }
             else if (name.toUpperCase().startsWith("MYTHIC_MOB@")) {
-                return new MythicCreatureDrop(name.replaceAll("MYTHIC_", ""), amount.toIntRange(), chance);
+                return new MythicCreatureDrop(name.replaceAll("MYTHIC_MOB@", ""), amount.toIntRange(), chance);
             }
             else if (name.toUpperCase().startsWith("NAMESPACE_ITEM@")) {
                 String input = name.replaceAll("NAMESPACE_ITEM@", "");
