@@ -70,6 +70,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     private int         height;
     private double      attackRange;
     private int         lightLevel;
+    private int         moonPhaseLevel;
     private Location    location;
     private Cancellable event;
     private Event       realEvent;
@@ -771,6 +772,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         World world = loc.getWorld();
         Biome biome = loc.getBlock().getBiome();
         weather = Weather.match(biome, world.hasStorm(), world.isThundering());
+        moonPhaseLevel = (int) ((world.getFullTime() / 24000) % 8);
         time = world.getTime();
         height = loc.getBlockY();
     }
@@ -1029,6 +1031,13 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
      */
     public int getLightLevel() {
         return lightLevel;
+    }
+
+    /**
+     * @return The light level at the location of the event when it occurred.
+     */
+    public int getMoonPhaseLevel() {
+        return moonPhaseLevel;
     }
 
     // Matching!

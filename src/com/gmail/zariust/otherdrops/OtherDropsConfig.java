@@ -30,6 +30,7 @@ import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.metrics.BStats;
 import com.gmail.zariust.otherdrops.options.*;
 import com.gmail.zariust.otherdrops.parameters.Trigger;
+import com.gmail.zariust.otherdrops.parameters.conditions.MoonPhaseCheck;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 import com.gmail.zariust.otherdrops.special.SpecialResultHandler;
 import com.gmail.zariust.otherdrops.special.SpecialResultLoader;
@@ -94,6 +95,7 @@ public class OtherDropsConfig {
 
 	// Defaults
 	protected static Map<Biome, Boolean> defaultBiomes;
+	public static Map<MoonPhaseCheck.MoonPhase, Boolean> defaultMoonPhaseLevels;
 	protected static Map<World, Boolean> defaultWorlds;
 	protected static Map<String, Boolean> defaultRegions;
 	public static Map<Weather, Boolean> defaultWeather;
@@ -213,6 +215,7 @@ public class OtherDropsConfig {
 		defaultRegions = null;
 		defaultWeather = null;
 		defaultBiomes = null;
+		defaultMoonPhaseLevels = null;
 		defaultTime = null;
 		defaultPermissionGroups = null;
 		defaultPermissions = null;
@@ -684,6 +687,7 @@ public class OtherDropsConfig {
 			defaultRegions = parseRegionsFrom(defaults);
 			defaultWeather = Weather.parseFrom(defaults, null);
 			defaultBiomes = parseBiomesFrom(defaults);
+			defaultMoonPhaseLevels = parseMoonPhaseFrom(defaults);
 			defaultTime = Time.parseFrom(defaults, null);
 			defaultPermissionGroups = parseGroupsFrom(defaults);
 			defaultPermissions = parsePermissionsFrom(defaults);
@@ -1166,6 +1170,42 @@ public class OtherDropsConfig {
 			}
 			if (!matched) {
 				Log.logWarning("Invalid biome " + name + "; skipping...");
+			}
+		}
+		return result;
+	}
+
+	public static Map<MoonPhaseCheck.MoonPhase, Boolean> parseMoonPhaseFrom(ConfigurationNode node) {
+		List<String> moonPhases = getMaybeList(node, "moon", "moons", "moonphase", "moonphases");
+		if (moonPhases.isEmpty())
+			return defaultMoonPhaseLevels;
+		HashMap<MoonPhaseCheck.MoonPhase, Boolean> result = new HashMap<MoonPhaseCheck.MoonPhase, Boolean>();
+		result.put(null, containsAll(moonPhases));
+		for (String name : moonPhases) {
+			name = name.toUpperCase();
+			boolean moonPhaseNegated = false;
+			boolean matched = false;
+
+			if (name.startsWith("-")) {
+				result.put(null, true);
+				moonPhaseNegated = true;
+				name = name.substring(1);
+			}
+
+			for (MoonPhaseCheck.MoonPhase moonPhaseMatch : MoonPhaseCheck.MoonPhase.values()) {
+				if (name.equalsIgnoreCase(moonPhaseMatch.name())) {
+					result.put(moonPhaseMatch, !moonPhaseNegated);
+					matched = true;
+					break;
+				} else if (name.equalsIgnoreCase("ALL") || name.equalsIgnoreCase("ANY")) {
+					result.put(null, true);
+					matched = true;
+					break;
+				}
+				Log.logInfo("Moon phase match: checking " + name + " against " + moonPhaseMatch.name() + ", match = " + matched, HIGHEST);
+			}
+			if (!matched) {
+				Log.logWarning("Invalid moon phase " + name + "; skipping...");
 			}
 		}
 		return result;
