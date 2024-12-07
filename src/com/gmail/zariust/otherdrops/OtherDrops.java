@@ -21,6 +21,7 @@ import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.listener.*;
 import com.gmail.zariust.otherdrops.metrics.BStats;
 import com.gmail.zariust.otherdrops.options.Weather;
+import com.gmail.zariust.otherdrops.parameters.conditions.MoonPhaseCheck;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -125,7 +126,8 @@ public class OtherDrops extends JavaPlugin {
 		writeNames(null,"org.bukkit.Material");
 		writeNames(null,"org.bukkit.block.Biome");
 		writeNames(null,"org.bukkit.entity.EntityType");
-		writeNames(null, Weather.class);
+		writeNames("Weather", Weather.class);
+		writeNames("MoonPhase", MoonPhaseCheck.MoonPhase.class);
 		writeNames(null,"org.bukkit.event.entity.CreatureSpawnEvent$SpawnReason");
 		writeNames(null,"org.bukkit.event.entity.EntityDamageEvent$DamageCause");
 		writeNames(null,"org.bukkit.DyeColor");
