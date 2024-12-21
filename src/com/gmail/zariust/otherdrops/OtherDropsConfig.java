@@ -98,6 +98,7 @@ public class OtherDropsConfig {
 	public static Map<MoonPhaseCheck.MoonPhase, Boolean> defaultMoonPhaseLevels;
 	protected static Map<World, Boolean> defaultWorlds;
 	protected static Map<String, Boolean> defaultRegions;
+	protected static Set<String> defaultStructures;
 	public static Map<Weather, Boolean> defaultWeather;
 	public static Map<Time, Boolean> defaultTime;
 	protected static Map<String, Boolean> defaultPermissionGroups;
@@ -213,6 +214,7 @@ public class OtherDropsConfig {
 		defaultTrigger = Collections.singletonList(Trigger.BREAK);
 		defaultWorlds = null;
 		defaultRegions = null;
+		defaultStructures = null;
 		defaultWeather = null;
 		defaultBiomes = null;
 		defaultMoonPhaseLevels = null;
@@ -685,6 +687,7 @@ public class OtherDropsConfig {
 			Log.logInfo("Loading defaults... nodemap=" + defaults, HIGH);
 			defaultWorlds = parseWorldsFrom(defaults);
 			defaultRegions = parseRegionsFrom(defaults);
+			defaultStructures = parseStructuresFrom(defaults);
 			defaultWeather = Weather.parseFrom(defaults, null);
 			defaultBiomes = parseBiomesFrom(defaults);
 			defaultMoonPhaseLevels = parseMoonPhaseFrom(defaults);
@@ -1228,6 +1231,13 @@ public class OtherDropsConfig {
 		List<String> regionsExcept = getMaybeList(node, "regionexcept",
 				"regionsexcept");
 		return getBooleanMap(regions, regionsExcept, defaultRegions);
+	}
+
+	public static Set<String> parseStructuresFrom(ConfigurationNode node) {
+		List<String> structure = getMaybeList(node, "structure", "structures");
+		if (structure.isEmpty())
+			return defaultStructures;
+		return new HashSet<>(structure);
 	}
 
 	private static Map<String, Boolean> getBooleanMap(List<String> pos, List<String> neg, Map<String, Boolean> def) {
