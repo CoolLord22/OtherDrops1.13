@@ -18,7 +18,7 @@ public class FishhookBiomeCheck extends BiomeCheck {
 
     @Override
     protected boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
-        return CustomDrop.checkList(occurrence.getFishingBiome(), biomeMap);
+        return CustomDrop.checkList(occurrence.getFishingLocation().getBlock().getBiome(), biomeMap);
     }
 
     @Override
