@@ -33,6 +33,8 @@
 
 	<!-- Default setting (if custom setting above not set) -->
 	<target name="default">
+		<delete dir="bin" />
+		<delete dir="${ant.project.name}/events" includes="**/*" />
 		<delete>
 			<fileset dir="." includes="${ant.project.name}${version}-b*.jar"/>
 		</delete>
