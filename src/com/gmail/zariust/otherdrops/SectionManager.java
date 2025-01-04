@@ -1,12 +1,11 @@
 package com.gmail.zariust.otherdrops;
 
-import static com.gmail.zariust.common.Verbosity.EXTREME;
-import static com.gmail.zariust.common.Verbosity.HIGH;
-import static com.gmail.zariust.common.Verbosity.HIGHEST;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.gmail.zariust.otherdrops.event.*;
+import com.gmail.zariust.otherdrops.parameters.Trigger;
+import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
+import com.gmail.zariust.otherdrops.subject.BlockTarget;
+import com.gmail.zariust.otherdrops.subject.PlayerSubject;
+import com.gmail.zariust.otherdrops.subject.Subject.ItemCategory;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,17 +22,10 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EntityEquipment;
 
-import com.gmail.zariust.otherdrops.event.CustomDrop;
-import com.gmail.zariust.otherdrops.event.DropRunner;
-import com.gmail.zariust.otherdrops.event.DropsList;
-import com.gmail.zariust.otherdrops.event.GroupDropEvent;
-import com.gmail.zariust.otherdrops.event.OccurredEvent;
-import com.gmail.zariust.otherdrops.event.SimpleDrop;
-import com.gmail.zariust.otherdrops.parameters.Trigger;
-import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
-import com.gmail.zariust.otherdrops.subject.BlockTarget;
-import com.gmail.zariust.otherdrops.subject.PlayerSubject;
-import com.gmail.zariust.otherdrops.subject.Subject.ItemCategory;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.gmail.zariust.common.Verbosity.*;
 
 public class SectionManager {
 
@@ -296,39 +288,24 @@ public class SectionManager {
          */
     }
 
-    private List<SimpleDrop> gatherDrops(DropsList customDrops,
-            OccurredEvent occurence) {
+    private List<SimpleDrop> gatherDrops(DropsList customDrops, OccurredEvent occurence) {
         // OtherDrops.logInfo("Gatherdrops start.", HIGHEST);
-
-        List<CustomDrop> matchedDrops = new ArrayList<CustomDrop>(); // rename
-                                                                     // to
-                                                                     // matchedDrops
+        List<CustomDrop> matchedDrops = new ArrayList<CustomDrop>();
         List<CustomDrop> uniqueList = new ArrayList<CustomDrop>();
+        RandomDropCollection<CustomDrop> randomDropCollection = new RandomDropCollection<>();
 
-        // First, loop through all drops and gather successful & unique ones
-        // into two lists
-        // Note: since we don't know if this drop will be cleared by uniques,
-        // don't do any events in here
+        // First, loop through all drops and gather successful & unique ones into two lists
+        // Note: since we don't know if this drop will be cleared by uniques, don't do any events in here
         for (CustomDrop customDrop : customDrops) {
             if (customDrop instanceof GroupDropEvent) {
                 GroupDropEvent groupCustomDrop = (GroupDropEvent) customDrop;
-                if (groupCustomDrop.matches(occurence)) { // FIXME: include
-                                                          // chance check at top
-                                                          // of matches
-                    // OtherDrops.logInfo("PerformDrop: found group ("+groupCustomDrop.getGroupsString()+")",
-                    // HIGHEST);
+                if (groupCustomDrop.matches(occurence)) { // FIXME: include chance check at top of matches
+                    // OtherDrops.logInfo("PerformDrop: found group ("+groupCustomDrop.getGroupsString()+")", HIGHEST);
                     matchedDrops.add(groupCustomDrop);
-                    if (!groupCustomDrop.getFlagState().continueDropping) { // This
-                                                                            // means
-                                                                            // a
-                                                                            // unique
-                                                                            // flag
-                                                                            // found
-                        // OtherDrops.logInfo("PerformDrop: group ("+groupCustomDrop.getName()+") is UNIQUE.",
-                        // HIGHEST);
+                    if (!groupCustomDrop.getFlagState().continueDropping) { // This means a unique flag found
+                        // OtherDrops.logInfo("PerformDrop: group ("+groupCustomDrop.getName()+") is UNIQUE.", HIGHEST);
                         uniqueList.add(groupCustomDrop);
                     }
-
                 } else {
                     // OtherDrops.logInfo("PerformDrop: Dropgroup ("+groupCustomDrop.getLogMessage()+") did not match ("+occurence.getLogMessage()+").",
                     // HIGHEST);
@@ -337,19 +314,26 @@ public class SectionManager {
             } else { // SimpleDrop - so add to a list
                 if (customDrop.matches(occurence)) {
                     matchedDrops.add(customDrop);
-                    if (!customDrop.getFlagState().continueDropping) { // This
-                                                                       // means
-                                                                       // a
-                                                                       // unique
-                                                                       // flag
-                                                                       // found
+                    if (!customDrop.getFlagState().continueDropping) { // This means a unique flag found
                         uniqueList.add(customDrop);
+                    }
+                    if (customDrop.getFlagState().isWeighted) {
+                        Log.logInfo("PerformDrop: found weighted drop: " + customDrop.getDropName() + " with weight: " + customDrop.getWeight(), HIGHEST);
+                        randomDropCollection.add(customDrop.getWeight(), customDrop);
                     }
                 } else {
                     // OtherDrops.logInfo("PerformDrop: Drop ("+occurence.getLogMessage()+") did not match ("+customDrop.getLogMessage()+").",
                     // HIGHEST);
                 }
             }
+        }
+
+        // If there were weighted drops, pick a random one to add to the list of drops
+        if (!randomDropCollection.isEmpty()) {
+            matchedDrops.clear();
+            CustomDrop selected = randomDropCollection.next();
+            Log.logInfo("PerformDrop: getWeighted, selecting: " + selected.getDropName(), HIGHEST);
+            matchedDrops.add(selected);
         }
 
         // If there were unique, pick a random one and clear the rest
@@ -366,25 +350,19 @@ public class SectionManager {
                 GroupDropEvent groupCustomDrop = (GroupDropEvent) customDrop;
                 // Process dropGroup events here...
                 // Display dropgroup "message:"
-                String message = MessageAction.getRandomMessage(customDrop,
-                        occurence, customDrop.getMessages(), true);
-                if (message != null && (!message.isEmpty())
-                        && (occurence.getTool() instanceof PlayerSubject)) {
-                    ((PlayerSubject) occurence.getTool()).getPlayer()
-                            .sendMessage(message);
+                String message = MessageAction.getRandomMessage(customDrop, occurence, customDrop.getMessages(), true);
+                if (message != null && (!message.isEmpty()) && (occurence.getTool() instanceof PlayerSubject)) {
+                    ((PlayerSubject) occurence.getTool()).getPlayer().sendMessage(message);
                 }
 
-                finalDrops.addAll(gatherDrops(groupCustomDrop.getDrops(),
-                        occurence));
+                finalDrops.addAll(gatherDrops(groupCustomDrop.getDrops(), occurence));
             } else {
-                // OtherDrops.logInfo("PerformDrop: adding " +
-                // customDrop.getDropName(), HIGHEST);
+                // OtherDrops.logInfo("PerformDrop: adding " + customDrop.getDropName(), HIGHEST);
                 finalDrops.add((SimpleDrop) customDrop);
             }
         }
 
-        // OtherDrops.logInfo("Gatherdrops end... finaldrops: "+finalDrops.toString(),
-        // HIGHEST);
+        // OtherDrops.logInfo("Gatherdrops end... finaldrops: "+finalDrops.toString(), HIGHEST);
         return finalDrops;
 
     }
