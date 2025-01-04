@@ -46,6 +46,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
     private final Flag.FlagState    flagState = new Flag.FlagState();
     // Chance
     private double                  chance;
+    private double                  weight;
     private String                  exclusiveKey;
     // Delay
     private IntRange                delay;
@@ -272,8 +273,16 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
         chance = percent;
     }
 
+    public void setWeight(double percent) {
+        weight = percent;
+    }
+
     public double getChance() {
         return chance;
+    }
+
+    public double getWeight() {
+        return weight;
     }
 
     public void setExclusiveKey(String key) {

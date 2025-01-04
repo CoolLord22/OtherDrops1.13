@@ -50,6 +50,17 @@ public abstract class Flag implements Comparable<Flag> {
         }
     };
 
+    public final static Flag WEIGHTED = new Flag("WEIGHTED") {
+        @Override
+        public void matches(OccurredEvent event, boolean state, final FlagState result) {
+            if (state) {
+                Log.logInfo("WEIGHTED flag found...",Verbosity.HIGHEST);
+                result.dropThis = true;
+                result.isWeighted = true;
+            }
+        }
+    };
+
     public final static Flag WORLDGUARD_BUILD_PERMISSION = new Flag("WORLDGUARD_BUILD_PERMISSION") {
     	@Override
     	public void matches(OccurredEvent event, boolean state, final FlagState result) {
@@ -155,6 +166,7 @@ public abstract class Flag implements Comparable<Flag> {
     public final static class FlagState {
         public boolean dropThis         = true;
         public boolean continueDropping = true;
+        public boolean isWeighted       = false;
         public boolean dropToInventory  = false;
     }
 
@@ -168,6 +180,7 @@ public abstract class Flag implements Comparable<Flag> {
     static {
         flags.put("IN_MOB_ARENA", IN_MOB_ARENA);
         flags.put("UNIQUE", UNIQUE);
+        flags.put("WEIGHTED", WEIGHTED);
         flags.put("WORLDGUARD_BUILD_PERMISSION", WORLDGUARD_BUILD_PERMISSION);
         flags.put("TOWNY_BUILD_PERMISSION", TOWNY_BUILD_PERMISSION);
         flags.put("GRIEFPREVENTION_BUILD_PERMISSION", GRIEFPREVENTION_BUILD_PERMISSION);

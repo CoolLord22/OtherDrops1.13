@@ -848,6 +848,7 @@ public class OtherDropsConfig {
 
 		// Read chance, delay, etc
 		drop.setChance(parseChanceFrom(node, "chance"));
+		drop.setWeight(parseChanceFrom(node, "weight"));
 		Object exclusive = node.get("exclusive");
 		if (exclusive != null)
 			drop.setExclusiveKey(exclusive.toString());
