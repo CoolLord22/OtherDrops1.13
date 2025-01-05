@@ -47,6 +47,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
     // Chance
     private double                  chance;
     private double                  weight;
+    private boolean                 weighted  = false;
     private String                  exclusiveKey;
     // Delay
     private IntRange                delay;
@@ -273,8 +274,12 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
         chance = percent;
     }
 
-    public void setWeight(double percent) {
-        weight = percent;
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+
+    public void setWeighted(boolean weighted) {
+        this.weighted = weighted;
     }
 
     public double getChance() {
@@ -283,6 +288,10 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
 
     public double getWeight() {
         return weight;
+    }
+
+    public boolean isWeighted() {
+        return weighted;
     }
 
     public void setExclusiveKey(String key) {

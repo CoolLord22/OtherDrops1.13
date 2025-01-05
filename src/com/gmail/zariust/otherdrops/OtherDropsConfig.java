@@ -847,7 +847,12 @@ public class OtherDropsConfig {
 
 		// Read chance, delay, etc
 		drop.setChance(parseChanceFrom(node, "chance"));
-		drop.setWeight(parseChanceFrom(node, "weight"));
+		drop.setWeight(parseWeightFrom(node, drop.toString()));
+
+		if(drop.getWeight() > 0) {
+			drop.setWeighted(true);
+		}
+
 		Object exclusive = node.get("exclusive");
 		if (exclusive != null)
 			drop.setExclusiveKey(exclusive.toString());
@@ -862,7 +867,7 @@ public class OtherDropsConfig {
 
 	public static double parseChanceFrom(ConfigurationNode node, String key) {
 		String chanceString = node.getString(key, null);
-		double chance = 100;
+		double chance;
 		if (chanceString == null) {
 			chance = 100;
 		} else {
@@ -873,6 +878,23 @@ public class OtherDropsConfig {
 			}
 		}
 		return chance;
+	}
+
+	public static double parseWeightFrom(ConfigurationNode node, String dropName) {
+		String weightString = node.getString("weight", null);
+		double weight;
+		if (weightString == null) {
+			weight = -1;
+		} else {
+			try {
+				weight = Double.parseDouble(weightString);
+				if(weight < 0)
+					Log.logWarning("Negative weight specified for " + dropName + ", this will NOT be weighted...");
+			} catch (NumberFormatException ex) {
+				weight = -1;
+			}
+		}
+		return weight;
 	}
 
 	private Location parseLocationFrom(ConfigurationNode node, String type, double d, double defY, double e) {
