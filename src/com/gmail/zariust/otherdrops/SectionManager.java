@@ -306,6 +306,13 @@ public class SectionManager {
                         // OtherDrops.logInfo("PerformDrop: group ("+groupCustomDrop.getName()+") is UNIQUE.", HIGHEST);
                         uniqueList.add(groupCustomDrop);
                     }
+                    if (groupCustomDrop.isWeighted()) {
+                        Log.logInfo("PerformDrop: found weighted group drop: " + groupCustomDrop.getDropName() + " with weight: " + groupCustomDrop.getWeight(), HIGHEST);
+                        randomDropCollection.add(groupCustomDrop.getWeight(), groupCustomDrop);
+                    } else {
+                        if(!randomDropCollection.isEmpty())
+                            Log.logWarning("Non-weighted group-drop found in a weighted section: " + groupCustomDrop.getDropName());
+                    }
                 } else {
                     // OtherDrops.logInfo("PerformDrop: Dropgroup ("+groupCustomDrop.getLogMessage()+") did not match ("+occurence.getLogMessage()+").",
                     // HIGHEST);
@@ -317,9 +324,12 @@ public class SectionManager {
                     if (!customDrop.getFlagState().continueDropping) { // This means a unique flag found
                         uniqueList.add(customDrop);
                     }
-                    if (customDrop.getFlagState().isWeighted) {
+                    if (customDrop.isWeighted()) {
                         Log.logInfo("PerformDrop: found weighted drop: " + customDrop.getDropName() + " with weight: " + customDrop.getWeight(), HIGHEST);
                         randomDropCollection.add(customDrop.getWeight(), customDrop);
+                    } else {
+                        if(!randomDropCollection.isEmpty())
+                            Log.logWarning("Non-weighted drop: " + customDrop.getDropName() + " found in a weighted section. This drop WILL be ignored!");
                     }
                 } else {
                     // OtherDrops.logInfo("PerformDrop: Drop ("+occurence.getLogMessage()+") did not match ("+customDrop.getLogMessage()+").",
