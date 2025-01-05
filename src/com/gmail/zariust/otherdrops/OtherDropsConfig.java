@@ -804,8 +804,7 @@ public class OtherDropsConfig {
 	}
 
 	private CustomDrop loadDrop(ConfigurationNode dropNode, Target target, Trigger trigger, boolean isGroup) {
-		CustomDrop drop = isGroup ? new GroupDropEvent(target, trigger)
-				: new SimpleDrop(target, trigger);
+		CustomDrop drop = isGroup ? new GroupDropEvent(target, trigger) : new SimpleDrop(target, trigger);
 		loadConditions(dropNode, drop);
 		if (isGroup)
 			loadDropGroup(dropNode, (GroupDropEvent) drop, target, trigger);
@@ -1004,9 +1003,9 @@ public class OtherDropsConfig {
 	}
 
 	private void loadDropGroup(ConfigurationNode node, GroupDropEvent group, Target target, Trigger trigger) {
+		group.setName(node.getString("dropgroup", ""));
 		if (!node.getKeys().contains("drops")) {
-			Log.logWarning("Empty drop group \"" + group.getName()
-					+ "\"; will have no effect!");
+			Log.logWarning("Empty drop group " + group.getName() + "; will have no effect!");
 			return;
 		}
 		Log.logInfo(
