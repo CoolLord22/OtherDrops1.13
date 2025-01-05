@@ -189,9 +189,9 @@ public class OtherDropsCommand implements CommandExecutor {
         case TRIGGERS:
             String triggers = "";
             for (Trigger value : Trigger.values()) {
-                triggers += value.toString()+", ";
+                triggers += value.toString()+"&f, &a";
             }
-            sender.sendMessage("Available OtherDrops triggers: "+triggers.substring(0, triggers.length()-2));
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "Available OtherDrops triggers: &a" + triggers.substring(0, triggers.length()-6)));
             break;
         default:
             break;
