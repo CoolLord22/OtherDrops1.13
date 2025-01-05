@@ -253,6 +253,7 @@ public class OtherDrops extends JavaPlugin {
 
 	public void registerCommands() {
 		this.getCommand("od").setExecutor(new OtherDropsCommand(this));
+		this.getCommand("od").setTabCompleter(new OtherDropsTabExecutor());
 	}
 
 	public void initConfig() {
