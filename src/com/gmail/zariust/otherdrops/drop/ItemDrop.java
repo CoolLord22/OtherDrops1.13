@@ -19,6 +19,7 @@ package com.gmail.zariust.otherdrops.drop;
 import com.gmail.zariust.common.CMEnchantment;
 import com.gmail.zariust.common.CommonEnchantments;
 import com.gmail.zariust.common.CommonEntity;
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
@@ -273,6 +274,10 @@ public class ItemDrop extends DropType {
 
     public static DropType parse(String drop, String defaultData, IntRange amount, double chance) {
         ODItem item = ODItem.parseItem(drop, defaultData);
+        if(item.itemStack != null) {
+            Log.logInfo("ODItem parsing returned an ItemStack: " + item.name, Verbosity.HIGHEST);
+            return new ItemStackDrop(item.itemStack, item.name, amount, chance);
+        }
         Material mat = item.getMaterial();
         if (mat == null)
             return null;
