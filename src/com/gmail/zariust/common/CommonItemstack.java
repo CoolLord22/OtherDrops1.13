@@ -65,10 +65,12 @@ public class CommonItemstack {
     }
 
     public ItemStack getItemStack(String key) {
-        NamespacedKey nkey = new NamespacedKey(plugin, parseKey(key));
-        if(OtherDrops.loadedItems.containsKey(nkey)) {
-            return OtherDrops.loadedItems.get(nkey);
-        }
+        try {
+            NamespacedKey nkey = new NamespacedKey(plugin, parseKey(key));
+            if(OtherDrops.loadedItems.containsKey(nkey)) {
+                return OtherDrops.loadedItems.get(nkey);
+            }
+        } catch (Exception ignored) {}
         return null;
     }
 
