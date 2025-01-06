@@ -28,14 +28,14 @@ import com.gmail.zariust.otherdrops.subject.Target;
 import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.core.mobs.ActiveMob;
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.plugin.Plugin;
 
 import java.util.*;
 
@@ -408,60 +408,6 @@ public abstract class DropType {
                 return MoneyDrop.parse(name, defaultData, amount, chance);
             else if (name.toUpperCase().startsWith("MYTHIC_MOB@")) {
                 return new MythicCreatureDrop(name.replaceAll("MYTHIC_MOB@", ""), amount.toIntRange(), chance);
-            }
-            else if (name.toUpperCase().startsWith("MYTHIC_ITEM@")) {
-                String input = name.replaceAll("MYTHIC_ITEM@", "");
-                String itemIdentifier = "MYTHIC_" + input;
-
-                ItemStack loadedItem = OtherDropsConfig.commonItemstack.getItemStack(itemIdentifier);
-                if (loadedItem != null) {
-                    return new ItemStackDrop(loadedItem, itemIdentifier, amount.toIntRange(), chance);
-                }
-
-                if(Dependencies.getMythicMobs().getItemManager().getItem(input).isPresent()) {
-                    loadedItem = Dependencies.getMythicMobs().getItemManager().getItemStack(input);
-                    OtherDrops.loadedItems.put(new NamespacedKey(OtherDrops.plugin, itemIdentifier), loadedItem);
-                    Log.logInfo("Saving item: " + loadedItem, Verbosity.HIGHEST);
-                    return new ItemStackDrop(loadedItem, itemIdentifier, amount.toIntRange(), chance);
-                }
-                Log.logWarning("Invalid MythicItem: " + input);
-                return null;
-            }
-            else if (name.toUpperCase().startsWith("NAMESPACE_ITEM@")) {
-                String input = name.replaceAll("NAMESPACE_ITEM@", "");
-                String[] inputSplit = input.toLowerCase().split(":");
-                String itemIdentifier = "NAMESPACE_" + inputSplit[0] + "_" + inputSplit[1];
-
-                ItemStack loadedItem = OtherDropsConfig.commonItemstack.getItemStack(itemIdentifier);
-                if (loadedItem != null) {
-                    return new ItemStackDrop(loadedItem, itemIdentifier, amount.toIntRange(), chance);
-                }
-
-                if (inputSplit.length == 2) {
-                    Plugin plugin = Bukkit.getPluginManager().getPlugin(inputSplit[0]);
-                    if (plugin != null) {
-                        NamespacedKey recipeKey = NamespacedKey.fromString(input);
-                        if (recipeKey != null) {
-                            Recipe recipe = Bukkit.getRecipe(recipeKey);
-                            if (recipe != null) {
-                                loadedItem = recipe.getResult();
-                                OtherDrops.loadedItems.put(new NamespacedKey(OtherDrops.plugin, itemIdentifier), loadedItem);
-                                Log.logInfo("Saving item: " + loadedItem, Verbosity.HIGHEST);
-                                return new ItemStackDrop(loadedItem, itemIdentifier, amount.toIntRange(), chance);
-                            }
-                        }
-                    }
-                }
-                Log.logWarning("Invalid registered namespace item identifier: " + input);
-                return null;
-            }
-            else if (name.toUpperCase().startsWith("OD_ITEM@")) {
-                String input = name.replaceAll("OD_ITEM@", "");
-                String itemIdentifier = "OD_ITEM_" + input;
-                ItemStack loadedItem = OtherDropsConfig.commonItemstack.getItemStack(itemIdentifier);
-                if (loadedItem != null) {
-                    return new ItemStackDrop(loadedItem, itemIdentifier, amount.toIntRange(), chance);
-                }
             }
             else if (name.toUpperCase().startsWith("XP"))
                 return ExperienceDrop.parse(name, defaultData, amount.toIntRange(), chance);
