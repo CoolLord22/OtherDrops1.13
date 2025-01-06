@@ -20,21 +20,15 @@ import com.gmail.zariust.common.CMEnchantment;
 import com.gmail.zariust.common.CommonEnchantments;
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.Verbosity;
-import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDrops;
-import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.ItemData;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
-import org.bukkit.Bukkit;
+import com.gmail.zariust.otherdrops.things.ODItem;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
-import org.bukkit.plugin.Plugin;
 
 import java.util.List;
 import java.util.Objects;
@@ -214,6 +208,15 @@ public class ToolAgent implements Agent {
     @Override
     public Location getLocation() {
         return null;
+    }
+
+    public static Agent parse(ODItem item) {
+        if(item.itemStack != null) {
+            Log.logInfo("ToolAgent: ODItem parsing returned an ItemStack: " + item.name, Verbosity.HIGHEST);
+            return new ItemStackAgent(item.itemStack, item.name);
+        } else {
+            return parse(item.name, item.getDataString(), item.getEnchantments(), item.getDisplayName(), item.lore);
+        }
     }
 
     public static Agent parse(String name, String state) {
