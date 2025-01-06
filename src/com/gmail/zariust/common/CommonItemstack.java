@@ -35,7 +35,7 @@ public class CommonItemstack {
         }
     }
 
-    public boolean saveItemStack(String key, ItemStack itemStack) {
+    public boolean saveODItemStack(String key, ItemStack itemStack) {
         config.set(key, itemStack);
         NamespacedKey nkey = new NamespacedKey(plugin, "OD_ITEM_" + key);
         OtherDrops.loadedItems.put(nkey, itemStack);
@@ -60,11 +60,10 @@ public class CommonItemstack {
     }
 
     public ItemStack getItemStack(String key) {
-        NamespacedKey nkey = new NamespacedKey(plugin, "OD_ITEM_" + key);
+        NamespacedKey nkey = new NamespacedKey(plugin, key);
         if(OtherDrops.loadedItems.containsKey(nkey)) {
             return OtherDrops.loadedItems.get(nkey);
         }
-        Log.logWarning("ODItems." + nkey + " not found in ODItems.yml!");
         return null;
     }
 }

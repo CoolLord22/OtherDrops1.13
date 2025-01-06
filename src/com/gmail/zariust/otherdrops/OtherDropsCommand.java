@@ -628,7 +628,7 @@ public class OtherDropsCommand implements CommandExecutor {
             String key = args[0];
             if (sender instanceof Player player) {
                 ItemStack playerItem = player.getInventory().getItemInMainHand();
-                if(OtherDropsConfig.commonItemstack.saveItemStack(key, playerItem)) {
+                if(OtherDropsConfig.commonItemstack.saveODItemStack(key, playerItem)) {
                     ((Player) sender).sendRawMessage(ChatColor.GREEN + "Successfully saved item " + key);
                     return;
                 }
