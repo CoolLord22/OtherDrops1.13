@@ -4,12 +4,20 @@ import com.gmail.zariust.common.CMEnchantment;
 import com.gmail.zariust.common.CommonEnchantments;
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.ItemData;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
+import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +32,17 @@ public class ODItem {
     public List<ItemFlag>       itemFlags = new ArrayList<>();
     public String               displayname;
     public final List<String>   lore         = new ArrayList<String>();
+    public ItemStack            itemStack;
+
     private Material            material;
     private Data                data;
+
+    public ODItem(){}
+
+    public ODItem(ItemStack itemStack, String identifier) {
+        this.itemStack = itemStack;
+        this.name = identifier;
+    }
 
     /**
      * @param drop
@@ -34,6 +51,62 @@ public class ODItem {
      * @return
      */
     public static ODItem parseItem(String drop, String defaultData) {
+        if (drop.toUpperCase().startsWith("MYTHIC_ITEM@")) {
+            String input = drop.replaceAll("MYTHIC_ITEM@", "");
+            String itemIdentifier = "MYTHIC_" + input;
+
+            ItemStack loadedItem = OtherDropsConfig.commonItemstack.getItemStack(itemIdentifier);
+            if (loadedItem != null) {
+                return new ODItem(loadedItem, itemIdentifier);
+            }
+
+            if(Dependencies.getMythicMobs().getItemManager().getItem(input).isPresent()) {
+                loadedItem = Dependencies.getMythicMobs().getItemManager().getItemStack(input);
+                OtherDrops.loadedItems.put(new NamespacedKey(OtherDrops.plugin, itemIdentifier), loadedItem);
+                Log.logInfo("Saving item: " + loadedItem, Verbosity.HIGHEST);
+                return new ODItem(loadedItem, itemIdentifier);
+            }
+            Log.logWarning("Invalid MythicItem: " + input);
+        } else if (drop.toUpperCase().startsWith("NAMESPACE_ITEM@")) {
+            String input = drop.replaceAll("NAMESPACE_ITEM@", "");
+            String[] inputSplit = input.toLowerCase().split(":");
+            String itemIdentifier = "NAMESPACE_" + inputSplit[0] + "_" + inputSplit[1];
+
+            ItemStack loadedItem = OtherDropsConfig.commonItemstack.getItemStack(itemIdentifier);
+            if (loadedItem != null) {
+                return new ODItem(loadedItem, itemIdentifier);
+            }
+            if (inputSplit.length == 2) {
+                Plugin plugin = Bukkit.getPluginManager().getPlugin(inputSplit[0]);
+                if (plugin != null) {
+                    itemIdentifier = "NAMESPACE_" + inputSplit[0] + "_" + inputSplit[1];
+                    loadedItem = OtherDropsConfig.commonItemstack.getItemStack(itemIdentifier);
+                    if (loadedItem != null) {
+                        return new ODItem(loadedItem, itemIdentifier);
+                    }
+                    NamespacedKey recipeKey = NamespacedKey.fromString(input);
+                    if (recipeKey != null) {
+                        Recipe recipe = Bukkit.getRecipe(recipeKey);
+                        if (recipe != null) {
+                            loadedItem = recipe.getResult();
+
+                            OtherDrops.loadedItems.put(new NamespacedKey(OtherDrops.plugin, itemIdentifier), loadedItem);
+                            Log.logInfo("Saving item: " + loadedItem, Verbosity.HIGHEST);
+                            return new ODItem(loadedItem, itemIdentifier);
+                        }
+                    }
+                }
+            }
+            Log.logWarning("Invalid registered namespace item identifier: " + input);
+        } else if (drop.toUpperCase().startsWith("OD_ITEM@")) {
+            String input = drop.replaceAll("OD_ITEM@", "");
+            String itemIdentifier = "OD_ITEM_" + input;
+            ItemStack loadedItem = OtherDropsConfig.commonItemstack.getItemStack(itemIdentifier);
+            if (loadedItem != null) {
+                return new ODItem(loadedItem, itemIdentifier);
+            }
+        }
+
         ODItem item = new ODItem();
         item.dataString = defaultData;
 
@@ -101,10 +174,6 @@ public class ODItem {
         return item;
     }
 
-    /**
-     * @param name
-     * @return
-     */
 	public Material getMaterial() {
         if (this.material == null) {
         	if(this.name.matches("[0-9]+")) {
@@ -122,11 +191,6 @@ public class ODItem {
         return (dataString == null ? "" : dataString);
     }
 
-    /**
-     * @param item
-     * @param mat
-     * @return
-     */
     public Data getData() {
         if (data == null && dataString != null) {
             if (dataString.equals("!"))
@@ -139,10 +203,6 @@ public class ODItem {
         return data;
     }
 
-    /**
-     * @return
-     * 
-     */
     public Data parseDataFromString(String dataString) {
         Data returnVal = null;
         try {
