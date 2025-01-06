@@ -65,10 +65,30 @@ public class CommonItemstack {
     }
 
     public ItemStack getItemStack(String key) {
-        NamespacedKey nkey = new NamespacedKey(plugin, key);
+        NamespacedKey nkey = new NamespacedKey(plugin, parseKey(key));
         if(OtherDrops.loadedItems.containsKey(nkey)) {
             return OtherDrops.loadedItems.get(nkey);
         }
         return null;
+    }
+
+    private String parseKey(String key) {
+        key = key.toUpperCase();
+        String itemIdentifier = key;
+        if(key.startsWith("MYTHIC_ITEM@")) {
+            String input = key.replaceAll("MYTHIC_ITEM@", "");
+            itemIdentifier = "MYTHIC_" + input;
+        } else if(key.startsWith("NAMESPACE_ITEM@")) {
+            String input = key.replaceAll("NAMESPACE_ITEM@", "");
+            String[] inputSplit = input.toLowerCase().split(":");
+
+            if (inputSplit.length == 2) {
+                itemIdentifier = "NAMESPACE_" + inputSplit[0] + "_" + inputSplit[1];
+            }
+        } else if(key.startsWith("OD_ITEM@")) {
+            String input = key.replaceAll("OD_ITEM@", "");
+            itemIdentifier = "OD_ITEM_" + input;
+        }
+        return itemIdentifier.toLowerCase();
     }
 }
