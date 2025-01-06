@@ -81,13 +81,14 @@ public class ItemRequirementCheck extends Condition {
 						return compareItem;
 					} else { // compare item has meta, lets check that it matches the player's item
 						if(!req.itemStack.hasItemMeta()) // player item had no meta
-							return null;
+							continue;
 						ItemMeta thisMeta = req.itemStack.getItemMeta();
 						ItemMeta stackMeta = compareItem.getItemMeta();
 						((Damageable) thisMeta).setDamage(0);
 						((Damageable) stackMeta).setDamage(0);
 						Log.logInfo("ItemRequirementCheck - returned value: " + Bukkit.getItemFactory().equals(thisMeta, stackMeta), Verbosity.HIGHEST);
-						return Bukkit.getItemFactory().equals(thisMeta, stackMeta) ? compareItem : null;
+						if(Bukkit.getItemFactory().equals(thisMeta, stackMeta))
+							return compareItem;
 					}
 				}
 			}
@@ -114,7 +115,6 @@ public class ItemRequirementCheck extends Condition {
 				
 				if(isContained)  
 					return item;
-				
 			}
 		}
 		return null;
