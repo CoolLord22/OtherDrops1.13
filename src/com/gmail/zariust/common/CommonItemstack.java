@@ -49,6 +49,11 @@ public class CommonItemstack {
     }
 
     public void loadItemStacks() {
+        try {
+            config.load(savedItemsFile);
+        } catch (IOException | InvalidConfigurationException e) {
+            Log.logWarning("An error occurred while loading ODItems.yml!");
+        }
         int count = 0;
         for(String key : config.getKeys(false)) {
             NamespacedKey nkey = new NamespacedKey(plugin, "OD_ITEM_" + key);
