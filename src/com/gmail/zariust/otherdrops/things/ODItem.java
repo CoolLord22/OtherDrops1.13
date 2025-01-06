@@ -17,7 +17,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
-import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,14 +50,13 @@ public class ODItem {
      * @return
      */
     public static ODItem parseItem(String drop, String defaultData) {
+        ItemStack loadedItem = OtherDropsConfig.commonItemstack.getItemStack(drop);
+        if (loadedItem != null) {
+            return new ODItem(loadedItem, drop);
+        }
         if (drop.toUpperCase().startsWith("MYTHIC_ITEM@")) {
             String input = drop.replaceAll("MYTHIC_ITEM@", "");
             String itemIdentifier = "MYTHIC_" + input;
-
-            ItemStack loadedItem = OtherDropsConfig.commonItemstack.getItemStack(itemIdentifier);
-            if (loadedItem != null) {
-                return new ODItem(loadedItem, itemIdentifier);
-            }
 
             if(Dependencies.getMythicMobs().getItemManager().getItem(input).isPresent()) {
                 loadedItem = Dependencies.getMythicMobs().getItemManager().getItemStack(input);
@@ -70,41 +68,23 @@ public class ODItem {
         } else if (drop.toUpperCase().startsWith("NAMESPACE_ITEM@")) {
             String input = drop.replaceAll("NAMESPACE_ITEM@", "");
             String[] inputSplit = input.toLowerCase().split(":");
-            String itemIdentifier = "NAMESPACE_" + inputSplit[0] + "_" + inputSplit[1];
 
-            ItemStack loadedItem = OtherDropsConfig.commonItemstack.getItemStack(itemIdentifier);
-            if (loadedItem != null) {
-                return new ODItem(loadedItem, itemIdentifier);
-            }
             if (inputSplit.length == 2) {
-                Plugin plugin = Bukkit.getPluginManager().getPlugin(inputSplit[0]);
-                if (plugin != null) {
-                    itemIdentifier = "NAMESPACE_" + inputSplit[0] + "_" + inputSplit[1];
-                    loadedItem = OtherDropsConfig.commonItemstack.getItemStack(itemIdentifier);
-                    if (loadedItem != null) {
-                        return new ODItem(loadedItem, itemIdentifier);
-                    }
-                    NamespacedKey recipeKey = NamespacedKey.fromString(input);
-                    if (recipeKey != null) {
-                        Recipe recipe = Bukkit.getRecipe(recipeKey);
-                        if (recipe != null) {
-                            loadedItem = recipe.getResult();
+                String itemIdentifier = "NAMESPACE_" + inputSplit[0] + "_" + inputSplit[1];
 
-                            OtherDrops.loadedItems.put(new NamespacedKey(OtherDrops.plugin, itemIdentifier), loadedItem);
-                            Log.logInfo("Saving item: " + loadedItem, Verbosity.HIGHEST);
-                            return new ODItem(loadedItem, itemIdentifier);
-                        }
+                NamespacedKey recipeKey = NamespacedKey.fromString(inputSplit[0] + ":" + inputSplit[1]);
+                if (recipeKey != null) {
+                    Recipe recipe = Bukkit.getRecipe(recipeKey);
+                    if (recipe != null) {
+                        loadedItem = recipe.getResult();
+
+                        OtherDrops.loadedItems.put(new NamespacedKey(OtherDrops.plugin, itemIdentifier), loadedItem);
+                        Log.logInfo("Saving item: " + loadedItem, Verbosity.HIGHEST);
+                        return new ODItem(loadedItem, itemIdentifier);
                     }
                 }
             }
             Log.logWarning("Invalid registered namespace item identifier: " + input);
-        } else if (drop.toUpperCase().startsWith("OD_ITEM@")) {
-            String input = drop.replaceAll("OD_ITEM@", "");
-            String itemIdentifier = "OD_ITEM_" + input;
-            ItemStack loadedItem = OtherDropsConfig.commonItemstack.getItemStack(itemIdentifier);
-            if (loadedItem != null) {
-                return new ODItem(loadedItem, itemIdentifier);
-            }
         }
 
         ODItem item = new ODItem();
