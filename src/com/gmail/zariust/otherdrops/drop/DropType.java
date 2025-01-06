@@ -406,12 +406,20 @@ public abstract class DropType {
                 return VehicleDrop.parse(name, defaultData, amount.toIntRange(), chance);
             else if (name.toUpperCase().startsWith("MONEY"))
                 return MoneyDrop.parse(name, defaultData, amount, chance);
+            else if (name.toUpperCase().startsWith("MYTHIC_MOB@")) {
+                return new MythicCreatureDrop(name.replaceAll("MYTHIC_MOB@", ""), amount.toIntRange(), chance);
+            }
             else if (name.toUpperCase().startsWith("MYTHIC_ITEM@")) {
                 String input = name.replaceAll("MYTHIC_ITEM@", "");
-                if(Dependencies.getMythicMobs().getItemManager().getItem(input).isPresent()) {
-                    ItemStack loadedItem = Dependencies.getMythicMobs().getItemManager().getItemStack(input);
+                String itemIdentifier = "MYTHIC_" + input;
 
-                    String itemIdentifier = "MYTHIC_" + input;
+                ItemStack loadedItem = OtherDropsConfig.commonItemstack.getItemStack(itemIdentifier);
+                if (loadedItem != null) {
+                    return new ItemStackDrop(loadedItem, itemIdentifier, amount.toIntRange(), chance);
+                }
+
+                if(Dependencies.getMythicMobs().getItemManager().getItem(input).isPresent()) {
+                    loadedItem = Dependencies.getMythicMobs().getItemManager().getItemStack(input);
                     OtherDrops.loadedItems.put(new NamespacedKey(OtherDrops.plugin, itemIdentifier), loadedItem);
                     Log.logInfo("Saving item: " + loadedItem, Verbosity.HIGHEST);
                     return new ItemStackDrop(loadedItem, itemIdentifier, amount.toIntRange(), chance);
@@ -419,12 +427,16 @@ public abstract class DropType {
                 Log.logWarning("Invalid MythicItem: " + input);
                 return null;
             }
-            else if (name.toUpperCase().startsWith("MYTHIC_MOB@")) {
-                return new MythicCreatureDrop(name.replaceAll("MYTHIC_MOB@", ""), amount.toIntRange(), chance);
-            }
             else if (name.toUpperCase().startsWith("NAMESPACE_ITEM@")) {
                 String input = name.replaceAll("NAMESPACE_ITEM@", "");
                 String[] inputSplit = input.toLowerCase().split(":");
+                String itemIdentifier = "NAMESPACE_" + inputSplit[0] + "_" + inputSplit[1];
+
+                ItemStack loadedItem = OtherDropsConfig.commonItemstack.getItemStack(itemIdentifier);
+                if (loadedItem != null) {
+                    return new ItemStackDrop(loadedItem, itemIdentifier, amount.toIntRange(), chance);
+                }
+
                 if (inputSplit.length == 2) {
                     Plugin plugin = Bukkit.getPluginManager().getPlugin(inputSplit[0]);
                     if (plugin != null) {
@@ -432,9 +444,7 @@ public abstract class DropType {
                         if (recipeKey != null) {
                             Recipe recipe = Bukkit.getRecipe(recipeKey);
                             if (recipe != null) {
-                                ItemStack loadedItem = recipe.getResult();
-
-                                String itemIdentifier = "NAMESPACE_" + inputSplit[0] + "_" + inputSplit[1];
+                                loadedItem = recipe.getResult();
                                 OtherDrops.loadedItems.put(new NamespacedKey(OtherDrops.plugin, itemIdentifier), loadedItem);
                                 Log.logInfo("Saving item: " + loadedItem, Verbosity.HIGHEST);
                                 return new ItemStackDrop(loadedItem, itemIdentifier, amount.toIntRange(), chance);
@@ -447,9 +457,10 @@ public abstract class DropType {
             }
             else if (name.toUpperCase().startsWith("OD_ITEM@")) {
                 String input = name.replaceAll("OD_ITEM@", "");
-                ItemStack loadedItem = OtherDropsConfig.commonItemstack.getItemStack(input);
+                String itemIdentifier = "OD_ITEM_" + input;
+                ItemStack loadedItem = OtherDropsConfig.commonItemstack.getItemStack(itemIdentifier);
                 if (loadedItem != null) {
-                    return new ItemStackDrop(loadedItem, "OD_ITEM_" + input, amount.toIntRange(), chance);
+                    return new ItemStackDrop(loadedItem, itemIdentifier, amount.toIntRange(), chance);
                 }
             }
             else if (name.toUpperCase().startsWith("XP"))

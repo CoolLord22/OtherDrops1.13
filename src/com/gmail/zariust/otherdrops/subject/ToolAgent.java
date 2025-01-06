@@ -222,37 +222,38 @@ public class ToolAgent implements Agent {
 
     public static Agent parse(String name, String state, List<CMEnchantment> enchPass, String loreName, List<String> loreText) {
         if(name.startsWith("MYTHIC_ITEM")) {
+            String itemIdentifier = "MYTHIC_" + state;
+            ItemStack loadedItem = OtherDropsConfig.commonItemstack.getItemStack(itemIdentifier);
+            if (loadedItem != null) {
+                return new ItemStackAgent(loadedItem, itemIdentifier);
+            }
             if(Dependencies.hasMythicMobs()) {
                 if(!Dependencies.getMythicMobs().getItemManager().getItem(state).isPresent()) {
                     Log.logInfo("Invalid mythic item tool specified/could not be found: " + state, Verbosity.HIGHEST);
                     return null;
                 }
-                ItemStack loadedItem = Dependencies.getMythicMobs().getItemManager().getItemStack(state);
+                loadedItem = Dependencies.getMythicMobs().getItemManager().getItemStack(state);
 
-                String itemIdentifier = "MYTHIC_" + state;
                 OtherDrops.loadedItems.put(new NamespacedKey(OtherDrops.plugin, itemIdentifier), loadedItem);
                 Log.logInfo("Saving item: " + loadedItem, Verbosity.HIGHEST);
                 return new ItemStackAgent(loadedItem, itemIdentifier);
             }
-        } else if(name.startsWith("OD_ITEM")) {
-            ItemStack loadedItem = OtherDropsConfig.commonItemstack.getItemStack(state);
-            if (loadedItem != null) {
-                return new ItemStackAgent(loadedItem, "OD_ITEM_" + state);
-            }
-            Log.logInfo("Invalid OD_ITEM specified/could not be found: " + state, Verbosity.HIGHEST);
-            return null;
         } else if(name.startsWith("NAMESPACE_ITEM")) {
             String[] inputSplit = state.toLowerCase().split(":");
             if (inputSplit.length == 2) {
                 Plugin plugin = Bukkit.getPluginManager().getPlugin(inputSplit[0]);
                 if (plugin != null) {
+                    String itemIdentifier = "NAMESPACE_" + inputSplit[0] + "_" + inputSplit[1];
+                    ItemStack loadedItem = OtherDropsConfig.commonItemstack.getItemStack(itemIdentifier);
+                    if (loadedItem != null) {
+                        return new ItemStackAgent(loadedItem, itemIdentifier);
+                    }
                     NamespacedKey recipeKey = NamespacedKey.fromString(state);
                     if (recipeKey != null) {
                         Recipe recipe = Bukkit.getRecipe(recipeKey);
                         if (recipe != null) {
-                            ItemStack loadedItem = recipe.getResult();
+                            loadedItem = recipe.getResult();
 
-                            String itemIdentifier = "NAMESPACE_" + inputSplit[0] + "_" + inputSplit[1];
                             OtherDrops.loadedItems.put(new NamespacedKey(OtherDrops.plugin, itemIdentifier), loadedItem);
                             Log.logInfo("Saving item: " + loadedItem, Verbosity.HIGHEST);
                             return new ItemStackAgent(loadedItem, itemIdentifier);
@@ -261,6 +262,14 @@ public class ToolAgent implements Agent {
                 }
             }
             Log.logWarning("Invalid registered namespace item identifier: " + state);
+            return null;
+        } else if(name.startsWith("OD_ITEM")) {
+            String itemIdentifier = "OD_ITEM_" + state;
+            ItemStack loadedItem = OtherDropsConfig.commonItemstack.getItemStack(itemIdentifier);
+            if (loadedItem != null) {
+                return new ItemStackAgent(loadedItem, itemIdentifier);
+            }
+            Log.logInfo("Invalid OD_ITEM specified/could not be found: " + state, Verbosity.HIGHEST);
             return null;
         }
         name = name.toUpperCase();
