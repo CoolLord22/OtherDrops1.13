@@ -625,7 +625,7 @@ public class OtherDropsCommand implements CommandExecutor {
 
     private void cmdSaveItem(CommandSender sender, String[] args) {
         if (args.length > 0) {
-            String key = args[0];
+            String key = args[0].toLowerCase().replaceAll("od_item@", "");
             if (sender instanceof Player player) {
                 ItemStack playerItem = player.getInventory().getItemInMainHand();
                 if(OtherDropsConfig.commonItemstack.saveODItemStack(key, playerItem)) {
