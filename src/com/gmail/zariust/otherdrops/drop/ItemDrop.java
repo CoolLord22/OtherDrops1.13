@@ -275,7 +275,7 @@ public class ItemDrop extends DropType {
     public static DropType parse(String drop, String defaultData, IntRange amount, double chance) {
         ODItem item = ODItem.parseItem(drop, defaultData);
         if(item.itemStack != null) {
-            Log.logInfo("ODItem parsing returned an ItemStack: " + item.name, Verbosity.HIGHEST);
+            Log.logInfo("ItemDrop: ODItem parsing returned an ItemStack: " + item.name, Verbosity.HIGHEST);
             return new ItemStackDrop(item.itemStack, item.name, amount, chance);
         }
         Material mat = item.getMaterial();
