@@ -17,6 +17,8 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -232,4 +234,45 @@ public class ODItem {
         return null;
     }
 
+    public boolean matches(ItemStack playerItem) {
+        if(playerItem != null) {
+            if(this.itemStack != null) {
+                if(playerItem.getType() != this.itemStack.getType()) { // if the two materials are not equal
+                    Log.logInfo("ODItem matches - failed (different materials).", Verbosity.HIGHEST);
+                    return false;
+                } else if(!this.itemStack.hasItemMeta()) { // if compare item has no custom data, the check should pass
+                    Log.logInfo("ODItem matches - passed (no meta on comparison item).", Verbosity.HIGHEST);
+                    return true;
+                } else { // compare item has meta, lets check that it matches the player's item
+                    if(!playerItem.hasItemMeta()) // player item had no meta
+                        return false;
+                    ItemMeta thisMeta = playerItem.getItemMeta();
+                    ItemMeta stackMeta = this.itemStack.getItemMeta();
+                    ((Damageable) thisMeta).setDamage(0);
+                    ((Damageable) stackMeta).setDamage(0);
+                    Log.logInfo("ODItem matches - returned value: " + Bukkit.getItemFactory().equals(thisMeta, stackMeta), Verbosity.HIGHEST);
+                    return Bukkit.getItemFactory().equals(thisMeta, stackMeta);
+                }
+            } else {
+                if(playerItem.getType().equals(this.getMaterial())) {
+                    boolean isContained = true;
+                    if (this.displayname != null)
+                        if (!this.displayname.equals(playerItem.getItemMeta().getDisplayName()))
+                            isContained = false;
+
+                    if (isContained && this.lore != null && !this.lore.isEmpty())
+                        if (!this.lore.equals(playerItem.getItemMeta().getLore()))
+                            isContained = false;
+
+                    if (isContained && !this.getEnchantments().isEmpty())
+                        if(playerItem.getEnchantments().isEmpty())
+                            isContained = false;
+                        else isContained = CommonEnchantments.matches(this.getEnchantments(), playerItem.getEnchantments());
+
+                    return isContained;
+                }
+            }
+        }
+        return false;
+    }
 }
