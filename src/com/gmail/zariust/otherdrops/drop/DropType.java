@@ -53,11 +53,11 @@ public abstract class DropType {
         protected Agent   tool;
         protected String  eventType;
         protected String  spawnReason;        
-        protected Set<ODItem> contentFilter;
-        protected boolean toKeepContents;
+        protected Set<ODItem> dropsFilter;
+        protected boolean toKeepDrops;
 
         protected DropFlags(boolean d, boolean n, boolean s, Random ran, Player who, Agent tool, String eventType,
-                            String spawnReason, String victim, boolean toKeepContents, Set<ODItem> contentFilter) {
+                            String spawnReason, String victim, boolean toKeepDrops, Set<ODItem> dropsFilter) {
             dropToInventory = d;
             naturally = n;
             spread = s;
@@ -67,8 +67,8 @@ public abstract class DropType {
             this.eventType = eventType;
             this.spawnReason = spawnReason;
             this.victim = victim;
-            this.toKeepContents = toKeepContents;
-            this.contentFilter = contentFilter;
+            this.toKeepDrops = toKeepDrops;
+            this.dropsFilter = dropsFilter;
         }
 
         public String getEvent() {
@@ -125,8 +125,8 @@ public abstract class DropType {
         return new DropFlags(dropToInventory, naturally, spread, rng, recipient, tool, eventType, spawnReason, victim, false, new HashSet<>());
     }
 
-    public static DropFlags flags(Player recipient, Agent tool, boolean dropToInventory, boolean naturally, boolean spread, Random rng, String eventType, String spawnReason, String victim, boolean toKeepContents, Set<ODItem> contentFilter) {
-        return new DropFlags(dropToInventory, naturally, spread, rng, recipient, tool, eventType, spawnReason, victim, toKeepContents, contentFilter);
+    public static DropFlags flags(Player recipient, Agent tool, boolean dropToInventory, boolean naturally, boolean spread, Random rng, String eventType, String spawnReason, String victim, boolean toKeepDrops, Set<ODItem> dropsFilter) {
+        return new DropFlags(dropToInventory, naturally, spread, rng, recipient, tool, eventType, spawnReason, victim, toKeepDrops, dropsFilter);
     }
 
     // Drop now! Return false if the roll fails
