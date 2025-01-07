@@ -223,17 +223,42 @@ public abstract class DropType {
     }
 
     // Drop an item!
-    protected static DropResult drop(Location where, ItemStack stack, boolean naturally) {
+    protected static DropResult drop(Location where, ItemStack stack, DropFlags flags) {
+        boolean naturally = flags.naturally;
+        Set<ODItem> dropsFilter = flags.dropsFilter;
+        boolean toKeepDrops = flags.toKeepDrops;
         DropResult dropResult = new DropResult();
+        boolean toDrop = false;
+
         if (stack.getType() == Material.AIR)
             return DropResult.fromQuantity(1); // don't want to crash clients with air item entities
-        World in = where.getWorld();
-        if (naturally)
-            dropResult.addDropped(in.dropItemNaturally(where, stack));
-        else
-            dropResult.addDropped(in.dropItem(where, stack));
 
-        dropResult.setQuantity(stack.getAmount());
+        if(!dropsFilter.isEmpty()) {
+            boolean found = false;
+            for (ODItem odItem : dropsFilter) {
+                if(odItem.matches(stack)) {
+                    found = true;
+                }
+            }
+
+            if(found) { // item was found in our content filter list
+                if(toKeepDrops) // contentskeep, only keep items found
+                    toDrop = true;
+            } else { // item was NOT found in our content filter list
+                if(!toKeepDrops) // contentsremove, since not in list lets drop it
+                    toDrop = true;
+            }
+        }
+
+        if(toDrop || dropsFilter.isEmpty()) {
+            World in = where.getWorld();
+            if (naturally)
+                dropResult.addDropped(in.dropItemNaturally(where, stack));
+            else
+                dropResult.addDropped(in.dropItem(where, stack));
+
+            dropResult.setQuantity(stack.getAmount());
+        }
         return dropResult;
     }
 
