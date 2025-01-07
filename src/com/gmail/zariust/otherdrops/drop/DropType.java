@@ -25,6 +25,7 @@ import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.subject.Agent;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
+import com.gmail.zariust.otherdrops.things.ODItem;
 import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.core.mobs.ActiveMob;
@@ -52,9 +53,11 @@ public abstract class DropType {
         protected Agent   tool;
         protected String  eventType;
         protected String  spawnReason;        
+        protected Set<ODItem> contentFilter;
+        protected boolean toKeepContents;
 
-        protected DropFlags(boolean d, boolean n, boolean s, Random ran, Player who,
-                Agent tool, String eventType, String spawnReason, String victim) {
+        protected DropFlags(boolean d, boolean n, boolean s, Random ran, Player who, Agent tool, String eventType,
+                            String spawnReason, String victim, boolean toKeepContents, Set<ODItem> contentFilter) {
             dropToInventory = d;
             naturally = n;
             spread = s;
@@ -64,6 +67,8 @@ public abstract class DropType {
             this.eventType = eventType;
             this.spawnReason = spawnReason;
             this.victim = victim;
+            this.toKeepContents = toKeepContents;
+            this.contentFilter = contentFilter;
         }
 
         public String getEvent() {
@@ -117,7 +122,11 @@ public abstract class DropType {
     }
 
     public static DropFlags flags(Player recipient, Agent tool, boolean dropToInventory, boolean naturally, boolean spread, Random rng, String eventType, String spawnReason, String victim) {
-        return new DropFlags(dropToInventory, naturally, spread, rng, recipient, tool, eventType, spawnReason, victim);
+        return new DropFlags(dropToInventory, naturally, spread, rng, recipient, tool, eventType, spawnReason, victim, false, new HashSet<>());
+    }
+
+    public static DropFlags flags(Player recipient, Agent tool, boolean dropToInventory, boolean naturally, boolean spread, Random rng, String eventType, String spawnReason, String victim, boolean toKeepContents, Set<ODItem> contentFilter) {
+        return new DropFlags(dropToInventory, naturally, spread, rng, recipient, tool, eventType, spawnReason, victim, toKeepContents, contentFilter);
     }
 
     // Drop now! Return false if the roll fails
