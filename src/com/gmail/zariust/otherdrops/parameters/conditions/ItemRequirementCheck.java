@@ -1,20 +1,14 @@
 package com.gmail.zariust.otherdrops.parameters.conditions;
 
-import com.gmail.zariust.common.CommonEnchantments;
-import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
-import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.parameters.Condition;
 import com.gmail.zariust.otherdrops.things.ODItem;
-import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -72,48 +66,9 @@ public class ItemRequirementCheck extends Condition {
 
 	public ItemStack getItem(Entry<ODItem, IntRange> reqEntry, Inventory inv, Integer reqQuantity) {
 		ODItem req = reqEntry.getKey();
-
-		if(req.itemStack != null) {
-			for(ItemStack compareItem : inv.getContents()) {
-				if(compareItem != null && compareItem.getType().equals(req.itemStack.getType())) {
-					if(!compareItem.hasItemMeta()) { // if compare item has no custom data, the check should pass
-						Log.logInfo("ItemRequirementCheck - passed (no meta on comparison item).", Verbosity.HIGHEST);
-						return compareItem;
-					} else { // compare item has meta, lets check that it matches the player's item
-						if(!req.itemStack.hasItemMeta()) // player item had no meta
-							continue;
-						ItemMeta thisMeta = req.itemStack.getItemMeta();
-						ItemMeta stackMeta = compareItem.getItemMeta();
-						((Damageable) thisMeta).setDamage(0);
-						((Damageable) stackMeta).setDamage(0);
-						Log.logInfo("ItemRequirementCheck - returned value: " + Bukkit.getItemFactory().equals(thisMeta, stackMeta), Verbosity.HIGHEST);
-						if(Bukkit.getItemFactory().equals(thisMeta, stackMeta))
-							return compareItem;
-					}
-				}
-			}
-		}
-
 		for(ItemStack item : inv.getContents()) {
-			if(item != null && item.getType().equals(req.getMaterial())) {
-				boolean isContained = true;
-				if (req.displayname != null) 
-					if (!req.displayname.equals(item.getItemMeta().getDisplayName())) 
-						isContained = false;
-
-				if (isContained && req.lore != null && !req.lore.isEmpty()) 
-					if (!req.lore.equals(item.getItemMeta().getLore())) 
-						isContained = false;
-
-				if (isContained && !req.getEnchantments().isEmpty()) 
-					if(item.getEnchantments().isEmpty())
-						isContained = false;
-					else isContained = CommonEnchantments.matches(req.getEnchantments(), item.getEnchantments());
-
-				if (isContained && reqQuantity > item.getAmount())
-					isContained = false;
-				
-				if(isContained)  
+			if(req.matches(item)) {
+				if(reqQuantity < item.getAmount())
 					return item;
 			}
 		}
