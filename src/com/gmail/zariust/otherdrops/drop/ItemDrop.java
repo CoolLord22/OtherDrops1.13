@@ -151,10 +151,10 @@ public class ItemDrop extends DropType {
         Player playerReceivingItem = flags.recipient;
         while (count-- > 0) {
         	if((!OtherDropsConfig.globalFallToGround || flags.dropToInventory) && playerReceivingItem != null) {
-                dropResult.addWithoutOverride(drop(playerReceivingItem, stack, where, flags.naturally));
+                dropResult.addWithoutOverride(drop(playerReceivingItem, stack, where, flags));
         	}
         	else {
-                dropResult.addWithoutOverride(drop(where, stack, flags.naturally));
+                dropResult.addWithoutOverride(drop(where, stack, flags));
         	}
         }
 

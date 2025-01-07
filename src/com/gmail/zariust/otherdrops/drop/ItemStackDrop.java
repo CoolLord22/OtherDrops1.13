@@ -29,10 +29,10 @@ public class ItemStackDrop extends DropType {
         Player playerReceivingItem = flags.recipient;
         while (amount-- > 0) {
             if((!OtherDropsConfig.globalFallToGround || flags.dropToInventory) && playerReceivingItem != null) {
-                dropResult.addWithoutOverride(drop(playerReceivingItem, item, at, true));
+                dropResult.addWithoutOverride(drop(playerReceivingItem, item, at, flags));
             }
             else {
-                dropResult.addWithoutOverride(drop(at, item, true));
+                dropResult.addWithoutOverride(drop(at, item, flags));
             }
         }
 

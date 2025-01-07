@@ -207,14 +207,14 @@ public abstract class DropType {
     }
 
     // Give a player an item!
-    protected static DropResult drop(Player who, ItemStack stack, Location where, boolean naturally) {
+    protected static DropResult drop(Player who, ItemStack stack, Location where, DropFlags flags) {
         DropResult dropResult = new DropResult();
         HashMap<Integer, ItemStack> notGiven = who.getInventory().addItem(stack);
         who.updateInventory();
 
         if(!notGiven.isEmpty()) {
             for(Integer key : notGiven.keySet()) {
-                dropResult.addWithoutOverride(drop(where, notGiven.get(key), naturally));
+                dropResult.addWithoutOverride(drop(where, notGiven.get(key), flags));
             }
         }
 

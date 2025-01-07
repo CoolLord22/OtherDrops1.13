@@ -73,12 +73,10 @@ public class SelfDrop extends DropType {
         } else if (source instanceof VehicleTarget) {
             Entity entity = ((VehicleTarget) source).getVehicle();
             if (entity instanceof Painting) {
-                dropResult.addWithoutOverride(drop(from, new ItemStack(
-                        Material.PAINTING, 1), flags.naturally));
+                dropResult.addWithoutOverride(drop(from, new ItemStack(Material.PAINTING, 1), flags));
             } else if (entity instanceof Vehicle) {
                 Material material = CommonEntity.getVehicleType(entity);
-                dropResult.addWithoutOverride(drop(from, new ItemStack(
-                        material, 1), flags.naturally));
+                dropResult.addWithoutOverride(drop(from, new ItemStack(material, 1), flags));
             } else
                 return dropResult;
         } else if (source instanceof BlockTarget) {
@@ -111,7 +109,7 @@ public class SelfDrop extends DropType {
                 break;
             }
             ItemStack stack = new ItemStack(material, quantity, (short) data);
-            dropResult.addWithoutOverride(drop(from, stack, flags.naturally));
+            dropResult.addWithoutOverride(drop(from, stack, flags));
             rolledCount = quantity;
         }
         return dropResult;
