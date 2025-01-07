@@ -838,7 +838,7 @@ public class OtherDropsConfig {
 
 		// Read tool
 		drop.setTool(parseAgentFrom(node));
-		setContentFilter(node, drop);
+		setDropFilter(node, drop);
 
 		// Now read the stuff that might have a default; if null is returned, use the default
 		drop.setFlags(Flag.parseFrom(node));
@@ -1287,12 +1287,12 @@ public class OtherDropsConfig {
 		return false;
 	}
 
-	public static void setContentFilter(ConfigurationNode node, CustomDrop drop) {
+	public static void setDropFilter(ConfigurationNode node, CustomDrop drop) {
 		Set<ODItem> itemsToFilter = new HashSet<>();
 		boolean toKeepContents = false; // Default is contents remove, meaning we DONT keep them
-		List<String> filterList = OtherDropsConfig.getMaybeList(node, "drop.remove");
+		List<String> filterList = OtherDropsConfig.getMaybeList(node, "drops.remove");
 		if(filterList.isEmpty()) { // contentskeep is not read in if contentsremove is found
-			filterList.addAll(OtherDropsConfig.getMaybeList(node, "drop.keep"));
+			filterList.addAll(OtherDropsConfig.getMaybeList(node, "drops.keep"));
 			toKeepContents = true; // Since contentskeep is found, we WANT to keep
 		}
 
@@ -1303,8 +1303,8 @@ public class OtherDropsConfig {
 					itemsToFilter.add(item);
 				}
 			}
-			drop.setContentFilter(itemsToFilter);
-			drop.setToKeepContents(toKeepContents);
+			drop.setDropsFilter(itemsToFilter);
+			drop.setToKeepDrops(toKeepContents);
 		}
 	}
 

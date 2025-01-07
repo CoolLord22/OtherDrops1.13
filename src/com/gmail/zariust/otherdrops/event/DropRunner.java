@@ -252,7 +252,7 @@ public class DropRunner implements Runnable {
 				amount = customDrop.quantity.getRandomIn(customDrop.rng) * fortuneMultiplier;
 
 				String eventName = getEventName();
-				DropFlags flags = DropType.flags(who, currentEvent.getTool(), dropToInventory, dropNaturally, spreadDrop, customDrop.rng, eventName, currentEvent.getSpawnedReason(), currentEvent.getVictimName(), customDrop.getToKeepContents(), customDrop.getContentFilter()); // TODO: add  tool
+				DropFlags flags = DropType.flags(who, currentEvent.getTool(), dropToInventory, dropNaturally, spreadDrop, customDrop.rng, eventName, currentEvent.getSpawnedReason(), currentEvent.getVictimName(), customDrop.getToKeepDrops(), customDrop.getDropsFilter()); // TODO: add  tool
 				DropResult dropResult = customDrop.getDropped().drop(location, target, customDrop.getOffset(), amount, flags);
 				droppedQuantity = dropResult.getQuantity();
 				Log.logInfo("Override default is: " + dropResult.getOverrideDefault(), HIGHEST);

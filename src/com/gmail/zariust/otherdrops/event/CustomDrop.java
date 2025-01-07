@@ -29,6 +29,7 @@ import com.gmail.zariust.otherdrops.parameters.Condition;
 import com.gmail.zariust.otherdrops.parameters.Trigger;
 import com.gmail.zariust.otherdrops.subject.Agent;
 import com.gmail.zariust.otherdrops.subject.Target;
+import com.gmail.zariust.otherdrops.things.ODItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -41,6 +42,8 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
     // Fortune enhancer setting
     private Boolean                 fortuneEnhance;
     // Conditions
+    private Set<ODItem>             dropsFilter = new HashSet<>();
+    private boolean                 toKeepDrops = false;
     private Map<Agent, Boolean>     tools;
     private Set<Flag>               flags;
     private final Flag.FlagState    flagState = new Flag.FlagState();
@@ -282,12 +285,28 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
         this.weighted = weighted;
     }
 
+    public void setDropsFilter(Set<ODItem> dropsFilter) {
+        this.dropsFilter = dropsFilter;
+    }
+
+    public void setToKeepDrops(boolean toKeepDrops) {
+        this.toKeepDrops = toKeepDrops;
+    }
+
     public double getChance() {
         return chance;
     }
 
     public double getWeight() {
         return weight;
+    }
+
+    public Set<ODItem> getDropsFilter() {
+        return dropsFilter;
+    }
+
+    public boolean getToKeepDrops() {
+        return toKeepDrops;
     }
 
     public boolean isWeighted() {
