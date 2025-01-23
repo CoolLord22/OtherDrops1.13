@@ -627,7 +627,7 @@ public class OtherDropsCommand implements CommandExecutor {
         if (args.length > 0) {
             String key = args[0].toLowerCase().replaceAll("od_item@", "");
             if (sender instanceof Player player) {
-                ItemStack playerItem = player.getInventory().getItemInMainHand();
+                ItemStack playerItem = player.getInventory().getItemInMainHand().clone();
                 if(OtherDropsConfig.commonItemstack.saveODItemStack(key, playerItem)) {
                     ((Player) sender).sendRawMessage(ChatColor.GREEN + "Successfully saved item " + key);
                     return;
