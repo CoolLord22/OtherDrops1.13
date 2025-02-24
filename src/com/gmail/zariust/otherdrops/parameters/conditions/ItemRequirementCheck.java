@@ -68,7 +68,7 @@ public class ItemRequirementCheck extends Condition {
 		ODItem req = reqEntry.getKey();
 		for(ItemStack item : inv.getContents()) {
 			if(req.matches(item)) {
-				if(reqQuantity < item.getAmount())
+				if(reqQuantity <= item.getAmount())
 					return item;
 			}
 		}
