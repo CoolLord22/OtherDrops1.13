@@ -49,9 +49,7 @@ public class PermissionCheck extends Condition {
         boolean match = false;
         for (String perm : permissionMap.keySet()) {
             if (perm.startsWith("!")) {
-                perm = perm.substring(1);
-
-                if (Dependencies.hasPermission(player, perm)) {
+                if (Dependencies.hasPermission(player, perm.substring(1))) {
                     if (permissionMap.get(perm))
                         match = true;
                     else {
