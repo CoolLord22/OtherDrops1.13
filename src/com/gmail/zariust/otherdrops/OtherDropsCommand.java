@@ -37,6 +37,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.util.BlockIterator;
@@ -301,7 +302,7 @@ public class OtherDropsCommand implements CommandExecutor {
                 }
 
                 DropFlags flags = DropType.flags(dsl.player, (dsl.player == null ? null : new PlayerSubject(
-                        dsl.player)), false, true, false, OtherDrops.rng, "odd", "odd", "");
+                        dsl.player, EquipmentSlot.HAND)), false, true, false, OtherDrops.rng, "odd", "odd", "");
                 DropResult dropResult = drop.drop(dsl.loc, (Target) null,
                         (Location) null, 1, flags);
 
