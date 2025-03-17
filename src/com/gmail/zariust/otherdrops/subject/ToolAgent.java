@@ -102,6 +102,8 @@ public class ToolAgent implements Agent {
     private boolean isMatch(ToolAgent tool) {
         if (tool == null)
             return false;
+        if (data == null)
+            return id.equals(tool.getMaterial());
         return id.equals(tool.id) && data.matches(tool.data);
     }
 
@@ -144,46 +146,62 @@ public class ToolAgent implements Agent {
         // other=PLAYER@Xarqn with DIAMOND_SPADE@4
 
         // Only players can hold & use tools - fail match if not a PlayerSubject
-        if (!(other instanceof PlayerSubject))
+        if (!(other instanceof PlayerSubject tool))
             return false;
-        // Find the tool that the player is holding
-        PlayerSubject tool = (PlayerSubject) other;
-        
+
+        ToolAgent inHand = tool.getTool();
         Log.logInfo("tool agent check : id=" + id.toString() + " gettool="
-                + tool.getTool() + " material=" + tool.getMaterial()
-                + " id=mat:" + (id == tool.getMaterial()), Verbosity.EXTREME);
+                + inHand + " material=" + inHand.getMaterial()
+                + " id=mat:" + (id == inHand.getMaterial()), Verbosity.EXTREME);
+
+        // If main hand doesn't match, let's compare off-hand
+        if(!toolAgentMatcher(inHand)) {
+            inHand = tool.getOffHand();
+            Log.logInfo("tool agent check : id=" + id.toString() + " gettool="
+                    + inHand + " material=" + inHand.getMaterial()
+                    + " id=mat:" + (id == inHand.getMaterial()), Verbosity.EXTREME);
+            // If off hand doesn't match, the tool match should fail
+            return toolAgentMatcher(inHand);
+        }
+        return true;
+    }
+
+    private boolean toolAgentMatcher(ToolAgent other) {
+        if(other == null)
+            return false;
+
+        if(!isMatch(other))
+            return false;
+
         if (!enchantments.isEmpty()) {
             boolean match = false;
             match = CommonEnchantments.matches(enchantments,
-                    tool.getTool().actualTool.getEnchantments());
+                    other.actualTool.getEnchantments());
             if (!match) {
                 return false;
             }
         }
 
         if (loreName != null && !loreName.isEmpty()) {
-            if (tool.getTool().loreName == null)
+            if (other.loreName == null)
                 return false;
-            if (!this.loreName.equals(tool.getTool().loreName))
+            if (!this.loreName.equals(other.loreName))
                 return false;
         }
 
         if (loreText != null && !loreText.isEmpty()) {
-            if (tool.getTool().loreText == null)
+            if (other.loreText == null)
                 return false;
-            if (!this.loreText.equals(tool.getTool().loreText))
+            if (!this.loreText.equals(other.loreText))
                 return false;
         }
 
-        if (quantityRequired > tool.getTool().quantityRequired && !Objects.equals(id.toString(), "AIR")) {
+        if (quantityRequired > other.quantityRequired && !Objects.equals(id.toString(), "AIR")) {
             Log.logInfo("Toolagent check: quantity required failed.", Verbosity.HIGHEST);
             return false;
         }
-        if (data == null)
-            return id.equals(tool.getMaterial());
-        else {
-            return isMatch(tool.getTool());
-        }
+
+        return true;
     }
 
     public Material getMaterial() {

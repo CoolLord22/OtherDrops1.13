@@ -9,6 +9,7 @@ import com.gmail.zariust.otherdrops.parameters.Condition;
 import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.ProjectileAgent;
+import com.gmail.zariust.otherdrops.subject.ToolAgent;
 import com.gmail.zariust.otherdrops.things.ODVariables;
 import org.bukkit.inventory.ItemStack;
 
@@ -28,19 +29,22 @@ public class LoreLineCheck extends Condition {
             return true;
         String parsedLoreline = MessageAction.parseVariables(loreLine, drop, occurrence, -1);
         Log.logInfo("Starting loreline check (" + parsedLoreline + ")", Verbosity.HIGHEST);
-        if (occurrence.getTool() instanceof PlayerSubject) {
-            return checkLoreLines((PlayerSubject) occurrence.getTool(), parsedLoreline);
-        } else if (occurrence.getTool() instanceof ProjectileAgent) {
-            ProjectileAgent pa = (ProjectileAgent) occurrence.getTool();
-            if (pa.getShooter() instanceof PlayerSubject) {
-                return checkLoreLines((PlayerSubject) pa.getShooter(), parsedLoreline);
+        if (occurrence.getTool() instanceof PlayerSubject player) {
+            if(!checkLoreLines(player.getTool(), parsedLoreline))
+                return checkLoreLines(player.getOffHand(), parsedLoreline);
+            return true;
+        } else if (occurrence.getTool() instanceof ProjectileAgent pa) {
+            if (pa.getShooter() instanceof PlayerSubject player) {
+                if(!checkLoreLines(player.getTool(), parsedLoreline))
+                    return checkLoreLines(player.getOffHand(), parsedLoreline);
+                return true;
             }
         }
         return false;
     }
 
-    private boolean checkLoreLines(PlayerSubject player, String parsedLoreline) {
-        ItemStack item = player.getTool().getActualTool();
+    private boolean checkLoreLines(ToolAgent hand, String parsedLoreline) {
+        ItemStack item = hand.getActualTool();
         if (item == null)
             return false; // not sure when item would be null but it can be
 

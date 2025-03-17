@@ -29,6 +29,7 @@ import java.util.Random;
 
 public class PlayerSubject extends LivingSubject {
     private ToolAgent tool;
+    private ToolAgent offHand;
     private String    name;
     private Player    agent;
     private boolean   anyObject;
@@ -47,7 +48,7 @@ public class PlayerSubject extends LivingSubject {
     }
 
     public PlayerSubject(Player attacker) {
-        this(attacker.getInventory().getItemInMainHand(), attacker.getName(), attacker);
+        this(attacker.getInventory().getItemInMainHand(), attacker.getInventory().getItemInOffHand(), attacker.getName(), attacker);
     }
 
     public PlayerSubject(ItemStack item, String attacker) {
@@ -61,6 +62,14 @@ public class PlayerSubject extends LivingSubject {
         agent = attacker;
     }
 
+    public PlayerSubject(ItemStack item, ItemStack offHand, String who, Player attacker) {
+        super(attacker);
+        this.tool = new ToolAgent(item);
+        this.offHand = new ToolAgent(offHand);
+        this.name = who;
+        this.agent = attacker;
+    }
+
     private PlayerSubject equalsHelper(Object other) {
         if (!(other instanceof PlayerSubject))
             return null;
@@ -70,8 +79,10 @@ public class PlayerSubject extends LivingSubject {
     private boolean isEqual(PlayerSubject player) {
         if (player == null)
             return false;
-        return tool.equals(player.tool)
-                && name.toUpperCase().equals(player.name.toUpperCase());
+        if (name.equalsIgnoreCase(player.name)) {
+            return offHand.equals(player.offHand) && tool.equals(player.tool);
+        }
+        return false;
     }
 
     @Override
@@ -141,6 +152,10 @@ public class PlayerSubject extends LivingSubject {
 
     public ToolAgent getTool() {
         return tool;
+    }
+
+    public ToolAgent getOffHand() {
+        return offHand;
     }
 
     @Override

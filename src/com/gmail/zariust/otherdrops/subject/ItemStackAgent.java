@@ -19,32 +19,33 @@ public class ItemStackAgent extends ToolAgent {
 
     @Override
     public boolean matches(Subject other) {
-        if (!(other instanceof PlayerSubject))
+        if (!(other instanceof PlayerSubject player))
             return false;
 
-        if(itemStack != null) {
-            ItemStack playerItem = ((PlayerSubject) other).getTool().getActualTool();
-            Log.logInfo("Checking ItemStack tool: " + itemStack + " vs player tool: " + playerItem, Verbosity.HIGHEST);
-            if(itemStack != null) {
-                if(playerItem.getType() != itemStack.getType()) { // if the two materials are not equal
-                    Log.logInfo("ItemStackToolCheck - failed (different materials).", Verbosity.HIGHEST);
-                    return false;
-                } else if(!itemStack.hasItemMeta()) { // if compare item has no custom data, the check should pass
-                    Log.logInfo("ItemStackToolCheck - passed (no meta on comparison item).", Verbosity.HIGHEST);
-                    return true;
-                } else { // compare item has meta, lets check that it matches the player's item
-                    if(!playerItem.hasItemMeta()) // player item had no meta
-                        return false;
-                    ItemMeta thisMeta = playerItem.getItemMeta();
-                    ItemMeta stackMeta = itemStack.getItemMeta();
-                    ((Damageable) thisMeta).setDamage(0);
-                    ((Damageable) stackMeta).setDamage(0);
-                    Log.logInfo("ItemStackToolCheck - returned value: " + Bukkit.getItemFactory().equals(thisMeta, stackMeta), Verbosity.HIGHEST);
-                    return Bukkit.getItemFactory().equals(thisMeta, stackMeta);
-                }
-            }
+        if(itemStack == null)
+            return true;
+
+        return matchesHelper(player.getTool().getActualTool()) || matchesHelper(player.getOffHand().getActualTool());
+    }
+
+    private boolean matchesHelper(ItemStack playerItem) {
+        Log.logInfo("Checking ItemStack tool: " + itemStack + " vs player tool: " + playerItem, Verbosity.HIGHEST);
+        if(playerItem.getType() != itemStack.getType()) { // if the two materials are not equal
+            Log.logInfo("ItemStackToolCheck - failed (different materials).", Verbosity.HIGHEST);
+            return false;
+        } else if(!itemStack.hasItemMeta()) { // if compare item has no custom data, the check should pass
+            Log.logInfo("ItemStackToolCheck - passed (no meta on comparison item).", Verbosity.HIGHEST);
+            return true;
+        } else { // compare item has meta, lets check that it matches the player's item
+            if(!playerItem.hasItemMeta()) // player item had no meta
+                return false;
+            ItemMeta thisMeta = playerItem.getItemMeta();
+            ItemMeta stackMeta = itemStack.getItemMeta();
+            ((Damageable) thisMeta).setDamage(0);
+            ((Damageable) stackMeta).setDamage(0);
+            Log.logInfo("ItemStackToolCheck - returned value: " + Bukkit.getItemFactory().equals(thisMeta, stackMeta), Verbosity.HIGHEST);
+            return Bukkit.getItemFactory().equals(thisMeta, stackMeta);
         }
-        return true;
     }
 
     @Override

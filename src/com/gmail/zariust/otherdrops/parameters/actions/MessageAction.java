@@ -172,6 +172,7 @@ public class MessageAction extends Action {
             dropName = drop.getDropName();
         }
 
+        // TODO: Needs implementation for offhand variables...
         if (occurence != null) {
             if (occurence.getTool() != null)
                 toolName = occurence.getTool().getReadableName();

@@ -85,6 +85,7 @@ public abstract class DropType {
             if (tool == null)
                 return "";
             if (tool instanceof PlayerSubject) {
+                // TODO: Maybe add implementation for offhand tool?
                 return ((PlayerSubject) tool).getTool().getReadableName();
             }
             return tool.getReadableName();

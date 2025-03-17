@@ -9,6 +9,7 @@ import com.gmail.zariust.otherdrops.parameters.Condition;
 import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.ProjectileAgent;
+import com.gmail.zariust.otherdrops.subject.ToolAgent;
 import com.gmail.zariust.otherdrops.things.ODVariables;
 import org.bukkit.inventory.ItemStack;
 
@@ -30,21 +31,22 @@ public class LoreNameCheck extends Condition {
                 occurrence, -1);
         Log.logInfo("Starting lorename check (" + parsedLorename + ")",
                 Verbosity.HIGHEST);
-        if (occurrence.getTool() instanceof PlayerSubject) {
-            return checkLoreName((PlayerSubject) occurrence.getTool(),
-                    parsedLorename);
-        } else if (occurrence.getTool() instanceof ProjectileAgent) {
-            ProjectileAgent pa = (ProjectileAgent) occurrence.getTool();
-            if (pa.getShooter() instanceof PlayerSubject) {
-                return checkLoreName((PlayerSubject) pa.getShooter(),
-                        parsedLorename);
+        if (occurrence.getTool() instanceof PlayerSubject player) {
+            if(!checkLoreName(player.getTool(), parsedLorename))
+                return checkLoreName(player.getOffHand(), parsedLorename);
+            return true;
+        } else if (occurrence.getTool() instanceof ProjectileAgent pa) {
+            if (pa.getShooter() instanceof PlayerSubject player) {
+                if(!checkLoreName(player.getTool(), parsedLorename))
+                    return checkLoreName(player.getOffHand(), parsedLorename);
+                return true;
             }
         }
         return false;
     }
 
-    private boolean checkLoreName(PlayerSubject player, String parsedLorename) {
-        ItemStack item = player.getTool().getActualTool();
+    private boolean checkLoreName(ToolAgent hand, String parsedLorename) {
+        ItemStack item = hand.getActualTool();
         if (item == null)
             return false; // not sure when item would be null but it can be
 
