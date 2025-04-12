@@ -44,7 +44,6 @@ public class MaterialGroup {
     public static MaterialGroup register(String name, List<Material> types) {
         MaterialGroup group = new MaterialGroup(name, types);
         lookup.put(name.toUpperCase(), group);
-        Log.logWarning("Registered " + name + " with " + types.size() + " materials");
         return group;
     }
 
