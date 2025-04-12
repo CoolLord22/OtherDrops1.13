@@ -16,53 +16,87 @@
 
 package com.gmail.zariust.common;
 
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Tag;
 
 import java.util.*;
 
 import static org.bukkit.Material.*;
 
-public enum MaterialGroup {
-    // Blocks
-    ANY_REDSTONE_TORCH(REDSTONE_TORCH, REDSTONE_WALL_TORCH),
-    ANY_PISTON(STICKY_PISTON, PISTON_HEAD, PISTON, MOVING_PISTON),
-    ANY_LEAVES(ACACIA_LEAVES, BIRCH_LEAVES, DARK_OAK_LEAVES, JUNGLE_LEAVES, OAK_LEAVES, SPRUCE_LEAVES),
-    ANY_LOGS,
-    ANY_RAIL(RAIL, POWERED_RAIL, DETECTOR_RAIL, ACTIVATOR_RAIL),
-    
-    // Records
-    ANY_RECORD(MUSIC_DISC_WARD, MUSIC_DISC_WAIT, MUSIC_DISC_STRAD, MUSIC_DISC_STAL, MUSIC_DISC_MELLOHI, MUSIC_DISC_MALL, MUSIC_DISC_FAR, MUSIC_DISC_CHIRP, MUSIC_DISC_CAT, MUSIC_DISC_BLOCKS, MUSIC_DISC_11, MUSIC_DISC_13),
-   
+public class MaterialGroup {
+    private static final Map<String, MaterialGroup> lookup = new HashMap<String, MaterialGroup>();
+
+    private final ArrayList<Material> mat = new ArrayList<>();
+    private final String name;
+
+    private MaterialGroup(String name, List<Material> materials) {
+        this.name = name;
+        this.mat.addAll(materials);
+    }
+
+    public static MaterialGroup register(String name, Material... types) {
+        return register(name, Arrays.asList(types));
+    }
+
+    public static MaterialGroup register(String name, List<Material> types) {
+        MaterialGroup group = new MaterialGroup(name, types);
+        lookup.put(name.toUpperCase(), group);
+        Log.logWarning("Registered " + name + " with " + types.size() + " materials");
+        return group;
+    }
+
+    private void combine(MaterialGroup... groups) {
+        for(MaterialGroup group : groups) {
+            this.mat.addAll(group.mat);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
+
     // Tools
-    ANY_SHOVEL(WOODEN_SHOVEL, STONE_SHOVEL, GOLDEN_SHOVEL, IRON_SHOVEL, DIAMOND_SHOVEL),
-    ANY_SPADE(ANY_SHOVEL),
-    ANY_AXE(WOODEN_AXE, STONE_AXE, GOLDEN_AXE, IRON_AXE, DIAMOND_AXE),
-    ANY_HOE(WOODEN_HOE, STONE_HOE, GOLDEN_HOE, IRON_HOE, DIAMOND_HOE),
-    ANY_PICKAXE(WOODEN_PICKAXE, STONE_PICKAXE, GOLDEN_PICKAXE, IRON_PICKAXE, DIAMOND_PICKAXE),
-    ANY_SWORD(WOODEN_SWORD, STONE_SWORD, GOLDEN_SWORD, IRON_SWORD, DIAMOND_SWORD), 
-    ANY_BUCKET(BUCKET, LAVA_BUCKET, WATER_BUCKET, MILK_BUCKET),
+    public static final MaterialGroup ANY_SHOVEL = register("ANY_SHOVEL");
+    public static final MaterialGroup ANY_AXE = register("ANY_AXE");
+    public static final MaterialGroup ANY_HOE = register("ANY_HOE");
+    public static final MaterialGroup ANY_PICKAXE = register("ANY_PICKAXE");
+    public static final MaterialGroup ANY_SWORD = register("ANY_SWORD");
+    public static final MaterialGroup ANY_BUCKET = register("ANY_BUCKET");
     
     // Armour
-    ANY_HELMET(LEATHER_HELMET, CHAINMAIL_HELMET, GOLDEN_HELMET, IRON_HELMET, DIAMOND_HELMET), 
-    ANY_CHESTPLATE(LEATHER_CHESTPLATE, CHAINMAIL_CHESTPLATE, GOLDEN_CHESTPLATE, IRON_CHESTPLATE, DIAMOND_CHESTPLATE), 
-    ANY_LEGGINGS(LEATHER_LEGGINGS, CHAINMAIL_LEGGINGS, GOLDEN_LEGGINGS, IRON_LEGGINGS, DIAMOND_LEGGINGS), 
-    ANY_BOOTS(LEATHER_BOOTS, CHAINMAIL_BOOTS, GOLDEN_BOOTS, IRON_BOOTS, DIAMOND_BOOTS),
+    public static final MaterialGroup ANY_HELMET = register("ANY_HELMET");
+    public static final MaterialGroup ANY_CHESTPLATE = register("ANY_CHESTPLATE");
+    public static final MaterialGroup ANY_LEGGINGS = register("ANY_LEGGINGS");
+    public static final MaterialGroup ANY_BOOTS = register("ANY_BOOTS");
     
     // Wildcards
-    ANY_TOOL(Arrays.asList(FLINT_AND_STEEL, BOW, FISHING_ROD, SADDLE), ANY_SHOVEL, ANY_AXE, ANY_HOE, ANY_PICKAXE, ANY_SWORD, ANY_BUCKET),
-    ANY_WEAPON(Arrays.asList(BOW, ARROW), ANY_SWORD), 
-    ANY_ARMOR(ANY_HELMET, ANY_CHESTPLATE, ANY_LEGGINGS, ANY_BOOTS), 
-    ANY_ARMOUR(ANY_ARMOR), 
-    ANY_PROJECTILE(FIRE_CHARGE, SNOWBALL, EGG, ARROW, FISHING_ROD, ENDER_PEARL),
+    public static final MaterialGroup ANY_SPADE = register("ANY_SPADE");
+    public static final MaterialGroup ANY_TOOL = register("ANY_TOOL", FLINT_AND_STEEL, BOW, FISHING_ROD, SADDLE);
+    public static final MaterialGroup ANY_WEAPON = register("ANY_WEAPON", BOW, ARROW);
+    public static final MaterialGroup ANY_ARMOR = register("ANY_ARMOR");
+    public static final MaterialGroup ANY_ARMOUR = register("ANY_ARMOUR");
 
-    // Add any new ones before this line
-    ANY_ITEM, ANY_BLOCK, ANY_OBJECT, ANY_SIGN;
-    private static Map<String, MaterialGroup> lookup = new HashMap<String, MaterialGroup>();
-    private ArrayList<Material>               mat;
+    // Materials that have varying types
+    public static final MaterialGroup ANY_SIGN = register("ANY_SIGN");
+    public static final MaterialGroup ANY_LEAVES = register("ANY_LEAVES");
+    public static final MaterialGroup ANY_LOGS = register("ANY_LOGS");
+    public static final MaterialGroup ANY_RECORD = register("ANY_RECORD");
+
+    public static final MaterialGroup ANY_ITEM = register("ANY_ITEM");
+    public static final MaterialGroup ANY_BLOCK = register("ANY_BLOCK");
+    public static final MaterialGroup ANY_OBJECT = register("ANY_OBJECT");
 
     static {
-        for (Material mat : Material.values()) {
+        register("ANY_REDSTONE_TORCH", REDSTONE_TORCH, REDSTONE_WALL_TORCH);
+        register("ANY_PISTON", STICKY_PISTON, PISTON_HEAD, PISTON, MOVING_PISTON);
+        register("ANY_RAIL", RAIL, POWERED_RAIL, DETECTOR_RAIL, ACTIVATOR_RAIL);
+        register("ANY_PROJECTILE", FIRE_CHARGE, SNOWBALL, EGG, ARROW, FISHING_ROD, ENDER_PEARL);
+
+        for (Material mat : values()) {
             ANY_OBJECT.mat.add(mat);
             if (mat.isBlock()) {
                 ANY_BLOCK.mat.add(mat);
@@ -99,32 +133,32 @@ public enum MaterialGroup {
                     ANY_RECORD.mat.add(mat);
             }
         }
-        for (MaterialGroup group : values())
-            lookup.put(group.name(), group);
+        ANY_SPADE.combine(ANY_SHOVEL);
+        ANY_TOOL.combine(ANY_SHOVEL, ANY_AXE, ANY_HOE, ANY_PICKAXE, ANY_SWORD, ANY_BUCKET);
+        ANY_WEAPON.combine(ANY_SWORD);
+        ANY_ARMOR.combine(ANY_HELMET, ANY_CHESTPLATE, ANY_LEGGINGS, ANY_BOOTS);
+        ANY_ARMOUR.combine(ANY_ARMOR);
+
+        registerTagMaterials();
     }
 
-    private void add(List<Material> materials) {
-        mat.addAll(materials);
-    }
+    private static void registerTagMaterials() {
+        String[] registries = {"blocks", "items"};
 
-    private MaterialGroup(Material... materials) {
-        this();
-        add(Arrays.asList(materials));
-    }
+        for (String registry : registries) {
+            Iterable<Tag<Material>> tags = Bukkit.getTags(registry, Material.class);
+            for (Tag<Material> tag : tags) {
+                if (tag.getValues().isEmpty()) continue;
 
-    private MaterialGroup(MaterialGroup... merge) {
-        this();
-        for (MaterialGroup group : merge)
-            add(group.mat);
-    }
-
-    private MaterialGroup(List<Material> materials, MaterialGroup... merge) {
-        this(merge);
-        add(materials);
-    }
-
-    private MaterialGroup() {
-        mat = new ArrayList<Material>();
+                try {
+                    String name = "TAG_" + tag.getKey().toString().toUpperCase().replace("MINECRAFT:", "");
+                    register(name, List.copyOf(tag.getValues()));
+                } catch (Exception e) {
+                    Log.logWarning("Failed to register tag group: " + tag.getKey());
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")

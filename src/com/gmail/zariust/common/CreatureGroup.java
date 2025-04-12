@@ -17,85 +17,84 @@
 package com.gmail.zariust.common;
 
 import com.gmail.zariust.otherdrops.Log;
+import org.bukkit.Bukkit;
+import org.bukkit.Tag;
 import org.bukkit.entity.EntityType;
 
 import java.util.*;
 
-public enum CreatureGroup {
-    CREATURE_HOSTILE("BLAZE", "CREEPER", "ELDER_GUARDIAN", "ENDER_DRAGON", "ENDERMITE", "EVOKER", "DROWNED", "GHAST", "GIANT", "GUARDIAN", "HOGLIN", "HUSK", "ILLUSIONER", "MAGMA_CUBE", "PHANTOM", "PIGLIN_BRUTE",
-    		"PILLAGER", "RAVAGER", "SHULKER", "SILVERFISH", "SKELETON", "SLIME", "STRAY", "VEX", "VINDICATOR", "WARDEN", "WITCH", "WITHER", "WITHER_SKELETON", "ZOGLIN", "ZOMBIE", "ZOMBIE_VILLAGER"),
-    
-    CREATURE_FRIENDLY("ALLAY", "BAT", "CAMEL", "CAT", "CHICKEN", "COD", "COW", "DONKEY", "FOX", "FROG", "HORSE", "MUSHROOM_COW", "MULE", "OCELOT", "PARROT", "PIG", "PUFFERFISH", "RABBIT", "SHEEP", "SALMON", "SKELETON_HORSE",
-            "SNIFFER", "SNOWMAN", "SQUID", "STRIDER", "TADPOLE", "TROPICAL_FISH", "TURTLE", "VILLAGER", "WANDERING_TRADER", "ZOMBIE_HORSE"),
-    
-    CREATURE_NEUTRAL("BEE", "DOLPHIN", "ENDERMAN", "GOAT", "IRON_GOLEM", "LLAMA", "PANDA", "PIGLIN", "POLAR_BEAR", "WOLF", "ZOMBIFIED_PIGLIN"),
-    
-    CREATURE_ANIMAL("AXOLOTL", "BAT", "BEE", "CAMEL", "CAT", "COD", "COW", "CHICKEN", "DOLPHIN", "DONKEY", "FOX", "FROG", "GLOW_SQUID", "HORSE", "LLAMA", "MULE", "MUSHROOM_COW", "OCELOT", "PANDA", "PARROT", "PIG", "POLAR_BEAR",
-            "PUFFERFISH", "RABBIT", "SALMON", "SHEEP", "SNIFFER", "SQUID", "TADPOLE", "TROPICAL_FISH", "TURTLE", "WOLF"),
-    
-    CREATURE_UNDEAD("DROWNED", "ENDERMAN", "HUSK", "PHANTOM", "SKELETON", "STRAY", "WITHER_SKELETON", "ZOGLIN", "ZOMBIE", "ZOMBIE_VILLAGER", "ZOMBIFIED_PIGLIN"),
-    
-    CREATURE_BUG("BEE", "CAVE_SPIDER", "ENDERMITE", "SILVERFISH", "SPIDER"),
-    
-    CREATURE_WATER("AXOLOTL", "COD", "DOLPHIN", "ELDER_GUARDIAN", "GLOW_SQUID", "GUARDIAN", "PUFFERFISH", "SALMON", "SQUID", "TADPOLE", "TROPICAL_FISH", "TURTLE"),
-
-    CREATURE_BOSS("ENDER_DRAGON", "WITHER"),
-
-    CREATURE_NETHER("BLAZE", "CHICKEN", "ENDERMAN", "GHAST", "HOGLIN", "MAGMA_CUBE", "PIGLIN", "PIGLIN_BRUTE", "SKELETON", "STRIDER", "WITHER_SKELETON", "ZOMBIFIED_PIGLIN"),
-
-    CREATURE_END("ENDER_DRAGON", "ENDERMAN", "ENDERMITE", "SHULKER"),
-
-    // Add any new ones before this line
-    CREATURE_ANY;
+public class CreatureGroup {
     private static Map<String, CreatureGroup> lookup = new HashMap<String, CreatureGroup>();
-    private ArrayList<EntityType>             mob;
 
-    static {
-        for (EntityType mob : EntityType.values()) {
-            CREATURE_ANY.mob.add(mob);
-        }
-        for (CreatureGroup group : values())
-            lookup.put(group.name(), group);
+    private final ArrayList<EntityType> mob = new ArrayList<>();
+    private final String name;
+
+    private CreatureGroup(String name, List<EntityType> mob) {
+        this.name = name;
+        this.mob.addAll(mob);
     }
 
-    private void add(List<EntityType> materials) {
-        mob.addAll(materials);
-    }
-
-    private void add(EntityType materials) {
-        mob.add(materials);
-    }
-
-    CreatureGroup(String... entities) {
-        this();
+    private CreatureGroup(String name, String... entities) {
+        this.name = name;
         for(String ent : entities) {
             try {
                 EntityType entity = EntityType.valueOf(ent);
-                add(entity);
+                this.mob.add(entity);
             } catch (IllegalArgumentException e) {
                 Log.logInfo("Invalid entity found in CreatureGroup, could be older Minecraft version (can ignore): " + ent, Verbosity.HIGHEST);
             }
         }
     }
 
-    private CreatureGroup(EntityType... materials) {
-        this();
-        add(Arrays.asList(materials));
+    public static CreatureGroup register(String name, String... types) {
+        CreatureGroup group = new CreatureGroup(name, types);
+        lookup.put(name.toUpperCase(), group);
+        return group;
     }
 
-    private CreatureGroup(CreatureGroup... merge) {
-        this();
-        for (CreatureGroup group : merge)
-            add(group.mob);
+    public static CreatureGroup register(String name, List<EntityType> types) {
+        CreatureGroup group = new CreatureGroup(name, types);
+        lookup.put(name.toUpperCase(), group);
+        return group;
     }
 
-    private CreatureGroup(List<EntityType> materials, CreatureGroup... merge) {
-        this(merge);
-        add(materials);
+    @Override
+    public String toString() {
+        return name;
     }
 
-    private CreatureGroup() {
-        mob = new ArrayList<EntityType>();
+    public static final CreatureGroup CREATURE_ANY = register("CREATURE_ANY");
+
+    static {
+        register("CREATURE_HOSTILE","BLAZE", "CREEPER", "ELDER_GUARDIAN", "ENDER_DRAGON", "ENDERMITE", "EVOKER", "DROWNED", "GHAST", "GIANT", "GUARDIAN", "HOGLIN", "HUSK", "ILLUSIONER", "MAGMA_CUBE", "PHANTOM", "PIGLIN_BRUTE",
+                "PILLAGER", "RAVAGER", "SHULKER", "SILVERFISH", "SKELETON", "SLIME", "STRAY", "VEX", "VINDICATOR", "WARDEN", "WITCH", "WITHER", "WITHER_SKELETON", "ZOGLIN", "ZOMBIE", "ZOMBIE_VILLAGER");
+        register("CREATURE_FRIENDLY","ALLAY", "BAT", "CAMEL", "CAT", "CHICKEN", "COD", "COW", "DONKEY", "FOX", "FROG", "HORSE", "MUSHROOM_COW", "MULE", "OCELOT", "PARROT", "PIG", "PUFFERFISH", "RABBIT", "SHEEP", "SALMON", "SKELETON_HORSE",
+                "SNIFFER", "SNOWMAN", "SQUID", "STRIDER", "TADPOLE", "TROPICAL_FISH", "TURTLE", "VILLAGER", "WANDERING_TRADER", "ZOMBIE_HORSE");
+        register("CREATURE_NEUTRAL","BEE", "DOLPHIN", "ENDERMAN", "GOAT", "IRON_GOLEM", "LLAMA", "PANDA", "PIGLIN", "POLAR_BEAR", "WOLF", "ZOMBIFIED_PIGLIN");
+        register("CREATURE_ANIMAL","AXOLOTL", "BAT", "BEE", "CAMEL", "CAT", "COD", "COW", "CHICKEN", "DOLPHIN", "DONKEY", "FOX", "FROG", "GLOW_SQUID", "HORSE", "LLAMA", "MULE", "MUSHROOM_COW", "OCELOT", "PANDA", "PARROT", "PIG", "POLAR_BEAR",
+                "PUFFERFISH", "RABBIT", "SALMON", "SHEEP", "SNIFFER", "SQUID", "TADPOLE", "TROPICAL_FISH", "TURTLE", "WOLF");
+        register("CREATURE_UNDEAD","DROWNED", "ENDERMAN", "HUSK", "PHANTOM", "SKELETON", "STRAY", "WITHER_SKELETON", "ZOGLIN", "ZOMBIE", "ZOMBIE_VILLAGER", "ZOMBIFIED_PIGLIN");
+        register("CREATURE_BUG","BEE", "CAVE_SPIDER", "ENDERMITE", "SILVERFISH", "SPIDER");
+        register("CREATURE_WATER","AXOLOTL", "COD", "DOLPHIN", "ELDER_GUARDIAN", "GLOW_SQUID", "GUARDIAN", "PUFFERFISH", "SALMON", "SQUID", "TADPOLE", "TROPICAL_FISH", "TURTLE");
+        register("CREATURE_BOSS","ENDER_DRAGON", "WITHER");
+        register("CREATURE_NETHER","BLAZE", "CHICKEN", "ENDERMAN", "GHAST", "HOGLIN", "MAGMA_CUBE", "PIGLIN", "PIGLIN_BRUTE", "SKELETON", "STRIDER", "WITHER_SKELETON", "ZOMBIFIED_PIGLIN");
+        register("CREATURE_END", "ENDER_DRAGON", "ENDERMAN", "ENDERMITE", "SHULKER");
+        register("CREATURE_ANY", List.of(EntityType.values()));
+        registerTagMaterials();
+    }
+
+    private static void registerTagMaterials() {
+        Iterable<Tag<EntityType>> tags = Bukkit.getTags("entity_types", EntityType.class);
+        for (Tag<EntityType> tag : tags) {
+            if (tag.getValues().isEmpty()) continue;
+            try {
+                String name = "CREATURE_TAG_" + tag.getKey().toString().toUpperCase().replace("MINECRAFT:", "");
+                register(name, List.copyOf(tag.getValues()));
+            } catch (Exception e) {
+                Log.logWarning("Failed to register tag group: " + tag.getKey());
+                e.printStackTrace();
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")
