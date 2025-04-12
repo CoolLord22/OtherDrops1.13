@@ -25,7 +25,9 @@ import com.gmail.zariust.otherdrops.parameters.conditions.MoonPhaseCheck;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Tag;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
@@ -184,6 +186,31 @@ public class OtherDrops extends JavaPlugin {
 				if (mat != null)
 					out.write(mat.name() + "\n");
 			}
+			out.close();
+		} catch (IOException exception) {
+			exception.printStackTrace();
+		}
+
+		try {
+			File configFile = new File(folder.getAbsolutePath() + File.separator + "known_lists" + File.separator + "Tags" + ".txt");
+			configFile.getParentFile().mkdirs();
+			configFile.createNewFile();
+			out = new BufferedWriter(new FileWriter(configFile));
+
+			String[] registries = {"blocks", "items"};
+
+			for (String registry : registries) {
+				Iterable<Tag<Material>> tags = Bukkit.getTags(registry, Material.class);
+				for (Tag<Material> tag : tags) {
+					out.write(tag.getKey().toString().toUpperCase().replace("MINECRAFT:", "").replace('/', '_') + "\n");
+				}
+			}
+
+			Iterable<Tag<EntityType>> tags = Bukkit.getTags("entity_types", EntityType.class);
+			for (Tag<EntityType> tag : tags) {
+				out.write(tag.getKey().toString().toUpperCase().replace("MINECRAFT:", "").replace('/', '_') + "\n");
+			}
+
 			out.close();
 		} catch (IOException exception) {
 			exception.printStackTrace();
