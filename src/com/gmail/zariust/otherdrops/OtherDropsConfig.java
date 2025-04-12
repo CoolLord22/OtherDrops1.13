@@ -1433,7 +1433,7 @@ public class OtherDropsConfig {
 			return PlayerSubject.parse(data);
 		else if (upperName.equals("PLAYERGROUP"))
 			return new GroupSubject(data);
-		else if (upperName.startsWith("ANY") || upperName.equals("ALL"))
+		else if (MaterialGroup.isValid(name) || upperName.startsWith("ANY") || upperName.equals("ALL"))
 			return AnySubject.parseTarget(upperName);
 		else if (upperName.startsWith("MYTHIC_MOB"))
 			return MythicMobSubject.parse(data);
