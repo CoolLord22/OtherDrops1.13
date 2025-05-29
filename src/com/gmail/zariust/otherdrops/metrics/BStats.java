@@ -17,7 +17,7 @@ public class BStats {
 
     public void registerMetrics() {
         if (metrics == null) {
-            metrics = new Metrics(plugin);
+            metrics = new Metrics(plugin, 3708);
             registerCustomMetrics();
         }
     }
