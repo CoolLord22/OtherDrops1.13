@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.bukkit.block.Biome.*;
+
 public enum Weather {
     RAIN(true), SNOW(true), THUNDER(true), CLEAR(false), CLOUD(true), NONE(
             false), STORM(true) {
@@ -50,34 +52,16 @@ public enum Weather {
     public static Weather match(Biome biome, boolean hasStorm, boolean thundering) {
         if (biome == null)
             biome = Biome.PLAINS;
-        switch (biome) {
-            case NETHER_WASTES:
-            case CRIMSON_FOREST:
-            case WARPED_FOREST:
-            case SOUL_SAND_VALLEY:
-            case BASALT_DELTAS:
-            case THE_END:
-            case DESERT:
-                return NONE;
-            case GROVE:
-            case JAGGED_PEAKS:
-            case FROZEN_PEAKS:
-            case SNOWY_BEACH:
-            case SNOWY_TAIGA:
-            case SNOWY_PLAINS:
-            case SNOWY_SLOPES:
-            case ICE_SPIKES:
-            case DEEP_FROZEN_OCEAN:
-            case FROZEN_OCEAN:
-            case FROZEN_RIVER:
-                if (hasStorm)
-                    return SNOW;
-                return CLEAR;
-            default:
-                if (hasStorm)
-                    return thundering ? THUNDER : RAIN;
-                return CLEAR;
+        if (biome.equals(NETHER_WASTES) || biome.equals(CRIMSON_FOREST) || biome.equals(WARPED_FOREST) || biome.equals(SOUL_SAND_VALLEY) || biome.equals(BASALT_DELTAS) || biome.equals(THE_END) || biome.equals(DESERT)) {
+            return NONE;
+        } else if (biome.equals(GROVE) || biome.equals(JAGGED_PEAKS) || biome.equals(FROZEN_PEAKS) || biome.equals(SNOWY_BEACH) || biome.equals(SNOWY_TAIGA) || biome.equals(SNOWY_PLAINS) || biome.equals(SNOWY_SLOPES) || biome.equals(ICE_SPIKES) || biome.equals(DEEP_FROZEN_OCEAN) || biome.equals(FROZEN_OCEAN) || biome.equals(FROZEN_RIVER)) {
+            if (hasStorm)
+                return SNOW;
+            return CLEAR;
         }
+        if (hasStorm)
+            return thundering ? THUNDER : RAIN;
+        return CLEAR;
     }
 
     public boolean isStormy() {

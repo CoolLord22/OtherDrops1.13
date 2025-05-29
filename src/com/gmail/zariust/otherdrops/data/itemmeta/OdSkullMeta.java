@@ -66,7 +66,7 @@ public class OdSkullMeta extends OdItemMeta {
                 		creatureType == EntityType.ENDERMAN || creatureType == EntityType.GHAST ||
                 		creatureType == EntityType.OCELOT || creatureType == EntityType.PIG ||
                 		creatureType == EntityType.SHEEP || creatureType == EntityType.SKELETON ||
-                        creatureType == EntityType.MUSHROOM_COW || creatureType == EntityType.SLIME ||
+                        creatureType == EntityType.MOOSHROOM || creatureType == EntityType.SLIME ||
                 		creatureType == EntityType.SPIDER || creatureType == EntityType.SQUID ||
                 		creatureType == EntityType.VILLAGER || creatureType == EntityType.ZOMBIE ||
                 		creatureType == EntityType.CAVE_SPIDER || creatureType == EntityType.ZOMBIFIED_PIGLIN)

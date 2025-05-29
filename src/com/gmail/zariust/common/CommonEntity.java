@@ -56,7 +56,7 @@ public final class CommonEntity {
         	return null;
         
         if(name.equalsIgnoreCase("tntprimed"))
-        	return EntityType.PRIMED_TNT;
+        	return EntityType.TNT;
         
         
         boolean isEntity = false;
