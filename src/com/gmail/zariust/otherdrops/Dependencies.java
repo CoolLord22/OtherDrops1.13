@@ -27,6 +27,7 @@ import com.palmergames.bukkit.towny.Towny;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import fr.neatmonster.nocheatplus.NoCheatPlus;
 import io.lumine.mythic.bukkit.MythicBukkit;
+import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import me.drakespirit.plugins.moneydrop.MoneyDrop;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import net.milkbowl.vault.economy.Economy;
@@ -42,6 +43,7 @@ import static com.gmail.zariust.common.Verbosity.*;
 public class Dependencies {
 	// Plugin Dependencies
 	private static WorldGuardPlugin worldGuard      = null; // for WorldGuard support
+	private static PlaceholderAPIPlugin placeHolderAPI  = null;
 	private static Towny	 		towny 			= null;
 	private static WildStacker	    wildStacker 	= null;
 	private static MythicBukkit 	mythicMobs	 	= null;
@@ -76,6 +78,7 @@ public class Dependencies {
 		}
 		try {
 			towny = (Towny) getPlugin("Towny");
+			placeHolderAPI = (PlaceholderAPIPlugin) getPlugin("PlaceholderAPI");
 			wildStacker = (WildStacker) getPlugin("WildStacker");
 			mythicMobs = (MythicBukkit) getPlugin("MythicMobs");
 			gp = (GriefPrevention) getPlugin("GriefPrevention");
@@ -194,6 +197,14 @@ public class Dependencies {
 
 	public static Towny getTowny() {
 		return Dependencies.towny;
+	}
+
+	public static boolean hasPAPI() {
+		return Dependencies.placeHolderAPI != null;
+	}
+
+	public static PlaceholderAPIPlugin getPAPI() {
+		return Dependencies.placeHolderAPI;
 	}
 
 	public static boolean hasMythicMobs() {

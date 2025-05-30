@@ -31,3 +31,4 @@ build.xml
 *.class
 lib/authlib-1.5.21.jar
 /classes
+/dependencies

@@ -56,6 +56,7 @@
 		<property name="moneydrop-location" value="${dependencies}/MoneyDrop.jar" />
 		<property name="mythicmobs-location" value="${dependencies}/MythicMobs.jar" />
 		<property name="ncp-location" value="${dependencies}/NoCheatPlus.jar" />
+		<property name="papi-location" value="${dependencies}/PlaceholderAPI.jar" />
 		<property name="rpgitems-location" value="${dependencies}/rpgitems.jar" />
 		<property name="towny-location" value="${dependencies}/Towny.jar" />
 		<property name="vault-location" value="${dependencies}/Vault.jar" />
@@ -78,6 +79,7 @@
 			<pathelement location="${moneydrop-location}" />
 			<pathelement location="${mythicmobs-location}" />
 			<pathelement location="${ncp-location}" />
+			<pathelement location="${papi-location}" />
 			<pathelement location="${rpgitems-location}" />
 			<pathelement location="${towny-location}" />
 			<pathelement location="${vault-location}" />
