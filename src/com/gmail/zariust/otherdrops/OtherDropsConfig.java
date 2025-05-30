@@ -40,7 +40,6 @@ import com.gmail.zariust.otherdrops.things.ODItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -96,7 +95,7 @@ public class OtherDropsConfig {
 	// Defaults
 	protected static Map<Biome, Boolean> defaultBiomes;
 	public static Map<MoonPhaseCheck.MoonPhase, Boolean> defaultMoonPhaseLevels;
-	protected static Map<World, Boolean> defaultWorlds;
+	protected static Map<String, Boolean> defaultWorlds;
 	protected static Map<String, Boolean> defaultRegions;
 	protected static Set<String> defaultStructures;
 	public static Map<Weather, Boolean> defaultWeather;
@@ -1117,42 +1116,40 @@ public class OtherDropsConfig {
 
 	}
 
-	public static Map<World, Boolean> parseWorldsFrom(ConfigurationNode node) {
+	public static Map<String, Boolean> parseWorldsFrom(ConfigurationNode node) {
 		List<String> worlds = getMaybeList(node, "world", "worlds");
 		List<String> worldsExcept = getMaybeList(node, "worldexcept", "worldsexcept");
 		if (worlds.isEmpty() && worldsExcept.isEmpty())
 			return defaultWorlds;
-		Map<World, Boolean> result = new HashMap<World, Boolean>();
+		Map<String, Boolean> result = new HashMap<>();
 		result.put(null, containsAll(worlds));
 		for (String name : worlds) {
-			World world = Bukkit.getServer().getWorld(name);
-			if (world == null && name.startsWith("-")) {
+			if (name.equalsIgnoreCase("ALL") || name.equalsIgnoreCase("ANY")) {
 				result.put(null, true);
-				world = Bukkit.getServer().getWorld(name.substring(1));
-				if (world == null) {
-					Log.logWarning("Invalid world " + name + "; skipping...");
-					continue;
-				}
-				result.put(world, false);
-			} else if (world == null) {
-				if (name.equalsIgnoreCase("ALL")
-						|| name.equalsIgnoreCase("ANY")) {
-					result.put(null, true);
-				} else {
-					Log.logWarning("Invalid world " + name + "; skipping...");
-					continue;
-				}
-			} else
-				result.put(world, true);
-		}
-		for (String name : worldsExcept) {
-			World world = Bukkit.getServer().getWorld(name);
-			if (world == null) {
-				Log.logWarning("Invalid world exception " + name + "; skipping...");
 				continue;
 			}
+			if (name.startsWith("-")) {
+				String actualName = name.substring(1);
+				result.put(null, true); // Indicates "all worlds except..."
+				result.put(actualName, false);
+
+				if (Bukkit.getServer().getWorld(actualName) == null) {
+					Log.logWarning("Invalid world " + name + "; may not function as expected...");
+				}
+			} else {
+				result.put(name, true);
+
+				if (Bukkit.getServer().getWorld(name) == null) {
+					Log.logWarning("Invalid world " + name + "; may not function as expected...");
+				}
+			}
+		}
+		for (String name : worldsExcept) {
+			if (Bukkit.getServer().getWorld(name) == null) {
+				Log.logWarning("Invalid world " + name + "; may not function as expected...");
+			}
 			result.put(null, true);
-			result.put(world, false);
+			result.put(name, false);
 		}
 		return result;
 	}
