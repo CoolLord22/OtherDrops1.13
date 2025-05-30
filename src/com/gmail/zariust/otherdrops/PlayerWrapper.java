@@ -28,7 +28,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
-import org.bukkit.damage.DamageSource;
 import org.bukkit.entity.*;
 import org.bukkit.entity.memory.MemoryKey;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -58,7 +57,6 @@ import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 
 @SuppressWarnings("deprecation")
 public class PlayerWrapper implements Player {
@@ -484,27 +482,6 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
-    public boolean isTransferred() {
-        return false;
-    }
-
-    @NotNull
-    @Override
-    public CompletableFuture<byte[]> retrieveCookie(@NotNull NamespacedKey namespacedKey) {
-        return null;
-    }
-
-    @Override
-    public void storeCookie(@NotNull NamespacedKey namespacedKey, @NotNull byte[] bytes) {
-
-    }
-
-    @Override
-    public void transfer(@NotNull String s, int i) {
-
-    }
-
-    @Override
     public void sendRawMessage(String message) {
         caller.sendRawMessage(message);
     }
@@ -622,11 +599,6 @@ public class PlayerWrapper implements Player {
 
     @Override
     public void sendHurtAnimation(float v) {
-
-    }
-
-    @Override
-    public void sendLinks(@NotNull ServerLinks serverLinks) {
 
     }
 
@@ -857,12 +829,6 @@ public class PlayerWrapper implements Player {
         return caller.getBedSpawnLocation();
     }
 
-    @Nullable
-    @Override
-    public Location getRespawnLocation() {
-        return null;
-    }
-
     @Override
     public boolean isSprinting() {
         return caller.isSprinting();
@@ -901,16 +867,6 @@ public class PlayerWrapper implements Player {
     @Override
     public void setPlayerListName(String name) {
         caller.setPlayerListName(name);
-    }
-
-    @Override
-    public int getPlayerListOrder() {
-        return 0;
-    }
-
-    @Override
-    public void setPlayerListOrder(int i) {
-
     }
 
     @Override
@@ -1015,11 +971,6 @@ public class PlayerWrapper implements Player {
     @Override
     public void setBedSpawnLocation(Location arg0) {
         throw new UnsupportedOperationException("Not supported yet."); 
-
-    }
-
-    @Override
-    public void setRespawnLocation(@Nullable Location location) {
 
     }
 
@@ -1328,16 +1279,6 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
-    public void playSound(@NotNull Location location, @NotNull Sound sound, @NotNull SoundCategory soundCategory, float v, float v1, long l) {
-
-    }
-
-    @Override
-    public void playSound(@NotNull Location location, @NotNull String s, @NotNull SoundCategory soundCategory, float v, float v1, long l) {
-
-    }
-
-    @Override
     public void playSound(@NotNull Entity entity, @NotNull Sound sound, float v, float v1) {
 
     }
@@ -1358,16 +1299,6 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
-    public void playSound(@NotNull Entity entity, @NotNull Sound sound, @NotNull SoundCategory soundCategory, float v, float v1, long l) {
-
-    }
-
-    @Override
-    public void playSound(@NotNull Entity entity, @NotNull String s, @NotNull SoundCategory soundCategory, float v, float v1, long l) {
-
-    }
-
-    @Override
     public void playSound(Location location, Sound sound, SoundCategory category, float volume, float pitch) {
         throw new UnsupportedOperationException("Not supported yet."); 
 
@@ -1377,23 +1308,6 @@ public class PlayerWrapper implements Player {
     public void setBedSpawnLocation(Location arg0, boolean arg1) {
         throw new UnsupportedOperationException("Not supported yet."); 
 
-    }
-
-    @Override
-    public void setRespawnLocation(@Nullable Location location, boolean b) {
-
-    }
-
-    @NotNull
-    @Override
-    public Collection<EnderPearl> getEnderPearls() {
-        return List.of();
-    }
-
-    @NotNull
-    @Override
-    public Input getCurrentInput() {
-        return null;
     }
 
     @Override
@@ -1439,12 +1353,6 @@ public class PlayerWrapper implements Player {
     @Override
     public boolean isVisibleByDefault() {
         return false;
-    }
-
-    @NotNull
-    @Override
-    public Set<Player> getTrackedBy() {
-        return Set.of();
     }
 
     @Override
@@ -1544,11 +1452,6 @@ public class PlayerWrapper implements Player {
     @Override
     public void damage(double arg0, Entity arg1) {
         throw new UnsupportedOperationException("Not supported yet."); 
-
-    }
-
-    @Override
-    public void damage(double v, @NotNull DamageSource damageSource) {
 
     }
 
@@ -1829,16 +1732,6 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
-    public <T> void spawnParticle(@NotNull Particle particle, @NotNull Location location, int i, double v, double v1, double v2, double v3, @Nullable T t, boolean b) {
-
-    }
-
-    @Override
-    public <T> void spawnParticle(@NotNull Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, double v6, @Nullable T t, boolean b) {
-
-    }
-
-    @Override
     public MainHand getMainHand() {
         throw new UnsupportedOperationException("Not supported yet."); 
     }
@@ -1987,16 +1880,6 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
-    public int getItemInUseTicks() {
-        return 0;
-    }
-
-    @Override
-    public void setItemInUseTicks(int i) {
-
-    }
-
-    @Override
     public PotionEffect getPotionEffect(PotionEffectType pet) {
         throw new UnsupportedOperationException("Not supported yet."); 
     }
@@ -2052,22 +1935,7 @@ public class PlayerWrapper implements Player {
 		
 	}
 
-    @Override
-    public boolean hasCooldown(@NotNull ItemStack itemStack) {
-        return false;
-    }
-
-    @Override
-    public int getCooldown(@NotNull ItemStack itemStack) {
-        return 0;
-    }
-
-    @Override
-    public void setCooldown(@NotNull ItemStack itemStack, int i) {
-
-    }
-
-    @Override
+	@Override
 	public void setShoulderEntityLeft(Entity arg0) {
 		throw new UnsupportedOperationException("Not supported yet.");
 		
@@ -2145,26 +2013,6 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
-    public void setResourcePack(@NotNull UUID uuid, @NotNull String s, @Nullable byte[] bytes, @Nullable String s1, boolean b) {
-
-    }
-
-    @Override
-    public void addResourcePack(@NotNull UUID uuid, @NotNull String s, @Nullable byte[] bytes, @Nullable String s1, boolean b) {
-
-    }
-
-    @Override
-    public void removeResourcePack(@NotNull UUID uuid) {
-
-    }
-
-    @Override
-    public void removeResourcePacks() {
-
-    }
-
-    @Override
 	public void showPlayer(Plugin arg0, Player arg1) {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
@@ -2224,12 +2072,7 @@ public class PlayerWrapper implements Player {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
-    @Override
-    public void setRiptiding(boolean b) {
-
-    }
-
-    @Override
+	@Override
 	public boolean isPersistent() {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
@@ -2361,12 +2204,7 @@ public class PlayerWrapper implements Player {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
-    @Override
-    public void startRiptideAttack(int i, float v, @Nullable ItemStack itemStack) {
-
-    }
-
-    @Override
+	@Override
 	public void setRotation(float arg0, float arg1) {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
@@ -2456,35 +2294,6 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
-    public boolean isInWorld() {
-        return false;
-    }
-
-    @Nullable
-    @Override
-    public String getAsString() {
-        return "";
-    }
-
-    @Nullable
-    @Override
-    public EntitySnapshot createSnapshot() {
-        return null;
-    }
-
-    @NotNull
-    @Override
-    public Entity copy() {
-        return null;
-    }
-
-    @NotNull
-    @Override
-    public Entity copy(@NotNull Location location) {
-        return null;
-    }
-
-    @Override
 	public PersistentDataContainer getPersistentDataContainer() {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
@@ -2526,16 +2335,6 @@ public class PlayerWrapper implements Player {
 
     @Override
     public void sendBlockUpdate(@NotNull Location location, @NotNull TileState tileState) throws IllegalArgumentException {
-
-    }
-
-    @Override
-    public void sendPotionEffectChange(@NotNull LivingEntity livingEntity, @NotNull PotionEffect potionEffect) {
-
-    }
-
-    @Override
-    public void sendPotionEffectChangeRemove(@NotNull LivingEntity livingEntity, @NotNull PotionEffectType potionEffectType) {
 
     }
 

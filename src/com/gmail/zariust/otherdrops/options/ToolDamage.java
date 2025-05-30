@@ -108,8 +108,8 @@ public class ToolDamage {
 		if(stack.getItemMeta().isUnbreakable())
 			return;
 		
-		if (stack.containsEnchantment(Enchantment.UNBREAKING)) {
-        	int durabilityLevel = (stack.getEnchantmentLevel(Enchantment.UNBREAKING) + 1);
+		if (stack.containsEnchantment(Enchantment.DURABILITY)) {
+        	int durabilityLevel = (stack.getEnchantmentLevel(Enchantment.DURABILITY) + 1);
         	double chanceOfDamage = 100 / (durabilityLevel);
         	
         	String name = stack.getType().toString().toLowerCase();
