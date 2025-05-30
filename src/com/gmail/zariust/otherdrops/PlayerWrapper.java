@@ -52,10 +52,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.*;
 
 @SuppressWarnings("deprecation")
@@ -291,16 +288,6 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
-    public int getNoActionTicks() {
-        return 0;
-    }
-
-    @Override
-    public void setNoActionTicks(int i) {
-
-    }
-
-    @Override
     public Location getLocation() {
         return caller.getLocation();
     }
@@ -496,42 +483,6 @@ public class PlayerWrapper implements Player {
         caller.kickPlayer(message);
     }
 
-    @Nullable
-    @Override
-    public BanEntry<PlayerProfile> ban(@Nullable String s, @Nullable Date date, @Nullable String s1, boolean b) {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public BanEntry<PlayerProfile> ban(@Nullable String s, @Nullable Instant instant, @Nullable String s1, boolean b) {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public BanEntry<PlayerProfile> ban(@Nullable String s, @Nullable Duration duration, @Nullable String s1, boolean b) {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public BanEntry<InetAddress> banIp(@Nullable String s, @Nullable Date date, @Nullable String s1, boolean b) {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public BanEntry<InetAddress> banIp(@Nullable String s, @Nullable Instant instant, @Nullable String s1, boolean b) {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public BanEntry<InetAddress> banIp(@Nullable String s, @Nullable Duration duration, @Nullable String s1, boolean b) {
-        return null;
-    }
-
     @Override
     public void chat(String msg) {
         caller.chat(msg);
@@ -687,24 +638,6 @@ public class PlayerWrapper implements Player {
     @Override
     public boolean isBanned() {
         return caller.isBanned();
-    }
-
-    @Nullable
-    @Override
-    public BanEntry<PlayerProfile> ban(@Nullable String s, @Nullable Date date, @Nullable String s1) {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public BanEntry<PlayerProfile> ban(@Nullable String s, @Nullable Instant instant, @Nullable String s1) {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public BanEntry<PlayerProfile> ban(@Nullable String s, @Nullable Duration duration, @Nullable String s1) {
-        return null;
     }
 
     @Override
@@ -1428,16 +1361,6 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
-    public void sendHealthUpdate(double v, int i, float v1) {
-
-    }
-
-    @Override
-    public void sendHealthUpdate() {
-
-    }
-
-    @Override
     public void setLastDamage(double arg0) {
         throw new UnsupportedOperationException("Not supported yet."); 
 
@@ -1798,11 +1721,6 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
-    public void playHurtAnimation(float v) {
-
-    }
-
-    @Override
     public void setCollidable(boolean bln) {
         throw new UnsupportedOperationException("Not supported yet."); 
     }
@@ -2031,11 +1949,6 @@ public class PlayerWrapper implements Player {
 	public void sendBlockChange(Location arg0, BlockData arg1) {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
-
-    @Override
-    public void sendBlockChanges(@NotNull Collection<BlockState> collection) {
-
-    }
 
     @Override
     public void sendBlockChanges(@NotNull Collection<BlockState> collection, boolean b) {
@@ -2332,10 +2245,4 @@ public class PlayerWrapper implements Player {
     public void sendSignChange(@NotNull Location location, @Nullable String[] strings, @NotNull DyeColor dyeColor, boolean b) throws IllegalArgumentException {
 
     }
-
-    @Override
-    public void sendBlockUpdate(@NotNull Location location, @NotNull TileState tileState) throws IllegalArgumentException {
-
-    }
-
 }
