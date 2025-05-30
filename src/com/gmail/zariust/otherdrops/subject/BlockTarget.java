@@ -118,8 +118,8 @@ public class BlockTarget implements Target {
             return new ContainerData(block.getState());
         case SPAWNER:
             return new SpawnerData(block.getState());
-        //case NOTE_BLOCK:
-            //return new NoteData(block.getState());
+        case NOTE_BLOCK:
+            return new NoteData(block.getBlockData());
         case JUKEBOX:
             return new RecordData(block.getState());
         default:

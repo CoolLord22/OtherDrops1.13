@@ -17,23 +17,29 @@
 package com.gmail.zariust.otherdrops.data;
 
 import com.gmail.zariust.otherdrops.Log;
+import org.bukkit.Instrument;
 import org.bukkit.Material;
 import org.bukkit.Note;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 public class NoteData implements Data, RangeableData {
     private Note note;
+    private Instrument instrument;
 
-    public NoteData(BlockState state) {
-        if (state instanceof NoteBlock)
-            note = ((NoteBlock) state).getNote();
+    public NoteData(BlockData data) {
+        if (data instanceof NoteBlock) {
+            note = ((NoteBlock) data).getNote();
+            instrument = ((NoteBlock) data).getInstrument();
+        }
     }
 
-    public NoteData(Note tone) {
-        note = tone;
+    public NoteData(Note tone, Instrument instrument) {
+        this.note = tone;
+        this.instrument = instrument;
     }
 
     @SuppressWarnings("deprecation")
@@ -49,30 +55,37 @@ public class NoteData implements Data, RangeableData {
 
     @Override
     public boolean matches(Data d) {
-        if (!(d instanceof NoteData))
+        if (!(d instanceof NoteData noteData)) // matches target isnt note data
             return false;
-        return note.equals(((NoteData) d).note);
+        if (note != null && !note.equals(noteData.note))
+            return false;
+        return instrument == null || instrument.equals(noteData.instrument);
     }
 
     @Override
     public String get(Enum<?> mat) {
         String result = "";
         if (mat == Material.NOTE_BLOCK) {
-            result += note.getTone();
-            if (note.isSharped())
-                result += "#";
-            result += note.getOctave();
+            if(note != null) {
+                result += note.getTone();
+                if (note.isSharped())
+                    result += "#";
+                result += note.getOctave();
+            }
+            result += "/" + instrument.name();
         }
         return result;
     }
 
     @Override
     public void setOn(BlockState state) {
-        if (!(state instanceof NoteBlock)) {
+        if (!(state.getBlockData() instanceof NoteBlock noteBlock)) {
             Log.logWarning("Tried to change a note block, but no note block was found!");
             return;
         }
-        ((NoteBlock) state).setNote(note);
+        noteBlock.setNote(note);
+        noteBlock.setInstrument(instrument);
+        state.setBlockData(noteBlock);
     }
 
     @Override
@@ -83,20 +96,29 @@ public class NoteData implements Data, RangeableData {
     public static Data parse(String state) throws IllegalArgumentException {
         if (state == null || state.isEmpty())
             return null;
-        if (state.startsWith("RANGE"))
-            return RangeData.parse(state);
-        if (!state.matches("([A-G])(#?)([0-2]?)"))
-            return null;
-        Note.Tone tone = Note.Tone.valueOf(state.substring(0, 1));
-        if (tone == null)
-            return null;
-        byte octave;
-        if (state.matches("..?[0-2]"))
-            octave = Byte.parseByte(state.substring(state.length() - 1));
-        else
-            octave = 1;
-        Note note = new Note(octave, tone, state.contains("#"));
-        return new NoteData(note);
+        String[] args = state.split("/");
+        Note note = null;
+        Instrument instrument = null;
+        for(String arg : args) {
+            try {
+                instrument = Instrument.valueOf(arg.toUpperCase());
+            } catch (IllegalArgumentException ignored) {}
+            try {
+                Log.logWarning("State: " + arg);
+                if (arg.startsWith("RANGE"))
+                    return RangeData.parse(arg);
+                if (arg.matches("([A-G])(#?)([0-2]?)")) {
+                    Note.Tone tone = Note.Tone.valueOf(arg.substring(0, 1));
+                    byte octave;
+                    if (arg.matches("..?[0-2]"))
+                        octave = Byte.parseByte(arg.substring(arg.length() - 1));
+                    else
+                        octave = 1;
+                    note = new Note(octave, tone, arg.contains("#"));
+                }
+            } catch (IllegalArgumentException ignored) {}
+        }
+        return new NoteData(note, instrument);
     }
 
     @SuppressWarnings("deprecation")
