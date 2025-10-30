@@ -50,7 +50,7 @@ public class NoteData implements Data, RangeableData {
 
     @Override
     public void setData(int d) {
-        note = new Note((byte) d);
+        note = new Note(d);
     }
 
     @Override
@@ -104,7 +104,6 @@ public class NoteData implements Data, RangeableData {
                 instrument = Instrument.valueOf(arg.toUpperCase());
             } catch (IllegalArgumentException ignored) {}
             try {
-                Log.logWarning("State: " + arg);
                 if (arg.startsWith("RANGE"))
                     return RangeData.parse(arg);
                 if (arg.matches("([A-G])(#?)([0-2]?)")) {
@@ -115,6 +114,11 @@ public class NoteData implements Data, RangeableData {
                     else
                         octave = 1;
                     note = new Note(octave, tone, arg.contains("#"));
+                } else if (arg.matches("\\d{1,2}")) { // Check if it's a 1- or 2-digit number
+                    int noteValue = Integer.parseInt(arg);
+                    if (noteValue >= 0 && noteValue <= 24) {
+                        note = new Note(noteValue);
+                    }
                 }
             } catch (IllegalArgumentException ignored) {}
         }
