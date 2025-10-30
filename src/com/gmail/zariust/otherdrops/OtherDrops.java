@@ -126,6 +126,7 @@ public class OtherDrops extends JavaPlugin {
     public void exportEnumLists() {
 		Log.logInfo("OtherDrops printing export lists.", Verbosity.HIGH);
 		writeNames(null,"org.bukkit.Material");
+		writeNames(null,"org.bukkit.Sound");
 		writeNames(null,"org.bukkit.block.Biome");
 		writeNames(null,"org.bukkit.entity.EntityType");
 		writeNames("Weather", Weather.class);
