@@ -67,6 +67,10 @@ public class OtherDrops extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		try {
+			Bukkit.getLogger().warning("Beginning legacy material support. This may temporarily delay server startup. This call has been moved to onEnable() to help prevent the lag spike when first BlockTarget interaction was triggered.");
+			Bukkit.getWorlds().get(0).getBlockAt(Bukkit.getWorlds().get(0).getSpawnLocation()).getData();
+		} catch (Exception ignored) {}
 		File oldFolder = new File("plugins" + File.separator + "OtherDrops_1.13");
 		if(oldFolder.exists()) {
 			Bukkit.getLogger().warning("Detected old directory plugins/OtherDrops_1.13! Copying directory to OtherDrops...");
