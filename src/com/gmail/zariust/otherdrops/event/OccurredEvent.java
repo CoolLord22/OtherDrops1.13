@@ -22,6 +22,7 @@ import com.gamingmesh.jobs.api.JobsLevelUpEvent;
 import com.gamingmesh.jobs.api.JobsPaymentEvent;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Dependencies;
+import com.gmail.zariust.otherdrops.EquipmentSlotResolver;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
 import com.gmail.zariust.otherdrops.options.Weather;
@@ -46,6 +47,7 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashSet;
@@ -95,7 +97,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         }
         setLocationWorldBiomeLight(block);
         setWeatherTimeHeight(location);
-        setTool(evt.getPlayer());
+        setTool(evt.getPlayer(), EquipmentSlot.HAND); // Block break can only be from main hand
         attackRange = measureRange(
                 location,
                 evt.getPlayer().getLocation(),
@@ -150,7 +152,11 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         setWeatherTimeHeight(location);
         if (evt instanceof EntityDamageByEntityEvent) {
             EntityDamageByEntityEvent evt2 = (EntityDamageByEntityEvent) evt;
-            setTool(evt2.getDamager());
+            if(evt2.getDamager() instanceof Player p) {
+                setTool(evt2.getDamager(), EquipmentSlotResolver.resolve(evt2.getCause(), p));
+            } else {
+                setTool(evt2.getDamager(), null);
+            }
             if (tool != null)
                 attackRange = measureRange(location, evt2.getDamager().getLocation(), "Entity '" + e + "' damaged by '" + tool.toString() + "'");
         } else
@@ -166,12 +172,12 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         setWeatherTimeHeight(location);
         if (evt instanceof EntityDamageByEntityEvent) {
             EntityDamageByEntityEvent evt2 = (EntityDamageByEntityEvent) evt;
-            setTool(evt2.getDamager());
-            if (evt2.getDamager() == null) {
-                Log.logInfo("EntityDamageEvent: damager is null, please inform developer.");
-            } else if (e == null) {
-                Log.logInfo("EntityDamageEvent: entity is null, please inform developer.");
-            } else if (tool == null) {
+            if(evt2.getDamager() instanceof Player p) {
+                setTool(evt2.getDamager(), EquipmentSlotResolver.resolve(evt2.getCause(), p));
+            } else {
+                setTool(evt2.getDamager(), null);
+            }
+            if (tool == null) {
                 if (!(e instanceof TNTPrimed)) {
                     Log.logInfo(
                             "EntityDamageEvent: tool is null, please inform developer if this wasn't due to TNT (or TNT minecart).",
@@ -203,7 +209,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         event = evt;
         setLocationWorldBiomeLight(evt.getVehicle());
         setWeatherTimeHeight(location);
-        setTool(evt.getAttacker()); // Note: getAttacker is NULL for
+        setTool(evt.getAttacker(), EquipmentSlot.HAND); // Note: getAttacker is NULL for
                                     // environmental attack/break
         // environmental attacks (eg. burning) do not have a location, so range
         // is not valid.
@@ -251,7 +257,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         attackRange = measureRange(location, evt.getPlayer().getLocation(),
                 "Player '" + evt.getPlayer().getName() + "' interacted with "
                         + block);
-        setTool(evt.getPlayer());
+        setTool(evt.getPlayer(), evt.getHand());
         setRegions();
     }
 
@@ -263,7 +269,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         attackRange = measureRange(location, evt.getPlayer().getLocation(),
                 "Player '" + evt.getPlayer().getName() + "' interacted with "
                         + evt.getRightClicked());
-        setTool(evt.getPlayer());
+        setTool(evt.getPlayer(), evt.getHand());
         setRegions();
     }
 
@@ -346,7 +352,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         event = null;
         setLocationWorldBiomeLight(block);
         setWeatherTimeHeight(location);
-        setTool(agent);
+        setTool(agent, EquipmentSlot.HAND); // default to main hand?
         setRegions();
     }
 
@@ -426,7 +432,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         super(getEntityTarget(entity), action);
         event = null;
         setLocationWorldBiomeLight(entity);
-        setTool(agent);
+        setTool(agent, EquipmentSlot.HAND); // default to main hand?
         setRegions();
     }
 
@@ -509,7 +515,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         super(targ, action, true);
         event = null;
         setLocationWorldBiomeLight(targ);
-        setTool(agent);
+        setTool(agent, EquipmentSlot.HAND);
         setRegions();
     }
 
@@ -556,11 +562,11 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     }
 
     public OccurredEvent(PlayerFishEvent evt) {
-        super(new PlayerSubject(evt.getPlayer()), Trigger.FISH_CAUGHT);
+        super(new PlayerSubject(evt.getPlayer(), evt.getHand()), Trigger.FISH_CAUGHT);
         event = evt;
         setLocationWorldBiomeLight(evt.getCaught().getLocation().getBlock());
         setWeatherTimeHeight(location);
-        setTool(evt.getPlayer());
+        setTool(evt.getPlayer(), evt.getHand());
         setRegions();
         fishingLocation = evt.getHook().getLocation();
     }
@@ -568,11 +574,11 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     // Yes, this needs to be a separate constructor as the "super" has to be on
     // the first line and includes the action
     public OccurredEvent(PlayerFishEvent evt, String string) {
-        super(new PlayerSubject(evt.getPlayer()), Trigger.FISH_FAILED);
+        super(new PlayerSubject(evt.getPlayer(), evt.getHand()), Trigger.FISH_FAILED);
         event = evt;
         setLocationWorldBiomeLight(evt.getPlayer().getLocation().getBlock());
         setWeatherTimeHeight(location);
-        setTool(evt.getPlayer());
+        setTool(evt.getPlayer(), evt.getHand());
         setRegions();
         fishingLocation = evt.getHook().getLocation();
     }
@@ -642,7 +648,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
 
         setLocationWorldBiomeLight(evt.getPlayer().getLocation().getBlock());
         setWeatherTimeHeight(location);
-        setTool(evt.getPlayer());
+        setTool(evt.getPlayer(), EquipmentSlot.HAND);
         setRegions();
 
     }
@@ -668,21 +674,21 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
 
         setLocationWorldBiomeLight(evt.getPlayer().getLocation().getBlock());
         setWeatherTimeHeight(location);
-        setTool(evt.getPlayer());
+        setTool(evt.getPlayer(), EquipmentSlot.HAND);
         setRegions();
     }
 
     public OccurredEvent(PlayerItemConsumeEvent evt) {
-        super(new PlayerSubject(evt.getPlayer()), Trigger.CONSUME_ITEM);
+        super(new PlayerSubject(evt.getPlayer(), evt.getHand()), Trigger.CONSUME_ITEM);
         event = evt;
         setLocationWorldBiomeLight(evt.getPlayer().getLocation().getBlock());
         setWeatherTimeHeight(location);
-        setTool(evt.getPlayer());
+        setTool(evt.getPlayer(), evt.getHand());
         setRegions();
     }
     
     public OccurredEvent(JobsLevelUpEvent evt) {
-    	super(new PlayerSubject(evt.getPlayer().getPlayer()), Trigger.JOBS_LEVEL_UP);
+    	super(new PlayerSubject(evt.getPlayer().getPlayer(), EquipmentSlot.HAND), Trigger.JOBS_LEVEL_UP);
     	event = evt;
     	setJobName(evt.getJob().getName());
         setJobLevel(evt.getLevel());
@@ -692,7 +698,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     }
     
     public OccurredEvent(JobsPaymentEvent evt) {
-    	super(new PlayerSubject(evt.getPlayer().getPlayer()), Trigger.JOBS_PAYMENT);
+    	super(new PlayerSubject(evt.getPlayer().getPlayer(), EquipmentSlot.HAND), Trigger.JOBS_PAYMENT);
     	event = evt;
         setLocationWorldBiomeLight(evt.getPlayer().getPlayer().getLocation().getBlock());
         setWeatherTimeHeight(location);
@@ -700,7 +706,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     }
     
     public OccurredEvent(JobsExpGainEvent evt) {
-    	super(new PlayerSubject(evt.getPlayer().getPlayer()), Trigger.JOBS_EXP_GAIN);
+    	super(new PlayerSubject(evt.getPlayer().getPlayer(), EquipmentSlot.HAND), Trigger.JOBS_EXP_GAIN);
     	event = evt;
         setJobName(evt.getJob().getName());
         setJobLevel(Jobs.getPlayerManager().getJobsPlayer(evt.getPlayer().getUniqueId()).getJobProgression(evt.getJob()).getLevel());
@@ -724,7 +730,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         event = evt;
         setLocationWorldBiomeLight(evt.getPlayer().getLocation().getBlock());
         setWeatherTimeHeight(location);
-        setTool(evt.getPlayer());
+        setTool(evt.getPlayer(), EquipmentSlot.HAND); // Default to off-hand
         setRegions();
     }
 
@@ -758,7 +764,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         }
         setLocationWorldBiomeLight(block);
         setWeatherTimeHeight(location);
-        setTool(evt.getPlayer());
+        setTool(evt.getPlayer(), evt.getHand());
         attackRange = measureRange(
                 location,
                 evt.getPlayer().getLocation(),
@@ -838,9 +844,9 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         tool = agent;
     }
 
-    private void setTool(Entity damager) {
+    private void setTool(Entity damager, EquipmentSlot hand) {
         if (damager instanceof Player)
-            tool = new PlayerSubject((Player) damager);
+            tool = new PlayerSubject((Player) damager, hand);
         else if (damager instanceof Projectile)
             tool = new ProjectileAgent((Projectile) damager);
         else if (damager instanceof LightningStrike)
@@ -866,8 +872,8 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         // Check if the damager is a player - if so, weapon is the held tool
         if (lastDamage instanceof EntityDamageByEntityEvent) {
             EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) lastDamage;
-            if (e.getDamager() instanceof Player) {
-                tool = new PlayerSubject((Player) e.getDamager());
+            if (e.getDamager() instanceof Player p) {
+                tool = new PlayerSubject((Player) e.getDamager(), EquipmentSlotResolver.resolve(e.getCause(), p));
                 return;
             } else if (e.getDamager() instanceof Projectile) {
                 tool = new ProjectileAgent((Projectile) e.getDamager());
@@ -906,7 +912,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
 
     private static Target getEntityTarget(Entity what) {
         if (what instanceof Player)
-            return new PlayerSubject((Player) what);
+            return new PlayerSubject((Player) what, EquipmentSlot.HAND); // default to main hand?
         else if (what instanceof LivingEntity) {
             if(Dependencies.hasMythicMobs()) {
                 ActiveMob mythicMob = Dependencies.getMythicMobs().getMobManager().getActiveMob(what.getUniqueId()).orElse(null);
@@ -1132,8 +1138,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
             return ((PlayerSubject) getTool()).getPlayer();
         else if (getTool() instanceof ProjectileAgent) {
             if (((ProjectileAgent) getTool()).getShooter() instanceof PlayerSubject)
-                return (Player) ((ProjectileAgent) getTool()).getShooter()
-                        .getEntity();
+                return (Player) ((ProjectileAgent) getTool()).getShooter().getEntity();
         }
 
         return null;

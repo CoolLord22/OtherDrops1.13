@@ -19,6 +19,7 @@ package com.gmail.zariust.otherdrops.subject;
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Dependencies;
+import com.gmail.zariust.otherdrops.EquipmentSlotResolver;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
@@ -27,7 +28,9 @@ import io.lumine.mythic.core.mobs.ActiveMob;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.*;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Random;
 
@@ -102,8 +105,17 @@ public class ProjectileAgent implements Agent {
     		shooter = (LivingEntity) missile.getShooter();
         if (shooter == null)
             return null;
-        else if (shooter instanceof Player)
-            return new PlayerSubject((Player) shooter);
+        else if (shooter instanceof Player player) {
+            EquipmentSlot hand = EquipmentSlot.HAND;
+            if(missile instanceof ThrowableProjectile thrown) {
+                ItemStack stack = thrown.getItem();
+                if(stack.isSimilar(player.getInventory().getItem(EquipmentSlot.OFF_HAND)))
+                    hand = EquipmentSlot.OFF_HAND;
+            } else {
+                hand = EquipmentSlotResolver.getHandWithMaterial(player.getInventory(), Material.BOW, true);
+            }
+            return new PlayerSubject(player, hand);
+        }
         else {
             if(Dependencies.hasMythicMobs()) {
                 ActiveMob mythicMob = Dependencies.getMythicMobs().getMobManager().getActiveMob(shooter.getUniqueId()).orElse(null);

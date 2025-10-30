@@ -21,6 +21,7 @@ import com.gmail.zariust.otherdrops.options.ToolDamage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
@@ -29,6 +30,7 @@ import java.util.Random;
 
 public class PlayerSubject extends LivingSubject {
     private ToolAgent tool;
+    private EquipmentSlot hand;
     private String    name;
     private Player    agent;
     private boolean   anyObject;
@@ -46,8 +48,9 @@ public class PlayerSubject extends LivingSubject {
         this(null, attacker);
     }
 
-    public PlayerSubject(Player attacker) {
-        this(attacker.getInventory().getItemInMainHand(), attacker.getName(), attacker);
+    public PlayerSubject(Player attacker, EquipmentSlot hand) {
+        this(attacker.getInventory().getItem(hand), attacker.getName(), attacker);
+        this.hand = hand;
     }
 
     public PlayerSubject(ItemStack item, String attacker) {
@@ -123,7 +126,7 @@ public class PlayerSubject extends LivingSubject {
     public void damageTool(ToolDamage damage, Random rng) {
         if (damage == null)
             return;
-        ItemStack stack = agent.getInventory().getItemInMainHand();
+        ItemStack stack = agent.getInventory().getItem(hand);
         if (stack == null)
             return;
         if (damage.apply(stack, rng))
