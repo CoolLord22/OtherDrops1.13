@@ -72,8 +72,7 @@ public class OtherDropsConfig {
     // A place for special events to stash options
     private ConfigurationNode events;
 
-    // Triggers configured - these enable the appropriate listeners
-    // if a drop config is found using them.
+    // Triggers configured - these enable the appropriate listeners if a drop config is found using them.
     public static boolean dropForBlocks;            // target type BLOCK or ANY
     public static boolean dropForCreatures;         // target type CREATURE, PLAYER, or ANY
     public static boolean dropForExplosions;        // target type EXPLOSION
@@ -90,7 +89,8 @@ public class OtherDropsConfig {
     public static boolean dropForJobsPayment;
     public static boolean dropForJobsExpGain;
     public static boolean dropForItemDrop;
-
+    public static boolean dropForBlockGrow;
+    public static boolean dropForProjectileHit;
 
     // Defaults
     protected static Map<Biome, Boolean> defaultBiomes;
@@ -110,10 +110,10 @@ public class OtherDropsConfig {
 
     // Variables for settings from config.yml
     protected static Verbosity verbosity = Verbosity.NORMAL;
+    protected boolean disableEntityDrops;
     public boolean customDropsForExplosions;
     public boolean defaultDropSpread; // determines if dropspread defaults to true or false
     public static boolean enableBlockTo;
-    protected boolean disableEntityDrops;
     public static boolean disableXpOnNonDefault; // if drops are configured for mobs - disable the xp unless there is a default drop
     public static int moneyPrecision;
     public static boolean enchantmentsUseUnsafe;
@@ -122,28 +122,25 @@ public class OtherDropsConfig {
     public static boolean spawnTriggerIgnoreOtherDropsSpawn = true;
 
     public static boolean globalenablewgmatching = false;
-    private boolean globalLootOverridesDefault;
-    private boolean globalMoneyOverridesDefault;
-    private boolean globalXpOverridesDefault;
-    private boolean moneyOverridesDefault;
-    private boolean xpOverridesDefault;
-    private boolean lootOverridesDefault;
     public static boolean globalRedstonewireTriggersSurrounding = true;
     public static boolean globalUpdateChecking = true;
     public static boolean globalFallToGround = true;
     public static boolean globalOverrideExplosionCap = false;
     public static int globalCustomSpawnLimit;
 	public static boolean globalCustomBlockBreakToMcmmo;
-	private boolean globalAllowAnyReplacementBlock;
     public static String gTimeFormat = "HH:mm:ss";
     public static String gDateFormat = "yyyy/MM/dd";
     public static boolean gColorLogMessages = true;
     public static double gActionRadius = 10;
+    private boolean globalLootOverridesDefault;
+    private boolean globalMoneyOverridesDefault;
+    private boolean globalXpOverridesDefault;
+    private boolean moneyOverridesDefault;
+    private boolean xpOverridesDefault;
+    private boolean lootOverridesDefault;
+    private boolean globalAllowAnyReplacementBlock;
 
 	public static boolean primedTNTEnabled = false;
-
-    public static boolean dropForBlockGrow;
-    public static boolean dropForProjectileHit;
 
     private int dropSections; // for summary after loading config
     private int dropTargets;  // for summary after loading config
@@ -282,12 +279,6 @@ public class OtherDropsConfig {
         Log.logInfo(result);
     }
 
-    /**
-     * Check for config files and other settings (events & includes), if not
-     * found then export the resource from plugin jar file.
-     *
-     * @throws Exception
-     */
     private void firstRun() throws Exception {
         if (!checkIfAllowedToRefreshFiles()) return;
 
@@ -1159,29 +1150,6 @@ public class OtherDropsConfig {
 
     public static Agent parseAgent(String agent) {
         ODItem item = ODItem.parseItem(agent);
-
-		/*
-        String[] split = agent.split("@");
-        // TODO: because data = "" then data becomes 0 in toolagent rather than
-        // null - fixed in toolagent, need to check other agents
-        String name = split[0].toUpperCase(), data = "", enchantment = "", lorename = "";
-        if (split.length > 1) {
-            data = split[1];
-            String[] split2 = data.split("!", 2);
-            if (split2.length > 0)
-                data = split2[0];
-            if (split2.length > 1) {
-                enchantment = split2[1];
-
-                String[] split3 = enchantment.split("~");
-                enchantment = split3[0];
-                if (split3.length > 1) {
-                    lorename = split3[1];
-                }
-            }
-        }
-		 */
-
         String name = item.name;
         String upperName = name.toUpperCase();
         String data = item.getDataString();
@@ -1213,17 +1181,6 @@ public class OtherDropsConfig {
 
     public static Target parseTarget(String blockName) {
         blockName = CommonMaterial.substituteAlias(blockName);
-
-		/*
-		String[] split = blockName.split("@");
-        if (blockName.matches("\\w+:.*")) {
-            split = blockName.split(":", 2);
-        }
-        String name = split[0], data = "";
-        String upperName = name.toUpperCase();
-        if (split.length > 1)
-            data = split[1];
-		*/
 
         ODItem item = ODItem.parseItem(blockName);
         String name = item.name;

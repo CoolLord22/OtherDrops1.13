@@ -148,10 +148,6 @@ public class SectionManager {
         Log.logInfo("PerformDrop: finished. defaultdrop=" + defaultDrop + " dropcount=" + dropCount + " cancelled=" + occurrence.isCancelled() + " denied=" + occurrence.isDenied(), HIGH);
     }
 
-    /**
-     * @param occurrence
-     * @param dropCount
-     */
     private void clearDrops(OccurredEvent occurrence, int dropCount) {
         if (occurrence.getEvent() instanceof LeavesDecayEvent) {
             occurrence.setCancelled(true);
@@ -213,16 +209,6 @@ public class SectionManager {
         }
 
     }
-
-    /* For testing only, so far
-    public void dropCreatureEquipment(LivingEntity le) {
-        // Log.dMsg(String.valueOf(le.getEquipment().getBootsDropChance()));
-        // Log.dMsg(le.getEquipment().toString());
-
-
-         * if (le.getEquipment().getBoots() != null) { if OtherDrops.rng.nextFloat() > } DropType.parse(le.getEquipment().getBoots ()+"/"+le.getEquipment().getBootsDropChance(), ""); Log.dMsg(String.valueOf(le.getEquipment().getBootsDropChance())); Log.dMsg(le.getEquipment().toString());
-
-    }*/
 
     private List<SimpleDrop> gatherDrops(DropsList customDrops, OccurredEvent occurrence) {
         // OtherDrops.logInfo("Gatherdrops start.", HIGHEST);
@@ -330,4 +316,13 @@ public class SectionManager {
         // }
     }
 
+    /* For testing only, so far
+    public void dropCreatureEquipment(LivingEntity le) {
+        // Log.dMsg(String.valueOf(le.getEquipment().getBootsDropChance()));
+        // Log.dMsg(le.getEquipment().toString());
+
+
+         * if (le.getEquipment().getBoots() != null) { if OtherDrops.rng.nextFloat() > } DropType.parse(le.getEquipment().getBoots ()+"/"+le.getEquipment().getBootsDropChance(), ""); Log.dMsg(String.valueOf(le.getEquipment().getBootsDropChance())); Log.dMsg(le.getEquipment().toString());
+
+    }*/
 }
