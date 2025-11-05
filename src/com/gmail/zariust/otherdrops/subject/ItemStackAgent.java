@@ -3,9 +3,16 @@ package com.gmail.zariust.otherdrops.subject;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
 import org.bukkit.Bukkit;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 public class ItemStackAgent extends ToolAgent {
     private ItemStack itemStack;
@@ -35,10 +42,29 @@ public class ItemStackAgent extends ToolAgent {
                 } else { // compare item has meta, lets check that it matches the player's item
                     if(!playerItem.hasItemMeta()) // player item had no meta
                         return false;
-                    ItemMeta thisMeta = playerItem.getItemMeta();
-                    ItemMeta stackMeta = itemStack.getItemMeta();
+
+                    ItemMeta thisMeta = playerItem.getItemMeta().clone();
+                    ItemMeta stackMeta = itemStack.getItemMeta().clone();
+
+                    if(thisMeta.hasAttributeModifiers() || stackMeta.hasAttributeModifiers()) {
+                        for (Attribute attr : Attribute.values()) {
+                            Collection<AttributeModifier> mods1 = thisMeta.getAttributeModifiers(attr);
+                            Collection<AttributeModifier> mods2 = stackMeta.getAttributeModifiers(attr);
+
+                            if (mods1 != null && mods2 != null) {
+                                // Compare by amount, operation, slot, etc. instead of UUID
+                                if (!compareModifiersIgnoringUUID(mods1, mods2)) return false;
+                            } else if (mods1 != null || mods2 != null) {
+                                return false; // one has attributes and the other doesn't
+                            }
+                        }
+                    }
+
+                    thisMeta.setAttributeModifiers(null);
+                    stackMeta.setAttributeModifiers(null);
                     ((Damageable) thisMeta).setDamage(0);
                     ((Damageable) stackMeta).setDamage(0);
+
                     Log.logInfo("ItemStackToolCheck - returned value: " + Bukkit.getItemFactory().equals(thisMeta, stackMeta), Verbosity.HIGHEST);
                     return Bukkit.getItemFactory().equals(thisMeta, stackMeta);
                 }
@@ -50,5 +76,22 @@ public class ItemStackAgent extends ToolAgent {
     @Override
     public String toString() {
         return "ITEM_STACK@" + identifier;
+    }
+
+    private static boolean compareModifiersIgnoringUUID(Collection<AttributeModifier> a, Collection<AttributeModifier> b) {
+        if (a.size() != b.size()) return false;
+
+        List<AttributeModifier> listA = new ArrayList<>(a);
+        List<AttributeModifier> listB = new ArrayList<>(b);
+
+        for (AttributeModifier modA : listA) {
+            boolean matched = listB.removeIf(modB ->
+                    modA.getAmount() == modB.getAmount() &&
+                            modA.getOperation() == modB.getOperation() &&
+                            Objects.equals(modA.getSlot(), modB.getSlot())
+            );
+            if (!matched) return false;
+        }
+        return true;
     }
 }
