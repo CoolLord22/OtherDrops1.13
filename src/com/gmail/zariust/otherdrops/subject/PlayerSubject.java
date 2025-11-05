@@ -49,7 +49,11 @@ public class PlayerSubject extends LivingSubject {
     }
 
     public PlayerSubject(Player attacker, EquipmentSlot hand) {
-        this(attacker.getInventory().getItem(hand), attacker.getName(), attacker);
+        super(attacker);
+        if(hand == null) hand = EquipmentSlot.HAND;
+        tool = new ToolAgent(attacker.getInventory().getItem(hand));
+        name = attacker.getName();
+        agent = attacker;
         this.hand = hand;
     }
 
