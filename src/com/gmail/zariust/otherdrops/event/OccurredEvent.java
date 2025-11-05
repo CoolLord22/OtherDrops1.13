@@ -562,7 +562,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     }
 
     public OccurredEvent(PlayerFishEvent evt) {
-        super(new PlayerSubject(evt.getPlayer(), evt.getHand()), Trigger.FISH_CAUGHT);
+        super(new PlayerSubject(evt.getPlayer(), EquipmentSlotResolver.getHandWithMaterial(evt.getPlayer().getInventory(), Material.FISHING_ROD, true)), Trigger.FISH_CAUGHT);
         event = evt;
         setLocationWorldBiomeLight(evt.getCaught().getLocation().getBlock());
         setWeatherTimeHeight(location);
@@ -574,7 +574,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     // Yes, this needs to be a separate constructor as the "super" has to be on
     // the first line and includes the action
     public OccurredEvent(PlayerFishEvent evt, String string) {
-        super(new PlayerSubject(evt.getPlayer(), evt.getHand()), Trigger.FISH_FAILED);
+        super(new PlayerSubject(evt.getPlayer(), EquipmentSlotResolver.getHandWithMaterial(evt.getPlayer().getInventory(), Material.FISHING_ROD, true)), Trigger.FISH_CAUGHT);
         event = evt;
         setLocationWorldBiomeLight(evt.getPlayer().getLocation().getBlock());
         setWeatherTimeHeight(location);
