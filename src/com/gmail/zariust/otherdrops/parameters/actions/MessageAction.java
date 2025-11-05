@@ -2,6 +2,7 @@ package com.gmail.zariust.otherdrops.parameters.actions;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
+import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
@@ -12,6 +13,7 @@ import com.gmail.zariust.otherdrops.subject.CreatureSubject;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.ProjectileAgent;
 import com.gmail.zariust.otherdrops.things.ODVariables;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -151,6 +153,8 @@ public class MessageAction extends Action {
         if (msg == null)
             return msg;
 
+        Player player = null;
+
         String dropName = "";
         String toolName = "";
         String playerName = "";
@@ -183,6 +187,7 @@ public class MessageAction extends Action {
                 if (loreName == null)
                     loreName = toolName;
                 playerName = ((PlayerSubject) occurence.getTool()).getPlayer().getName();
+                player = ((PlayerSubject) occurence.getTool()).getPlayer();
             } else if (occurence.getTool() instanceof ProjectileAgent) {
                 toolName = occurence.getTool().getReadableName();
                 if (((ProjectileAgent) occurence.getTool()).getShooter() == null) {
@@ -196,7 +201,6 @@ public class MessageAction extends Action {
                     if (ent instanceof LivingEntity) {
                         loreName = ((LivingEntity) ent).getCustomName();
                     }
-
                 }
             } else if (occurence.getTool() instanceof CreatureSubject) {
                 Entity ent = ((CreatureSubject) occurence.getTool()).getEntity();
@@ -215,7 +219,8 @@ public class MessageAction extends Action {
             if (occurence.getRealEvent() instanceof CreatureSpawnEvent ede)
                 entUUID = ede.getEntity().getUniqueId().toString();
         }
+        String parsedMsg = new ODVariables().setVictimUUID(entUUID).setPlayerName(playerName).setVictimName(victimName).setDropName(dropName).setToolName(toolName).setQuantity(quantityString).setDeathMessage(deathMessage).setloreName(loreName).setLocation(occurence.getLocation()).parse(msg);
 
-        return new ODVariables().setVictimUUID(entUUID).setPlayerName(playerName).setVictimName(victimName).setDropName(dropName).setToolName(toolName).setQuantity(quantityString).setDeathMessage(deathMessage).setloreName(loreName).setLocation(occurence.getLocation()).parse(msg);
+        return Dependencies.hasPAPI() ? PlaceholderAPI.setPlaceholders(player, parsedMsg.replaceAll("%:PAPI:", "%")) : parsedMsg;
     }
 }
