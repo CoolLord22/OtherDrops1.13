@@ -15,18 +15,19 @@ import java.util.Map.Entry;
 
 public class ItemRequirementCheck extends Condition {
 	String name = "ItemRequirementCheck";
-	private final Map<ODItem, IntRange> requiredStored;
+	public record ItemRequirement(IntRange quantity, Set<Integer> slots) {}
+	private final Map<ODItem, ItemRequirement> requiredStored;
 	private final Random rng = new Random();
 
-	public ItemRequirementCheck(Map<ODItem, IntRange> requiredStored) {
+	public ItemRequirementCheck(Map<ODItem, ItemRequirement> requiredStored) {
 		this.requiredStored = requiredStored;
-	}
+    }
 
 	@Override
 	public boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
 		boolean contained = false;
-		for(Entry<ODItem, IntRange> req : requiredStored.entrySet()) {
-			Integer reqQuantity = req.getValue().getRandomIn(rng);
+		for(Entry<ODItem, ItemRequirement> req : requiredStored.entrySet()) {
+			Integer reqQuantity = req.getValue().quantity().getRandomIn(rng);
 			ItemStack toRemove = getItem(req, occurrence.getPlayerAttacker().getInventory(), reqQuantity);
 			if(toRemove != null) {
 				contained = true;
@@ -38,38 +39,72 @@ public class ItemRequirementCheck extends Condition {
 
 	@Override
 	public List<Condition> parse(ConfigurationNode node) {
-		Map<ODItem, IntRange> value;
-		value = parseItemString(node, null);
-		if (value == null)
-			return null;
+		List<String> input = OtherDropsConfig.getMaybeList(node, "itemrequirement");
+		if (input.isEmpty()) return null;
 
-		List<Condition> conditionList = new ArrayList<Condition>();
+		Map<ODItem, ItemRequirement> value = new HashMap<>();
+		for (String name : input) {
+			// format is now ITEM@!~CustomName;lore line1/q#MIN-MAX/s#0-8,36,40
+			String base;
+			IntRange quantityRange = new IntRange(0); // default quantity 0 to indicate just required
+			String slotsPart = "";
+
+			String[] qSplit = name.split("/q#", 2); // limit=2 to preserve rest
+			base = qSplit[0];
+
+			if (qSplit.length > 1) {
+				String afterQ = qSplit[1];
+				String[] sSplit = afterQ.split("/s#", 2);
+				quantityRange = IntRange.parse(sSplit[0]);
+				if (sSplit.length > 1) slotsPart = sSplit[1];
+			} else {
+				String[] sSplit = name.split("/s#", 2);
+				base = sSplit[0];
+				if (sSplit.length > 1) slotsPart = sSplit[1];
+			}
+			ODItem item = ODItem.parseItem(base.trim());
+			value.put(item, new ItemRequirement(quantityRange, parseSlots(slotsPart)));
+		}
+
+		List<Condition> conditionList = new ArrayList<>();
 		conditionList.add(new ItemRequirementCheck(value));
 		return conditionList;
 	}
 
-	public static Map<ODItem, IntRange> parseItemString(ConfigurationNode node, Map<ODItem, IntRange> def) {
-		List<String> input = OtherDropsConfig.getMaybeList(node, "itemrequirement");
-		if (input.isEmpty())
-			return def;
-		HashMap<ODItem, IntRange> result = new HashMap<>();
-		for (String name : input) {
-			String[] nameSplit = name.split("/q#");
-			IntRange quantityRange = new IntRange(0);
-			if (nameSplit.length > 1)
-				quantityRange = IntRange.parse(nameSplit[1]);
-			ODItem item = ODItem.parseItem(name.replaceAll("(\\/q#\\d{1,9}-\\d{1,9}|\\/q#\\d{1,9})", ""));
-			result.put(item, quantityRange);
-		}
-		return result;
-	}   
+	private static Set<Integer> parseSlots(String input) {
+		Set<Integer> slots = new HashSet<>();
+		if (input == null || input.isEmpty()) return slots;
 
-	public ItemStack getItem(Entry<ODItem, IntRange> reqEntry, Inventory inv, Integer reqQuantity) {
+		for (String part : input.split(",")) {
+			if (part.contains("-")) {
+				String[] bounds = part.split("-");
+				int start = Integer.parseInt(bounds[0]);
+				int end = Integer.parseInt(bounds[1]);
+				for (int i = start; i <= end; i++) slots.add(i);
+			} else {
+				slots.add(Integer.parseInt(part));
+			}
+		}
+		return slots;
+	}
+
+	public ItemStack getItem(Entry<ODItem, ItemRequirement> reqEntry, Inventory inv, int reqQuantity) {
 		ODItem req = reqEntry.getKey();
-		for(ItemStack item : inv.getContents()) {
-			if(req.matches(item)) {
-				if(reqQuantity <= item.getAmount())
+		Set<Integer> slots = reqEntry.getValue().slots();
+
+		// No slots specified → check entire inventory
+		if (slots.isEmpty()) {
+			for (ItemStack item : inv.getContents()) {
+				if (req.matches(item) && reqQuantity <= item.getAmount()) {
 					return item;
+				}
+			}
+		} else {
+			for (Integer slot : slots) {
+				ItemStack item = inv.getItem(slot);
+				if (req.matches(item) && reqQuantity <= item.getAmount()) {
+					return item;
+				}
 			}
 		}
 		return null;
