@@ -331,7 +331,7 @@ public class OtherDrops extends JavaPlugin {
 			registered += "Entity, ";
 			pm.registerEvents(new OdEntityListener(plugin), plugin);
 		}
-		if (OtherDropsConfig.dropForClick || OtherDropsConfig.dropForItemDrop) {
+		if (OtherDropsConfig.dropForInteract || OtherDropsConfig.dropForItemDrop) {
 			registered += "Player (left/rightclick/item drop), ";
 			pm.registerEvents(new OdPlayerListener(plugin), plugin);
 		}

@@ -50,13 +50,15 @@ public final class Trigger implements Comparable<Trigger> {
     /**
      * Left clicking on the target (hitting)
      */
-    public final static Trigger         HIT     = new Trigger(
-                                                               "HIT");
+    public final static Trigger HIT = new Trigger("HIT");
     /**
      * Right clicking on the target.
      */
-    public final static Trigger         RIGHT_CLICK    = new Trigger(
-                                                               "RIGHT_CLICK");
+    public final static Trigger RIGHT_CLICK = new Trigger("RIGHT_CLICK");
+    /**
+     * Ass-pressure on the target.
+     */
+    public final static Trigger PHYSICAL = new Trigger("PHYSICAL");
     /**
      * The action of natural leaf decay.
      */
@@ -132,6 +134,7 @@ public final class Trigger implements Comparable<Trigger> {
         actions.put("FISHFAILED", FISH_FAILED);
         actions.put("MOBSPAWN", MOB_SPAWN);
         actions.put("HIT", HIT);
+        actions.put("PHYSICAL", PHYSICAL);
         actions.put("POWERUP", POWER_UP);
         actions.put("POWERDOWN", POWER_DOWN);
         actions.put("PLAYERJOIN", PLAYER_JOIN);
@@ -153,6 +156,7 @@ public final class Trigger implements Comparable<Trigger> {
         owners.put("FISHFAILED", OtherDrops.plugin);
         owners.put("MOBSPAWN", OtherDrops.plugin);
         owners.put("HIT", OtherDrops.plugin);
+        owners.put("PHYSICAL", OtherDrops.plugin);
         owners.put("POWERUP", OtherDrops.plugin);
         owners.put("POWERDOWN", OtherDrops.plugin);
         owners.put("PLAYERJOIN", OtherDrops.plugin);
@@ -182,14 +186,16 @@ public final class Trigger implements Comparable<Trigger> {
      */
     public static Trigger fromInteract(org.bukkit.event.block.Action action) {
         switch (action) {
-        case LEFT_CLICK_AIR:
-        case LEFT_CLICK_BLOCK:
-            return HIT;
-        case RIGHT_CLICK_AIR:
-        case RIGHT_CLICK_BLOCK:
-            return RIGHT_CLICK;
-        default:
-            return null;
+            case LEFT_CLICK_AIR:
+            case LEFT_CLICK_BLOCK:
+                return HIT;
+            case RIGHT_CLICK_AIR:
+            case RIGHT_CLICK_BLOCK:
+                return RIGHT_CLICK;
+            case PHYSICAL:
+                return PHYSICAL;
+            default:
+                return null;
         }
     }
 

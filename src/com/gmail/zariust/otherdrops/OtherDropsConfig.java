@@ -77,7 +77,7 @@ public class OtherDropsConfig {
 	public static boolean dropForBlocks;            // target type BLOCK or ANY
 	public static boolean dropForCreatures;         // target type CREATURE, PLAYER, or ANY
 	public static boolean dropForExplosions;        // target type EXPLOSION
-	public static boolean dropForClick;             // LEFT or RIGHT CLICK
+	public static boolean dropForInteract;          // LEFT or RIGHT CLICK or PHYSICAL interact
 	public static boolean dropForFishing;           // FISH_CAUGHT or FAILED
 	public static boolean dropForSpawned;           // config uses spawned:
 	public static boolean dropForSpawnTrigger;      // config uses trigger: CREATURESPAWN
@@ -201,7 +201,7 @@ public class OtherDropsConfig {
 
 		dropForBlocks = false;
 		dropForCreatures = false;
-		dropForClick = false;
+		dropForInteract = false;
 		dropForFishing = false;
 
 		defaultDropSpread = true;
@@ -230,7 +230,7 @@ public class OtherDropsConfig {
 		// reset "dropFor" variables before reading config
 		dropForBlocks = false;
 		dropForCreatures = false;
-		dropForClick = false;
+		dropForInteract = false;
 		dropForFishing = false;
 		dropForExplosions = false;
 		dropForSpawned = false;
@@ -744,9 +744,8 @@ public class OtherDropsConfig {
 					BStats.incrementTriggerCounts(trigger.toString());
 
 				// Register "dropForInteract"
-				if (trigger.equals(Trigger.HIT)
-						|| trigger.equals(Trigger.RIGHT_CLICK)) {
-					dropForClick = true;
+				if (trigger.equals(Trigger.HIT) || trigger.equals(Trigger.RIGHT_CLICK) || trigger.equals(Trigger.PHYSICAL)) {
+					dropForInteract = true;
 				} else if (trigger.equals(Trigger.FISH_CAUGHT)
 						|| trigger.equals(Trigger.FISH_FAILED)) {
 					dropForFishing = true;
