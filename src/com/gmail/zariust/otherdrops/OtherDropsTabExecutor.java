@@ -23,14 +23,12 @@ public class OtherDropsTabExecutor implements TabExecutor {
             ArrayList<String> list = new ArrayList<String>();
             String lastArg = "";
             if(args.length == 1) {
-                return StringUtil.copyPartialMatches(args[0], Arrays.asList("saveitem", "id", "write", "reload", "show", "customspawn",
-                        "settings", "disable", "enable", "drop", "triggers"), new ArrayList<>());
+                return StringUtil.copyPartialMatches(args[0], Arrays.asList("saveitem", "id", "write", "reload", "show", "customspawn", "settings", "disable", "enable", "drop", "triggers"), new ArrayList<>());
             } else if(args.length == 2) {
                 if(args[0].equalsIgnoreCase("saveitem")) {
                     list.add("<item key>");
                     for(NamespacedKey key : OtherDrops.loadedItems.keySet()) {
-                        if(key.getKey().contains("od_item_"))
-                            list.add(key.getKey().replaceAll("od_item_", "OD_ITEM@"));
+                        if(key.getKey().contains("od_item_")) list.add(key.getKey().replaceAll("od_item_", "OD_ITEM@"));
                     }
                     lastArg = args[1];
                 } else if(args[0].equalsIgnoreCase("id")) {

@@ -30,23 +30,23 @@ public final class Trigger implements Comparable<Trigger> {
     /**
      * The basic action; breaking a block, or killing a creature.
      */
-    public final static Trigger         BREAK          = new Trigger("BREAK");
+    public final static Trigger BREAK = new Trigger("BREAK");
     /**
      * Dropping an item
      */
-    public final static Trigger         ITEM_DROP          = new Trigger("ITEM_DROP");
+    public final static Trigger ITEM_DROP = new Trigger("ITEM_DROP");
     /**
      * Leveling up a job from the JobsReborn plugin
      */
-    public final static Trigger         JOBS_LEVEL_UP          = new Trigger("JOBS_LEVEL_UP");
+    public final static Trigger JOBS_LEVEL_UP = new Trigger("JOBS_LEVEL_UP");
     /**
      * Being paid from the JobsReborn plugin
      */
-    public final static Trigger         JOBS_PAYMENT          = new Trigger("JOBS_PAYMENT");
+    public final static Trigger JOBS_PAYMENT = new Trigger("JOBS_PAYMENT");
     /**
      * Gaining exp from the JobsReborn plugin
      */
-    public final static Trigger         JOBS_EXP_GAIN          = new Trigger("JOBS_EXP_GAIN");
+    public final static Trigger JOBS_EXP_GAIN = new Trigger("JOBS_EXP_GAIN");
     /**
      * Left clicking on the target (hitting)
      */
@@ -62,23 +62,19 @@ public final class Trigger implements Comparable<Trigger> {
     /**
      * The action of natural leaf decay.
      */
-    public final static Trigger         LEAF_DECAY     = new Trigger(
-                                                               "LEAF_DECAY");
+    public final static Trigger LEAF_DECAY = new Trigger("LEAF_DECAY");
     /**
      * Action of catching a fish.
      */
-    public final static Trigger         FISH_CAUGHT    = new Trigger(
-                                                               "FISH_CAUGHT");
+    public final static Trigger FISH_CAUGHT = new Trigger("FISH_CAUGHT");
     /**
      * Action of fishing: failure.
      */
-    public final static Trigger         FISH_FAILED    = new Trigger(
-                                                               "FISH_FAILED");
+    public final static Trigger FISH_FAILED = new Trigger("FISH_FAILED");
     /**
      * Triggered when a mob is spawned
      */
-    public final static Trigger         MOB_SPAWN      = new Trigger(
-                                                               "MOB_SPAWN");
+    public final static Trigger MOB_SPAWN = new Trigger("MOB_SPAWN");
     /**
      * Triggered when an entity hits another (EntityDamageEvent)
      */
@@ -87,43 +83,36 @@ public final class Trigger implements Comparable<Trigger> {
     /**
      * Triggered when redstone powers up on a block (including levels & wires)
      */
-    public final static Trigger         POWER_UP       = new Trigger("POWER_UP");
+    public final static Trigger POWER_UP = new Trigger("POWER_UP");
     /**
      * Triggered when redstone powers down on a block (including levels & wires)
      */
-    public final static Trigger         POWER_DOWN     = new Trigger(
-                                                               "POWER_DOWN");
+    public final static Trigger POWER_DOWN = new Trigger("POWER_DOWN");
     /**
      * Triggered when player joins the server
      */
-    public final static Trigger         PLAYER_JOIN    = new Trigger(
-                                                               "PLAYER_JOIN");
+    public final static Trigger PLAYER_JOIN = new Trigger("PLAYER_JOIN");
     /**
      * Triggered when player respawns
      */
-    public final static Trigger         PLAYER_RESPAWN = new Trigger(
-                                                               "PLAYER_RESPAWN");
+    public final static Trigger PLAYER_RESPAWN = new Trigger("PLAYER_RESPAWN");
     /**
      * Triggered when player consumes an item (food/potion/milk-bucket)
      */
-    public final static Trigger         CONSUME_ITEM   = new Trigger(
-                                                               "CONSUME_ITEM");
-    public final static Trigger         PLAYER_MOVE   = new Trigger(
-            "PLAYER_MOVE");
-    public final static Trigger         BLOCK_GROW   = new Trigger("BLOCK_GROW");
-    
-    public final static Trigger         PROJECTILE_HIT_BLOCK     = new Trigger(
-            "PROJECTILE_HIT_BLOCK");
+    public final static Trigger CONSUME_ITEM = new Trigger("CONSUME_ITEM");
+    public final static Trigger PLAYER_MOVE = new Trigger("PLAYER_MOVE");
+    public final static Trigger BLOCK_GROW = new Trigger("BLOCK_GROW");
 
-    public final static Trigger BLOCK_PLACE = new Trigger(
-            "BLOCK_PLACE");
-    
+    public final static Trigger PROJECTILE_HIT_BLOCK = new Trigger("PROJECTILE_HIT_BLOCK");
+
+    public final static Trigger BLOCK_PLACE = new Trigger("BLOCK_PLACE");
+
     // LinkedHashMap because I want to preserve order
-    private static Map<String, Trigger> actions        = new LinkedHashMap<String, Trigger>();
-    private static Map<String, Plugin>  owners         = new HashMap<String, Plugin>();
-    private static int                  nextOrdinal    = 0;
-    private final int                   ordinal;
-    private final String                name;
+    private static Map<String, Trigger> actions = new LinkedHashMap<String, Trigger>();
+    private static Map<String, Plugin> owners = new HashMap<String, Plugin>();
+    private static int nextOrdinal = 0;
+    private final int ordinal;
+    private final String name;
 
     static {
         actions.put("BREAK", BREAK);
@@ -147,7 +136,7 @@ public final class Trigger implements Comparable<Trigger> {
         actions.put("JOBSLEVELUP", JOBS_LEVEL_UP);
         actions.put("JOBSEXPGAIN", JOBS_EXP_GAIN);
         actions.put("JOBSPAYMENT", JOBS_PAYMENT);
-        
+
         owners.put("BREAK", OtherDrops.plugin);
         owners.put("ITEMDROP", OtherDrops.plugin);
         owners.put("RIGHTCLICK", OtherDrops.plugin);
@@ -179,9 +168,8 @@ public final class Trigger implements Comparable<Trigger> {
 
     /**
      * Convert an interact action into a drop action.
-     * 
-     * @param action
-     *            The interact action.
+     *
+     * @param action The interact action.
      * @return The drop action, or null if none applies.
      */
     public static Trigger fromInteract(org.bukkit.event.block.Action action) {
@@ -201,12 +189,10 @@ public final class Trigger implements Comparable<Trigger> {
 
     /**
      * Register a new action to your plugin.
-     * 
-     * @param plugin
-     *            Your plugin.
-     * @param tag
-     *            The action tag name. This can be used in the config file or to
-     *            fetch it again later.
+     *
+     * @param plugin Your plugin.
+     * @param tag    The action tag name. This can be used in the config file or to
+     *               fetch it again later.
      */
     public static void register(Plugin plugin, String tag) {
         if (plugin == null || plugin instanceof OtherDrops)
@@ -218,12 +204,10 @@ public final class Trigger implements Comparable<Trigger> {
 
     /**
      * Unregister a previously registered action.
-     * 
-     * @param plugin
-     *            The plugin that registered the action (preferably your
-     *            plugin).
-     * @param tag
-     *            The action tag name.
+     *
+     * @param plugin The plugin that registered the action (preferably your
+     *               plugin).
+     * @param tag    The action tag name.
      */
     public static void unregister(Plugin plugin, String tag) {
         Plugin check = owners.get(tag);
@@ -235,7 +219,7 @@ public final class Trigger implements Comparable<Trigger> {
     }
 
     public static List<Trigger> parseFrom(ConfigurationNode dropNode,
-            List<Trigger> def) {
+                                          List<Trigger> def) {
         List<String> chosenActions = OtherDropsConfig.getMaybeList(dropNode,
                 "action", "actions");
         if (chosenActions == null || chosenActions.isEmpty()) {
@@ -269,7 +253,7 @@ public final class Trigger implements Comparable<Trigger> {
             if (action.equalsIgnoreCase("EAT")
                     || action.equalsIgnoreCase("DRINK")
                     || action.equalsIgnoreCase("PLAYERCONSUME")
-                || action.equalsIgnoreCase("ITEMCONSUME"))
+                    || action.equalsIgnoreCase("ITEMCONSUME"))
                 action = "CONSUMEITEM";
 
             Trigger act = actions.get(action.toUpperCase());
@@ -313,7 +297,7 @@ public final class Trigger implements Comparable<Trigger> {
 
     /**
      * Return a list of all valid actions.
-     * 
+     *
      * @return All actions.
      */
     public static Trigger[] values() {
@@ -322,7 +306,7 @@ public final class Trigger implements Comparable<Trigger> {
 
     /**
      * Return a list of all valid action names.
-     * 
+     *
      * @return All actions.
      */
     public static Set<String> getValidActions() {
@@ -331,9 +315,8 @@ public final class Trigger implements Comparable<Trigger> {
 
     /**
      * Get an action by name.
-     * 
-     * @param key
-     *            The action tag name.*
+     *
+     * @param key The action tag name.*
      * @return The action, or null if it does not exist.
      */
     public static Trigger valueOf(String key) {
