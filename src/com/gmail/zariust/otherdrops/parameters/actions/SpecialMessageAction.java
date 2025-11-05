@@ -9,8 +9,6 @@ import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.parameters.Action;
 import com.gmail.zariust.otherdrops.things.ODVariables;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -154,7 +152,8 @@ public class SpecialMessageAction extends Action {
             }, barData.timeToBeShowed * 20L);
         } else if(odBar instanceof ODActionBar) {
             for(Player p : players) {
-                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(message));
+                // TODO: Resolve actionbar not showing compiler dependency
+                //p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(message));
             }
         } else if(odBar instanceof ODTitleMessage barData) {
             for (Player p : players) {
