@@ -16,16 +16,15 @@
 
 package com.gmail.zariust.otherdrops.subject;
 
-import static com.gmail.zariust.common.Verbosity.*;
-
 import com.gmail.zariust.otherdrops.Log;
-
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 
+import static com.gmail.zariust.common.Verbosity.HIGH;
+
 public abstract class LivingSubject implements Agent, Target {
-    private Entity entity;
+    private final Entity entity;
 
     protected LivingSubject(Entity e) {
         entity = e;
@@ -50,13 +49,10 @@ public abstract class LivingSubject implements Agent, Target {
     @Override
     public Location getLocation() {
         if (entity == null) {
-            Log.logInfo(
-                    "LivingSubject.getLocation() - agent is null, this shouldn't happen.",
-                    HIGH);
+            Log.logInfo("LivingSubject.getLocation() - agent is null, this shouldn't happen.", HIGH);
             return null;
         }
-        if (entity != null)
-            return entity.getLocation();
+        if (entity != null) return entity.getLocation();
         return null;
     }
 }

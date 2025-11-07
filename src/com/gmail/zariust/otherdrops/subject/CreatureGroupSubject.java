@@ -16,15 +16,14 @@
 
 package com.gmail.zariust.otherdrops.subject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import org.bukkit.entity.EntityType;
-
 import com.gmail.zariust.common.CreatureGroup;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
+import org.bukkit.entity.EntityType;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class CreatureGroupSubject extends LivingSubject {
     private final CreatureGroup group;
@@ -41,8 +40,7 @@ public class CreatureGroupSubject extends LivingSubject {
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof CreatureGroupSubject))
-            return false;
+        if (!(other instanceof CreatureGroupSubject)) return false;
         return group == ((CreatureGroupSubject) other).group;
     }
 
@@ -53,8 +51,7 @@ public class CreatureGroupSubject extends LivingSubject {
 
     @Override
     public boolean matches(Subject block) {
-        if (!(block instanceof CreatureSubject))
-            return false;
+        if (!(block instanceof CreatureSubject)) return false;
         return group.contains(((CreatureSubject) block).getCreature());
     }
 
@@ -87,18 +84,15 @@ public class CreatureGroupSubject extends LivingSubject {
 
     public static CreatureGroupSubject parse(String name, String state) {
         name = name.toUpperCase();
-        if (!name.startsWith("CREATURE_"))
-            name = "CREATURE_" + name;
+        if (!name.startsWith("CREATURE_")) name = "CREATURE_" + name;
         CreatureGroup creature = CreatureGroup.get(name);
-        if (creature == null)
-            return null;
+        if (creature == null) return null;
         return new CreatureGroupSubject(creature);
     }
 
     @Override
     public String toString() {
-        if (group == null)
-            return "ANY_CREATURE";
+        if (group == null) return "ANY_CREATURE";
         return group.toString();
     }
 
@@ -111,5 +105,4 @@ public class CreatureGroupSubject extends LivingSubject {
     public String getReadableName() {
         return toString();
     }
-
 }

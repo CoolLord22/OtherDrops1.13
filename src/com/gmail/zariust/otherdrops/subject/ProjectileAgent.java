@@ -37,51 +37,50 @@ import java.util.Random;
 import static com.gmail.zariust.common.Verbosity.HIGH;
 
 public class ProjectileAgent implements Agent {
-    private LivingSubject creature;
-    private boolean       dispenser;
-    private Material      mat;
-    private Integer       durability;
-    Projectile            agent;
+    private final LivingSubject creature;
+    private final boolean dispenser;
+    private final Material mat;
+    private Integer durability;
+    Projectile agent;
 
     public ProjectileAgent() { // The wildcard
         this(null, false);
     }
 
     public ProjectileAgent(Material missile, boolean isDispenser) { // True =
-                                                                    // dispenser,
-                                                                    // false =
-                                                                    // partial
-                                                                    // wildcard
+        // dispenser,
+        // false =
+        // partial
+        // wildcard
         this(null, missile, null, isDispenser);
     }
 
     public ProjectileAgent(Material missile, EntityType shooter) { // Shot by a
-                                                                   // creature
+        // creature
         this(null, missile, new CreatureSubject(shooter), false);
     }
 
     public ProjectileAgent(Material missile, String shooter) { // Shot by a
-                                                               // player
+        // player
         this(null, missile, new PlayerSubject(shooter), false);
     }
 
     public ProjectileAgent(Projectile missile) { // For actual drops that have
-                                                 // already occurred
+        // already occurred
         this( // Sorry, this is kinda complex here; why must Java insist this()
-              // be on the first line?
+                // be on the first line?
                 missile, getProjectileType(missile), // Get the Material
-                                                     // representing the type of
-                                                     // projectile
+                // representing the type of
+                // projectile
                 getShooterAgent(missile), // Get the LivingAgent representing
-                                          // the shooter
+                // the shooter
                 missile.getShooter() == null // If shooter is null, it's a
-                                             // dispenser
+                // dispenser
         );
     }
 
-    private ProjectileAgent(Projectile missile, Material missileMat,
-            LivingSubject shooter, boolean isDispenser) { // The Rome
-                                                          // constructor
+    private ProjectileAgent(Projectile missile, Material missileMat, LivingSubject shooter, boolean isDispenser) { // The Rome
+        // constructor
         agent = missile;
         mat = missileMat;
         creature = shooter;
@@ -100,26 +99,23 @@ public class ProjectileAgent implements Agent {
     private static LivingSubject getShooterAgent(Projectile missile) {
         // Get the LivingAgent representing the shooter, which could be null, a
         // CreatureAgent, or a PlayerAgent
-    	LivingEntity shooter = null;
-    	if (missile.getShooter() instanceof LivingEntity)
-    		shooter = (LivingEntity) missile.getShooter();
-        if (shooter == null)
-            return null;
+        LivingEntity shooter = null;
+        if (missile.getShooter() instanceof LivingEntity) shooter = (LivingEntity) missile.getShooter();
+        if (shooter == null) return null;
         else if (shooter instanceof Player player) {
             EquipmentSlot hand = EquipmentSlot.HAND;
-            if(missile instanceof ThrowableProjectile thrown) {
+            if (missile instanceof ThrowableProjectile thrown) {
                 ItemStack stack = thrown.getItem();
-                if(stack.isSimilar(player.getInventory().getItem(EquipmentSlot.OFF_HAND)))
+                if (stack.isSimilar(player.getInventory().getItem(EquipmentSlot.OFF_HAND)))
                     hand = EquipmentSlot.OFF_HAND;
             } else {
                 hand = EquipmentSlotResolver.getHandWithMaterial(player.getInventory(), Material.BOW, true);
             }
             return new PlayerSubject(player, hand);
-        }
-        else {
-            if(Dependencies.hasMythicMobs()) {
+        } else {
+            if (Dependencies.hasMythicMobs()) {
                 ActiveMob mythicMob = Dependencies.getMythicMobs().getMobManager().getActiveMob(shooter.getUniqueId()).orElse(null);
-                if(mythicMob != null) {
+                if (mythicMob != null) {
                     return new MythicMobSubject(shooter, mythicMob.getMobType());
                 }
             }
@@ -136,42 +132,34 @@ public class ProjectileAgent implements Agent {
     }
 
     private ProjectileAgent equalsHelper(Object other) {
-        if (!(other instanceof ProjectileAgent))
-            return null;
+        if (!(other instanceof ProjectileAgent)) return null;
         return (ProjectileAgent) other;
     }
 
     private boolean isEqual(ProjectileAgent tool) {
-        if (tool == null)
-            return false;
+        if (tool == null) return false;
 
-        // if mat = null treat as wildcard, ie. match true, otherwise compare
-        // mat vs tool.mat
+        // if mat = null treat as wildcard, ie. match true, otherwise compare mat vs tool.mat
         boolean matMatches = (mat == null) ? true : mat == tool.mat;
 
         if (durability != null) {
-            if (tool.agent != null && tool.agent instanceof ThrownPotion) {
-                if (!(durability == ((ThrownPotion)tool.agent).getItem().getDurability())) return false;
+            if (tool.agent instanceof ThrownPotion potionagent) {
+                if (!(durability == potionagent.getItem().getDurability())) return false;
             }
         }
 
         if (dispenser) {
-            if (tool.creature == null) { // FIXME: confirm this works -
-                                         // DISPENSERs return null?
+            if (tool.creature == null) { // FIXME: confirm this works - DISPENSERs return null?
                 return matMatches;
             } else {
                 return false;
             }
         }
 
-        if (creature == null) { // this means no values attached after config
-                                // (eg. not PROJECTILE_ARROW@PLAYER), or
-                                // DISPENSER
+        if (creature == null) { // this means no values attached after config (eg. not PROJECTILE_ARROW@PLAYER), or DISPENSER
             return matMatches;
-
         } else {
-            // TODO: here we want to check if "tool.creature" is a player to
-            // match PROJECTILE_ARROW@PLAYER
+            // TODO: here we want to check if "tool.creature" is a player to match PROJECTILE_ARROW@PLAYER
             if (creature instanceof PlayerSubject) {
                 if (((PlayerSubject) creature).getPlayer() == null) {
                     // match any player
@@ -203,11 +191,8 @@ public class ProjectileAgent implements Agent {
             Log.logInfo("ProjectileAgent.matches - tool is null...", HIGH);
             return false; // No tool = false?
         }
-        if (dispenser && tool.dispenser)
-            return true; // FIXME: npe on this line sometimes (skeleton kills
-                         // skeleton?)
-        else
-            return isEqual(tool);
+        if (dispenser && tool.dispenser) return true; // FIXME: npe on this line sometimes (skeleton kills skeleton?)
+        else return isEqual(tool);
     }
 
     @Override
@@ -225,30 +210,22 @@ public class ProjectileAgent implements Agent {
 
     @Override
     public void damageTool(ToolDamage damage, Random rng) {
-        // TODO: Probably the best move here is to drain items much like a bow
-        // drains arrows? But how to know which item?
-        // Currently defaulting to the materials associated with each projectile
-        // in CommonEntity
-        @SuppressWarnings("unused")
-		Inventory inven;
-        if (agent.getShooter() == null) { // Dispenser!
-            // TODO: How to retrieve the source dispenser?
+        // TODO: Probably the best move here is to drain items much like a bow drains arrows? But how to know which
+        // item? Currently defaulting to the materials associated with each projectile in CommonEntity
+        @SuppressWarnings("unused") Inventory inven;
+        if (agent.getShooter() == null) { // Dispenser! TODO: How to retrieve the source dispenser?
             inven = null;
         } else if (agent.getShooter() instanceof Player) {
             inven = ((Player) agent.getShooter()).getInventory();
-        } else
-            return;
+        } else return;
         // TODO: Now remove damage-1 of mat from inven
-
-        // TODO: Option of failure if damage is greater that the amount
-        // remaining?
+        // TODO: Option of failure if damage is greater that the amount remaining?
     }
 
     @Override
     public void damage(int amount) {
         // FIXME: why is this sometimes null? Is it ok?
-        if (agent.getShooter() == null)
-            return;
+        if (agent.getShooter() == null) return;
         ((LivingEntity) agent.getShooter()).damage(amount);
     }
 
@@ -266,13 +243,11 @@ public class ProjectileAgent implements Agent {
     }
 
     public static Agent parse(String name, String data) {
-        if (name.equalsIgnoreCase("PROJECTILE"))
-            name = "PROJECTILE_ANY";
+        if (name.equalsIgnoreCase("PROJECTILE")) name = "PROJECTILE_ANY";
 
         name = name.toUpperCase().replace("PROJECTILE_", "");
         Material mat;
-        @SuppressWarnings("unused")
-		String checkName = name.toUpperCase().replaceAll("[\\s-_]", "");
+        @SuppressWarnings("unused") String checkName = name.toUpperCase().replaceAll("[\\s-_]", "");
         // TODO: parse by projectile names for future compatibility
         switch (name) {
             case "FIRE":
@@ -324,11 +299,9 @@ public class ProjectileAgent implements Agent {
         // - One of the special words PLAYER or DISPENSER
         // - Something else, which is taken to be a player name
         // - Nothing
-        if (data.isEmpty())
-            return new ProjectileAgent(mat, false); // Specific projectile, any
-                                                    // shooter
-        if (data.equalsIgnoreCase("DISPENSER"))
-            return new ProjectileAgent(mat, true);
+        if (data.isEmpty()) return new ProjectileAgent(mat, false); // Specific projectile, any
+        // shooter
+        if (data.equalsIgnoreCase("DISPENSER")) return new ProjectileAgent(mat, true);
         else if (data.startsWith("PLAYER")) {
             String[] dataSplit = data.split(";");
             String playerName = null;
@@ -337,48 +310,35 @@ public class ProjectileAgent implements Agent {
             }
 
             return new ProjectileAgent(mat, playerName);
-
         }
 
         EntityType creature = CommonEntity.getCreatureEntityType(data);
-        if (creature != null)
-            return new ProjectileAgent(mat, creature);
-        else if (data.matches("[0-9]+"))
-            return new ProjectileAgent(mat, Integer.parseInt(data));
-        else
-            return new ProjectileAgent(mat, data);
+        if (creature != null) return new ProjectileAgent(mat, creature);
+        else if (data.matches("[0-9]+")) return new ProjectileAgent(mat, Integer.parseInt(data));
+        else return new ProjectileAgent(mat, data);
     }
 
     @Override
     public Location getLocation() {
         if (agent == null) {
-            Log.logInfo(
-                    "ProjectileAgent.getLocation() - agent is null, this shouldn't happen.",
-                    HIGH);
+            Log.logInfo("ProjectileAgent.getLocation() - agent is null, this shouldn't happen.", HIGH);
             return null;
         }
-        if (agent.getShooter() instanceof LivingEntity)
-            return ((LivingEntity) agent.getShooter()).getLocation();
+        if (agent.getShooter() instanceof LivingEntity) return ((LivingEntity) agent.getShooter()).getLocation();
         return null;
     }
 
     @Override
     public String toString() {
-        String ret = "";
-        if (mat == null)
-            ret = "ANY_PROJECTILE";
-        else
-            ret = "PROJECTILE_" + mat;
-        if (dispenser)
-            ret += "@DISPENSER";
+        String ret;
+        if (mat == null) ret = "ANY_PROJECTILE";
+        else ret = "PROJECTILE_" + mat;
+        if (dispenser) ret += "@DISPENSER";
         else if (creature != null) {
             ret += "@";
-            if (creature instanceof PlayerSubject)
-                ret += "PLAYER";
-            else if (creature instanceof CreatureSubject)
-                ret += ((CreatureSubject) creature).getCreature();
-            else
-                ret += "???";
+            if (creature instanceof PlayerSubject) ret += "PLAYER";
+            else if (creature instanceof CreatureSubject) ret += ((CreatureSubject) creature).getCreature();
+            else ret += "???";
         }
         return ret;
     }
@@ -390,14 +350,9 @@ public class ProjectileAgent implements Agent {
 
     @Override
     public String getReadableName() {
-        if (mat == null)
-            return "ANY_PROJECTILE";
+        if (mat == null) return "ANY_PROJECTILE";
         String prefix = "a ";
-        if (mat == Material.ARROW)
-            prefix = "an ";
-        String readableName = prefix
-                + mat.toString().toLowerCase().replaceAll("[-_]", " ");
-        return readableName;
+        if (mat == Material.ARROW) prefix = "an ";
+        return prefix + mat.toString().toLowerCase().replaceAll("[-_]", " ");
     }
-
 }

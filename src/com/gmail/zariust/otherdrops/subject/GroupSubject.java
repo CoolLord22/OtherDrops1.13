@@ -16,18 +16,18 @@
 
 package com.gmail.zariust.otherdrops.subject;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
 @ConfigOnly(PlayerSubject.class)
 public class GroupSubject extends LivingSubject {
-    private String group;
+    private final String group;
 
     public GroupSubject(String grp) {
         super(null);
@@ -40,9 +40,7 @@ public class GroupSubject extends LivingSubject {
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof GroupSubject))
-            return false;
-        GroupSubject targ = (GroupSubject) other;
+        if (!(other instanceof GroupSubject targ)) return false;
         return group.equals(targ.group);
     }
 
@@ -58,11 +56,8 @@ public class GroupSubject extends LivingSubject {
 
     @Override
     public boolean matches(Subject other) {
-        if (!(other instanceof PlayerSubject))
-            return false;
-        PlayerSubject player = (PlayerSubject) other;
-        List<String> playerGroups = OtherDrops.plugin.getGroups(player
-                .getPlayer());
+        if (!(other instanceof PlayerSubject player)) return false;
+        List<String> playerGroups = OtherDrops.plugin.getGroups(player.getPlayer());
         return playerGroups.contains(group);
     }
 
@@ -81,7 +76,7 @@ public class GroupSubject extends LivingSubject {
 
     @Override
     public List<Target> canMatch() {
-        return Collections.singletonList((Target) new PlayerSubject());
+        return Collections.singletonList(new PlayerSubject());
     }
 
     @Override
@@ -91,8 +86,7 @@ public class GroupSubject extends LivingSubject {
 
     @Override
     public String toString() {
-        if (group == null)
-            return "PLAYERGROUP"; // shouldn't happen though
+        if (group == null) return "PLAYERGROUP"; // shouldn't happen though
         return "PLAYERGROUP@" + group;
     }
 

@@ -16,16 +16,6 @@
 
 package com.gmail.zariust.otherdrops.subject;
 
-import static com.gmail.zariust.common.Verbosity.EXTREME;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.common.CreatureGroup;
 import com.gmail.zariust.otherdrops.Log;
@@ -33,13 +23,22 @@ import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
+import static com.gmail.zariust.common.Verbosity.EXTREME;
 
 public class CreatureSubject extends LivingSubject {
     private final EntityType creature;
-    private final Data       data;
-    private Entity           agent;
+    private final Data data;
+    private Entity agent;
     @SuppressWarnings("unused")
-	private String           customName;
+    private String customName;
 
     public CreatureSubject() {
         this((EntityType) null);
@@ -74,22 +73,18 @@ public class CreatureSubject extends LivingSubject {
     }
 
     private CreatureSubject equalsHelper(Object other) {
-        if (!(other instanceof CreatureSubject))
-            return null;
+        if (!(other instanceof CreatureSubject)) return null;
         return (CreatureSubject) other;
     }
 
     private boolean isEqual(CreatureSubject tool) {
-        if (tool == null)
-            return false;
+        if (tool == null) return false;
 
         // Integer thisData = null;
         // Integer toolData = null;
         boolean dataMatch = false;
-        if (data != null)
-            dataMatch = data.matches(tool.data);
-        else if (tool.data == null)
-            dataMatch = true;
+        if (data != null) dataMatch = data.matches(tool.data);
+        else if (tool.data == null) dataMatch = true;
 
         // Log.logInfo("CreatureSubject: checking isEqual: creature=tool.creature (" + creature.toString() + ", " + tool.creature.toString() + ": " + (creature == tool.creature) + ") && dataMatch = " + dataMatch, EXTREME);
         if (OtherDropsConfig.matchMobByNameOnly) {
@@ -107,33 +102,25 @@ public class CreatureSubject extends LivingSubject {
 
     @Override
     public boolean matches(Subject other) {
-        if (other instanceof ProjectileAgent)
-            return matches(((ProjectileAgent) other).getShooter());
+        if (other instanceof ProjectileAgent) return matches(((ProjectileAgent) other).getShooter());
         CreatureSubject tool = equalsHelper(other);
-        if (tool == null)
-            return false;
+        if (tool == null) return false;
         if (creature == null) {
             Log.logInfo("CreatureSubject.match - creature = null.", EXTREME);
             return true;
         } else if (tool.creature == null) {
-            Log.logInfo("CreatureSubject.match - tool.creature = null.",
-                    EXTREME);
+            Log.logInfo("CreatureSubject.match - tool.creature = null.", EXTREME);
             return true;
         }
         if (data == null) {
             boolean match = (creature == tool.creature);
-            Log.logInfo(
-                    "CreatureSubject.match - data = null. creature: "
-                            + creature + ", tool.creature: "
-                            + tool.creature + ", match=" + match,
-                    EXTREME);
+            Log.logInfo("CreatureSubject.match - data = null. creature: " + creature + ", tool.creature: " + tool.creature + ", match=" + match, EXTREME);
             return match;
         }
 
-        boolean match = isEqual(tool);
         // Log.logInfo("CreatureSubject.match - tool.creature="+tool.creature.toString()+", creature="+creature.toString()+", tooldata="+tool.data.getData()+", data="+String.valueOf(data)+", match="
         // + match, EXTREME); // causes npe error
-        return match;
+        return isEqual(tool);
     }
 
     @Override
@@ -185,11 +172,9 @@ public class CreatureSubject extends LivingSubject {
             customName = split[1];
         }
 
-        if (customName != null && customName.isEmpty())
-        	customName = "CoolLordsWayToEnsureNobodyUsesThisNameHAHA";
-        
-        if (customName != null && !customName.isEmpty()) 
-        	state += "~" + customName;
+        if (customName != null && customName.isEmpty()) customName = "CoolLordsWayToEnsureNobodyUsesThisNameHAHA";
+
+        if (customName != null && !customName.isEmpty()) state += "~" + customName;
         // replace comma with period is to support custom mobs (e.g. MyMod.Mob) due to
         // YAML interpreting the period in block headers differently.
         EntityType creature = CommonEntity.getCreatureEntityType(name.replaceAll("[,]", "."));
@@ -204,28 +189,24 @@ public class CreatureSubject extends LivingSubject {
 
     @Override
     public List<Target> canMatch() {
-        if (creature == null)
-            return new CreatureGroupSubject(CreatureGroup.CREATURE_ANY)
-                    .canMatch();
-        return Collections.singletonList((Target) this);
+        if (creature == null) return new CreatureGroupSubject(CreatureGroup.CREATURE_ANY).canMatch();
+        return Collections.singletonList(this);
     }
 
     @Override
     public String getKey() {
-        if (creature != null)
-            return creature.toString();
+        if (creature != null) return creature.toString();
         return null;
     }
 
     @Override
     public String toString() {
-        if (creature == null)
-            return "ANY_CREATURE";
+        if (creature == null) return "ANY_CREATURE";
         String ret = "CREATURE_" + creature;
         // TODO: Will data ever be null, or will it just be 0?
         if (data != null) {
             String dataString = data.get(creature);
-            if (!dataString.isEmpty()) ret += "@" + data.get(creature);            
+            if (!dataString.isEmpty()) ret += "@" + data.get(creature);
         }
         return ret;
     }
@@ -237,9 +218,7 @@ public class CreatureSubject extends LivingSubject {
 
     @Override
     public String getReadableName() {
-        if (creature == null)
-            return "ANY_CREATURE";
+        if (creature == null) return "ANY_CREATURE";
         return "a " + creature.toString().toLowerCase();
     }
-
 }

@@ -16,20 +16,19 @@
 
 package com.gmail.zariust.otherdrops.subject;
 
-import java.util.List;
-import java.util.Random;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-
 import com.gmail.zariust.common.MaterialGroup;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
+import org.bukkit.Location;
+import org.bukkit.Material;
+
+import java.util.List;
+import java.util.Random;
 
 @ConfigOnly(PlayerSubject.class)
 public class MaterialGroupAgent implements Agent {
-    private MaterialGroup group;
+    private final MaterialGroup group;
 
     public MaterialGroupAgent(MaterialGroup g) {
         group = g;
@@ -37,15 +36,13 @@ public class MaterialGroupAgent implements Agent {
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof MaterialGroupAgent))
-            return false;
+        if (!(other instanceof MaterialGroupAgent)) return false;
         return group == ((MaterialGroupAgent) other).group;
     }
 
     @Override
     public boolean matches(Subject other) {
-        if (!(other instanceof PlayerSubject))
-            return false;
+        if (!(other instanceof PlayerSubject)) return false;
         return group.contains(((PlayerSubject) other).getMaterial());
     }
 
@@ -78,8 +75,7 @@ public class MaterialGroupAgent implements Agent {
 
     @Override
     public String toString() {
-        if (group == null)
-            return "ANY_OBJECT";
+        if (group == null) return "ANY_OBJECT";
         return group.toString();
     }
 

@@ -29,7 +29,7 @@ public interface Subject {
     /**
      * The category of subject represented
      */
-    public enum ItemCategory {
+    enum ItemCategory {
         /**
          * Represents a block or block-like entity.
          */
@@ -110,6 +110,5 @@ public interface Subject {
         }
     }
 
-    abstract String getReadableName();
-
+    String getReadableName();
 }
