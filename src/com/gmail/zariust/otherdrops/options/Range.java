@@ -27,12 +27,9 @@ public abstract class Range<T extends Number & Comparable<T>> {
 
     public Range(T lo, T hi) {
         if (lo == null) {
-            if (hi == null)
-                min = max = null;
-            else
-                min = max = hi;
-        } else if (hi == null)
-            min = max = lo;
+            if (hi == null) min = max = null;
+            else min = max = hi;
+        } else if (hi == null) min = max = lo;
         else if (lo.compareTo(hi) < 0) {
             min = lo;
             max = hi;
@@ -48,8 +45,7 @@ public abstract class Range<T extends Number & Comparable<T>> {
 
     public void setMin(T newMin) {
         min = newMin;
-        if (min.compareTo(max) > 0)
-            max = min;
+        if (min.compareTo(max) > 0) max = min;
     }
 
     public T getMax() {
@@ -58,8 +54,7 @@ public abstract class Range<T extends Number & Comparable<T>> {
 
     public void setMax(T newMax) {
         max = newMax;
-        if (max.compareTo(min) < 0)
-            min = max;
+        if (max.compareTo(min) < 0) min = max;
     }
 
     protected abstract T negate(T num);
@@ -77,16 +72,13 @@ public abstract class Range<T extends Number & Comparable<T>> {
     }
 
     public boolean contains(T val) {
-        if (min == null || max == null || val == null)
-            return true;
+        if (min == null || max == null || val == null) return true;
         return val.compareTo(min) >= 0 && val.compareTo(max) <= 0;
     }
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof Range))
-            return false;
-        Range<?> range = (Range<?>) other;
+        if (!(other instanceof Range<?> range)) return false;
         if (min == null) {
             if (max == null) {
                 return range.min == null && range.max == null;
@@ -104,15 +96,13 @@ public abstract class Range<T extends Number & Comparable<T>> {
 
     @Override
     public int hashCode() {
-        if (max == null)
-            return min == null ? 0 : min.hashCode();
+        if (max == null) return min == null ? 0 : min.hashCode();
         return min.hashCode() ^ max.hashCode();
     }
 
     @Override
     public String toString() {
-        if (min.equals(max))
-            return min.toString();
+        if (min.equals(max)) return min.toString();
         return min + "~" + max.toString();
     }
 
@@ -124,8 +114,7 @@ public abstract class Range<T extends Number & Comparable<T>> {
         return range.split("[~-]", 2);
     }
 
-    protected static <T extends Number & Comparable<T>> Range<T> parse(
-            String range, Range<T> template) {
+    protected static <T extends Number & Comparable<T>> Range<T> parse(String range, Range<T> template) {
         try {
             String splitString = range;
             String firstChar = "";
@@ -136,10 +125,8 @@ public abstract class Range<T extends Number & Comparable<T>> {
 
             String[] split = splitRange(splitString);
             T hi, lo = template.staticParse(firstChar + split[0]);
-            if (split.length == 1)
-                hi = lo;
-            else
-                hi = template.staticParse(split[1]);
+            if (split.length == 1) hi = lo;
+            else hi = template.staticParse(split[1]);
             if (lo.compareTo(hi) < 0) {
                 template.min = lo;
                 template.max = hi;

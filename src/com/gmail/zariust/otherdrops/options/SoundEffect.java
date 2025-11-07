@@ -16,23 +16,21 @@
 
 package com.gmail.zariust.otherdrops.options;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.bukkit.Effect;
-import org.bukkit.Location;
-
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.EffectData;
+import org.bukkit.Effect;
+import org.bukkit.Location;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class SoundEffect {
-    private final Effect     type;
-    // TODO: Would be nice to include note block sounds in here (missing API
-    // though)
+    private final Effect type;
+    // TODO: Would be nice to include note block sounds in here (missing API though)
     private final EffectData data;
 
     public SoundEffect(Effect effect) {
@@ -46,20 +44,15 @@ public class SoundEffect {
 
     public void play(Location location) {
         if (type != null) {
-            if (data == null)
-                location.getWorld().playEffect(location, type, 0,
-                        EffectData.DEFAULT_RADIUS);
-            else
-                location.getWorld().playEffect(location, type, data.getData(),
-                        data.getRadius());
+            if (data == null) location.getWorld().playEffect(location, type, 0, EffectData.DEFAULT_RADIUS);
+            else location.getWorld().playEffect(location, type, data.getData(), data.getRadius());
         }
     }
 
     public static SoundEffect parse(String key) {
         String[] split = key.split("@");
         String name = split[0], data = "";
-        if (split.length > 1)
-            data = split[1];
+        if (split.length > 1) data = split[1];
         try {
             Effect effect = null;
             for (Effect loopEffect : Effect.values()) {
@@ -67,11 +60,8 @@ public class SoundEffect {
                     effect = loopEffect;
                 }
             }
-            if (effect == null)
-                return null;
-            // I believe all data should be uppercase, this could be done at a
-            // later
-            // stage if any effect data needs case sensitivity
+            if (effect == null) return null;
+            // I believe all data should be uppercase, this could be done at a later stage if any effect data needs case sensitivity
             EffectData state = EffectData.parse(effect, data.toUpperCase());
             return new SoundEffect(effect, state);
         } catch (IllegalArgumentException e) {
@@ -80,11 +70,9 @@ public class SoundEffect {
     }
 
     public static Set<SoundEffect> parseFrom(ConfigurationNode node) {
-        List<String> effects = OtherDropsConfig.getMaybeList(node, "effect",
-                "effects");
-        if (effects.isEmpty())
-            return null;
-        Set<SoundEffect> result = new HashSet<SoundEffect>();
+        List<String> effects = OtherDropsConfig.getMaybeList(node, "effect", "effects");
+        if (effects.isEmpty()) return null;
+        Set<SoundEffect> result = new HashSet<>();
         for (String name : effects) {
             SoundEffect effect = parse(name);
             if (effect == null) {
@@ -93,8 +81,7 @@ public class SoundEffect {
             }
             result.add(effect);
         }
-        if (result.isEmpty())
-            return null;
+        if (result.isEmpty()) return null;
         return result;
     }
 
@@ -102,8 +89,7 @@ public class SoundEffect {
     public String toString() {
         String ret = type.toString();
         // TODO: Will data ever be null, or will it just be 0?
-        if (data != null)
-            ret += "@" + data.get(type);
+        if (data != null) ret += "@" + data.get(type);
         return ret;
     }
 }

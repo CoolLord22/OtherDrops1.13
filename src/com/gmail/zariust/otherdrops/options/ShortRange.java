@@ -33,8 +33,7 @@ public class ShortRange extends Range<Short> {
 
     @Override
     public Short getRandomIn(Random rng) {
-        if (min.equals(max))
-            return min;
+        if (min.equals(max)) return min;
         return (short) (min + rng.nextInt(max - min + 1));
     }
 
