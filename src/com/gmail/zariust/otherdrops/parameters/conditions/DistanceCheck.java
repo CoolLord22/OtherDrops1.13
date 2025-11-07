@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DistanceCheck extends Condition {
-    private Location locCheck = null;
-    private Integer distance = 0;
+    private final Location locCheck;
+    private final Integer distance;
 
     public DistanceCheck(Integer distance, Location locCheck) {
         this.distance = distance;
@@ -22,8 +22,7 @@ public class DistanceCheck extends Condition {
 
     @Override
     public boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
-        if (locCheck == null)
-            return false;
+        if (locCheck == null) return false;
         Location loc = occurrence.getLocation();
 
         Log.logInfo("DistanceCheck - start", Verbosity.HIGHEST);
@@ -31,11 +30,7 @@ public class DistanceCheck extends Condition {
         Log.logInfo("DistanceCheck - " + loc.toString() + " vs " + locCheck, Verbosity.HIGH);
 
         Double actualDistance = check2dDistance(loc.getX(), loc.getZ(), locCheck.getX(), locCheck.getZ());
-        if (actualDistance > distance) {
-            return true;
-        } else {
-            return false;
-        }
+        return actualDistance > distance;
     }
 
     private Double check2dDistance(double x1, double y1, double x2, double y2) {
@@ -47,16 +42,15 @@ public class DistanceCheck extends Condition {
         Location locationToMeasureAgainst = new Location(null, 0, 0, 0);
         String getConfig = node.getString("distance");
         Log.logInfo("Loading distance condition: " + getConfig, Verbosity.HIGHEST);
-        if (getConfig == null)
-            return null;
+        if (getConfig == null) return null;
 
         String[] split = getConfig.split("@");
         if (split.length > 1) {
             String[] split2 = split[1].split(";");
-            locationToMeasureAgainst = new Location(null, Double.valueOf(split2[0]), Double.valueOf(split2[1]), Double.valueOf(split2[2]));
+            locationToMeasureAgainst = new Location(null, Double.parseDouble(split2[0]), Double.parseDouble(split2[1]), Double.parseDouble(split2[2]));
         }
 
-        List<Condition> conditionList = new ArrayList<Condition>();
+        List<Condition> conditionList = new ArrayList<>();
         conditionList.add(new DistanceCheck(Integer.valueOf(split[0]), locationToMeasureAgainst));
         return conditionList;
     }

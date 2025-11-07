@@ -76,11 +76,6 @@ public final class Trigger implements Comparable<Trigger> {
      */
     public final static Trigger MOB_SPAWN = new Trigger("MOB_SPAWN");
     /**
-     * Triggered when an entity hits another (EntityDamageEvent)
-     */
-    // No longer used - now using LEFTCLICK with alias (hit)
-    //public final static Trigger         HIT            = new Trigger("HIT");
-    /**
      * Triggered when redstone powers up on a block (including levels & wires)
      */
     public final static Trigger POWER_UP = new Trigger("POWER_UP");
@@ -108,8 +103,8 @@ public final class Trigger implements Comparable<Trigger> {
     public final static Trigger BLOCK_PLACE = new Trigger("BLOCK_PLACE");
 
     // LinkedHashMap because I want to preserve order
-    private static Map<String, Trigger> actions = new LinkedHashMap<String, Trigger>();
-    private static Map<String, Plugin> owners = new HashMap<String, Plugin>();
+    private static final Map<String, Trigger> actions = new LinkedHashMap<>();
+    private static final Map<String, Plugin> owners = new HashMap<>();
     private static int nextOrdinal = 0;
     private final int ordinal;
     private final String name;
@@ -173,18 +168,11 @@ public final class Trigger implements Comparable<Trigger> {
      * @return The drop action, or null if none applies.
      */
     public static Trigger fromInteract(org.bukkit.event.block.Action action) {
-        switch (action) {
-            case LEFT_CLICK_AIR:
-            case LEFT_CLICK_BLOCK:
-                return HIT;
-            case RIGHT_CLICK_AIR:
-            case RIGHT_CLICK_BLOCK:
-                return RIGHT_CLICK;
-            case PHYSICAL:
-                return PHYSICAL;
-            default:
-                return null;
-        }
+        return switch (action) {
+            case LEFT_CLICK_AIR, LEFT_CLICK_BLOCK -> HIT;
+            case RIGHT_CLICK_AIR, RIGHT_CLICK_BLOCK -> RIGHT_CLICK;
+            case PHYSICAL -> PHYSICAL;
+        };
     }
 
     /**
@@ -196,8 +184,7 @@ public final class Trigger implements Comparable<Trigger> {
      */
     public static void register(Plugin plugin, String tag) {
         if (plugin == null || plugin instanceof OtherDrops)
-            throw new IllegalArgumentException(
-                    "Use your own plugin for registering an action!");
+            throw new IllegalArgumentException("Use your own plugin for registering an action!");
         actions.put(tag, new Trigger(tag));
         owners.put(tag, plugin);
     }
@@ -212,60 +199,39 @@ public final class Trigger implements Comparable<Trigger> {
     public static void unregister(Plugin plugin, String tag) {
         Plugin check = owners.get(tag);
         if (!check.getClass().equals(plugin.getClass()))
-            throw new IllegalArgumentException(
-                    "You didn't register that action!");
+            throw new IllegalArgumentException("You didn't register that action!");
         owners.remove(tag);
         actions.remove(tag);
     }
 
-    public static List<Trigger> parseFrom(ConfigurationNode dropNode,
-                                          List<Trigger> def) {
-        List<String> chosenActions = OtherDropsConfig.getMaybeList(dropNode,
-                "action", "actions");
+    public static List<Trigger> parseFrom(ConfigurationNode dropNode, List<Trigger> def) {
+        List<String> chosenActions = OtherDropsConfig.getMaybeList(dropNode, "action", "actions");
         if (chosenActions == null || chosenActions.isEmpty()) {
-            chosenActions = OtherDropsConfig.getMaybeList(dropNode, "trigger",
-                    "triggers", "trig");
+            chosenActions = OtherDropsConfig.getMaybeList(dropNode, "trigger", "triggers", "trig");
         } else {
             OtherDropsConfig.actionParameterFound = true;
         }
 
-        List<Trigger> result = new ArrayList<Trigger>();
+        List<Trigger> result = new ArrayList<>();
         for (String action : chosenActions) {
             action = action.replaceAll("[ _-]", "").toUpperCase();
 
             // Set up trigger aliases
-            if (action.equalsIgnoreCase("BLOCKBREAK"))
-                action = "BREAK";
-            if (action.equalsIgnoreCase("BLOCKDAMAGED")
-                    || action.equalsIgnoreCase("LEFTCLICK")
-                    || action.equalsIgnoreCase("HITBLOCK")
-                    || action.equalsIgnoreCase("HITMOB"))
-                action = "HIT";
-            if (action.equalsIgnoreCase("SPAWNMOB"))
-                action = "MOBSPAWN";
-            if (action.equalsIgnoreCase("PLACE"))
-                action = "BLOCKPLACE";
-            if (action.equalsIgnoreCase("FISHSUCCESS"))
-                action = "FISHCAUGHT";
-            if (action.equals("GROW") || action.equals("GROWTH")) {
-                action = "BLOCKGROW";
-            }
-            if (action.equalsIgnoreCase("EAT")
-                    || action.equalsIgnoreCase("DRINK")
-                    || action.equalsIgnoreCase("PLAYERCONSUME")
-                    || action.equalsIgnoreCase("ITEMCONSUME"))
-                action = "CONSUMEITEM";
+            if (action.equalsIgnoreCase("BLOCKBREAK")) action = "BREAK";
+            if (action.equalsIgnoreCase("BLOCKDAMAGED") || action.equalsIgnoreCase("LEFTCLICK") || action.equalsIgnoreCase("HITBLOCK") || action.equalsIgnoreCase("HITMOB")) action = "HIT";
+            if (action.equalsIgnoreCase("SPAWNMOB")) action = "MOBSPAWN";
+            if (action.equalsIgnoreCase("PLACE")) action = "BLOCKPLACE";
+            if (action.equalsIgnoreCase("FISHSUCCESS")) action = "FISHCAUGHT";
+            if (action.equals("GROW") || action.equals("GROWTH")) action = "BLOCKGROW";
+            if (action.equalsIgnoreCase("EAT") || action.equalsIgnoreCase("DRINK") || action.equalsIgnoreCase("PLAYERCONSUME") || action.equalsIgnoreCase("ITEMCONSUME")) action = "CONSUMEITEM";
 
             Trigger act = actions.get(action.toUpperCase());
-            if (act != null)
-                result.add(act);
-            else
-                Log.logWarning("Invalid action " + action + " (known actions: "
-                        + getValidActions() + ")", NORMAL);
+            if (act != null) result.add(act);
+            else Log.logWarning("Invalid action " + action + " (known actions: " + getValidActions() + ")", NORMAL);
         }
         if (result.isEmpty()) {
             if (def == null) {
-                def = new ArrayList<Trigger>();
+                def = new ArrayList<>();
                 def.add(BREAK);
             }
             return def;
@@ -280,8 +246,7 @@ public final class Trigger implements Comparable<Trigger> {
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof Trigger))
-            return false;
+        if (!(other instanceof Trigger)) return false;
         return ordinal == ((Trigger) other).ordinal;
     }
 

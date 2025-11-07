@@ -34,14 +34,14 @@ import java.util.jar.JarFile;
 import static com.gmail.zariust.common.Verbosity.*;
 
 public class SpecialResultLoader {
-    private static Map<String, SpecialResultHandler> knownEvents = new HashMap<String, SpecialResultHandler>();
+    private static final Map<String, SpecialResultHandler> knownEvents = new HashMap<>();
 
     /*
      * Load all the external classes.
      */
     public static void loadEvents() {
         File dir = new File(OtherDrops.plugin.getDataFolder(), "events");
-        ArrayList<String> loaded = new ArrayList<String>();
+        ArrayList<String> loaded = new ArrayList<>();
         dir.mkdir();
         boolean added = false;
         for (String f : dir.list()) {

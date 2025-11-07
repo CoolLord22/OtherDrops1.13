@@ -24,8 +24,7 @@ public class FishhookBiomeCheck extends BiomeCheck {
     @Override
     public List<Condition> parse(ConfigurationNode parseMe) {
         Map<Biome, Boolean> result = OtherDropsConfig.parseFishingBiomesFrom(parseMe);
-        if(result == null || result.isEmpty())
-            return null;
+        if (result == null || result.isEmpty()) return null;
         List<Condition> conditionList = new ArrayList<>();
         conditionList.add(new FishhookBiomeCheck(result));
         return conditionList;

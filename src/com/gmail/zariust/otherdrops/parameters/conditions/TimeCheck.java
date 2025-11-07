@@ -20,15 +20,12 @@ public class TimeCheck extends Condition {
 
     @Override
     protected boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
-        if (timeMap == null || timeMap.isEmpty())
-            return true;
+        if (timeMap == null || timeMap.isEmpty()) return true;
         boolean match = false;
         for (Time t : timeMap.keySet()) {
             if (t.contains(occurrence.getTime())) {
-                if (timeMap.get(t))
-                    match = true;
-                else
-                    return false;
+                if (timeMap.get(t)) match = true;
+                else return false;
             }
         }
         return match;
@@ -37,8 +34,7 @@ public class TimeCheck extends Condition {
     @Override
     public List<Condition> parse(ConfigurationNode parseMe) {
         Map<Time, Boolean> result = Time.parseFrom(parseMe, OtherDropsConfig.defaultTime);
-        if(result == null  || result.isEmpty())
-            return null;
+        if (result == null || result.isEmpty()) return null;
         List<Condition> conditionList = new ArrayList<>();
         conditionList.add(new TimeCheck(result));
         return conditionList;

@@ -99,22 +99,17 @@ public class SpecialMessageAction extends Action {
         Log.logInfo("Gathering players for send-to type: " + sendType.toString(), Verbosity.HIGH);
         switch (sendType) {
             case ATTACKER:
-                if (occurrence.getPlayerAttacker() != null)
-                    players.add(occurrence.getPlayerAttacker());
+                if (occurrence.getPlayerAttacker() != null) players.add(occurrence.getPlayerAttacker());
                 break;
             case VICTIM:
-                if (occurrence.getPlayerVictim() != null)
-                    players.add(occurrence.getPlayerVictim());
+                if (occurrence.getPlayerVictim() != null) players.add(occurrence.getPlayerVictim());
                 break;
             case RADIUS:
                 Location loc = occurrence.getLocation();
                 for (Player player : loc.getWorld().getPlayers()) {
-                    if (player.getLocation().getX() > (loc.getX() - OtherDropsConfig.gActionRadius)
-                            || player.getLocation().getX() < (loc.getX() + OtherDropsConfig.gActionRadius))
-                        if (player.getLocation().getY() > (loc.getY() - OtherDropsConfig.gActionRadius)
-                                || player.getLocation().getY() < (loc.getY() + OtherDropsConfig.gActionRadius))
-                            if (player.getLocation().getZ() > (loc.getZ() - OtherDropsConfig.gActionRadius)
-                                    || player.getLocation().getZ() < (loc.getZ() + OtherDropsConfig.gActionRadius))
+                    if (player.getLocation().getX() > (loc.getX() - OtherDropsConfig.gActionRadius) || player.getLocation().getX() < (loc.getX() + OtherDropsConfig.gActionRadius))
+                        if (player.getLocation().getY() > (loc.getY() - OtherDropsConfig.gActionRadius) || player.getLocation().getY() < (loc.getY() + OtherDropsConfig.gActionRadius))
+                            if (player.getLocation().getZ() > (loc.getZ() - OtherDropsConfig.gActionRadius) || player.getLocation().getZ() < (loc.getZ() + OtherDropsConfig.gActionRadius))
                                 players.add(player);
                 }
 
@@ -126,7 +121,7 @@ public class SpecialMessageAction extends Action {
                 players.addAll(occurrence.getLocation().getWorld().getPlayers());
                 break;
         }
-        for(ODBar msg : messages) {
+        for (ODBar msg : messages) {
             process(drop, occurrence, msg, players);
         }
         return false;
@@ -136,11 +131,11 @@ public class SpecialMessageAction extends Action {
         String message = ODVariables.preParse(odBar.message);
         message = MessageAction.parseVariables(message, drop, occurrence, occurrence.getCustomDropAmount());
 
-        if(odBar instanceof ODBossBar barData) {
+        if (odBar instanceof ODBossBar barData) {
             NamespacedKey key = new NamespacedKey(OtherDrops.plugin, UUID.randomUUID().toString());
             BossBar bossBar = Bukkit.createBossBar(key, message, barData.barColor, barData.barStyle);
             bossBar.setProgress(barData.progress);
-            for(Player p : players)
+            for (Player p : players)
                 bossBar.addPlayer(p);
             bossBar.setVisible(true);
             OtherDrops.bossBars.add(key);
@@ -150,12 +145,12 @@ public class SpecialMessageAction extends Action {
                 Bukkit.removeBossBar(key);
                 OtherDrops.bossBars.remove(key);
             }, barData.timeToBeShowed * 20L);
-        } else if(odBar instanceof ODActionBar) {
-            for(Player p : players) {
+        } else if (odBar instanceof ODActionBar) {
+            for (Player p : players) {
                 // TODO: Resolve actionbar not showing compiler dependency
                 //p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(message));
             }
-        } else if(odBar instanceof ODTitleMessage barData) {
+        } else if (odBar instanceof ODTitleMessage barData) {
             for (Player p : players) {
                 String subtitle = ODVariables.preParse(barData.subtitle);
                 subtitle = MessageAction.parseVariables(subtitle, drop, occurrence, occurrence.getCustomDropAmount());
@@ -169,14 +164,14 @@ public class SpecialMessageAction extends Action {
         List<ODBar> tempMessages = new ArrayList<>();
         Set<SendType> sendTypes = new HashSet<>();
 
-        if(parseMe.getKeys().contains("actionbar")) {
+        if (parseMe.getKeys().contains("actionbar")) {
             ConfigurationNode newNode = parseMe.getConfigurationNode("actionbar");
             sendTypes.add(SendType.fromString(newNode.getString("sendto")));
             String message = newNode.getString("message", "");
 
             tempMessages.add(new ODActionBar(message));
         }
-        if(parseMe.getKeys().contains("bossbar")) {
+        if (parseMe.getKeys().contains("bossbar")) {
             ConfigurationNode newNode = parseMe.getConfigurationNode("bossbar");
             sendTypes.add(SendType.fromString(newNode.getString("sendto")));
             String message = newNode.getString("message", "");
@@ -187,7 +182,7 @@ public class SpecialMessageAction extends Action {
 
             tempMessages.add(new ODBossBar(barColor, barStyle, timeToBeShowed, message, progress));
         }
-        if(parseMe.getKeys().contains("title")) {
+        if (parseMe.getKeys().contains("title")) {
             ConfigurationNode newNode = parseMe.getConfigurationNode("title");
             sendTypes.add(SendType.fromString(newNode.getString("sendto")));
             String title = newNode.getString("title", "");
@@ -200,9 +195,8 @@ public class SpecialMessageAction extends Action {
         }
 
         SendType toSend = SendType.VICTIM;
-        for(SendType type : sendTypes) {
-            if(type.ordinal() > toSend.ordinal())
-                toSend = type;
+        for (SendType type : sendTypes) {
+            if (type.ordinal() > toSend.ordinal()) toSend = type;
         }
 
         return List.of(new SpecialMessageAction(tempMessages, toSend));

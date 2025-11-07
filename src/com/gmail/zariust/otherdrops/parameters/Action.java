@@ -13,19 +13,18 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class Action extends Parameter {
-    protected static Set<Action> actions = new HashSet<Action>();
+    protected static Set<Action> actions = new HashSet<>();
 
     public abstract boolean act(CustomDrop drop, OccurredEvent occurence);
 
     public static boolean registerAction(Action register) {
-        Log.logInfo("Actions - registering: " + register.toString(),
-                Verbosity.EXTREME);
+        Log.logInfo("Actions - registering: " + register.toString(), Verbosity.EXTREME);
         actions.add(register);
         return false;
     }
 
     public static List<Action> parseNodes(ConfigurationNode node) {
-        List<Action> actionsList = new ArrayList<Action>();
+        List<Action> actionsList = new ArrayList<>();
         for (Action action : actions) {
             actionsList.addAll(action.parse(node));
         }

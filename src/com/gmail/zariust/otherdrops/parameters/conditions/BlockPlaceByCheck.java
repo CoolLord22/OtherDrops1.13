@@ -30,23 +30,21 @@ public class BlockPlaceByCheck extends Condition {
 
     @Override
     public boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
-    	Block block = null;
+        Block block = null;
         Log.logInfo("BlockPlaceByCheck - start", Verbosity.HIGHEST);
-        
+
         if (occurrence.getTarget() instanceof BlockTarget) {
-        	block = ((BlockTarget) occurrence.getTarget()).getBlock();	
+            block = ((BlockTarget) occurrence.getTarget()).getBlock();
         }
         if (block != null) {
-        	String placeBy = "";
-        	final PersistentDataContainer customBlockData = new CustomBlockData(block, OtherDrops.plugin);
-        	if (!customBlockData.has(OtherDrops.playerPlacedKey, PersistentDataType.STRING)) {
-        		placeBy = "NATURAL";
-        	} else {
-        		placeBy = customBlockData.get(OtherDrops.playerPlacedKey, PersistentDataType.STRING);
-        	}
-            Log.logInfo(
-                    "BlockPlaceByCheck - checking: " + placeByStored.toString()
-                            + " vs actual: " + placeBy, Verbosity.HIGHEST);
+            String placeBy;
+            final PersistentDataContainer customBlockData = new CustomBlockData(block, OtherDrops.plugin);
+            if (!customBlockData.has(OtherDrops.playerPlacedKey, PersistentDataType.STRING)) {
+                placeBy = "NATURAL";
+            } else {
+                placeBy = customBlockData.get(OtherDrops.playerPlacedKey, PersistentDataType.STRING);
+            }
+            Log.logInfo("BlockPlaceByCheck - checking: " + placeByStored.toString() + " vs actual: " + placeBy, Verbosity.HIGHEST);
             return CustomDrop.checkList(placeBy.toUpperCase(), placeByStored);
         } else {
             Log.logInfo("BlockPlaceByCheck - failed, no block target.", Verbosity.HIGHEST);
@@ -57,10 +55,9 @@ public class BlockPlaceByCheck extends Condition {
     @Override
     public List<Condition> parse(ConfigurationNode node) {
         List<String> placedBy = OtherDropsConfig.getMaybeList(node, "placedby");
-        if (placedBy.isEmpty())
-            return null;
+        if (placedBy.isEmpty()) return null;
 
-        HashMap<String, Boolean> result = new HashMap<String, Boolean>();
+        HashMap<String, Boolean> result = new HashMap<>();
         result.put(null, OtherDropsConfig.containsAll(placedBy));
         for (String name : placedBy) {
             name = name.toUpperCase();

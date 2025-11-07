@@ -30,8 +30,7 @@ public class BlockFaceCheck extends Condition {
     @Override
     public List<Condition> parse(ConfigurationNode parseMe) {
         Map<BlockFace, Boolean> result = parseFacesFrom(parseMe);
-        if(result == null || result.isEmpty())
-            return null;
+        if (result == null || result.isEmpty()) return null;
         List<Condition> conditionList = new ArrayList<>();
         conditionList.add(new BlockFaceCheck(result));
         return conditionList;
@@ -39,8 +38,7 @@ public class BlockFaceCheck extends Condition {
 
     private Map<BlockFace, Boolean> parseFacesFrom(ConfigurationNode node) {
         List<String> faces = OtherDropsConfig.getMaybeList(node, "face", "faces");
-        if (faces.isEmpty())
-            return null;
+        if (faces.isEmpty()) return null;
         HashMap<BlockFace, Boolean> result = new HashMap<>();
         result.put(null, OtherDropsConfig.containsAll(faces));
         for (String name : faces) {
@@ -53,11 +51,9 @@ public class BlockFaceCheck extends Condition {
                     continue;
                 }
                 result.put(face, false);
-            } else
-                result.put(face, true);
+            } else result.put(face, true);
         }
-        if (result.isEmpty())
-            return null;
+        if (result.isEmpty()) return null;
         return result;
     }
 }

@@ -19,16 +19,14 @@ public class HeightCheck extends Condition {
 
     @Override
     protected boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
-        if (height == null)
-            return true;
+        if (height == null) return true;
         return height.matches(occurrence.getLightLevel());
     }
 
     @Override
     public List<Condition> parse(ConfigurationNode parseMe) {
         Comparative result = Comparative.parseFrom(parseMe, "height", OtherDropsConfig.defaultHeight);
-        if(result == null)
-            return null;
+        if (result == null) return null;
         List<Condition> conditionList = new ArrayList<>();
         conditionList.add(new HeightCheck(result));
         return conditionList;

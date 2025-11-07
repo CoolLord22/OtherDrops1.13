@@ -1,16 +1,14 @@
 package com.gmail.zariust.otherdrops.parameters.conditions;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 
 /**
  * @author Tirelessly @ Bukkit Forums, zarius (removed player name conditions)
- * 
  */
 public class Cooldown {
-    public static Set<PlayerCooldown> cooldowns = new HashSet<PlayerCooldown>();
+    public static Set<PlayerCooldown> cooldowns = new HashSet<>();
 
     public static void addCooldown(String cooldownName, UUID playerID, long lengthInMillis) {
         PlayerCooldown pc = new PlayerCooldown(cooldownName, playerID, lengthInMillis);
@@ -20,9 +18,7 @@ public class Cooldown {
     }
 
     public static PlayerCooldown getCooldown(String cooldownName, UUID Player) {
-        Iterator<PlayerCooldown> it = cooldowns.iterator();
-        while (it.hasNext()) {
-            PlayerCooldown pc = it.next();
+        for (PlayerCooldown pc : cooldowns) {
             if (pc.getCooldownName().equalsIgnoreCase(cooldownName) && pc.getUUID().equals(Player)) {
                 return pc;
             }
@@ -38,9 +34,7 @@ public class Cooldown {
     }
 
     public static PlayerCooldown getGlobalCooldown(String cooldownName) {
-        Iterator<PlayerCooldown> it = cooldowns.iterator();
-        while (it.hasNext()) {
-            PlayerCooldown pc = it.next();
+        for (PlayerCooldown pc : cooldowns) {
             if (pc.getCooldownName().equalsIgnoreCase(cooldownName)) {
                 return pc;
             }
@@ -51,11 +45,11 @@ public class Cooldown {
 
 class PlayerCooldown {
 
-    private long         startTime;
+    private long startTime;
     private final String cooldownName;
-    private final UUID   player;
-    private final long   lengthInMillis;
-    private long         endTime;
+    private final UUID player;
+    private final long lengthInMillis;
+    private long endTime;
 
     PlayerCooldown(String cooldownName, UUID playerID, long lengthInMillis) {
         this.cooldownName = cooldownName;
@@ -76,11 +70,11 @@ class PlayerCooldown {
     public String getCooldownName() {
         return cooldownName;
     }
-    
+
     public UUID getUUID() {
-    	return player;
+        return player;
     }
-    
+
     public void reset() {
         startTime = System.currentTimeMillis();
         endTime = startTime + lengthInMillis;

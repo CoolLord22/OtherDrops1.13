@@ -16,33 +16,31 @@
 
 package com.gmail.zariust.otherdrops.parameters.conditions;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.parameters.Condition;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Adjacent extends Condition {
     @SuppressWarnings("unused")
-	private List<BlockFace>              blockfaceList;
-    private static Map<String, Adjacent> nameLookup = new HashMap<String, Adjacent>();
+    private List<BlockFace> blockfaceList;
+    private static final Map<String, Adjacent> nameLookup = new HashMap<>();
 
     private Adjacent() {
     }
 
     public boolean matches(Block block, Material mat) {
-        if (block == null)
-            return false;
+        if (block == null) return false;
 
         boolean match = false;
 
@@ -59,8 +57,7 @@ public class Adjacent extends Condition {
             checkLoc.add(-3, 0, 1);
         }
         // } else if (BlockFace.valueOf(faceName) != null) {
-        if (block.getRelative(BlockFace.valueOf(faceName)).getType() == mat)
-            match = true;
+        if (block.getRelative(BlockFace.valueOf(faceName)).getType() == mat) match = true;
         // }
 
         return match;
@@ -70,13 +67,10 @@ public class Adjacent extends Condition {
         return nameLookup.get(storm.toUpperCase());
     }
 
-    public static Map<Adjacent, Boolean> parseFrom(ConfigurationNode node,
-            Map<Adjacent, Boolean> def) {
-        List<String> adjactentList = OtherDropsConfig.getMaybeList(node,
-                "adjacent");
-        if (adjactentList.isEmpty())
-            return def;
-        Map<Adjacent, Boolean> result = new HashMap<Adjacent, Boolean>();
+    public static Map<Adjacent, Boolean> parseFrom(ConfigurationNode node, Map<Adjacent, Boolean> def) {
+        List<String> adjactentList = OtherDropsConfig.getMaybeList(node, "adjacent");
+        if (adjactentList.isEmpty()) return def;
+        Map<Adjacent, Boolean> result = new HashMap<>();
         result.put(null, OtherDropsConfig.containsAll(adjactentList));
         for (String name : adjactentList) {
             String[] split = name.split("/");
@@ -86,8 +80,7 @@ public class Adjacent extends Condition {
             }
 
             Adjacent storm = parse(name);
-            if (storm != null)
-                result.put(storm, true);
+            if (storm != null) result.put(storm, true);
             else if (name.startsWith("-")) {
                 result.put(null, true);
                 storm = parse(name.substring(1));
@@ -98,8 +91,7 @@ public class Adjacent extends Condition {
                 result.put(storm, false);
             }
         }
-        if (result.isEmpty())
-            return null;
+        if (result.isEmpty()) return null;
         return result;
     }
 

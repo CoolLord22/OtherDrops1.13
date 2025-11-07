@@ -21,32 +21,25 @@ public abstract class Condition extends Parameter {
         return result;
     }
 
-    protected abstract boolean checkInstance(CustomDrop drop,
-            OccurredEvent occurrence);
+    protected abstract boolean checkInstance(CustomDrop drop, OccurredEvent occurrence);
 
-    // protected abstract static List<Condition> parseInstance(ConfigurationNode
-    // node);
+    // protected abstract static List<Condition> parseInstance(ConfigurationNode node);
 
-    protected static Set<Condition> conditions = new HashSet<Condition>();
+    protected static Set<Condition> conditions = new HashSet<>();
 
-    // NOTE: currently this function is called before verbosity is loaded from the config file
-    // (so debug messages based on Verbosity.HIGH etc. won't work)
+    // NOTE: currently this function is called before verbosity is loaded from the config file (so debug messages based on Verbosity.HIGH etc. won't work)
     public static boolean registerCondition(Condition register) {
-        if (register == null) {
-            Log.logInfo("Condition - registering FAILED" + register);
-        } else {
-            conditions.add(register);
-        }
+        if (register == null) Log.logInfo("Condition - registering FAILED" + register);
+        else conditions.add(register);
         return false;
     }
 
     public static List<Condition> parseNodes(ConfigurationNode node) {
-        List<Condition> conditionsReturn = new ArrayList<Condition>();
-        List<Condition> conditionsFromParse = new ArrayList<Condition>();
+        List<Condition> conditionsReturn = new ArrayList<>();
+        List<Condition> conditionsFromParse;
         for (Condition condition : conditions) {
             conditionsFromParse = condition.parse(node);
-            if (conditionsFromParse != null)
-                conditionsReturn.addAll(conditionsFromParse);
+            if (conditionsFromParse != null) conditionsReturn.addAll(conditionsFromParse);
         }
         return conditionsReturn;
     }
