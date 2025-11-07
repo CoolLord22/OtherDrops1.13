@@ -16,7 +16,10 @@
 
 package com.gmail.zariust.otherdrops.special;
 
+import java.io.Serial;
+
 public class SpecialResultLoadException extends Exception {
+    @Serial
     private static final long serialVersionUID = -2613254331263858552L;
 
     public SpecialResultLoadException(String message) {
