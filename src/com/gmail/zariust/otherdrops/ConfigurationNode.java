@@ -6,12 +6,12 @@
 
 package com.gmail.zariust.otherdrops;
 
+import org.bukkit.configuration.ConfigurationSection;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.bukkit.configuration.ConfigurationSection;
 
 public class ConfigurationNode {
 
@@ -39,7 +39,7 @@ public class ConfigurationNode {
      */
     public static List<ConfigurationNode> parse(List<Map<?, ?>> mapList) {
         // OtherDrops.logInfo(mapList.toString());
-        List<ConfigurationNode> nodeList = new ArrayList<ConfigurationNode>();
+        List<ConfigurationNode> nodeList = new ArrayList<>();
 
         for (Map<?, ?> map : mapList)
             nodeList.add(new ConfigurationNode(map));
@@ -51,9 +51,7 @@ public class ConfigurationNode {
         if (nodeMap == null)
             return null;
 
-        List<String> stringList = new ArrayList<String>();
-        stringList.addAll(nodeMap.keySet());
-        return stringList;
+        return new ArrayList<>(nodeMap.keySet());
     }
 
     public String getString(String string) {
@@ -68,7 +66,7 @@ public class ConfigurationNode {
         if (obj instanceof Integer)
             return ((Integer) nodeMap.get(string)).toString();
         if (obj instanceof Double)
-            return ((Double) nodeMap.get(string)).toString();
+            return nodeMap.get(string).toString();
         return null;
     }
 
@@ -77,7 +75,7 @@ public class ConfigurationNode {
             return null;
         List<String> returnList = null;
         if (nodeMap.get(key) instanceof List<?>) {
-            returnList = new ArrayList<String>();
+            returnList = new ArrayList<>();
             for (Object value : (List<?>) nodeMap.get(key)) {
                 if (value instanceof String) {
                     returnList.add((String) value);
@@ -156,7 +154,7 @@ public class ConfigurationNode {
             return null;
         if (nodeMap.get(key) instanceof List<?>)
             if (((List<?>) nodeMap.get(key)).get(0) instanceof Map) {
-                List<ConfigurationNode> nodeList = new ArrayList<ConfigurationNode>();
+                List<ConfigurationNode> nodeList = new ArrayList<>();
 
                 @SuppressWarnings("unchecked")
                 List<Map<?, ?>> mapList = (List<Map<?, ?>>) nodeMap.get(key);
@@ -233,7 +231,7 @@ public class ConfigurationNode {
 
     public void set(String name, HashMap<String, Object> hashMap) {
         if (nodeMap == null)
-            nodeMap = new HashMap<String, Object>();
+            nodeMap = new HashMap<>();
         nodeMap.put(name, hashMap);
     }
 

@@ -35,8 +35,7 @@ public class Log {
     }
 
     public static void logInfo(List<String> msgs) {
-        if (msgs == null || msgs.isEmpty())
-            return;
+        if (msgs == null || msgs.isEmpty()) return;
 
         for (String msg : msgs) {
             logInfo(msg);
@@ -44,8 +43,7 @@ public class Log {
     }
 
     public static void logInfo(String msg) {
-        if (OtherDropsConfig.verbosity.exceeds(Verbosity.NORMAL))
-            Log.logger.info("[" + pluginName + "] " + msg);
+        if (OtherDropsConfig.verbosity.exceeds(Verbosity.NORMAL)) Log.logger.info("[" + pluginName + "] " + msg);
     }
 
     public static void logInfoNoVerbosity(String msg) {
@@ -94,13 +92,11 @@ public class Log {
     }
 
     public static void logWarning(String msg, Verbosity level) {
-        if (OtherDropsConfig.verbosity.exceeds(level))
-            logWarning(msg);
+        if (OtherDropsConfig.verbosity.exceeds(level)) logWarning(msg);
     }
 
     // TODO: This is only for temporary debug purposes.
     public static void stackTrace() {
-        if (OtherDropsConfig.verbosity.exceeds(EXTREME))
-            Thread.dumpStack();
+        if (OtherDropsConfig.verbosity.exceeds(EXTREME)) Thread.dumpStack();
     }
 }

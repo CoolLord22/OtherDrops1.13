@@ -12,7 +12,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 public class ODVariables {
-    Map<String, String> variables = new HashMap<String, String>();
+    Map<String, String> variables = new HashMap<>();
 
     public ODVariables() {
         variables.put("%time", new SimpleDateFormat(OtherDropsConfig.gTimeFormat).format(Calendar.getInstance().getTime()));
@@ -65,8 +65,7 @@ public class ODVariables {
     }
 
     public ODVariables setLocation(Location loc) {
-        if (loc == null)
-            return this;
+        if (loc == null) return this;
         variables.put("%loc.x", String.valueOf(loc.getX()));
         variables.put("%loc.y", String.valueOf(loc.getY()));
         variables.put("%loc.z", String.valueOf(loc.getZ()));
@@ -99,25 +98,17 @@ public class ODVariables {
     }
 
     public static List<String> parseVariables(List<String> stringList) {
-        List<String> parsedStringList = new ArrayList<String>();
+        List<String> parsedStringList = new ArrayList<>();
         for (String string : stringList) {
             parsedStringList.add(parseVariables(string));
         }
         return parsedStringList;
     }
 
-    /**
-     * PreTranslate is intended to parse any non-dynamic variables at the time
-     * of config loading. This method parses each line of a List of Strings.
-     * 
-     * @param lines
-     * @return parsed string
-     */
     public static List<String> preParse(List<String> lines) {
-        if (lines == null)
-            return null;
+        if (lines == null) return null;
 
-        List<String> tmp = new ArrayList<String>();
+        List<String> tmp = new ArrayList<>();
 
         for (String str : lines) {
             tmp.add(ODVariables.preParse(str));
@@ -126,16 +117,8 @@ public class ODVariables {
         return tmp;
     }
 
-    /**
-     * PreTranslate is intended to parse any non-dynamic variables at the time
-     * of config loading.
-     * 
-     * @param line
-     * @return
-     */
     public static String preParse(String line) {
-        if (line == null)
-            return null;
+        if (line == null) return null;
 
         return substituteColorCodes(line);
     }
@@ -152,7 +135,7 @@ public class ODVariables {
             msg = new ODMatch(msg).match("<(([^|<>]+?[|][^|<>]+?[|]*)([^|<>]+?[|]*)*?)>", new ODMatchRunner() {
                 @Override
                 public String runMatch(String matched) {
-                    Log.logInfo("MATCHED: "+matched);
+                    Log.logInfo("MATCHED: " + matched);
                     String[] split = matched.split("\\|");
                     return split[OtherDrops.rng.nextInt(split.length)];
                 }

@@ -5,10 +5,10 @@ import com.gmail.zariust.otherdrops.parameters.conditions.PotionEffectCondition;
 import org.bukkit.potion.PotionEffectType;
 
 public class ODPotionEffect {
-    private PotionEffectType potionEffectType;
-    private Boolean flag;
-    private Comparative amplifier;
-    private PotionEffectCondition.PotionTarget target;
+    private final PotionEffectType potionEffectType;
+    private final Boolean flag;
+    private final Comparative amplifier;
+    private final PotionEffectCondition.PotionTarget target;
 
     public ODPotionEffect(PotionEffectType potionEffectType, Boolean flag, Comparative amplifier, PotionEffectCondition.PotionTarget target) {
         this.potionEffectType = potionEffectType;

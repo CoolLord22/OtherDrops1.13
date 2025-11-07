@@ -7,27 +7,27 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockBreakEvent;
 
 public class DropNotificationEvent extends Event {
-	private Player player;
-	private Block block;
-	private BlockBreakEvent event;
-	
-	public DropNotificationEvent(Player player, Block block, BlockBreakEvent event) {
-		this.player = player;
-		this.block = block;
-		this.event = event;
-	}
+    private final Player player;
+    private final Block block;
+    private final BlockBreakEvent event;
 
-	public Player getPlayer() {
-		return this.player;
-	}
-	
-	public Block getBlock() {
-		return this.block;
-	}
-	
-	public BlockBreakEvent getEvent() {
-		return this.event;
-	}
+    public DropNotificationEvent(Player player, Block block, BlockBreakEvent event) {
+        this.player = player;
+        this.block = block;
+        this.event = event;
+    }
+
+    public Player getPlayer() {
+        return this.player;
+    }
+
+    public Block getBlock() {
+        return this.block;
+    }
+
+    public BlockBreakEvent getEvent() {
+        return this.event;
+    }
 
     private static final HandlerList HANDLERS = new HandlerList();
 
