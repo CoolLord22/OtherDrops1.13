@@ -16,23 +16,19 @@
 
 package com.gmail.zariust.otherdrops.listener;
 
-import static com.gmail.zariust.common.Verbosity.EXTREME;
-import static com.gmail.zariust.common.Verbosity.HIGH;
-import static com.gmail.zariust.common.Verbosity.HIGHEST;
-
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
-import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDrops;
-import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import static com.gmail.zariust.common.Verbosity.*;
 
 public class OdEntityListener implements Listener {
     private final OtherDrops parent;
@@ -43,67 +39,35 @@ public class OdEntityListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onEntityDamage(EntityDamageEvent event) {
-        if (event.isCancelled())
-            return;
-        Log.logInfo("OnEntityDamage (victim: " + event.getEntity()
-                + ")", EXTREME);
-
-        // Check if the damager is a player - if so, weapon is the held tool
-        if (event instanceof EntityDamageByEntityEvent) {
-            EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
-            if (e.getEntity() == null) {
-                Log.logInfo("EntityDamageByEntity but .getEntity() is null?");
-                return;
-            }
-        }
+        Log.logInfo("OnEntityDamage (victim: " + event.getEntity() + ")", EXTREME);
         OccurredEvent drop = new OccurredEvent(event, "hit");
         parent.sectionManager.performDrop(drop);
-
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onEntityDeath(EntityDeathEvent event) {
-        // TODO: use get getLastDamageCause rather than checking on each
-        // getdamage?
-        Log.logInfo("*** OnEntityDeath, before checks (victim: "
-                + event.getEntity() + ")", HIGHEST);
+        // TODO: use get getLastDamageCause rather than checking on each getdamage?
+        Log.logInfo("*** OnEntityDeath, before checks (victim: " + event.getEntity() + ")", HIGHEST);
         Entity entity = event.getEntity();
 
         // If there's no damage record, ignore
         if (entity.getLastDamageCause() == null) {
-            Log.logWarning("OnEntityDeath: entity " + entity
-                    + " has no 'lastDamageCause'.", HIGH);
+            Log.logWarning("OnEntityDeath: entity " + entity + " has no 'lastDamageCause'.", HIGH);
             return;
         }
 
         OccurredEvent drop = new OccurredEvent(event);
-        Log.logInfo("EntityDeath drop occurance created. (" + drop
-                + ")", HIGHEST);
+        Log.logInfo("EntityDeath drop occurance created. (" + drop + ")", HIGHEST);
         parent.sectionManager.performDrop(drop);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onEntityExplode(EntityExplodeEvent event) {
         // TODO: Why was this commented out?
-        if (!parent.config.customDropsForExplosions)
-            return;
-        if (event.isCancelled())
-            return;
+        if (!parent.config.customDropsForExplosions) return;
 
-        // Disable certain types of drops temporarily since they can cause
-        // feedback loops
-        // Note: This will disable ALL plugins that create explosions in the
-        // same way as the explosion event
-        if (event.getEntity() == null) {
-            Log.logInfo("EntityExplode - no entity found, skipping.", HIGHEST);
-            return; // skip recursive explosions, for now (explosion event has
-                    // no entity) TODO: add an option?
-        }
-
-        // TODO: add a config item to enable enderdragon explosions if people
-        // want to use it with v.low chance drops
-        if (event.getEntity() instanceof EnderDragon)
-            return; // Enderdragon explosion drops will lag out the server....
+        // TODO: add a config item to enable enderdragon explosions if people want to use it with v.low chance drops
+        if (event.getEntity() instanceof EnderDragon) return; // Enderdragon explosion drops will lag out the server....
 
         Log.logInfo("Processing explosion...", HIGHEST);
         parent.sectionManager.performDrop(new OccurredEvent(event, event.getEntity()));

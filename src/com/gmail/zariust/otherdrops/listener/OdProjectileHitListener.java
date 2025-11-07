@@ -44,9 +44,9 @@ public class OdProjectileHitListener implements Listener {
         BlockIterator iterator = new BlockIterator(world, projectile.getLocation().toVector(), projectile.getVelocity().normalize(), 0, 4);
         Block hitBlock = null;
 
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             hitBlock = iterator.next();
-            if(hitBlock.getType() != Material.AIR) //Check all non-solid blockid's here.
+            if (hitBlock.getType() != Material.AIR) //Check all non-solid blockid's here.
                 break;
         }
 
@@ -55,5 +55,4 @@ public class OdProjectileHitListener implements Listener {
         OccurredEvent drop = new OccurredEvent(event, hitBlock);
         parent.sectionManager.performDrop(drop);
     }
-
 }

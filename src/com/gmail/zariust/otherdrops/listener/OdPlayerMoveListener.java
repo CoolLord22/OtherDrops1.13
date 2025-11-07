@@ -35,10 +35,8 @@ public class OdPlayerMoveListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent event) {
-
         Block standingOn = event.getPlayer().getLocation().getBlock().getRelative(BlockFace.DOWN);
         OccurredEvent drop = new OccurredEvent(event, standingOn);
         parent.sectionManager.performDrop(drop);
     }
-
 }

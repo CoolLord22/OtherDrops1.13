@@ -23,7 +23,6 @@ import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.DropCreateException;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -44,60 +43,43 @@ public class OdPlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent event) {
-        // Deliberately processing cancelled events as a click into air
-        // is always "cancelled" and we want to catch that event
+        // Deliberately processing cancelled events as a click into air is always "cancelled" and we want to catch that event
         if (event.isCancelled() && (event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
             Log.logInfo("Cancelled event but not AIR - skipping.", Verbosity.HIGHEST);
             return;
         }
-        
-        if (event.getPlayer() != null) {
-//            if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
-                // skip for creative mode - TODO: make this configurable?
-//            } else {
-                Block targetBlock = null;
-                if (event.getClickedBlock() == null) {
-                    try {
-                        targetBlock = event.getPlayer().getTargetBlock(new HashSet<Material>(), 200);
-                    } catch (Exception ex) {
-                        // no need to do anything here
-                    }
-                    if (targetBlock == null)
-                        targetBlock = event.getPlayer().getLocation()
-                                .getBlock();
-                } else {
-                    targetBlock = event.getClickedBlock();
-                }
-
-                OccurredEvent drop = new OccurredEvent(event, targetBlock);
-            parent.sectionManager.performDrop(drop);
- //           }
+        // TODO Make configurable for creative players
+        Block targetBlock = null;
+        if (event.getClickedBlock() == null) {
+            try {
+                targetBlock = event.getPlayer().getTargetBlock(new HashSet<>(), 200);
+            } catch (Exception ex) {
+                // no need to do anything here
+            }
+            if (targetBlock == null) targetBlock = event.getPlayer().getLocation().getBlock();
+        } else {
+            targetBlock = event.getClickedBlock();
         }
+
+        OccurredEvent drop = new OccurredEvent(event, targetBlock);
+        parent.sectionManager.performDrop(drop);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
-        if (event.isCancelled())
-            return;
-        if (event.getPlayer() != null)
-            if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
-                // skip drops for creative mode - TODO: make this configurable?
-            } else {
-                OccurredEvent drop = new OccurredEvent(event);
-                parent.sectionManager.performDrop(drop);
-            }
+        if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+            // skip drops for creative mode - TODO: make this configurable?
+        } else {
+            OccurredEvent drop = new OccurredEvent(event);
+            parent.sectionManager.performDrop(drop);
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerDrop(PlayerDropItemEvent event) throws DropCreateException {
-        if (event.isCancelled())
-            return;
-        if (!OtherDropsConfig.dropForItemDrop)
-            return;
-        if (event.getPlayer() != null) {
-            event.setCancelled(true);
-            OccurredEvent drop = new OccurredEvent(event);
-            parent.sectionManager.performDrop(drop);
-        }
+        if (!OtherDropsConfig.dropForItemDrop) return;
+        event.setCancelled(true);
+        OccurredEvent drop = new OccurredEvent(event);
+        parent.sectionManager.performDrop(drop);
     }
 }

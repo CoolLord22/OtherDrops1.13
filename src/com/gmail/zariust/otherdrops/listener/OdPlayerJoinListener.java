@@ -36,5 +36,4 @@ public class OdPlayerJoinListener implements Listener {
         OccurredEvent drop = new OccurredEvent(event);
         parent.sectionManager.performDrop(drop);
     }
-
 }
