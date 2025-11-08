@@ -26,11 +26,10 @@ public class OdPotionMeta extends OdItemMeta {
     public ItemStack setOn(ItemStack stack, Target source) {
         PotionMeta meta = (PotionMeta) stack.getItemMeta();
         meta.clearCustomEffects();
-        for(PotionEffect effect : potionEffectList)  {
+        for (PotionEffect effect : potionEffectList) {
             meta.addCustomEffect(effect, true);
         }
-        if(potionColor != null)
-            meta.setColor(potionColor);
+        if (potionColor != null) meta.setColor(potionColor);
         stack.setItemMeta(meta);
         return stack;
     }
@@ -38,10 +37,9 @@ public class OdPotionMeta extends OdItemMeta {
     public static OdPotionMeta parse(String sub) {
         List<PotionEffect> potionEffects = new ArrayList<>();
         Color potionColor = null;
-        for(String effect : sub.split("!")) {
+        for (String effect : sub.split("!")) {
             PotionEffect singleEffect = PotionAction.getEffect(effect);
-            if(singleEffect != null)
-                potionEffects.add(singleEffect);
+            if (singleEffect != null) potionEffects.add(singleEffect);
             else {
                 try {
                     Log.logInfo("Trying to get color: " + effect, Verbosity.HIGHEST);

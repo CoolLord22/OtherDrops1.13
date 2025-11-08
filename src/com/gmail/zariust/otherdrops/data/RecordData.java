@@ -16,8 +16,11 @@
 
 package com.gmail.zariust.otherdrops.data;
 
-import java.util.EnumSet;
-
+import com.gmail.zariust.common.CommonMaterial;
+import com.gmail.zariust.common.MaterialGroup;
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDrops;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Material;
@@ -27,11 +30,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
 
-import com.gmail.zariust.common.CommonMaterial;
-import com.gmail.zariust.common.MaterialGroup;
-import com.gmail.zariust.common.Verbosity;
-import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDrops;
+import java.util.EnumSet;
 
 public class RecordData extends EffectData {
     private Material disc;
@@ -43,15 +42,14 @@ public class RecordData extends EffectData {
 
     public RecordData(BlockState state) {
         super(64);
-        if (state instanceof Jukebox) {
-            Jukebox jukebox = (Jukebox) state;
+        if (state instanceof Jukebox jukebox) {
             if (jukebox.isPlaying()) {
-                disc = ((Jukebox) state).getPlaying();
+                disc = jukebox.getPlaying();
             }
         }
     }
 
-	@Override
+    @Override
     public int getData() {
         Integer discId = null;
         if (disc == null) {
@@ -66,7 +64,6 @@ public class RecordData extends EffectData {
             // } else {
             // discId = Material.GOLD_RECORD.getId();
             // }
-
         } else {
             discId = disc.getId();
         }
@@ -74,30 +71,26 @@ public class RecordData extends EffectData {
         return discId;
     }
 
-	@Override
+    @Override
     public void setData(int d) {
-		for(Material i : EnumSet.allOf(Material.class)) {
-			if(i.getId() == d)
-			disc = Bukkit.getUnsafe().fromLegacy(new MaterialData(i));
-		}
+        for (Material i : EnumSet.allOf(Material.class)) {
+            if (i.getId() == d) disc = Bukkit.getUnsafe().fromLegacy(new MaterialData(i));
+        }
     }
 
     @Override
     public boolean matches(Data d) {
-        if (!(d instanceof RecordData))
-            return false;
+        if (!(d instanceof RecordData)) return false;
         return disc == ((RecordData) d).disc;
     }
 
     @Override
     public String get(Enum<?> mat) {
         String discName = "";
-        if (disc != null)
-            discName = disc.toString();
+        if (disc != null) discName = disc.toString();
         if (radius != EffectData.DEFAULT_RADIUS && mat == Effect.RECORD_PLAY)
             return discName + (discName.isEmpty() ? "" : "/") + radius;
-        if (mat == Material.JUKEBOX || mat == Effect.RECORD_PLAY)
-            return discName;
+        if (mat == Material.JUKEBOX || mat == Effect.RECORD_PLAY) return discName;
         return "";
     }
 
@@ -116,13 +109,11 @@ public class RecordData extends EffectData {
     }
 
     @SuppressWarnings("deprecation")
-	public static RecordData parse(String state) {
-        if (state == null || state.isEmpty())
-            return new RecordData((Material) null);
+    public static RecordData parse(String state) {
+        if (state == null || state.isEmpty()) return new RecordData((Material) null);
         Material mat = CommonMaterial.matchMaterial(state);
         if (mat == null) {
-            Log.logInfo("Record '" + state + "' not matched, trying '" + state
-                    + "disc'.", Verbosity.LOW);
+            Log.logInfo("Record '" + state + "' not matched, trying '" + state + "disc'.", Verbosity.LOW);
             mat = CommonMaterial.matchMaterial(state + "disc");
         }
         if (mat == null || mat.getId() < 2256) {

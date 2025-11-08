@@ -1,20 +1,19 @@
 package com.gmail.zariust.otherdrops.data.itemmeta;
 
+import com.gmail.zariust.otherdrops.subject.Target;
+import com.gmail.zariust.otherdrops.things.ODVariables;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
-
-import com.gmail.zariust.otherdrops.subject.Target;
-import com.gmail.zariust.otherdrops.things.ODVariables;
-
 public class OdBookMeta extends OdItemMeta {
     private final String title;
     private final String author;
-    private List<String> pages = new ArrayList<String>();
+    private final List<String> pages;
 
     public OdBookMeta(String author, String title, List<String> pages) {
         this.title = ODVariables.preParse(title);
@@ -37,35 +36,25 @@ public class OdBookMeta extends OdItemMeta {
 
         String title = "";
         String author = "";
-        List<String> pages = new ArrayList<String>();
+        List<String> pages = new ArrayList<>();
 
         for (String sub : split) {
-            String s = sub;
-            String result = "";
+            String result;
             String page = "";
 
-            result = matchSection(s, "(?i)author=(.*)");
-            if (!result.isEmpty())
-                author = result;
-            result = matchSection(s, "(?i)title=(.*)");
-            if (!result.isEmpty())
-                title = result;
-            result = matchSection(s, "(?i)page=(.*)");
-            if (!result.isEmpty())
-                page = result;
-            if (!page.isEmpty())
-                pages.add(page);
+            result = matchSection(sub, "(?i)author=(.*)");
+            if (!result.isEmpty()) author = result;
+            result = matchSection(sub, "(?i)title=(.*)");
+            if (!result.isEmpty()) title = result;
+            result = matchSection(sub, "(?i)page=(.*)");
+            if (!result.isEmpty()) page = result;
+            if (!page.isEmpty()) pages.add(page);
         }
 
-        if (!author.isEmpty() || !title.isEmpty() || !(pages.isEmpty()))
-            return new OdBookMeta(author, title, pages);
-        else
-            return null;
+        if (!author.isEmpty() || !title.isEmpty() || !(pages.isEmpty())) return new OdBookMeta(author, title, pages);
+        else return null;
     }
 
-    /**
-     * @param s
-     */
     private static String matchSection(String s, String regex) {
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(s);

@@ -20,15 +20,12 @@ public class MultipleEntityData extends CreatureData {
 
     @Override
     public boolean matches(Data d) {
-        if(d instanceof MultipleEntityData) {
-            MultipleEntityData inputData = (MultipleEntityData) d;
-            for(Map.Entry<Class<?>, CreatureData> entry : subData.entrySet()) {
+        if (d instanceof MultipleEntityData inputData) {
+            for (Map.Entry<Class<?>, CreatureData> entry : subData.entrySet()) {
                 String value = entry.getValue().toString();
-                if(value.isEmpty())
-                    value = "*";
+                if (value.isEmpty()) value = "*";
                 Log.logInfo("Comparing data " + entry.getValue().getClass().getSimpleName() + " " + value + " against " + inputData.getDataFromType(entry.getKey()), Verbosity.HIGHEST);
-                if(!entry.getValue().matches(inputData.getDataFromType(entry.getKey())))
-                    return false;
+                if (!entry.getValue().matches(inputData.getDataFromType(entry.getKey()))) return false;
             }
         }
         return true;
@@ -36,7 +33,7 @@ public class MultipleEntityData extends CreatureData {
 
     @Override
     public void setOn(Entity mob, Player owner) {
-        for(CreatureData data : subData.values()) {
+        for (CreatureData data : subData.values()) {
             data.setOn(mob, owner);
         }
     }
@@ -51,18 +48,17 @@ public class MultipleEntityData extends CreatureData {
 
     @Override
     public String toString() {
-        String val = "";
-        for(CreatureData data : subData.values()) {
-            val += data.toString();
-            val += "!";
+        StringBuilder val = new StringBuilder();
+        for (CreatureData data : subData.values()) {
+            val.append(data.toString());
+            val.append("!");
         }
-        return val;
+        return val.toString();
     }
 
     @Override
     public String get(Enum<?> creature) {
-        if (creature instanceof EntityType)
-            return this.toString();
+        if (creature instanceof EntityType) return this.toString();
         return "";
     }
 }

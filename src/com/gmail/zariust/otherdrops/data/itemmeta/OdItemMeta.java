@@ -11,23 +11,14 @@ import com.gmail.zariust.otherdrops.subject.Target;
 public abstract class OdItemMeta {
 
     public static OdItemMeta parse(String sub, ItemData.ItemMetaType metaType) {
-        switch (metaType) {
-            case POTION:
-                return OdPotionMeta.parse(sub);
-            case BOOK:
-                return OdBookMeta.parse(sub);
-            case LEATHER:
-                return OdLeatherArmorMeta.parse(sub);
-            case SKULL:
-                return OdSkullMeta.parse(sub);
-            case ENCHANTED_BOOK:
-                return OdEnchantedBookMeta.parse(sub);
-            case FIREWORK:
-                return OdFireworkMeta.parse(sub);
-            default:
-                break;
-        }
-        return null;
+        return switch (metaType) {
+            case POTION -> OdPotionMeta.parse(sub);
+            case BOOK -> OdBookMeta.parse(sub);
+            case LEATHER -> OdLeatherArmorMeta.parse(sub);
+            case SKULL -> OdSkullMeta.parse(sub);
+            case ENCHANTED_BOOK -> OdEnchantedBookMeta.parse(sub);
+            case FIREWORK -> OdFireworkMeta.parse(sub);
+        };
     }
 
     public abstract ItemStack setOn(ItemStack stack, Target source);
@@ -43,28 +34,24 @@ public abstract class OdItemMeta {
      * otherwise match using DyeColor. (needed as there is no way to go from the
      * string directly to a "Color"). Support "R/G/B" format using hex format
      * eg. "#FF0000" = red
-     * 
-     * @author zarius
+     *
      * @param sub
      * @return
+     * @author zarius
      */
     public static Color getColorFrom(String sub) {
         Log.dMsg("PARSING COLOR!" + sub);
         Color color = null;
         if (sub.matches("(?i)#[0-9A-F]{6}")) {
             sub = sub.substring(1);
-            Log.dMsg("PARSING COLOR!" + sub.substring(0, 2) + "."
-                    + sub.substring(2, 4) + "." + sub.substring(4));
+            Log.dMsg("PARSING COLOR!" + sub.substring(0, 2) + "." + sub.substring(2, 4) + "." + sub.substring(4));
 
             int red = Integer.valueOf(sub.substring(0, 2), 16);
             int blue = Integer.valueOf(sub.substring(2, 4), 16);
             int green = Integer.valueOf(sub.substring(4, 6), 16);
-            if (blue > 255)
-                blue = 255;
-            if (red > 255)
-                red = 255;
-            if (green > 255)
-                green = 255;
+            if (blue > 255) blue = 255;
+            if (red > 255) red = 255;
+            if (green > 255) green = 255;
 
             color = Color.fromBGR(blue, green, red);
         } else if (sub.matches("(?i)RICH.*")) {
@@ -78,14 +65,11 @@ public abstract class OdItemMeta {
                 color = Color.YELLOW;
             }
         } else {
-            // FIXME: add ability to use Color values too - they are
-            // richer/stronger colors
+            // FIXME: add ability to use Color values too - they are richer/stronger colors
             color = DyeColor.valueOf(sub.toUpperCase()).getColor();
         }
         return color;
     }
 
-    // TODO:
-
-    // add .matches & .parseFromItem to each class
+    // TODO: add .matches & .parseFromItem to each class
 }

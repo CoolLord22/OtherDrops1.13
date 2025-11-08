@@ -43,7 +43,7 @@ public class NoteData implements Data, RangeableData {
     }
 
     @SuppressWarnings("deprecation")
-	@Override
+    @Override
     public int getData() {
         return note.getId();
     }
@@ -57,8 +57,7 @@ public class NoteData implements Data, RangeableData {
     public boolean matches(Data d) {
         if (!(d instanceof NoteData noteData)) // matches target isnt note data
             return false;
-        if (note != null && !note.equals(noteData.note))
-            return false;
+        if (note != null && !note.equals(noteData.note)) return false;
         return instrument == null || instrument.equals(noteData.instrument);
     }
 
@@ -66,10 +65,9 @@ public class NoteData implements Data, RangeableData {
     public String get(Enum<?> mat) {
         String result = "";
         if (mat == Material.NOTE_BLOCK) {
-            if(note != null) {
+            if (note != null) {
                 result += note.getTone();
-                if (note.isSharped())
-                    result += "#";
+                if (note.isSharped()) result += "#";
                 result += note.getOctave();
             }
             result += "/" + instrument.name();
@@ -94,25 +92,22 @@ public class NoteData implements Data, RangeableData {
     }
 
     public static Data parse(String state) throws IllegalArgumentException {
-        if (state == null || state.isEmpty())
-            return null;
+        if (state == null || state.isEmpty()) return null;
         String[] args = state.split("/");
         Note note = null;
         Instrument instrument = null;
-        for(String arg : args) {
+        for (String arg : args) {
             try {
                 instrument = Instrument.valueOf(arg.toUpperCase());
-            } catch (IllegalArgumentException ignored) {}
+            } catch (IllegalArgumentException ignored) {
+            }
             try {
-                if (arg.startsWith("RANGE"))
-                    return RangeData.parse(arg);
+                if (arg.startsWith("RANGE")) return RangeData.parse(arg);
                 if (arg.matches("([A-G])(#?)([0-2]?)")) {
                     Note.Tone tone = Note.Tone.valueOf(arg.substring(0, 1));
                     byte octave;
-                    if (arg.matches("..?[0-2]"))
-                        octave = Byte.parseByte(arg.substring(arg.length() - 1));
-                    else
-                        octave = 1;
+                    if (arg.matches("..?[0-2]")) octave = Byte.parseByte(arg.substring(arg.length() - 1));
+                    else octave = 1;
                     note = new Note(octave, tone, arg.contains("#"));
                 } else if (arg.matches("\\d{1,2}")) { // Check if it's a 1- or 2-digit number
                     int noteValue = Integer.parseInt(arg);
@@ -120,13 +115,14 @@ public class NoteData implements Data, RangeableData {
                         note = new Note(noteValue);
                     }
                 }
-            } catch (IllegalArgumentException ignored) {}
+            } catch (IllegalArgumentException ignored) {
+            }
         }
         return new NoteData(note, instrument);
     }
 
     @SuppressWarnings("deprecation")
-	@Override
+    @Override
     public int hashCode() {
         // Note doesn't define a hashCode() and is not an enum, so use the note
         // ID instead

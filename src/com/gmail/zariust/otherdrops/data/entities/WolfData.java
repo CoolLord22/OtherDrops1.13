@@ -12,8 +12,8 @@ import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 
 public class WolfData extends CreatureData {
-    Boolean     angry       = null; // null = wildcard
-    DyeColor    collarColor = null;
+    Boolean angry; // null = wildcard
+    DyeColor collarColor;
 
     public WolfData(Boolean angry, DyeColor collarColor) {
         this.angry = angry;
@@ -22,29 +22,17 @@ public class WolfData extends CreatureData {
 
     @Override
     public void setOn(Entity mob, Player owner) {
-        if (mob instanceof Wolf) {
-            Wolf z = (Wolf) mob;
-            if (angry != null)
-                if (angry)
-                    z.setAngry(true);
-            if (collarColor != null)
-                z.setCollarColor(collarColor);
+        if (mob instanceof Wolf z) {
+            if (angry != null) if (angry) z.setAngry(true);
+            if (collarColor != null) z.setCollarColor(collarColor);
         }
     }
 
     @Override
     public boolean matches(Data d) {
-        if (!(d instanceof WolfData))
-            return false;
-        WolfData vd = (WolfData) d;
-
-        if (this.angry != null)
-            if (this.angry != vd.angry)
-                return false;
-
-        if (this.collarColor != null)
-            if (this.collarColor != vd.collarColor)
-                return false;
+        if (!(d instanceof WolfData vd)) return false;
+        if (this.angry != null) if (this.angry != vd.angry) return false;
+        if (this.collarColor != null) if (this.collarColor != vd.collarColor) return false;
 
         return true;
     }
@@ -56,33 +44,27 @@ public class WolfData extends CreatureData {
             Log.logInfo("WolfData: error, parseFromEntity given different creature - this shouldn't happen.");
             return null;
         }
-
     }
 
     public static CreatureData parseFromString(String state) {
-        // return new CreatureData(((Wolf)entity).isAngry() ? 1 :
-        // (((Wolf)entity).isTamed() ? 2 : 0));
+        // return new CreatureData(((Wolf)entity).isAngry() ? 1 : (((Wolf)entity).isTamed() ? 2 : 0));
         Boolean angry = null;
         DyeColor collarColor = null;
 
         if (!state.isEmpty() && !state.equals("0")) {
-            String[] split = state
-                    .split(OtherDropsConfig.CreatureDataSeparator);
+            String[] split = state.split(OtherDropsConfig.CreatureDataSeparator);
 
             for (String sub : split) {
                 sub = sub.toLowerCase().replaceAll("[\\s-_]", "");
-                if (sub.equalsIgnoreCase("angry"))
-                    angry = true;
-                else if (sub.matches("neutral"))
-                    angry = false;
+                if (sub.equalsIgnoreCase("angry")) angry = true;
+                else if (sub.matches("neutral")) angry = false;
                 else {
-                    for(DyeColor color : DyeColor.values()) {
+                    for (DyeColor color : DyeColor.values()) {
                         if (sub.replaceAll("!", "").equals(color.name().toLowerCase().replaceAll("[\\s-_]", "")))
                             collarColor = color;
                     }
                 }
-                if (angry == null && collarColor == null)
-                    Log.logInfo("WolfData: invalid data passed (" + sub + ")");
+                if (angry == null && collarColor == null) Log.logInfo("WolfData: invalid data passed (" + sub + ")");
             }
         }
 
@@ -105,8 +87,7 @@ public class WolfData extends CreatureData {
 
     @Override
     public String get(Enum<?> creature) {
-        if (creature instanceof EntityType)
-            return this.toString();
+        if (creature instanceof EntityType) return this.toString();
         return "";
     }
 

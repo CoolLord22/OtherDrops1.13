@@ -11,8 +11,8 @@ import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 
 public class HorseData extends CreatureData {
-    Horse.Color horseColor = null; // null = wildcard
-    Horse.Style horseStyle = null; // null = wildcard
+    Horse.Color horseColor; // null = wildcard
+    Horse.Style horseStyle; // null = wildcard
 
     public HorseData(Horse.Color horseColor, Horse.Style horseStyle) {
         this.horseColor = horseColor;
@@ -21,30 +21,17 @@ public class HorseData extends CreatureData {
 
     @Override
     public void setOn(Entity mob, Player owner) {
-        if (mob instanceof Horse) {
-            Horse z = (Horse) mob;
-            if (horseColor != null)
-                z.setColor(horseColor);
-            if (horseStyle != null)
-                z.setStyle(horseStyle);
+        if (mob instanceof Horse z) {
+            if (horseColor != null) z.setColor(horseColor);
+            if (horseStyle != null) z.setStyle(horseStyle);
         }
     }
 
     @Override
     public boolean matches(Data d) {
-        if (!(d instanceof HorseData))
-            return false;
-
-        HorseData vd = (HorseData) d;
-
-        if (this.horseColor != null)
-            if (this.horseColor != vd.horseColor)
-                return false;
-
-        if (this.horseStyle != null)
-            if (this.horseStyle != vd.horseStyle)
-                return false;
-
+        if (!(d instanceof HorseData vd)) return false;
+        if (this.horseColor != null) if (this.horseColor != vd.horseColor) return false;
+        if (this.horseStyle != null) if (this.horseStyle != vd.horseStyle) return false;
         return true;
     }
 
@@ -55,57 +42,54 @@ public class HorseData extends CreatureData {
             Log.logInfo("HorseData: error, parseFromEntity given different creature - this shouldn't happen.");
             return null;
         }
-
     }
 
     public static CreatureData parseFromString(String state) {
         Horse.Color thisColor = null; // null = wildcard
         Horse.Style thisStyle = null; // null = wildcard
 
-
         if (!state.isEmpty() && !state.equals("0")) {
-            String[] split = state
-                    .split(OtherDropsConfig.CreatureDataSeparator);
+            String[] split = state.split(OtherDropsConfig.CreatureDataSeparator);
 
             for (String sub : split) {
                 sub = sub.toLowerCase().replaceAll("[\\s-_]", "");
                 //start color matching
                 if (sub.contains("!colorblack")) {
-                	thisColor = (Horse.Color.BLACK);
+                    thisColor = (Horse.Color.BLACK);
                 }
                 if (sub.contains("!colorbrown")) {
-                	thisColor = (Horse.Color.BROWN);
+                    thisColor = (Horse.Color.BROWN);
                 }
                 if (sub.contains("!colordarkbrown")) {
-                	thisColor = (Horse.Color.DARK_BROWN);
+                    thisColor = (Horse.Color.DARK_BROWN);
                 }
                 if (sub.contains("!colorchestnut")) {
-                	thisColor = (Horse.Color.CHESTNUT);
+                    thisColor = (Horse.Color.CHESTNUT);
                 }
                 if (sub.contains("!colorcreamy")) {
-                	thisColor = (Horse.Color.CREAMY);
+                    thisColor = (Horse.Color.CREAMY);
                 }
                 if (sub.contains("!colorgray")) {
-                	thisColor = (Horse.Color.GRAY);
+                    thisColor = (Horse.Color.GRAY);
                 }
                 if (sub.contains("!colorwhite")) {
-                	thisColor = (Horse.Color.WHITE);
+                    thisColor = (Horse.Color.WHITE);
                 }
-                
+
                 if (sub.contains("!styleblackdots")) {
-                	thisStyle = (Horse.Style.BLACK_DOTS);
+                    thisStyle = (Horse.Style.BLACK_DOTS);
                 }
                 if (sub.contains("!stylenone")) {
-                	thisStyle = (Horse.Style.NONE);
+                    thisStyle = (Horse.Style.NONE);
                 }
                 if (sub.contains("!stylewhite")) {
-                	thisStyle = (Horse.Style.WHITE);
+                    thisStyle = (Horse.Style.WHITE);
                 }
                 if (sub.contains("!stylewhitefield")) {
-                	thisStyle = (Horse.Style.WHITEFIELD);
+                    thisStyle = (Horse.Style.WHITEFIELD);
                 }
                 if (sub.contains("!stylewhitedots")) {
-                	thisStyle = (Horse.Style.WHITE_DOTS);
+                    thisStyle = (Horse.Style.WHITE_DOTS);
                 }
             }
         }
@@ -116,17 +100,14 @@ public class HorseData extends CreatureData {
     @Override
     public String toString() {
         String val = "";
-        if (horseColor != null)
-            val += "!!" + horseColor;
-        if (horseStyle != null)
-            val += "!!" + horseStyle;
+        if (horseColor != null) val += "!!" + horseColor;
+        if (horseStyle != null) val += "!!" + horseStyle;
         return val;
     }
 
     @Override
     public String get(Enum<?> creature) {
-        if (creature instanceof EntityType)
-            return this.toString();
+        if (creature instanceof EntityType) return this.toString();
         return "";
     }
 

@@ -22,8 +22,6 @@ import com.gmail.zariust.otherdrops.drop.DropResult;
 import com.gmail.zariust.otherdrops.drop.DropType;
 import com.gmail.zariust.otherdrops.drop.DropType.DropFlags;
 import com.gmail.zariust.otherdrops.options.IntRange;
-import com.gmail.zariust.otherdrops.subject.Target;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
@@ -39,20 +37,16 @@ public class VehicleData implements Data {
     }
 
     CreatureDrop creature;
-    // This flag has meaning only if creature is null
-    // null = occupied by something, false = empty, true = occupied by player
-    // null = may or may not be occupied
+    // This flag has meaning only if creature is null null = occupied by something, false = empty, true = occupied by
+    // player null = may or may not be occupied
     VehicleState state;
 
     public VehicleData(Vehicle vehicle) {
         List<Entity> passenger = vehicle.getPassengers();
-        for(Entity ent : passenger) {
-            if (ent instanceof Player)
-                state = VehicleState.PLAYER;
-            else if (ent != null)
-                creature = new CreatureDrop(ent.getType());
-            if (creature == null && state == null)
-                state = VehicleState.EMPTY;
+        for (Entity ent : passenger) {
+            if (ent instanceof Player) state = VehicleState.PLAYER;
+            else if (ent != null) creature = new CreatureDrop(ent.getType());
+            if (creature == null && state == null) state = VehicleState.EMPTY;
         }
     }
 
@@ -67,48 +61,35 @@ public class VehicleData implements Data {
 
     @Override
     public int getData() {
-        if (creature == null)
-            return state == null ? 0 : -state.ordinal();
+        if (creature == null) return state == null ? 0 : -state.ordinal();
         return creature.getCreature().ordinal() + 1;
     }
 
     @Override
     public void setData(int d) {
-        if (d > 0)
-            creature = new CreatureDrop(EntityType.values()[d - 1]);
+        if (d > 0) creature = new CreatureDrop(EntityType.values()[d - 1]);
         else {
             creature = null;
-            if (d > -VehicleState.values().length)
-                state = VehicleState.values()[-d];
-            else
-                state = VehicleState.EMPTY;
+            if (d > -VehicleState.values().length) state = VehicleState.values()[-d];
+            else state = VehicleState.EMPTY;
         }
     }
 
     @Override
     public boolean matches(Data d) {
-        // TODO: This comparison is a bit convoluted; need to verify it really
-        // works
-        if (!(d instanceof VehicleData))
-            return false;
-        VehicleData vehicle = (VehicleData) d;
+        // TODO: This comparison is a bit convoluted; need to verify it really works
+        if (!(d instanceof VehicleData vehicle)) return false;
         if (creature == null) {
-            // If creature and state are both null, it matches any vehicle data
-            // (Though this should not occur in practice.)
-            if (state == null)
-                return true;
-            switch (state) {
-            case EMPTY: // If state is empty, it only matches empty
-                return vehicle.creature == null
-                        && vehicle.state == VehicleState.EMPTY;
-            case OCCUPIED: // If state is occupied, it matches anything except
-                           // empty
-                return vehicle.creature != null
-                        || vehicle.state != VehicleState.EMPTY;
-            case PLAYER: // If state is player, it only matches player
-                return vehicle.creature == null
-                        && vehicle.state == VehicleState.PLAYER;
-            }
+            // If creature and state are both null, it matches any vehicle data (Though this should not occur in practice.)
+            if (state == null) return true;
+            return switch (state) {
+                case EMPTY -> // If state is empty, it only matches empty
+                        vehicle.creature == null && vehicle.state == VehicleState.EMPTY;
+                case OCCUPIED -> // If state is occupied, it matches anything except empty
+                        vehicle.creature != null || vehicle.state != VehicleState.EMPTY;
+                case PLAYER -> // If state is player, it only matches player
+                        vehicle.creature == null && vehicle.state == VehicleState.PLAYER;
+            };
         }
         // Otherwise, must be the same creature
         return creature == vehicle.creature;
@@ -116,10 +97,7 @@ public class VehicleData implements Data {
 
     @Override
     public String get(Enum<?> mat) {
-        if (mat == Material.ACACIA_BOAT || mat == Material.BIRCH_BOAT ||
-        	mat == Material.DARK_OAK_BOAT || mat == Material.OAK_BOAT ||
-        	mat == Material.SPRUCE_BOAT || mat == Material.JUNGLE_BOAT ||
-        	mat == Material.MINECART)
+        if (mat == Material.ACACIA_BOAT || mat == Material.BIRCH_BOAT || mat == Material.DARK_OAK_BOAT || mat == Material.OAK_BOAT || mat == Material.SPRUCE_BOAT || mat == Material.JUNGLE_BOAT || mat == Material.MINECART)
             return creature == null ? (state == null ? "" : state.toString()) : creature.toString();
         return "";
     }
@@ -128,14 +106,11 @@ public class VehicleData implements Data {
     public void setOn(Entity entity, Player witness) {
         Entity mob;
         if (creature == null) {
-            if (state == VehicleState.EMPTY)
-                return;
+            if (state == VehicleState.EMPTY) return;
             mob = witness;
         } else {
-            DropFlags flags = DropType.flags(witness, null, false,true, false,
-                    OtherDrops.rng, "", "", "");
-            DropResult dropResult = creature.drop(entity.getLocation(),
-                    (Target) null, (Location) null, 1, flags);
+            DropFlags flags = DropType.flags(witness, null, false, true, false, OtherDrops.rng, "", "", "");
+            DropResult dropResult = creature.drop(entity.getLocation(), null, null, 1, flags);
             mob = dropResult.getDropped().get(dropResult.getDropped().size() - 1);
             // mob = entity.getWorld().spawnCreature(entity.getLocation(), creature);
         }
@@ -149,26 +124,22 @@ public class VehicleData implements Data {
 
     @SuppressWarnings("incomplete-switch")
     public static Data parse(Material mat, String state) {
-        if (state == null || state.isEmpty())
-            return null;
+        if (state == null || state.isEmpty()) return null;
         switch (mat) {
-        case MINECART:
-            CreatureDrop creature = (CreatureDrop) CreatureDrop.parse(state,
-                    "", new IntRange(1), 100);// CommonEntity.getCreatureEntityType(state);
-            if (creature != null)
-                return new VehicleData(creature);
-            // Fallthrough intentional
-        case OAK_BOAT:
-        case SPRUCE_BOAT:
-        case BIRCH_BOAT:
-        case JUNGLE_BOAT:
-        case ACACIA_BOAT:
-        case DARK_OAK_BOAT:
-            try {
-                VehicleState vs = VehicleState.valueOf(state);
-                return new VehicleData(vs);
-            } catch (IllegalArgumentException e) {
-            }
+            case MINECART:
+                CreatureDrop creature = (CreatureDrop) CreatureDrop.parse(state, "", new IntRange(1), 100);// CommonEntity.getCreatureEntityType(state);
+                if (creature != null) return new VehicleData(creature); // Fallthrough intentional
+            case OAK_BOAT:
+            case SPRUCE_BOAT:
+            case BIRCH_BOAT:
+            case JUNGLE_BOAT:
+            case ACACIA_BOAT:
+            case DARK_OAK_BOAT:
+                try {
+                    VehicleState vs = VehicleState.valueOf(state);
+                    return new VehicleData(vs);
+                } catch (IllegalArgumentException ignored) {
+                }
         }
         return null;
     }
@@ -176,8 +147,7 @@ public class VehicleData implements Data {
     @Override
     public int hashCode() {
         if (creature == null) {
-            if (state == null)
-                return 0;
+            if (state == null) return 0;
             return state.hashCode();
         }
         return creature.hashCode();

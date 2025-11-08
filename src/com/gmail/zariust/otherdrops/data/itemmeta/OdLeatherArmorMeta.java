@@ -30,8 +30,7 @@ public class OdLeatherArmorMeta extends OdItemMeta {
         if (color != null) {
             return new OdLeatherArmorMeta(color);
         } else {
-            Log.logInfo("ItemDrop: error - leather armour color not valid.",
-                    Verbosity.NORMAL);
+            Log.logInfo("ItemDrop: error - leather armour color not valid.", Verbosity.NORMAL);
             return null;
         }
     }

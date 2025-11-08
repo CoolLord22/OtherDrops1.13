@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Fox;
 
 public class FoxData extends CreatureData {
-    Fox.Type type  = null; // null = wildcard
+    Fox.Type type; // null = wildcard
 
     public FoxData(Fox.Type type) {
         this.type = type;
@@ -18,29 +18,20 @@ public class FoxData extends CreatureData {
 
     @Override
     public void setOn(Entity entity, Player owner) {
-        if (entity instanceof Fox) {
-            Fox fox = (Fox) entity;
-            if (type != null)
-                fox.setFoxType(type);
+        if (entity instanceof Fox fox) {
+            if (type != null) fox.setFoxType(type);
         }
     }
 
     @Override
     public boolean matches(Data d) {
-        if (!(d instanceof FoxData))
-            return false;
-        FoxData vd = (FoxData) d;
-
-        if (this.type != null)
-            if (this.type != vd.type)
-                return false;
-
+        if (!(d instanceof FoxData vd)) return false;
+        if (this.type != null) if (this.type != vd.type) return false;
         return true;
     }
 
     public static CreatureData parseFromEntity(Entity entity) {
-        if (entity instanceof Fox) {
-            Fox fox = (Fox) entity;
+        if (entity instanceof Fox fox) {
             return new FoxData(fox.getFoxType());
         } else {
             Log.logInfo("FoxData: error, parseFromEntity given different creature - this shouldn't happen.");
@@ -54,33 +45,27 @@ public class FoxData extends CreatureData {
 
         if (!state.isEmpty() && !state.equals("0")) {
             String[] split = state.split(OtherDropsConfig.CreatureDataSeparator);
-
             for (String sub : split) {
                 sub = sub.toLowerCase().replaceAll("[\\s-_]", "");
                 for (Fox.Type type : Fox.Type.values()) {
-                    if (sub.equals(type.name().toLowerCase().replaceAll("[\\s-_]", "")))
-                        thisType = type;
+                    if (sub.equals(type.name().toLowerCase().replaceAll("[\\s-_]", ""))) thisType = type;
                 }
-                if (thisType == null)
-                    Log.logInfo("FoxData: type not found (" + sub + ")");
+                if (thisType == null) Log.logInfo("FoxData: type not found (" + sub + ")");
             }
         }
-
         return new FoxData(thisType);
     }
 
     @Override
     public String toString() {
         String val = "";
-        if (type != null)
-            val += type.toString();
+        if (type != null) val += type.toString();
         return val;
     }
 
     @Override
     public String get(Enum<?> creature) {
-        if (creature instanceof EntityType)
-            return this.toString();
+        if (creature instanceof EntityType) return this.toString();
         return "";
     }
 }

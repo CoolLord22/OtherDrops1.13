@@ -11,9 +11,8 @@ import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 
 public class CreeperData extends CreatureData {
-    Creeper          dummy;         // used to represent main Entity class for
-                                     // this data object
-    Boolean          powered = null; // null = wildcard
+    Creeper dummy; // used to represent main Entity class for this data object
+    Boolean powered; // null = wildcard
 
     public CreeperData(Boolean powered) {
         this.powered = powered;
@@ -21,30 +20,21 @@ public class CreeperData extends CreatureData {
 
     @Override
     public void setOn(Entity mob, Player owner) {
-        if (mob instanceof Creeper) {
+        if (mob instanceof Creeper creeper) {
             if (powered != null)
-                if (powered) {
-                    ((Creeper) mob).setPowered(true);
-                }
+                if (powered) creeper.setPowered(true);
         }
     }
 
     @Override
     public boolean matches(Data d) {
-        if (!(d instanceof CreeperData))
-            return false;
-
-        CreeperData vd = (CreeperData) d;
-        if (this.powered != null)
-            if (this.powered != vd.powered)
-                return false;
-
+        if (!(d instanceof CreeperData vd)) return false;
+        if (this.powered != null) if (this.powered != vd.powered) return false;
         return true;
     }
 
     public static CreatureData parseFromEntity(Entity entity) {
-        if (entity == null)
-            return null;
+        if (entity == null) return null;
         if (entity instanceof Creeper) {
             return new CreeperData(((Creeper) entity).isPowered());
         } else {
@@ -56,19 +46,15 @@ public class CreeperData extends CreatureData {
 
     public static CreatureData parseFromString(String state) {
         Boolean powered = null;
-        LivingEntityData leData = (LivingEntityData) LivingEntityData
-                .parseFromString(state);
+        LivingEntityData leData = (LivingEntityData) LivingEntityData.parseFromString(state);
 
         if (!state.isEmpty() && !state.equals("0")) {
-            String[] split = state
-                    .split(OtherDropsConfig.CreatureDataSeparator);
+            String[] split = state.split(OtherDropsConfig.CreatureDataSeparator);
 
             for (String sub : split) {
                 sub = sub.toLowerCase().replaceAll("[\\s-_]", "");
-                if (sub.equalsIgnoreCase("powered"))
-                    powered = true;
-                if (sub.equalsIgnoreCase("unpowered"))
-                    powered = false;
+                if (sub.equalsIgnoreCase("powered")) powered = true;
+                if (sub.equalsIgnoreCase("unpowered")) powered = false;
             }
         }
 
@@ -87,8 +73,7 @@ public class CreeperData extends CreatureData {
 
     @Override
     public String get(Enum<?> creature) {
-        if (creature instanceof EntityType)
-            return this.toString();
+        if (creature instanceof EntityType) return this.toString();
         return "";
     }
 
