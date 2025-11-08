@@ -16,29 +16,28 @@
 
 package com.gmail.zariust.otherdrops.event;
 
+import com.gmail.zariust.otherdrops.data.Data;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import com.gmail.zariust.otherdrops.data.Data;
-
 public class ExclusiveMap {
-    private Random            rng;
-    private DropsList         currentList;
+    private final Random rng;
+    private final DropsList currentList;
     Map<String, ExclusiveKey> map;
 
     public ExclusiveMap(DropsList list, AbstractDropEvent parentDrop) {
         currentList = list;
         rng = parentDrop.rng;
-        map = new HashMap<String, ExclusiveKey>();
+        map = new HashMap<>();
     }
 
     public class ExclusiveKey {
         public double select, cumul;
 
         ExclusiveKey(String key, Data data) {
-            select = rng.nextDouble()
-                    * currentList.getExclusiveTotal(key, data);
+            select = rng.nextDouble() * currentList.getExclusiveTotal(key, data);
             cumul = 0;
         }
     }

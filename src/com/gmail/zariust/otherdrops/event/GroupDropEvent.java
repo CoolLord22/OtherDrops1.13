@@ -20,7 +20,7 @@ import com.gmail.zariust.otherdrops.parameters.Trigger;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 public class GroupDropEvent extends CustomDrop {
-    private String    name;
+    private String name;
     private DropsList list = null;
 
     public GroupDropEvent(Target targ, Trigger trigger) {
@@ -66,10 +66,8 @@ public class GroupDropEvent extends CustomDrop {
     public void run() {
         ExclusiveMap exclusives = new ExclusiveMap(getList(), this);
         for (CustomDrop drop : getList()) {
-            if (!drop.matches(currentEvent))
-                continue;
-            if (drop.willDrop(exclusives))
-                drop.perform(currentEvent);
+            if (!drop.matches(currentEvent)) continue;
+            if (drop.willDrop(exclusives)) drop.perform(currentEvent);
         }
     }
 

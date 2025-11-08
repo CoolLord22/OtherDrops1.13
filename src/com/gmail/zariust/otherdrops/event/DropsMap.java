@@ -16,35 +16,31 @@
 
 package com.gmail.zariust.otherdrops.event;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.gmail.zariust.otherdrops.parameters.Trigger;
 import com.gmail.zariust.otherdrops.subject.Target;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class DropsMap {
-    private Map<Trigger, Map<String, DropsList>> blocksHash = new HashMap<Trigger, Map<String, DropsList>>();
+    private final Map<Trigger, Map<String, DropsList>> blocksHash = new HashMap<>();
 
     public void addDrop(CustomDrop drop) {
         if (!blocksHash.containsKey(drop.getTrigger()))
-            blocksHash.put(drop.getTrigger(), new HashMap<String, DropsList>());
+            blocksHash.put(drop.getTrigger(), new HashMap<>());
         Map<String, DropsList> triggerHash = blocksHash.get(drop.getTrigger());
         for (Target target : drop.getTarget().canMatch()) {
             String key = target.getKey();
-            if (key == null)
-                continue; // shouldn't happen though...?
-            if (!triggerHash.containsKey(key))
-                triggerHash.put(key, new DropsList());
+            if (key == null) continue; // shouldn't happen though...?
+            if (!triggerHash.containsKey(key)) triggerHash.put(key, new DropsList());
             DropsList drops = triggerHash.get(key);
             drops.add(drop);
         }
     }
 
     public DropsList getList(Trigger trigger, Target target) {
-        if (!blocksHash.containsKey(trigger))
-            return null;
-        if (target == null)
-            return null;
+        if (!blocksHash.containsKey(trigger)) return null;
+        if (target == null) return null;
         return blocksHash.get(trigger).get(target.getKey());
     }
 
@@ -64,8 +60,7 @@ public class DropsMap {
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof DropsMap))
-            return false;
+        if (!(other instanceof DropsMap)) return false;
         return blocksHash.equals(((DropsMap) other).blocksHash);
     }
 

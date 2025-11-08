@@ -16,42 +16,42 @@
 
 package com.gmail.zariust.otherdrops.event;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
+import com.gmail.zariust.otherdrops.drop.DropType;
+import com.gmail.zariust.otherdrops.drop.ItemDrop;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.options.SoundEffect;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 import com.gmail.zariust.otherdrops.parameters.Trigger;
+import com.gmail.zariust.otherdrops.special.SpecialResult;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.gmail.zariust.otherdrops.subject.Target;
-import com.gmail.zariust.otherdrops.drop.DropType;
-import com.gmail.zariust.otherdrops.drop.ItemDrop;
-import com.gmail.zariust.otherdrops.special.SpecialResult;
+import org.bukkit.Location;
+import org.bukkit.Material;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class SimpleDrop extends CustomDrop {
     // Actions
-    private DropType            dropped;
-    DoubleRange                 quantity;
-    private IntRange            attackerDamage;
-    private ToolDamage          toolDamage;
-    private double              dropSpread;
-    private BlockTarget         replacementBlock;
+    private DropType dropped;
+    DoubleRange quantity;
+    private IntRange attackerDamage;
+    private ToolDamage toolDamage;
+    private double dropSpread;
+    private BlockTarget replacementBlock;
     private List<SpecialResult> events;
-    private List<String>        commands;
-    private Set<SoundEffect>    effects;
-    private boolean             denied = false;
+    private List<String> commands;
+    private Set<SoundEffect> effects;
+    private boolean denied = false;
 
-    Location                    randomize;
+    Location randomize;
 
-    private Location            offset;
+    private Location offset;
 
     // Constructors
     // TODO: Expand!? Probably not necessary though...
@@ -104,21 +104,14 @@ public class SimpleDrop extends CustomDrop {
 
     @Override
     public boolean isDefault() {
-        return (dropped instanceof ItemDrop && ((ItemDrop) dropped)
-                .getMaterial() == null);
+        return (dropped instanceof ItemDrop && ((ItemDrop) dropped).getMaterial() == null);
     }
 
     @Override
     public String getDropName() {
-        if (dropped == null)
-            return "NULL";
-        else if (dropped instanceof ItemDrop
-                && ((ItemDrop) dropped).getMaterial() == null)
-            return "DEFAULT";
-        else if (dropped instanceof ItemDrop
-                && ((ItemDrop) dropped).getMaterial() == Material.AIR
-                && (getReplacementBlock() == null || getReplacementBlock()
-                        .getMaterial() == null))
+        if (dropped == null) return "NULL";
+        else if (dropped instanceof ItemDrop && ((ItemDrop) dropped).getMaterial() == null) return "DEFAULT";
+        else if (dropped instanceof ItemDrop && ((ItemDrop) dropped).getMaterial() == Material.AIR && (getReplacementBlock() == null || getReplacementBlock().getMaterial() == null))
             return "DENY";
         return dropped.toString();
     }
@@ -128,16 +121,11 @@ public class SimpleDrop extends CustomDrop {
         this.dropSpread = spread;
     }
 
-    public void setDropSpread(ConfigurationNode node, String parameterName,
-            boolean def) {
+    public void setDropSpread(ConfigurationNode node, String parameterName, boolean def) {
         Object spread = node.get(parameterName);
-        if (spread instanceof Boolean)
-            this.dropSpread = (Boolean) spread ? 100.0 : 0.0;
-        else if (spread instanceof Number)
-            this.dropSpread = OtherDropsConfig.parseChanceFrom(node,
-                    parameterName);
-        else
-            this.dropSpread = def ? 100.0 : 0.0;
+        if (spread instanceof Boolean) this.dropSpread = (Boolean) spread ? 100.0 : 0.0;
+        else if (spread instanceof Number) this.dropSpread = OtherDropsConfig.parseChanceFrom(node, parameterName);
+        else this.dropSpread = def ? 100.0 : 0.0;
     }
 
     public double getDropSpreadChance() {
@@ -145,10 +133,8 @@ public class SimpleDrop extends CustomDrop {
     }
 
     public boolean getDropSpread() {
-        if (dropSpread >= 100.0)
-            return true;
-        else if (dropSpread <= 0.0)
-            return false;
+        if (dropSpread >= 100.0) return true;
+        else if (dropSpread <= 0.0) return false;
         return rng.nextDouble() > dropSpread / 100.0;
     }
 
@@ -208,21 +194,17 @@ public class SimpleDrop extends CustomDrop {
     }
 
     public String getMessagesString() {
-        if (messages.isEmpty())
-            return "(none)";
-        else if (messages.size() == 1)
-            return quoted(messages.get(0));
-        List<String> msg = new ArrayList<String>();
+        if (messages.isEmpty()) return "(none)";
+        else if (messages.size() == 1) return quoted(messages.get(0));
+        List<String> msg = new ArrayList<>();
         for (String message : messages)
             msg.add(quoted(message));
         return msg.toString();
     }
 
     private String quoted(String string) {
-        if (!string.contains("\""))
-            return '"' + string + '"';
-        else if (!string.contains("'"))
-            return "'" + string + "'";
+        if (!string.contains("\"")) return '"' + string + '"';
+        else if (!string.contains("'")) return "'" + string + "'";
         return '"' + string.replace("\"", "\\\"") + '"';
     }
 
@@ -236,14 +218,10 @@ public class SimpleDrop extends CustomDrop {
     }
 
     public String getEffectsString() {
-        if (effects == null)
-            return null;
-        if (effects.size() > 1)
-            return effects.toString();
-        if (effects.isEmpty())
-            return "(none)";
-        List<Object> list = new ArrayList<Object>();
-        list.addAll(effects);
+        if (effects == null) return null;
+        if (effects.size() > 1) return effects.toString();
+        if (effects.isEmpty()) return "(none)";
+        List<Object> list = new ArrayList<>(effects);
         return list.get(0).toString();
     }
 
@@ -255,22 +233,15 @@ public class SimpleDrop extends CustomDrop {
         double x = maxOffset.getX();
         double y = maxOffset.getY();
         double z = maxOffset.getZ();
-        return location.add(
-                OtherDrops.rng.nextDouble() * x
-                        * (OtherDrops.rng.nextInt() > 0.5 ? 1 : -1),
-                OtherDrops.rng.nextDouble() * y
-                        * (OtherDrops.rng.nextInt() > 0.5 ? 1 : -1),
-                OtherDrops.rng.nextDouble() * z
-                        * (OtherDrops.rng.nextInt() > 0.5 ? 1 : -1));
+        return location.add(OtherDrops.rng.nextDouble() * x * (OtherDrops.rng.nextInt() > 0.5 ? 1 : -1), OtherDrops.rng.nextDouble() * y * (OtherDrops.rng.nextInt() > 0.5 ? 1 : -1), OtherDrops.rng.nextDouble() * z * (OtherDrops.rng.nextInt() > 0.5 ? 1 : -1));
     }
 
     @Override
     public String getLogMessage() {
         StringBuilder log = new StringBuilder();
         log.append(quantity);
-        log.append("x " + dropped);
-        if (getReplacementBlock() != null)
-            log.append(", leaving " + getReplacementBlock().getMaterial() + ",");
+        log.append("x ").append(dropped);
+        if (getReplacementBlock() != null) log.append(", leaving ").append(getReplacementBlock().getMaterial()).append(",");
         return super.getLogMessage().replace("%d", log.toString());
     }
 

@@ -61,27 +61,27 @@ import static com.gmail.zariust.common.Verbosity.HIGHEST;
  * An actual drop that has occurred and may match one of the configured drops.
  */
 public class OccurredEvent extends AbstractDropEvent implements Cancellable {
-    private Agent       tool;
-    private World       world;
+    private Agent tool;
+    private World world;
     private Set<String> regions;
-    private Weather     weather;
-    private BlockFace   face;
-    private Biome       biome;
-    private Location    fishingLocation;
-    private long        time;
-    private int         height;
-    private double      attackRange;
-    private int         lightLevel;
-    private int         moonPhaseLevel;
-    private Location    location;
+    private Weather weather;
+    private BlockFace face;
+    private Biome biome;
+    private Location fishingLocation;
+    private long time;
+    private int height;
+    private double attackRange;
+    private int lightLevel;
+    private int moonPhaseLevel;
+    private Location location;
     private Cancellable event;
-    private Event       realEvent;
-    private boolean     denied;
-    private boolean     overrideDefault;
-    private boolean     overrideDefaultXp;
-    private double      customDropAmount;
+    private Event realEvent;
+    private boolean denied;
+    private boolean overrideDefault;
+    private boolean overrideDefaultXp;
+    private double customDropAmount;
     private BlockTarget replaceBlockWith;
-    private boolean     overrideEquipment;
+    private boolean overrideEquipment;
     private String spawnedReason;
     private String jobName;
     private int jobLevel = -1;
@@ -91,18 +91,14 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         super(new BlockTarget(evt.getBlock()), Trigger.BREAK);
         event = evt;
         Block block = evt.getBlock();
-        List<Block> blocks = evt.getPlayer().getLastTwoTargetBlocks(new HashSet<Material>(), 10);
+        List<Block> blocks = evt.getPlayer().getLastTwoTargetBlocks(new HashSet<>(), 10);
         if (blocks.size() > 1) {
             face = blocks.get(1).getFace(blocks.get(0));
         }
         setLocationWorldBiomeLight(block);
         setWeatherTimeHeight(location);
         setTool(evt.getPlayer(), EquipmentSlot.HAND); // Block break can only be from main hand
-        attackRange = measureRange(
-                location,
-                evt.getPlayer().getLocation(),
-                "Block '" + block.getType() + "' broken by '"
-                        + tool.toString() + "'");
+        attackRange = measureRange(location, evt.getPlayer().getLocation(), "Block '" + block.getType() + "' broken by '" + tool.toString() + "'");
         setRegions();
     }
 
@@ -112,8 +108,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         event = new Cancellable() {
             // Storing as an array is a crude way to get a copy
             @SuppressWarnings("unused")
-			private final ItemStack[] drops = evt.getDrops().toArray(
-                                                    new ItemStack[0]);
+            private final ItemStack[] drops = evt.getDrops().toArray(new ItemStack[0]);
 
             @Override
             public boolean isCancelled() {
@@ -122,8 +117,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
 
             @Override
             public void setCancelled(boolean cancel) {
-                // no need to do anything in here as we deal with clearing drops
-                // at the end of OtherDrops.performDrops()
+                // no need to do anything in here as we deal with clearing drops at the end of OtherDrops.performDrops()
             }
         };
         Entity e = evt.getEntity();
@@ -131,16 +125,10 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         setWeatherTimeHeight(location);
         setTool(evt.getEntity().getLastDamageCause());
         if (tool == null) {
-            Log.logWarning(
-                    "EntityDeathEvent: tool is null, this shouldn't happen! Entity:"
-                            + e + " lastDamage: "
-                            + e.getLastDamageCause().getCause(),
-                    Verbosity.NORMAL);
+            Log.logWarning("EntityDeathEvent: tool is null, this shouldn't happen! Entity:" + e + " lastDamage: " + e.getLastDamageCause().getCause(), Verbosity.NORMAL);
             return;
         }
-        attackRange = measureRange(location, tool.getLocation(),
-                "Entity '" + e + "' killed by '" + tool.toString()
-                        + "'");
+        attackRange = measureRange(location, tool.getLocation(), "Entity '" + e + "' killed by '" + tool.toString() + "'");
         setRegions();
     }
 
@@ -150,17 +138,15 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         Entity e = evt.getEntity();
         setLocationWorldBiomeLight(e);
         setWeatherTimeHeight(location);
-        if (evt instanceof EntityDamageByEntityEvent) {
-            EntityDamageByEntityEvent evt2 = (EntityDamageByEntityEvent) evt;
-            if(evt2.getDamager() instanceof Player p) {
+        if (evt instanceof EntityDamageByEntityEvent evt2) {
+            if (evt2.getDamager() instanceof Player p) {
                 setTool(evt2.getDamager(), EquipmentSlotResolver.resolve(evt2.getCause(), p));
             } else {
                 setTool(evt2.getDamager(), null);
             }
             if (tool != null)
                 attackRange = measureRange(location, evt2.getDamager().getLocation(), "Entity '" + e + "' damaged by '" + tool.toString() + "'");
-        } else
-            setTool(evt.getCause());
+        } else setTool(evt.getCause());
         setRegions();
     }
 
@@ -170,28 +156,21 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         Entity e = evt.getEntity();
         setLocationWorldBiomeLight(e);
         setWeatherTimeHeight(location);
-        if (evt instanceof EntityDamageByEntityEvent) {
-            EntityDamageByEntityEvent evt2 = (EntityDamageByEntityEvent) evt;
-            if(evt2.getDamager() instanceof Player p) {
+        if (evt instanceof EntityDamageByEntityEvent evt2) {
+            if (evt2.getDamager() instanceof Player p) {
                 setTool(evt2.getDamager(), EquipmentSlotResolver.resolve(evt2.getCause(), p));
             } else {
                 setTool(evt2.getDamager(), null);
             }
             if (tool == null) {
                 if (!(e instanceof TNTPrimed)) {
-                    Log.logInfo(
-                            "EntityDamageEvent: tool is null, please inform developer if this wasn't due to TNT (or TNT minecart).",
-                            Verbosity.HIGH);
+                    Log.logInfo("EntityDamageEvent: tool is null, please inform developer if this wasn't due to TNT (or TNT minecart).", Verbosity.HIGH);
                 }
             } else {
-                Log.logInfo("Damager: " + evt2.getDamager(),
-                        Verbosity.HIGH);
-                attackRange = measureRange(location, evt2.getDamager()
-                        .getLocation(), "Entity '" + e
-                        + "' damaged by '" + tool.toString() + "'");
+                Log.logInfo("Damager: " + evt2.getDamager(), Verbosity.HIGH);
+                attackRange = measureRange(location, evt2.getDamager().getLocation(), "Entity '" + e + "' damaged by '" + tool.toString() + "'");
             }
-        } else
-            setTool(evt.getCause());
+        } else setTool(evt.getCause());
         setRegions();
     }
 
@@ -209,15 +188,10 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         event = evt;
         setLocationWorldBiomeLight(evt.getVehicle());
         setWeatherTimeHeight(location);
-        setTool(evt.getAttacker(), EquipmentSlot.HAND); // Note: getAttacker is NULL for
-                                    // environmental attack/break
-        // environmental attacks (eg. burning) do not have a location, so range
-        // is not valid.
+        setTool(evt.getAttacker(), EquipmentSlot.HAND);
+        // Note: getAttacker is NULL for environmental attack/break environmental attacks (eg. burning) do not have a location, so range is not valid.
         if (evt.getAttacker() instanceof Player) {
-            attackRange = measureRange(location, evt.getAttacker()
-                    .getLocation(), "Vehicle '"
-                    + evt.getVehicle().getType()
-                    + "' destroyed by '" + tool.toString() + "'");
+            attackRange = measureRange(location, evt.getAttacker().getLocation(), "Vehicle '" + evt.getVehicle().getType() + "' destroyed by '" + tool.toString() + "'");
         } else {
             attackRange = 0;
         }
@@ -227,21 +201,16 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
 
     public OccurredEvent(final PlayerInteractEvent evt, Block block) {
         super(new BlockTarget(block), Trigger.fromInteract(evt.getAction()));
-
-        // Since we track "cancelled" player interact events in order to support
-        // left/right clicking on air we need to make sure we do not "uncancel"
-        // to cancelled events
+        // Since we track "cancelled" player interact events in order to support left/right clicking on air we need to make sure we do not "uncancel" to cancelled events
         event = new Cancellable() {
             private boolean cancelled = false;
             {
-                if (evt.isCancelled())
-                    this.cancelled = true;
+                if (evt.isCancelled()) this.cancelled = true;
             }
 
             @Override
             public void setCancelled(boolean arg0) {
-                if (!this.cancelled)
-                    evt.setCancelled(arg0);
+                if (!this.cancelled) evt.setCancelled(arg0);
             }
 
             @Override
@@ -254,9 +223,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         setLocationWorldBiomeLight(block);
         face = evt.getBlockFace();
         setWeatherTimeHeight(location);
-        attackRange = measureRange(location, evt.getPlayer().getLocation(),
-                "Player '" + evt.getPlayer().getName() + "' interacted with "
-                        + block);
+        attackRange = measureRange(location, evt.getPlayer().getLocation(), "Player '" + evt.getPlayer().getName() + "' interacted with " + block);
         setTool(evt.getPlayer(), evt.getHand());
         setRegions();
     }
@@ -266,9 +233,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         event = evt;
         setLocationWorldBiomeLight(evt.getRightClicked());
         setWeatherTimeHeight(location);
-        attackRange = measureRange(location, evt.getPlayer().getLocation(),
-                "Player '" + evt.getPlayer().getName() + "' interacted with "
-                        + evt.getRightClicked());
+        attackRange = measureRange(location, evt.getPlayer().getLocation(), "Player '" + evt.getPlayer().getName() + "' interacted with " + evt.getRightClicked());
         setTool(evt.getPlayer(), evt.getHand());
         setRegions();
     }
@@ -313,21 +278,17 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     }
 
     // Generic constructors
+
     /**
      * Create a drop with a block as its target.
-     * 
-     * @param block
-     *            The block.
-     * @param trigger
-     *            The action that led to this drop (usually your custom
-     *            trigger).
-     * @param agent
-     *            The agent which caused this drop.
-     * @throws DropCreateException
-     *             If you try to use a wildcard target or agent.
+     *
+     * @param block   The block.
+     * @param trigger The action that led to this drop (usually your custom
+     *                trigger).
+     * @param agent   The agent which caused this drop.
+     * @throws DropCreateException If you try to use a wildcard target or agent.
      */
-    public OccurredEvent(Block block, Trigger trigger, Agent agent)
-            throws DropCreateException {
+    public OccurredEvent(Block block, Trigger trigger, Agent agent) throws DropCreateException {
         super(new BlockTarget(block), trigger);
         event = null;
         setLocationWorldBiomeLight(block);
@@ -338,14 +299,11 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
 
     /**
      * Create a drop with a block as its target and an entity agent.
-     * 
-     * @param block
-     *            The block.
-     * @param trigger
-     *            The action that led to this drop (usually your custom
-     *            trigger).
-     * @param agent
-     *            The agent which caused this drop.
+     *
+     * @param block   The block.
+     * @param trigger The action that led to this drop (usually your custom
+     *                trigger).
+     * @param agent   The agent which caused this drop.
      */
     public OccurredEvent(Block block, Trigger trigger, Entity agent) {
         super(new BlockTarget(block), trigger);
@@ -358,59 +316,43 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
 
     /**
      * Create a cancellable drop with a block as its target.
-     * 
-     * @param block
-     *            The block.
-     * @param trigger
-     *            The action that led to this drop (usually your custom
-     *            trigger).
-     * @param agent
-     *            The agent which caused this drop.
-     * @param evt
-     *            An interface through which the default behaviour of this drop
-     *            may be cancelled.
-     * @throws DropCreateException
-     *             If you try to use a wildcard target or agent.
+     *
+     * @param block   The block.
+     * @param trigger The action that led to this drop (usually your custom
+     *                trigger).
+     * @param agent   The agent which caused this drop.
+     * @param evt     An interface through which the default behaviour of this drop
+     *                may be cancelled.
+     * @throws DropCreateException If you try to use a wildcard target or agent.
      */
-    public OccurredEvent(Block block, Trigger trigger, Agent agent,
-            Cancellable evt) throws DropCreateException {
+    public OccurredEvent(Block block, Trigger trigger, Agent agent, Cancellable evt) throws DropCreateException {
         this(block, trigger, agent);
         event = evt;
     }
 
     /**
      * Create a cancellable drop with a block as its target and an entity agent.
-     * 
-     * @param block
-     *            The block.
-     * @param action
-     *            The action that led to this drop (usually your custom action).
-     * @param agent
-     *            The agent which caused this drop.
-     * @param evt
-     *            An interface through which the default behaviour of this drop
-     *            may be cancelled.
+     *
+     * @param block  The block.
+     * @param action The action that led to this drop (usually your custom action).
+     * @param agent  The agent which caused this drop.
+     * @param evt    An interface through which the default behaviour of this drop
+     *               may be cancelled.
      */
-    public OccurredEvent(Block block, Trigger action, Entity agent,
-            Cancellable evt) {
+    public OccurredEvent(Block block, Trigger action, Entity agent, Cancellable evt) {
         this(block, action, agent);
         event = evt;
     }
 
     /**
      * Create a drop with an entity as its target.
-     * 
-     * @param entity
-     *            The entity.
-     * @param action
-     *            The action that led to this drop (usually your custom action).
-     * @param agent
-     *            The agent which caused this drop.
-     * @throws DropCreateException
-     *             If you try to use a wildcard target or agent.
+     *
+     * @param entity The entity.
+     * @param action The action that led to this drop (usually your custom action).
+     * @param agent  The agent which caused this drop.
+     * @throws DropCreateException If you try to use a wildcard target or agent.
      */
-    public OccurredEvent(Entity entity, Trigger action, Agent agent)
-            throws DropCreateException {
+    public OccurredEvent(Entity entity, Trigger action, Agent agent) throws DropCreateException {
         super(getEntityTarget(entity), action);
         event = null;
         setLocationWorldBiomeLight(entity);
@@ -420,13 +362,10 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
 
     /**
      * Create a drop with an entity as its target and an entity agent.
-     * 
-     * @param entity
-     *            The entity.
-     * @param action
-     *            The action that led to this drop (usually your custom action).
-     * @param agent
-     *            The entity which caused this drop.
+     *
+     * @param entity The entity.
+     * @param action The action that led to this drop (usually your custom action).
+     * @param agent  The entity which caused this drop.
      */
     public OccurredEvent(Entity entity, Trigger action, Entity agent) {
         super(getEntityTarget(entity), action);
@@ -438,21 +377,15 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
 
     /**
      * Create a cancellable drop with an entity as its target.
-     * 
-     * @param entity
-     *            The entity.
-     * @param action
-     *            The action that led to this drop (usually your custom action).
-     * @param agent
-     *            The agent which caused this drop.
-     * @param evt
-     *            An interface through which the default behaviour of this drop
-     *            may be cancelled.
-     * @throws DropCreateException
-     *             If you try to use a wildcard target or agent.
+     *
+     * @param entity The entity.
+     * @param action The action that led to this drop (usually your custom action).
+     * @param agent  The agent which caused this drop.
+     * @param evt    An interface through which the default behaviour of this drop
+     *               may be cancelled.
+     * @throws DropCreateException If you try to use a wildcard target or agent.
      */
-    public OccurredEvent(Entity entity, Trigger action, Agent agent,
-            Cancellable evt) throws DropCreateException {
+    public OccurredEvent(Entity entity, Trigger action, Agent agent, Cancellable evt) throws DropCreateException {
         this(entity, action, agent);
         event = evt;
     }
@@ -460,37 +393,27 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     /**
      * Create a cancellable drop with an entity as its target and an entity
      * agent.
-     * 
-     * @param entity
-     *            The entity.
-     * @param action
-     *            The action that led to this drop (usually your custom action).
-     * @param agent
-     *            The entity which caused this drop.
-     * @param evt
-     *            An interface through which the default behaviour of this drop
-     *            may be cancelled.
+     *
+     * @param entity The entity.
+     * @param action The action that led to this drop (usually your custom action).
+     * @param agent  The entity which caused this drop.
+     * @param evt    An interface through which the default behaviour of this drop
+     *               may be cancelled.
      */
-    public OccurredEvent(Entity entity, Trigger action, Entity agent,
-            Cancellable evt) {
+    public OccurredEvent(Entity entity, Trigger action, Entity agent, Cancellable evt) {
         this(entity, action, agent);
         event = evt;
     }
 
     /**
      * Create a drop with an arbitrary target.
-     * 
-     * @param targ
-     *            The target which was the source of this drop.
-     * @param action
-     *            The action that led to this drop (usually your custom action).
-     * @param agent
-     *            The agent which caused this drop.
-     * @throws DropCreateException
-     *             If you try to use a wildcard target or agent.
+     *
+     * @param targ   The target which was the source of this drop.
+     * @param action The action that led to this drop (usually your custom action).
+     * @param agent  The agent which caused this drop.
+     * @throws DropCreateException If you try to use a wildcard target or agent.
      */
-    public OccurredEvent(Target targ, Trigger action, Agent agent)
-            throws DropCreateException {
+    public OccurredEvent(Target targ, Trigger action, Agent agent) throws DropCreateException {
         super(targ, action, true);
         event = null;
         setLocationWorldBiomeLight(targ);
@@ -500,18 +423,13 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
 
     /**
      * Create a drop with an arbitrary target and an entity agent.
-     * 
-     * @param targ
-     *            The target which was the source of this drop.
-     * @param action
-     *            The action that led to this drop (usually your custom action).
-     * @param agent
-     *            The entity which caused this drop.
-     * @throws DropCreateException
-     *             If you try to use a wildcard target or agent.
+     *
+     * @param targ   The target which was the source of this drop.
+     * @param action The action that led to this drop (usually your custom action).
+     * @param agent  The entity which caused this drop.
+     * @throws DropCreateException If you try to use a wildcard target or agent.
      */
-    public OccurredEvent(Target targ, Trigger action, Entity agent)
-            throws DropCreateException {
+    public OccurredEvent(Target targ, Trigger action, Entity agent) throws DropCreateException {
         super(targ, action, true);
         event = null;
         setLocationWorldBiomeLight(targ);
@@ -521,42 +439,30 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
 
     /**
      * Create a cancellable drop with an arbitrary target.
-     * 
-     * @param targ
-     *            The target which was the source of this drop.
-     * @param action
-     *            The action that led to this drop (usually your custom action).
-     * @param agent
-     *            The agent which caused this drop.
-     * @param evt
-     *            An interface through which the default behaviour of this drop
-     *            may be cancelled.
-     * @throws DropCreateException
-     *             If you try to use a wildcard target or agent.
+     *
+     * @param targ   The target which was the source of this drop.
+     * @param action The action that led to this drop (usually your custom action).
+     * @param agent  The agent which caused this drop.
+     * @param evt    An interface through which the default behaviour of this drop
+     *               may be cancelled.
+     * @throws DropCreateException If you try to use a wildcard target or agent.
      */
-    public OccurredEvent(Target targ, Trigger action, Agent agent,
-            Cancellable evt) throws DropCreateException {
+    public OccurredEvent(Target targ, Trigger action, Agent agent, Cancellable evt) throws DropCreateException {
         this(targ, action, agent);
         event = evt;
     }
 
     /**
      * Create a cancellable drop with an arbitrary target and an entity agent.
-     * 
-     * @param targ
-     *            The target which was the source of this drop.
-     * @param action
-     *            The action that led to this drop (usually your custom action).
-     * @param agent
-     *            The entity which caused this drop.
-     * @param evt
-     *            An interface through which the default behaviour of this drop
-     *            may be cancelled.
-     * @throws DropCreateException
-     *             If you try to use a wildcard target or agent.
+     *
+     * @param targ   The target which was the source of this drop.
+     * @param action The action that led to this drop (usually your custom action).
+     * @param agent  The entity which caused this drop.
+     * @param evt    An interface through which the default behaviour of this drop
+     *               may be cancelled.
+     * @throws DropCreateException If you try to use a wildcard target or agent.
      */
-    public OccurredEvent(Target targ, Trigger action, Entity agent,
-            Cancellable evt) throws DropCreateException {
+    public OccurredEvent(Target targ, Trigger action, Entity agent, Cancellable evt) throws DropCreateException {
         this(targ, action, agent);
         event = evt;
     }
@@ -571,8 +477,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         fishingLocation = evt.getHook().getLocation();
     }
 
-    // Yes, this needs to be a separate constructor as the "super" has to be on
-    // the first line and includes the action
+    // Yes, this needs to be a separate constructor as the "super" has to be on the first line and includes the action
     public OccurredEvent(PlayerFishEvent evt, String string) {
         super(new PlayerSubject(evt.getPlayer(), EquipmentSlotResolver.getHandWithMaterial(evt.getPlayer().getInventory(), Material.FISHING_ROD, true)), Trigger.FISH_CAUGHT);
         event = evt;
@@ -598,9 +503,6 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         gatherPowerEventInfo(evt, block);
     }
 
-    /**
-     * @param evt
-     */
     private void gatherPowerEventInfo(BlockRedstoneEvent evt, Block block) {
         setRealEvent(evt);
         event = new Cancellable() {
@@ -628,8 +530,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     }
 
     public OccurredEvent(PlayerJoinEvent evt) {
-        super(new PlayerSubject(evt.getPlayer().getDisplayName()),
-                Trigger.PLAYER_JOIN);
+        super(new PlayerSubject(evt.getPlayer().getDisplayName()), Trigger.PLAYER_JOIN);
         setRealEvent(evt);
         event = new Cancellable() {
             // Storing as an array is a crude way to get a copy
@@ -654,8 +555,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     }
 
     public OccurredEvent(PlayerRespawnEvent evt) {
-        super(new PlayerSubject(evt.getPlayer().getDisplayName()),
-                Trigger.PLAYER_RESPAWN);
+        super(new PlayerSubject(evt.getPlayer().getDisplayName()), Trigger.PLAYER_RESPAWN);
         setRealEvent(evt);
         event = new Cancellable() {
             // Storing as an array is a crude way to get a copy
@@ -686,28 +586,28 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         setTool(evt.getPlayer(), evt.getHand());
         setRegions();
     }
-    
+
     public OccurredEvent(JobsLevelUpEvent evt) {
-    	super(new PlayerSubject(evt.getPlayer().getPlayer(), EquipmentSlot.HAND), Trigger.JOBS_LEVEL_UP);
-    	event = evt;
-    	setJobName(evt.getJob().getName());
+        super(new PlayerSubject(evt.getPlayer().getPlayer(), EquipmentSlot.HAND), Trigger.JOBS_LEVEL_UP);
+        event = evt;
+        setJobName(evt.getJob().getName());
         setJobLevel(evt.getLevel());
         setLocationWorldBiomeLight(evt.getPlayer().getPlayer().getLocation().getBlock());
         setWeatherTimeHeight(location);
         setRegions();
     }
-    
+
     public OccurredEvent(JobsPaymentEvent evt) {
-    	super(new PlayerSubject(evt.getPlayer().getPlayer(), EquipmentSlot.HAND), Trigger.JOBS_PAYMENT);
-    	event = evt;
+        super(new PlayerSubject(evt.getPlayer().getPlayer(), EquipmentSlot.HAND), Trigger.JOBS_PAYMENT);
+        event = evt;
         setLocationWorldBiomeLight(evt.getPlayer().getPlayer().getLocation().getBlock());
         setWeatherTimeHeight(location);
         setRegions();
     }
-    
+
     public OccurredEvent(JobsExpGainEvent evt) {
-    	super(new PlayerSubject(evt.getPlayer().getPlayer(), EquipmentSlot.HAND), Trigger.JOBS_EXP_GAIN);
-    	event = evt;
+        super(new PlayerSubject(evt.getPlayer().getPlayer(), EquipmentSlot.HAND), Trigger.JOBS_EXP_GAIN);
+        event = evt;
         setJobName(evt.getJob().getName());
         setJobLevel(Jobs.getPlayerManager().getJobsPlayer(evt.getPlayer().getUniqueId()).getJobProgression(evt.getJob()).getLevel());
         setLocationWorldBiomeLight(evt.getPlayer().getPlayer().getLocation().getBlock());
@@ -746,7 +646,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
 
 
     @SuppressWarnings("deprecation")
-	public OccurredEvent(BlockGrowEvent evt) {
+    public OccurredEvent(BlockGrowEvent evt) {
         super(new BlockTarget(evt.getNewState().getType(), evt.getBlock().getLocation(), evt.getNewState().getRawData()), Trigger.BLOCK_GROW);
         event = evt;
         setLocationWorldBiomeLight(evt.getBlock());
@@ -758,18 +658,14 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         super(new BlockTarget(evt.getBlock()), Trigger.BLOCK_PLACE);
         event = evt;
         Block block = evt.getBlock();
-        List<Block> blocks = evt.getPlayer().getLastTwoTargetBlocks(new HashSet<Material>(), 10);
+        List<Block> blocks = evt.getPlayer().getLastTwoTargetBlocks(new HashSet<>(), 10);
         if (blocks.size() > 1) {
             face = blocks.get(1).getFace(blocks.get(0));
         }
         setLocationWorldBiomeLight(block);
         setWeatherTimeHeight(location);
         setTool(evt.getPlayer(), evt.getHand());
-        attackRange = measureRange(
-                location,
-                evt.getPlayer().getLocation(),
-                "Block '" + block.getType() + "' placed by '"
-                        + tool.toString() + "'");
+        attackRange = measureRange(location, evt.getPlayer().getLocation(), "Block '" + block.getType() + "' placed by '" + tool.toString() + "'");
         setRegions();
     }
 
@@ -794,8 +690,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
             for (BlockFace face : BlockFace.values()) {
                 if (block.getRelative(face).getType().isTransparent()) {
                     byte currentLevel = block.getRelative(face).getLightLevel();
-                    if (currentLevel > maxLight)
-                        maxLight = currentLevel;
+                    if (currentLevel > maxLight) maxLight = currentLevel;
                 }
             }
             lightLevel = maxLight;
@@ -805,29 +700,26 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     private void setLocationWorldBiomeLight(Entity e) {
         location = e.getLocation();
         world = e.getWorld();
-        biome = world.getBiome(location.getBlockX(), location.getBlockZ());
+        world.getBiome(location);
+        biome = world.getBiome(location);
         lightLevel = world.getBlockAt(location).getLightLevel();
     }
 
     private void setLocationWorldBiomeLight(Target targ) {
         location = targ.getLocation();
         world = location.getWorld();
-        biome = world.getBiome(location.getBlockX(), location.getBlockZ());
+        biome = world.getBiome(location);
         lightLevel = world.getBlockAt(location).getLightLevel();
     }
 
     private void setRegions() {
-        regions = new HashSet<String>();
-        if (!Dependencies.hasWorldGuard())
-            return;
+        regions = new HashSet<>();
+        if (!Dependencies.hasWorldGuard()) return;
         WorldGuardPlatform wgPlatform = com.sk89q.worldguard.WorldGuard.getInstance().getPlatform();
-		Map<String, ProtectedRegion> regionMap = wgPlatform.getRegionContainer().get(BukkitAdapter.adapt(world)).getRegions();
+        Map<String, ProtectedRegion> regionMap = wgPlatform.getRegionContainer().get(BukkitAdapter.adapt(world)).getRegions();
         BlockVector3 vec = (BlockVector3.at(location.getX(), location.getY(), location.getZ()));
         for (String region : regionMap.keySet()) {
-            if (regionMap.get(region).contains(vec))
-                regions.add(region.toLowerCase()); // note: region needs to be
-                                                   // lowercase for case
-                                                   // insensitive matches
+            if (regionMap.get(region).contains(vec)) regions.add(region.toLowerCase()); // note: region needs to be lowercase for case insensitive matches
         }
     }
 
@@ -837,51 +729,43 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
 
     private void setTool(Agent agent) throws DropCreateException {
         if (agent.getClass().isAnnotationPresent(ConfigOnly.class)) {
-            ConfigOnly annotate = agent.getClass().getAnnotation(
-                    ConfigOnly.class);
+            ConfigOnly annotate = agent.getClass().getAnnotation(ConfigOnly.class);
             throw new DropCreateException(agent.getClass(), annotate.value());
         }
         tool = agent;
     }
 
     private void setTool(Entity damager, EquipmentSlot hand) {
-        if (damager instanceof Player)
-            tool = new PlayerSubject((Player) damager, hand);
-        else if (damager instanceof Projectile)
-            tool = new ProjectileAgent((Projectile) damager);
+        if (damager instanceof Player) tool = new PlayerSubject((Player) damager, hand);
+        else if (damager instanceof Projectile) tool = new ProjectileAgent((Projectile) damager);
         else if (damager instanceof LightningStrike)
-            // TODO: Is there any use in passing the lightning entity through
-            // here?
+            // TODO: Is there any use in passing the lightning entity through here?
             tool = new EnvironmentAgent(DamageCause.LIGHTNING);
         else if (damager instanceof LivingEntity) {
-            if(Dependencies.hasMythicMobs()) {
+            if (Dependencies.hasMythicMobs()) {
                 ActiveMob mythicMob = Dependencies.getMythicMobs().getMobManager().getActiveMob(damager.getUniqueId()).orElse(null);
-                if(mythicMob != null) {
+                if (mythicMob != null) {
                     tool = new MythicMobSubject(damager, mythicMob.getMobType());
                     return;
                 }
             }
             tool = new CreatureSubject(damager);
-        }
-        else if (damager instanceof Explosive)
-            tool = new ExplosionAgent(damager);
+        } else if (damager instanceof Explosive) tool = new ExplosionAgent(damager);
     }
 
     private void setTool(EntityDamageEvent lastDamage) {
-        // This is for EntityDeathEvent
-        // Check if the damager is a player - if so, weapon is the held tool
-        if (lastDamage instanceof EntityDamageByEntityEvent) {
-            EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) lastDamage;
+        // This is for EntityDeathEvent Check if the damager is a player - if so, weapon is the held tool
+        if (lastDamage instanceof EntityDamageByEntityEvent e) {
             if (e.getDamager() instanceof Player p) {
-                tool = new PlayerSubject((Player) e.getDamager(), EquipmentSlotResolver.resolve(e.getCause(), p));
+                tool = new PlayerSubject(p, EquipmentSlotResolver.resolve(e.getCause(), p));
                 return;
             } else if (e.getDamager() instanceof Projectile) {
                 tool = new ProjectileAgent((Projectile) e.getDamager());
                 return;
             } else if (e.getDamager() instanceof LivingEntity) {
-                if(Dependencies.hasMythicMobs()) {
+                if (Dependencies.hasMythicMobs()) {
                     ActiveMob mythicMob = Dependencies.getMythicMobs().getMobManager().getActiveMob(e.getDamager().getUniqueId()).orElse(null);
-                    if(mythicMob != null) {
+                    if (mythicMob != null) {
                         tool = new MythicMobSubject(e.getDamager(), mythicMob.getMobType());
                         return;
                     }
@@ -889,24 +773,16 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
                 tool = new CreatureSubject(e.getDamager());
                 return;
             } else {
-                // The only other one I can think of is lightning, which would
-                // be covered by the non-entity code
-                // But just in case, log it.
-                Log.logInfo("A "
-                        + lastDamage.getEntity().getClass().getSimpleName()
-                        + " was damaged by a "
-                        + e.getDamager().getClass().getSimpleName(), HIGHEST);
+                // The only other one I can think of is lightning, which would be covered by the non-entity code But just in case, log it.
+                Log.logInfo("A " + lastDamage.getEntity().getClass().getSimpleName() + " was damaged by a " + e.getDamager().getClass().getSimpleName(), HIGHEST);
             }
         }
         // Damager was not a person - check damage types
         DamageCause cause = lastDamage.getCause();
         // if(cause == DamageCause.CUSTOM) return; // We don't handle custom
-        // damage // Zar: actually, probably preferable to actually handle
-        // custom
-        // Used to ignore void damage as well, but since events were added I can
-        // see some use for it.
-        // For example, a lightning strike when someone falls off the bottom of
-        // the map.
+        // damage // Zar: actually, probably preferable to actually handle custom
+        // Used to ignore void damage as well, but since events were added I can see some use for it.
+        // For example, a lightning strike when someone falls off the bottom of the map.
         tool = new EnvironmentAgent(cause);
     }
 
@@ -914,28 +790,19 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         if (what instanceof Player)
             return new PlayerSubject((Player) what, EquipmentSlot.HAND); // default to main hand?
         else if (what instanceof LivingEntity) {
-            if(Dependencies.hasMythicMobs()) {
+            if (Dependencies.hasMythicMobs()) {
                 ActiveMob mythicMob = Dependencies.getMythicMobs().getMobManager().getActiveMob(what.getUniqueId()).orElse(null);
-                if(mythicMob != null) {
+                if (mythicMob != null) {
                     return new MythicMobSubject(what, mythicMob.getMobType());
                 }
             }
             return new CreatureSubject(what);
-        }
-        else if (what instanceof Vehicle)
-            return new VehicleTarget((Vehicle) what);
-        else if (what instanceof Painting)
-            return new VehicleTarget((Painting) what);
-        else if (what instanceof FallingBlock)
-            return new BlockTarget((FallingBlock) what);
-        else if (what instanceof Fireball)
-            return null; // TODO: do we need to do anything here? This is a
-                         // fireball dying, getting hurt or being interacted
-                         // with?
-        else if (what instanceof EnderDragonPart)
-            return new CreatureSubject(((ComplexEntityPart) what).getParent());
-        else
-            return new CreatureSubject(what);
+        } else if (what instanceof Vehicle) return new VehicleTarget((Vehicle) what);
+        else if (what instanceof Painting) return new VehicleTarget((Painting) what);
+        else if (what instanceof FallingBlock) return new BlockTarget((FallingBlock) what);
+        else if (what instanceof Fireball) return null; // TODO: do we need to do anything here? This is a fireball dying, getting hurt or being interacted with?
+        else if (what instanceof EnderDragonPart) return new CreatureSubject(((ComplexEntityPart) what).getParent());
+        else return new CreatureSubject(what);
         /*
          * else if(what instanceof EnderCrystal) return null; // TODO: allow
          * ender crystal targets (change creaturesubject to entitysubject?) else
@@ -949,6 +816,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     }
 
     // Accessors
+
     /**
      * @return The agent that caused this event.
      */
@@ -976,7 +844,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
 
     /**
      * @return The set of WorldGuard regions that contain the location of the
-     *         event.
+     * event.
      */
     public Set<String> getRegions() {
         return regions;
@@ -1026,7 +894,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
 
     /**
      * @return The distance the agent was from the target at the time of the
-     *         event.
+     * event.
      */
     public double getAttackRange() {
         return attackRange;
@@ -1051,8 +919,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     public boolean matches(AbstractDropEvent other) {
         if (other instanceof OccurredEvent) {
             return equals(other);
-        } else if (other instanceof CustomDrop
-                || other instanceof GroupDropEvent) {
+        } else if (other instanceof CustomDrop || other instanceof GroupDropEvent) {
             return other.matches(this);
         }
         return false;
@@ -1060,28 +927,19 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
 
     @Override
     public String getLogMessage() {
-        // TODO: Hm, how should this log message go? It would be used if you
-        // were logging actual event firing
-        return getTrigger().toString()
-                + " on "
-                + ((getTarget() == null) ? "<no block>" : getTarget()
-                        .toString()
-                        + " with "
-                        + ((getTool() == null) ? "<no tool> " : getTool()
-                                .toString()));
+        // TODO: Hm, how should this log message go? It would be used if you were logging actual event firing
+        return getTrigger().toString() + " on " + ((getTarget() == null) ? "<no block>" : getTarget().toString() + " with " + ((getTool() == null) ? "<no tool> " : getTool().toString()));
     }
 
     @Override
     public boolean isCancelled() {
-        if (event != null)
-            return event.isCancelled();
+        if (event != null) return event.isCancelled();
         return false;
     }
 
     @Override
     public void setCancelled(boolean cancel) {
-        if (event != null)
-            event.setCancelled(cancel);
+        if (event != null) event.setCancelled(cancel);
     }
 
     public Cancellable getEvent() {
@@ -1089,20 +947,13 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     }
 
     private static double measureRange(Location fromLoc, Location toLoc, String onError) {
-        if (toLoc == null)
-            return 0;
+        if (toLoc == null) return 0;
         if (fromLoc == null) {
-            Log.logWarning(
-                    "OccuredEvent.measureRange: location is null, this should never happen! (please advise developer)."
-                            + onError, Verbosity.NORMAL);
+            Log.logWarning("OccuredEvent.measureRange: location is null, this should never happen! (please advise developer)." + onError, Verbosity.NORMAL);
             return 0;
         }
         if (fromLoc.getWorld() != toLoc.getWorld()) {
-            Log.logWarning("OccuredEvent.measureRange: worlds ("
-                    + fromLoc.getWorld().toString() + ", "
-                    + toLoc.getWorld().toString()
-                    + ") do not match - perhaps another plugin intervened."
-                    + onError, Verbosity.HIGH);
+            Log.logWarning("OccuredEvent.measureRange: worlds (" + fromLoc.getWorld().toString() + ", " + toLoc.getWorld().toString() + ") do not match - perhaps another plugin intervened." + onError, Verbosity.HIGH);
         } else {
             return fromLoc.distance(toLoc);
         }
@@ -1134,8 +985,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     }
 
     public Player getPlayerAttacker() {
-        if (getTool() instanceof PlayerSubject)
-            return ((PlayerSubject) getTool()).getPlayer();
+        if (getTool() instanceof PlayerSubject) return ((PlayerSubject) getTool()).getPlayer();
         else if (getTool() instanceof ProjectileAgent) {
             if (((ProjectileAgent) getTool()).getShooter() instanceof PlayerSubject)
                 return (Player) ((ProjectileAgent) getTool()).getShooter().getEntity();
@@ -1145,17 +995,14 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     }
 
     public LivingEntity getAttacker() {
-        if (getTool() instanceof PlayerSubject)
-            return ((PlayerSubject) getTool()).getPlayer();
+        if (getTool() instanceof PlayerSubject) return ((PlayerSubject) getTool()).getPlayer();
         else if (getTool() instanceof CreatureSubject) {
             Entity ent = ((CreatureSubject) getTool()).getEntity();
-            if (ent instanceof LivingEntity)
-                return (LivingEntity) ent;
+            if (ent instanceof LivingEntity) return (LivingEntity) ent;
         } else if (getTool() instanceof ProjectileAgent) {
-            if (((ProjectileAgent) getTool()).getShooter() == null)
-            	return null;
-            else if(((ProjectileAgent) getTool()).getShooter().getEntity() instanceof LivingEntity)
-            	return (LivingEntity) ((ProjectileAgent) getTool()).getShooter().getEntity();
+            if (((ProjectileAgent) getTool()).getShooter() == null) return null;
+            else if (((ProjectileAgent) getTool()).getShooter().getEntity() instanceof LivingEntity)
+                return (LivingEntity) ((ProjectileAgent) getTool()).getShooter().getEntity();
         }
         return null;
     }
@@ -1174,10 +1021,8 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     }
 
     public Player getPlayerVictim() {
-        if (getTarget() instanceof PlayerSubject)
-            return ((PlayerSubject) getTarget()).getPlayer();
-        else
-            return null;
+        if (getTarget() instanceof PlayerSubject) return ((PlayerSubject) getTarget()).getPlayer();
+        else return null;
     }
 
     public boolean isOverrideDefault() {
@@ -1239,9 +1084,8 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     }
 
 
-    /** FIXME: Yes, this is a hack until I find a better way to pass
-     *  victim names etc to variable parsing from item custom names
-     * @return
+    /**
+     * FIXME: Yes, this is a hack until I find a better way to pass victim names etc to variable parsing from item custom names
      */
     public String getVictimName() {
         if (getTarget() instanceof PlayerSubject) {
@@ -1251,5 +1095,4 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         }
         return "";
     }
-
 }
