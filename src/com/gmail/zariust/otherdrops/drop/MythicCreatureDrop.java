@@ -4,7 +4,6 @@ import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.subject.Target;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 
 public class MythicCreatureDrop extends DropType {
     private final String mythicCreature;
@@ -22,7 +21,6 @@ public class MythicCreatureDrop extends DropType {
         DropResult dropResult = DropResult.fromOverride(this.overrideDefault);
         rolledQuantity = quantity.getRandomIn(flags.rng);
         int amount = rolledQuantity;
-        Player playerReceivingItem = flags.recipient;
         while (amount-- > 0) {
             dropResult.addWithoutOverride(drop(at, mythicCreature));
         }

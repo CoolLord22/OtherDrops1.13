@@ -26,8 +26,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.ExperienceOrb;
 
 public class ExperienceDrop extends DropType {
-    private IntRange total;
-    private int      rolledXP;
+    private final IntRange total;
+    private int rolledXP;
 
     public ExperienceDrop(IntRange amount, double chance) {
         super(DropCategory.EXPERIENCE, chance);
@@ -35,8 +35,7 @@ public class ExperienceDrop extends DropType {
     }
 
     @Override
-    protected DropResult performDrop(Target source, Location from,
-            DropFlags flags) {
+    protected DropResult performDrop(Target source, Location from, DropFlags flags) {
         DropResult dropResult = DropResult.fromOverride(this.overrideDefault);
         dropResult.setOverrideDefaultXp(true);
 
@@ -48,14 +47,12 @@ public class ExperienceDrop extends DropType {
                 amount -= inThis;
                 digit *= 10;
                 if (inThis > 0) {
-                    ExperienceOrb orb = from.getWorld().spawn(from,
-                            ExperienceOrb.class);
+                    ExperienceOrb orb = from.getWorld().spawn(from, ExperienceOrb.class);
                     orb.setExperience(inThis);
                 }
             }
         } else {
-            ExperienceOrb orb = from.getWorld()
-                    .spawn(from, ExperienceOrb.class);
+            ExperienceOrb orb = from.getWorld().spawn(from, ExperienceOrb.class);
             orb.setExperience(rolledXP);
         }
         dropResult.setQuantity(1);
@@ -72,22 +69,15 @@ public class ExperienceDrop extends DropType {
         return "XP";
     }
 
-    public static DropType parse(String drop, String data, IntRange amount,
-            double chance) {
+    public static DropType parse(String drop, String data, IntRange amount, double chance) {
         String[] split = null;
         if (drop.matches("\\w+:.*")) {
             split = drop.split(":", 2);
-        } else
-            split = drop.split("@", 2);
+        } else split = drop.split("@", 2);
 
-        if (split.length > 1)
-            data = split[1];
-        if (!split[0].equalsIgnoreCase("XP"))
-            return null;
-        if (!data.isEmpty())
-            Log.logWarning("Possible invalid data for " + split[0] + ": "
-                    + data + " (data not currently supported)",
-                    Verbosity.HIGHEST);
+        if (split.length > 1) data = split[1];
+        if (!split[0].equalsIgnoreCase("XP")) return null;
+        if (!data.isEmpty()) Log.logWarning("Possible invalid data for " + split[0] + ": " + data + " (data not currently supported)", Verbosity.HIGHEST);
         return new ExperienceDrop(amount, chance);
     }
 

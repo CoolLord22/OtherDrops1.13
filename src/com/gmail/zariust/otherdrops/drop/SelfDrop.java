@@ -39,7 +39,7 @@ import com.gmail.zariust.otherdrops.subject.VehicleTarget;
 
 public class SelfDrop extends DropType {
     private final IntRange count;
-    private int            rolledCount;
+    private int rolledCount;
 
     public SelfDrop() {
         this(100.0);
@@ -58,55 +58,51 @@ public class SelfDrop extends DropType {
         count = intRange;
     }
 
-	@Override
-    protected DropResult performDrop(Target source, Location from,
-            DropFlags flags) {
+    @Override
+    protected DropResult performDrop(Target source, Location from, DropFlags flags) {
         DropResult dropResult = DropResult.fromOverride(this.overrideDefault);
 
-        if (source instanceof CreatureSubject) {
-            Entity mob = ((CreatureSubject) source).getAgent();
+        if (source instanceof CreatureSubject creatureSubject) {
+            Entity mob = creatureSubject.getAgent();
             Data data = CreatureData.parse(mob);
             // Data data = new CreatureData(CommonEntity.getCreatureData(mob));
             EntityType type = mob.getType();
-            dropResult.addWithoutOverride(drop(from, flags.recipient, type,
-                    data));
-        } else if (source instanceof VehicleTarget) {
-            Entity entity = ((VehicleTarget) source).getVehicle();
+            dropResult.addWithoutOverride(drop(from, flags.recipient, type, data));
+        } else if (source instanceof VehicleTarget vehicleTarget) {
+            Entity entity = vehicleTarget.getVehicle();
             if (entity instanceof Painting) {
                 dropResult.addWithoutOverride(drop(from, new ItemStack(Material.PAINTING, 1), flags));
             } else if (entity instanceof Vehicle) {
                 Material material = CommonEntity.getVehicleType(entity);
                 dropResult.addWithoutOverride(drop(from, new ItemStack(material, 1), flags));
-            } else
-                return dropResult;
-        } else if (source instanceof BlockTarget) {
-            Block block = ((BlockTarget) source).getBlock();
+            } else return dropResult;
+        } else if (source instanceof BlockTarget blockTarget) {
+            Block block = blockTarget.getBlock();
             Material material = block.getType();
-			int data = block.getData(), quantity = count.getRandomIn(flags.rng);
+            int data, quantity = count.getRandomIn(flags.rng);
             switch (material) {
-            case AIR:
-            case REDSTONE_WIRE:
-                data = 0;
-                material = Material.REDSTONE;
-                break;
+                case AIR:
+                case REDSTONE_WIRE:
+                    data = 0;
+                    material = Material.REDSTONE;
+                    break;
            /* case SIGN:
             case WALL_SIGN:
                 data = 0;
                 material = Material.SIGN;
                 break; */
-            case MOVING_PISTON:
-                data = 0;
-                PistonExtensionMaterial ext = (PistonExtensionMaterial) block.getState().getData();
-                material = ext.isSticky() ? Material.STICKY_PISTON : Material.PISTON;
-                break;
-            case SPAWNER:
-                CreatureSpawner spawner = (CreatureSpawner) block.getState();
-                data = spawner.getSpawnedType().getTypeId();
-                break;
-            default: // Most block data doesn't transfer to the item of the same
-                     // ID
-                data = 0;
-                break;
+                case MOVING_PISTON:
+                    data = 0;
+                    PistonExtensionMaterial ext = (PistonExtensionMaterial) block.getState().getData();
+                    material = ext.isSticky() ? Material.STICKY_PISTON : Material.PISTON;
+                    break;
+                case SPAWNER:
+                    CreatureSpawner spawner = (CreatureSpawner) block.getState();
+                    data = spawner.getSpawnedType().getTypeId();
+                    break;
+                default: // Most block data doesn't transfer to the item of the same ID
+                    data = 0;
+                    break;
             }
             ItemStack stack = new ItemStack(material, quantity, (short) data);
             dropResult.addWithoutOverride(drop(from, stack, flags));

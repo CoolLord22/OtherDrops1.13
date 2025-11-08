@@ -16,16 +16,15 @@
 
 package com.gmail.zariust.otherdrops.drop;
 
-import static java.lang.Math.round;
-
-import java.util.Random;
-
 import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.subject.Target;
-
 import org.bukkit.Location;
+
+import java.util.Random;
+
+import static java.lang.Math.round;
 
 public class RealMoneyDrop extends MoneyDrop {
 
@@ -41,12 +40,10 @@ public class RealMoneyDrop extends MoneyDrop {
     }
 
     @Override
-    protected DropResult performDrop(Target source, Location where,
-            DropFlags flags) {
+    protected DropResult performDrop(Target source, Location where, DropFlags flags) {
         DropResult dropResult = DropResult.fromOverride(this.overrideDefault);
 
-        if (!Dependencies.hasMoneyDrop())
-            Log.logWarning("Real money drop has been configured but MoneyDrop is not installed.");
+        if (!Dependencies.hasMoneyDrop()) Log.logWarning("Real money drop has been configured but MoneyDrop is not installed.");
         super.performDrop(source, where, flags);
 
         dropResult.setQuantity(1);
@@ -54,8 +51,7 @@ public class RealMoneyDrop extends MoneyDrop {
     }
 
     @Override
-    protected void dropMoney(Target source, Location where, DropFlags flags,
-            double amount) {
+    protected void dropMoney(Target source, Location where, DropFlags flags, double amount) {
         if (!Dependencies.hasMoneyDrop()) {
             super.dropMoney(source, where, flags, amount);
             return;
@@ -66,8 +62,7 @@ public class RealMoneyDrop extends MoneyDrop {
                 int inThis = dropAmount % digit;
                 dropAmount -= inThis;
                 digit *= 10;
-                if (inThis > 0)
-                    Dependencies.getMoneyDrop().dropMoney(where, inThis);
+                if (inThis > 0) Dependencies.getMoneyDrop().dropMoney(where, inThis);
             }
         } else {
             Dependencies.getMoneyDrop().dropMoney(where, (int) amount);
