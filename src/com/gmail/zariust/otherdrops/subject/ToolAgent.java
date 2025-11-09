@@ -42,7 +42,7 @@ public class ToolAgent implements Agent {
     private final Material id;
     private final Data data;
     private List<CMEnchantment> enchantments;
-    public int quantityRequired;
+    public final int quantityRequired;
     private String loreName;
     private List<String> loreText;
 

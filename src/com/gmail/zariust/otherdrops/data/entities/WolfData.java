@@ -12,8 +12,8 @@ import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 
 public class WolfData extends CreatureData {
-    Boolean angry; // null = wildcard
-    DyeColor collarColor;
+    final Boolean angry; // null = wildcard
+    final DyeColor collarColor;
 
     public WolfData(Boolean angry, DyeColor collarColor) {
         this.angry = angry;

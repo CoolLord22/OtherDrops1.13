@@ -21,7 +21,7 @@ public abstract class ActionMulti extends Action {
     }
 
     protected ActionType actionType;
-    protected double radius = OtherDropsConfig.gActionRadius;
+    protected final double radius = OtherDropsConfig.gActionRadius;
 
     @Override
     public boolean act(CustomDrop drop, OccurredEvent occurence) {
@@ -69,7 +69,6 @@ public abstract class ActionMulti extends Action {
     @Override
     public List<Action> parse(ConfigurationNode parseMe) {
         @SuppressWarnings("unused") Map<String, ActionType> matches = getMatches("potioneffect", "potioneffects");
-        List<Action> actions = new ArrayList<>();
         /*
          * for (String key : matches.keySet()) { boolean onlyRemove; if
          * (parseMe.get(key) != null) { onlyRemove = false; actions.add(new
@@ -78,7 +77,7 @@ public abstract class ActionMulti extends Action {
          * actions.add(new PotionAction(parseMe.get(key + ".remove"),
          * matches.get(key), onlyRemove)); } }
          */
-        return actions;
+        return new ArrayList<>();
     }
 
     protected Map<String, Boolean> suffixes(String... strings) {

@@ -17,7 +17,7 @@ import com.gmail.zariust.otherdrops.data.Data;
  * @author zarius
  */
 public class AgeableData extends CreatureData {
-    Boolean adult; // null = wildcard
+    final Boolean adult; // null = wildcard
 
     public AgeableData(Boolean adult) {
         this.adult = adult;

@@ -9,7 +9,7 @@ import java.util.List;
 
 public class DropResult {
     private int quantity;
-    public List<Entity> droppedEntities = new ArrayList<>();
+    public final List<Entity> droppedEntities = new ArrayList<>();
     private boolean overrideDefault;
     private boolean overrideDefaultXp = false; // default to false
     private boolean overrideEquipment = false;

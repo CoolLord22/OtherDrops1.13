@@ -73,12 +73,6 @@ public class Adjacent extends Condition {
         Map<Adjacent, Boolean> result = new HashMap<>();
         result.put(null, OtherDropsConfig.containsAll(adjactentList));
         for (String name : adjactentList) {
-            String[] split = name.split("/");
-            // BlockFace
-            if (BlockFace.valueOf(split[0]) == null) {
-
-            }
-
             Adjacent storm = parse(name);
             if (storm != null) result.put(storm, true);
             else if (name.startsWith("-")) {

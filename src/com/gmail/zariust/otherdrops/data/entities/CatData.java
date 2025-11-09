@@ -11,8 +11,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 public class CatData extends CreatureData {
-    Cat.Type type; // null = wildcard
-    DyeColor collarColor;
+    final Cat.Type type; // null = wildcard
+    final DyeColor collarColor;
 
     public CatData(Cat.Type type, DyeColor collarColor) {
         this.type = type;
@@ -36,8 +36,7 @@ public class CatData extends CreatureData {
     }
 
     public static CreatureData parseFromEntity(Entity entity) {
-        if (entity instanceof Cat) {
-            Cat cat = (Cat) entity;
+        if (entity instanceof Cat cat) {
             return new CatData(cat.getCatType(), cat.getCollarColor());
         } else {
             Log.logInfo("CatData: error, parseFromEntity given different creature - this shouldn't happen.");

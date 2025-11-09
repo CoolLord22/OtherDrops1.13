@@ -25,7 +25,7 @@ import java.util.Random;
 public class ExclusiveMap {
     private final Random rng;
     private final DropsList currentList;
-    Map<String, ExclusiveKey> map;
+    final Map<String, ExclusiveKey> map;
 
     public ExclusiveMap(DropsList list, AbstractDropEvent parentDrop) {
         currentList = list;

@@ -164,9 +164,8 @@ public class CreatureData implements Data, RangeableData {
                     multipleData.add((CreatureData) classType.getMethod("parseFromString", String.class).invoke(null, state));
                 }
                 cData = multipleData;
-            } catch (IllegalArgumentException | NoSuchMethodException | InvocationTargetException |
-                     IllegalAccessException | SecurityException e) {
-                e.printStackTrace();
+            } catch (IllegalArgumentException | NoSuchMethodException | InvocationTargetException | IllegalAccessException | SecurityException e) {
+                Log.logError("Creature data could not be parsed: " + state, e);
             }
 
             if (cData == null) return new CreatureData(0);
@@ -203,8 +202,6 @@ public class CreatureData implements Data, RangeableData {
 
     public static Data parse(Entity entity) {
         if (entity == null) return new CreatureData(0);
-        EntityType creatureType = entity.getType();
-        if (creatureType == null) return new CreatureData(0);
 
         if (DATAMAP.get(entity.getType()) != null) {
             CreatureData cData = null;
@@ -214,9 +211,8 @@ public class CreatureData implements Data, RangeableData {
                     multipleData.add((CreatureData) classType.getMethod("parseFromEntity", Entity.class).invoke(null, entity));
                 }
                 cData = multipleData;
-            } catch (IllegalArgumentException | SecurityException | IllegalAccessException | InvocationTargetException |
-                     NoSuchMethodException e) {
-                e.printStackTrace();
+            } catch (IllegalArgumentException | SecurityException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                Log.logError("MultipleCreatureData could not be parsed: " + entity, e);
             }
             if (cData == null) return new CreatureData(0);
 

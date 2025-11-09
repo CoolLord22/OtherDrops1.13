@@ -123,8 +123,7 @@ public class AnySubject implements Agent, Target {
                 }
             }
         }
-        if (except != null) return new BlockTarget(except);
-        else return new BlockTarget();
+        return new BlockTarget(except);
     }
 
     @Override

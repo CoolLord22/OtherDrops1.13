@@ -10,7 +10,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 public class LlamaData extends CreatureData {
-    Llama.Color variant; // null = wildcard
+    final Llama.Color variant; // null = wildcard
 
     public LlamaData(Llama.Color variant) {
         this.variant = variant;

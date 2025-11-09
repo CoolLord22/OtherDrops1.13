@@ -66,7 +66,7 @@ public class SpecialResultLoader {
                     }
                 } catch (Exception ex) {
                     Log.logWarning("Event file: " + f + " failed to load... (" + ex + ")", NORMAL);
-                    if (OtherDropsConfig.getVerbosity().exceeds(HIGH)) ex.printStackTrace();
+                    if (OtherDropsConfig.getVerbosity().exceeds(HIGH)) Log.logError("Error trace:", ex);
                 }
             }
         }
@@ -106,22 +106,19 @@ public class SpecialResultLoader {
                 throw new SpecialResultLoadException("Missing class= property in event.info.");
             }
         } catch (IOException e) { // Failed to load jar or event.info
-            Log.logWarning("Failed to load event from file " + name + ":");
-            e.printStackTrace();
+            if (OtherDropsConfig.getVerbosity().exceeds(HIGH)) Log.logError("Failed to load event from file " + name + ":", e);
         } catch (ClassNotFoundException e) { // Couldn't find specified class
             Log.logWarning("The class specified in event.info for " + name + " could not be found.");
         } catch (IllegalAccessException e) { // Constructor was inaccessible (not public)
             Log.logWarning("The constructor for the event in " + name + " was not public.");
         } catch (InvocationTargetException e) { // Constructor threw an exception
-            Log.logWarning("The event in " + name + " threw an exception while loading:");
-            e.getCause().printStackTrace();
+            Log.logError("The event in " + name + " threw an exception while loading:", e);
         } catch (NoSuchMethodException e) { // Constructor does not exist
             Log.logWarning("The event in " + name + " is missing a default or OtherDrops constructor.");
         } catch (SpecialResultLoadException e) {
             Log.logWarning("Could not load event in " + name + ": " + e.getLocalizedMessage());
         } catch (Exception e) {
-            Log.logWarning("The events in " + name + " failed to load");
-            e.printStackTrace();
+            Log.logError("The events in " + name + " failed to load", e);
         }
         return null;
     }

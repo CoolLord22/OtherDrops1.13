@@ -12,7 +12,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 public class ODVariables {
-    Map<String, String> variables = new HashMap<>();
+    final Map<String, String> variables = new HashMap<>();
 
     public ODVariables() {
         variables.put("%time", new SimpleDateFormat(OtherDropsConfig.gTimeFormat).format(Calendar.getInstance().getTime()));

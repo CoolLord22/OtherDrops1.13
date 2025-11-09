@@ -34,11 +34,10 @@ public class DoubleRange extends Range<Double> {
     @Override
     public Double getRandomIn(Random rng) {
         if (min.equals(max)) return min;
-        double random = ((rng.nextDouble()) * (max - min)) + min;
         // rng.nextDouble() returns a value between 0 & 1
         // example for min = 0, max = 1: (0*(1-0))+0 = 0, (1*(1-0))+0 = 1
         // example for min = 15, max = 20: (0*(20-15)+15=15, (1*(20-15))+15=20
-        return random;
+        return ((rng.nextDouble()) * (max - min)) + min;
     }
 
     @Override

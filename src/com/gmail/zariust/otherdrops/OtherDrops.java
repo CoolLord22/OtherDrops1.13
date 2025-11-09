@@ -44,20 +44,20 @@ public class OtherDrops extends JavaPlugin {
     public static NamespacedKey playerPlacedKey;
     boolean enabled;
     public Log log = null;
-    public SectionManager sectionManager;
+    public final SectionManager sectionManager;
 
-    public static List<String> NetherBiomes = new ArrayList<>(Arrays.asList("NETHER", "NETHER_WASTES", "CRIMSON_FOREST", "WARPED_FOREST", "SOUL_SAND_VALLEY", "BASALT_DELTAS"));
+    public static final List<String> NetherBiomes = new ArrayList<>(Arrays.asList("NETHER", "NETHER_WASTES", "CRIMSON_FOREST", "WARPED_FOREST", "SOUL_SAND_VALLEY", "BASALT_DELTAS"));
 
     // Global random number generator - used throughout the whole plugin
-    public static Random rng = new Random();
+    public static final Random rng = new Random();
 
     // Config stuff
     public OtherDropsConfig config = null;
     private BStats metrics;
     public Updater updateChecker;
 
-    public static Set<NamespacedKey> bossBars = new HashSet<>();
-    public static Map<NamespacedKey, ItemStack> loadedItems = new HashMap<>();
+    public static final Set<NamespacedKey> bossBars = new HashSet<>();
+    public static final Map<NamespacedKey, ItemStack> loadedItems = new HashMap<>();
 
     public OtherDrops() {
         plugin = this;
@@ -104,7 +104,7 @@ public class OtherDrops extends JavaPlugin {
                     in.close();
                     out.close();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.logError("Encountered an error while copying directory to OtherDrops/", e);
                 }
             }
         }
@@ -160,7 +160,7 @@ public class OtherDrops extends JavaPlugin {
             }
             out.close();
         } catch (IOException exception) {
-            exception.printStackTrace();
+            Log.logError("Encountered an error while exporting lists.", exception);
         }
 
         try {
@@ -173,7 +173,7 @@ public class OtherDrops extends JavaPlugin {
             }
             out.close();
         } catch (IOException exception) {
-            exception.printStackTrace();
+            Log.logError("Encountered an error while exporting lists.", exception);
         }
 
         try {
@@ -198,7 +198,7 @@ public class OtherDrops extends JavaPlugin {
 
             out.close();
         } catch (IOException exception) {
-            exception.printStackTrace();
+            Log.logError("Encountered an error while exporting lists.", exception);
         }
 
         CustomMobSupport.exportCustomMobNames(folder);
@@ -222,7 +222,7 @@ public class OtherDrops extends JavaPlugin {
 
             out.close();
         } catch (IOException exception) {
-            exception.printStackTrace();
+            Log.logError("Encountered an error while exporting server details.", exception);
         }
     }
 
@@ -257,7 +257,7 @@ public class OtherDrops extends JavaPlugin {
                 out.write(mat + "\n");
             out.close();
         } catch (IOException exception) {
-            exception.printStackTrace();
+            Log.logError("Encountered an error while exporting lists.", exception);
         }
     }
 

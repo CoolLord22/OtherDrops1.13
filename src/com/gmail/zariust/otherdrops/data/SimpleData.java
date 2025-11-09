@@ -303,7 +303,7 @@ public class SimpleData implements Data, RangeableData {
             case POTATOES:
             case BEETROOTS:
                 CropState crops = CropState.valueOf(state);
-                if (crops != null) ret = crops.getData();
+                ret = crops.getData();
                 break;
             // Blocks whose only attribute is direction
             case LADDER:

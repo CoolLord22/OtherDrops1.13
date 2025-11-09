@@ -30,7 +30,7 @@ public class ODItem {
     private String dataString;
     public String enchantmentString;
     public List<CMEnchantment> enchantments = new ArrayList<>();
-    public List<ItemFlag> itemFlags = new ArrayList<>();
+    public final List<ItemFlag> itemFlags = new ArrayList<>();
     public String displayname;
     public final List<String> lore = new ArrayList<>();
     public ItemStack itemStack;

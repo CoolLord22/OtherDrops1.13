@@ -58,13 +58,13 @@ public class OtherDropsConfig {
     private final OtherDrops parent;
 
     // Our main list of drops
-    protected DropsMap blocksHash;
+    protected final DropsMap blocksHash;
 
     // Name of drops file
     private String mainDropsName;
 
     // Track loaded files so we don't get into an infinite loop
-    Set<String> loadedDropFiles = new HashSet<>();
+    final Set<String> loadedDropFiles = new HashSet<>();
 
     // Constants
     public static final String CreatureDataSeparator = "!!";
@@ -236,32 +236,32 @@ public class OtherDropsConfig {
             result.add("Config loaded - total targets: " + this.dropTargets + " sections: " + this.dropSections + " failed: " + this.dropFailed);
             sendMessage(sender, result);
         } catch (FileNotFoundException e) {
-            if (verbosity.exceeds(HIGH)) e.printStackTrace();
+            if (verbosity.exceeds(HIGH)) Log.logError("Config file not found error trace:", e);
             result.add("Config file not found!");
             result.add("The error was:\n" + e);
             result.add("You can fix the error and reload with /odr.");
             sendMessage(sender, result);
         } catch (IOException e) {
-            if (verbosity.exceeds(HIGH)) e.printStackTrace();
+            if (verbosity.exceeds(HIGH)) Log.logError("IO Error trace:", e);
             result.add("There was an IO error which has forced OtherDrops to abort loading!");
             result.add("The error was:\n" + e);
             result.add("You can fix the error and reload with /odr.");
             sendMessage(sender, result);
         } catch (InvalidConfigurationException e) {
-            if (verbosity.exceeds(HIGH)) e.printStackTrace();
+            if (verbosity.exceeds(HIGH)) Log.logError("Invalid configuration exception:", e);
             result.add("Config is invalid!");
             result.add("The error was:\n" + e);
             result.add("You can fix the error and reload with /odr.");
             sendMessage(sender, result);
         } catch (NullPointerException e) {
+            if (verbosity.exceeds(HIGH)) Log.logError("Config load error:", e);
             result.add("Config load failed!");
             result.add("The error was:\n" + e);
-            if (verbosity.exceeds(Verbosity.NORMAL)) e.printStackTrace();
             result.add("Please try the latest version & report this issue to the developer if the problem remains.");
             sendMessage(sender, result);
         } catch (Exception e) {
-            if (verbosity.exceeds(HIGH)) e.printStackTrace();
-            result.add("Config load failed!  Something went wrong.");
+            if (verbosity.exceeds(HIGH)) Log.logError("Config load error:", e);
+            result.add("Config load failed! Something went wrong.");
             result.add("The error was:\n" + e);
             result.add("If you can fix the error, reload with /odr.");
             sendMessage(sender, result);
@@ -335,7 +335,7 @@ public class OtherDropsConfig {
             out.close();
             in.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (verbosity.exceeds(HIGH)) Log.logError("Encountered an error while copying files:", e);
         }
     }
 
@@ -413,12 +413,6 @@ public class OtherDropsConfig {
             mainDropsName = "otherblocks-globalconfig.yml"; // Compatibility with old filename
 
         events = new ConfigurationNode(globalConfig.getConfigurationSection("events"));
-        if (events == null) {
-            globalConfig.set("events", new HashMap<String, Object>());
-            events = new ConfigurationNode(new HashMap<String, Object>());
-            if (events == null) Log.logWarning("EVENTS ARE NULL");
-            else Log.logInfo("Events node created.", NORMAL);
-        }
 
         // Warn if DAMAGE_WATER is enabled
         if (enableBlockTo) Log.logWarning("blockto/damage_water enabled - BE CAREFUL");
@@ -427,7 +421,7 @@ public class OtherDropsConfig {
             SpecialResultLoader.loadEvents();
         } catch (Exception except) {
             Log.logWarning("Event files failed to load - this shouldn't happen, please inform developer.");
-            if (verbosity.exceeds(HIGHEST)) except.printStackTrace();
+            if (verbosity.exceeds(HIGH)) Log.logError("Event files failed to load:", except);
         }
 
         Log.logInfo("Loaded global config (" + global + "), keys found: " + configKeys + " (verbosity=" + verbosity + ")", Verbosity.HIGHEST);
@@ -478,7 +472,8 @@ public class OtherDropsConfig {
         Map<String, Object> map = new HashMap<>();
         ConfigurationNode defaultsNode = null;
         if (config.getConfigurationSection("defaults") == null) {
-            if (config.getMapList("defaults") != null) if (!config.getMapList("defaults").isEmpty())
+            config.getMapList("defaults");
+            if (!config.getMapList("defaults").isEmpty())
                 defaultsNode = ConfigurationNode.parse(config.getMapList("defaults")).get(0);
         } else {
             Log.logInfo("list: " + config.getConfigurationSection("defaults").getKeys(true), Verbosity.NORMAL);
@@ -817,7 +812,7 @@ public class OtherDropsConfig {
         if (drop.getDropped() != null)
             Log.logInfo(drop.getTrigger() + " " + drop.getTarget() + " w/ " + drop.getTool() + " -> " + drop.getDropped().toString(), HIGH);
         else
-            Log.logInfo("Loading drop (null: failed or default drop): " + drop.getTrigger() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> \'" + dropStr + "\"", HIGHEST);
+            Log.logInfo("Loading drop (null: failed or default drop): " + drop.getTrigger() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> \"" + dropStr + "\"", HIGHEST);
 
         String quantityStr = node.getString("quantity");
         if (quantityStr == null) drop.setQuantity(1);
@@ -915,7 +910,7 @@ public class OtherDropsConfig {
         String[] split = blockName.split("@");
         String name = split[0];
         String dataStr = split.length > 1 ? split[1] : "";
-        Material mat = null;
+        Material mat;
         if (name.matches("[0-9]+")) Log.logWarning("Error while parsing: " + name + ". Support for numerical IDs has been dropped!");
 
         mat = Material.getMaterial(name.toUpperCase());

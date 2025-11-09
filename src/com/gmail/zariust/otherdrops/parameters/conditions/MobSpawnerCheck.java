@@ -15,8 +15,8 @@ import java.util.List;
 public class MobSpawnerCheck extends Condition {
     private final Integer radius;
 
-    String name = "MobSpawnerCheck";
-    Boolean not;
+    final String name = "MobSpawnerCheck";
+    final Boolean not;
 
     public MobSpawnerCheck(Integer radius, Boolean not) {
         this.radius = radius;

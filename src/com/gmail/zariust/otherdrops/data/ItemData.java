@@ -104,7 +104,7 @@ public class ItemData implements Data, RangeableData {
     public static Data parse(Material mat, String state) throws IllegalArgumentException {
         if (mat == null || state == null || state.isEmpty()) return null;
         if (state.startsWith("RANGE") || state.matches("[0-9]+-[0-9]+")) return RangeData.parse(state);
-        Integer data = 0;
+        Integer data;
         switch (mat) {
             case POTION:
             case LINGERING_POTION:
@@ -131,7 +131,7 @@ public class ItemData implements Data, RangeableData {
                     data = CommonMaterial.parseBlockOrItemData(mat, state);
                     break;
                 }
-                if (!state.isEmpty()) throw new IllegalArgumentException("Illegal data for " + mat + ": " + state);
+                throw new IllegalArgumentException("Illegal data for " + mat + ": " + state);
         }
         if (state.equalsIgnoreCase("THIS")) return new ItemData(-1, state);
 

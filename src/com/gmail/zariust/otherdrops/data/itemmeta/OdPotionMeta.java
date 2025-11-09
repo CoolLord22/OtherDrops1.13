@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OdPotionMeta extends OdItemMeta {
-    public List<PotionEffect> potionEffectList;
-    public Color potionColor;
+    public final List<PotionEffect> potionEffectList;
+    public final Color potionColor;
 
     public OdPotionMeta(List<PotionEffect> potionEffectList, Color potionColor) {
         this.potionEffectList = potionEffectList;

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class Action extends Parameter {
-    protected static Set<Action> actions = new HashSet<>();
+    protected static final Set<Action> actions = new HashSet<>();
 
     public abstract boolean act(CustomDrop drop, OccurredEvent occurence);
 

@@ -11,9 +11,9 @@ import java.io.File;
 import java.io.IOException;
 
 public class CommonItemstack {
-    OtherDrops plugin;
-    File savedItemsFile;
-    YamlConfiguration config;
+    final OtherDrops plugin;
+    final File savedItemsFile;
+    final YamlConfiguration config;
 
     public CommonItemstack(OtherDrops plugin) {
         this.plugin = plugin;

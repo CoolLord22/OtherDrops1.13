@@ -12,7 +12,7 @@ import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 
 public class SlimeData extends CreatureData {
-    Integer slimeSize; // null = wildcard
+    final Integer slimeSize; // null = wildcard
 
     public SlimeData(Integer type) {
         this.slimeSize = type;

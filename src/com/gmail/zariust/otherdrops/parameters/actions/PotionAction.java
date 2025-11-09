@@ -25,7 +25,7 @@ public class PotionAction extends Action {
         ATTACKER, VICTIM, RADIUS, WORLD, SERVER, DROP
     }
 
-    static Map<String, PotionEffectActionType> matches = new HashMap<>();
+    static final Map<String, PotionEffectActionType> matches = new HashMap<>();
 
     static {
         matches.put("potioneffect", PotionEffectActionType.ATTACKER);
@@ -53,7 +53,7 @@ public class PotionAction extends Action {
     }
 
     protected PotionEffectActionType potionEffectActionType;
-    protected double radius = OtherDropsConfig.gActionRadius;
+    protected final double radius = OtherDropsConfig.gActionRadius;
 
     private Collection<PotionEffect> effects = new ArrayList<>();
     private boolean onlyRemove;
@@ -143,9 +143,6 @@ public class PotionAction extends Action {
         if (!onlyRemove) lEnt.addPotionEffects(this.effects);
     }
 
-    /**
-     * @param lEnt
-     */
     private void removeEffects(LivingEntity lEnt) {
         for (PotionEffect eff : this.effects) {
             lEnt.removePotionEffect(eff.getType());

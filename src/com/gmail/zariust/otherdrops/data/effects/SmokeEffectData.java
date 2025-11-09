@@ -32,9 +32,6 @@ public class SmokeEffectData extends EffectData {
             case SOUTH_WEST:
                 data = 2;
                 break;
-            case UP:
-                data = 4;
-                break;
             case WEST:
                 data = 5;
                 break;
@@ -66,26 +63,17 @@ public class SmokeEffectData extends EffectData {
     }
 
     public BlockFace getDirection() {
-        switch (data) {
-            case 0:
-                return BlockFace.SOUTH_EAST;
-            case 1:
-                return BlockFace.SOUTH;
-            case 2:
-                return BlockFace.SOUTH_WEST;
-            case 3:
-                return BlockFace.EAST;
-            case 4:
-                return BlockFace.UP;
-            case 5:
-                return BlockFace.WEST;
-            case 6:
-                return BlockFace.NORTH_EAST;
-            case 7:
-                return BlockFace.NORTH;
-            case 8:
-                return BlockFace.NORTH_WEST;
-        }
-        return BlockFace.SELF;
+        return switch (data) {
+            case 0 -> BlockFace.SOUTH_EAST;
+            case 1 -> BlockFace.SOUTH;
+            case 2 -> BlockFace.SOUTH_WEST;
+            case 3 -> BlockFace.EAST;
+            case 4 -> BlockFace.UP;
+            case 5 -> BlockFace.WEST;
+            case 6 -> BlockFace.NORTH_EAST;
+            case 7 -> BlockFace.NORTH;
+            case 8 -> BlockFace.NORTH_WEST;
+            default -> BlockFace.SELF;
+        };
     }
 }

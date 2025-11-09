@@ -1,5 +1,6 @@
 package com.gmail.zariust.otherdrops.parameters.actions;
 
+import com.gmail.zariust.otherdrops.Log;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -48,8 +49,7 @@ public class ParticleEffect {
             enumParticle = (Class<Enum>) getNmsClass("EnumParticle");
             packetConstructor = packetClass.getDeclaredConstructor(enumParticle, boolean.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, int.class, int[].class);
         } catch (Exception ex) {
-            ex.printStackTrace();
-            Bukkit.getLogger().severe("[ParticleLib] Failed to initialize NMS components!");
+            Log.logError("[ParticleLib] Failed to initialize NMS components!", ex);
             compatible = false;
         }
     }
@@ -102,7 +102,7 @@ public class ParticleEffect {
                 sendPacket(player, packet);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.logError("[ParticleLib] Failed to send packet:", e);
         }
     }
 
@@ -127,8 +127,7 @@ public class ParticleEffect {
 
             return packet;
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException ex) {
-            ex.printStackTrace();
-            Bukkit.getLogger().severe("{ParticleLib] Failed to construct particle effect packet!");
+            Log.logError("[ParticleLib] Failed to construct particle effect packet:", ex);
         }
         return null;
     }
@@ -155,8 +154,7 @@ public class ParticleEffect {
             }
             player_sendPacket.invoke(player_connection.get(getHandle(p)), packet);
         } catch (IllegalAccessException | NoSuchFieldException | InvocationTargetException ex) {
-            ex.printStackTrace();
-            Bukkit.getLogger().severe("[ParticleLib] Failed to send packet!");
+            Log.logError("[ParticleLib] Failed to send packet!", ex);
         }
     }
 
@@ -175,7 +173,7 @@ public class ParticleEffect {
                 return entity_getHandle.invoke(entity);
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Log.logError("[ParticleLib] Failed to get entity handle:", ex);
             return null;
         }
     }
@@ -193,8 +191,7 @@ public class ParticleEffect {
         try {
             clazz = Class.forName(className);
         } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
-            Bukkit.getLogger().severe("[ParticleLib] Failed to load NMS class " + name + "!");
+            Log.logError("[ParticleLib] Failed to load NMS class " + name + "!", ex);
         }
         return clazz;
     }

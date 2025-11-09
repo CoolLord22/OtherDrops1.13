@@ -18,9 +18,9 @@ public class OtherDropsTabExecutor implements TabExecutor {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Command command, @NotNull String alias, @NotNull String[] args) {
         if(command.getName().equalsIgnoreCase("od")) {
-            ArrayList<String> list = new ArrayList<String>();
+            ArrayList<String> list = new ArrayList<>();
             String lastArg = "";
             if(args.length == 1) {
                 return StringUtil.copyPartialMatches(args[0], Arrays.asList("saveitem", "id", "write", "reload", "show", "customspawn", "settings", "disable", "enable", "drop", "triggers"), new ArrayList<>());

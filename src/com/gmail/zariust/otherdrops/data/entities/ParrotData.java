@@ -10,7 +10,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 public class ParrotData extends CreatureData {
-    Parrot.Variant variant; // null = wildcard
+    final Parrot.Variant variant; // null = wildcard
 
     public ParrotData(Parrot.Variant variant) {
         this.variant = variant;

@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Fox;
 
 public class FoxData extends CreatureData {
-    Fox.Type type; // null = wildcard
+    final Fox.Type type; // null = wildcard
 
     public FoxData(Fox.Type type) {
         this.type = type;

@@ -11,8 +11,8 @@ import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 
 public class HorseData extends CreatureData {
-    Horse.Color horseColor; // null = wildcard
-    Horse.Style horseStyle; // null = wildcard
+    final Horse.Color horseColor; // null = wildcard
+    final Horse.Style horseStyle; // null = wildcard
 
     public HorseData(Horse.Color horseColor, Horse.Style horseStyle) {
         this.horseColor = horseColor;

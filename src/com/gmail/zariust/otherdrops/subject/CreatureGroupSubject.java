@@ -57,7 +57,7 @@ public class CreatureGroupSubject extends LivingSubject {
 
     @Override
     public List<Target> canMatch() {
-        List<Target> all = new ArrayList<Target>();
+        List<Target> all = new ArrayList<>();
         List<EntityType> creatures = group.creatures();
         for (EntityType type : creatures)
             all.add(new CreatureSubject(type));

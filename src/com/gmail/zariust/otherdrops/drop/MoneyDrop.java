@@ -47,8 +47,8 @@ public class MoneyDrop extends DropType {
     /**
      * Amount (range) of money this individual drop contains
      */
-    protected DoubleRange loot;
-    protected MoneyDropType type;
+    protected final DoubleRange loot;
+    protected final MoneyDropType type;
 
     public MoneyDrop(DoubleRange amount, double chance, MoneyDropType type) { // Rome
         super(DropCategory.MONEY, chance);

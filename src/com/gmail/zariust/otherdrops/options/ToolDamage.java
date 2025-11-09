@@ -32,7 +32,7 @@ public class ToolDamage {
     private ShortRange durabilityRange;
     private IntRange consumeRange;
     private ODItem replaceItem;
-    private IntRange replaceItemQuantity = new IntRange(1);
+    private IntRange replaceItemQuantity;
 
     public ToolDamage() {
         this(null, 1);
@@ -78,7 +78,7 @@ public class ToolDamage {
             meta.setDisplayName(replaceItem.getDisplayName());
             meta.setLore(replaceItem.lore);
             stack.setItemMeta(meta);
-            stack = CommonEnchantments.applyEnchantments(stack, replaceItem.getEnchantments());
+            CommonEnchantments.applyEnchantments(stack, replaceItem.getEnchantments());
 
             Log.logInfo("Tool replaced.", Verbosity.HIGH);
         } else if (durabilityRange == null && consumeRange == null) {
@@ -91,7 +91,7 @@ public class ToolDamage {
             meta.setDisplayName(replaceItem.getDisplayName());
             meta.setLore(replaceItem.lore);
             stack.setItemMeta(meta);
-            stack = CommonEnchantments.applyEnchantments(stack, replaceItem.getEnchantments());
+            CommonEnchantments.applyEnchantments(stack, replaceItem.getEnchantments());
 
             Log.logInfo("Tool replaced.", Verbosity.HIGH);
         }

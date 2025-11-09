@@ -51,7 +51,7 @@ public class RecordData extends EffectData {
 
     @Override
     public int getData() {
-        Integer discId = null;
+        Integer discId;
         if (disc == null) {
             // if you don't specify a valid record you just get a random one
             MaterialGroup mg = MaterialGroup.get("ANY_RECORD");

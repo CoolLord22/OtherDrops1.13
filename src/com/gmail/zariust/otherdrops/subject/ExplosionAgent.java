@@ -117,8 +117,7 @@ public class ExplosionAgent implements Agent {
         Log.logInfo("Parsing explosion for: " + name, Verbosity.HIGH);
         EntityType creature = CommonEntity.getCreatureEntityType(name);
         Data cdata = CreatureData.parse(creature, data);
-        if (cdata != null) return new ExplosionAgent(creature, cdata);
-        return new ExplosionAgent(creature);
+        return new ExplosionAgent(creature, cdata);
     }
 
     @Override

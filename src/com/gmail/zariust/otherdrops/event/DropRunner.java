@@ -37,11 +37,11 @@ import static java.lang.Math.max;
 public class DropRunner implements Runnable {
     @SuppressWarnings("unused")
     private final OtherDrops plugin;
-    OccurredEvent currentEvent;
+    final OccurredEvent currentEvent;
     SimpleDrop customDrop;
-    Player player;
-    Location playerLoc;
-    boolean defaultDrop;
+    final Player player;
+    final Location playerLoc;
+    final boolean defaultDrop;
     public static boolean defaultDamageDone;
 
     private int droppedQuantity = 0;
@@ -134,7 +134,9 @@ public class DropRunner implements Runnable {
             currentEvent.setLocation(oldLocation);
         } catch (Exception ex) {
             Log.logWarning("Exception while running special event results: " + ex.getMessage(), NORMAL);
-            if (OtherDropsConfig.getVerbosity().exceeds(HIGH)) ex.printStackTrace();
+            if (OtherDropsConfig.getVerbosity().exceeds(HIGH)) {
+                Log.logError("DropRunner error: ", ex);
+            }
         }
     }
 

@@ -20,7 +20,7 @@ public class MoneyAction extends Action {
         ATTACKER, VICTIM, RADIUS, WORLD, SERVER, STEAL
     }
 
-    static Map<String, MoneyActionType> matches = new HashMap<>();
+    final static Map<String, MoneyActionType> matches = new HashMap<>();
 
     static {
         matches.put("money", MoneyActionType.ATTACKER);
@@ -39,7 +39,7 @@ public class MoneyAction extends Action {
     protected boolean moneyPercent = false;
     protected boolean deductBelowZero = false;
     protected MoneyActionType moneyActionType;
-    protected double radius = 10; // default to 10 blocks
+    protected final double radius = 10; // default to 10 blocks
 
     public MoneyAction(Object object, MoneyActionType moneyType) {
         this.moneyActionType = moneyType;

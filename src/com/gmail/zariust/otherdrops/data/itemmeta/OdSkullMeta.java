@@ -16,7 +16,7 @@ import java.util.Base64;
 import java.util.UUID;
 
 public class OdSkullMeta extends OdItemMeta {
-    public String owner;
+    public final String owner;
 
     public OdSkullMeta(String owner) {
         this.owner = owner;
@@ -41,7 +41,6 @@ public class OdSkullMeta extends OdItemMeta {
             profileField.set(meta, profile);
         } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
             meta.setOwningPlayer(Bukkit.getOfflinePlayer(tempOwner));
-            e.printStackTrace();
         } finally {
             stack.setItemMeta(meta);
         }

@@ -22,7 +22,7 @@ public class ParticleAction extends Action {
         ATTACKER, VICTIM, RADIUS, WORLD, SERVER, DROP
     }
 
-    static Map<String, ParticleEffectActionType> matches = new HashMap<>();
+    static final Map<String, ParticleEffectActionType> matches = new HashMap<>();
 
     static {
         matches.put("particleeffect", ParticleEffectActionType.ATTACKER);
@@ -50,7 +50,7 @@ public class ParticleAction extends Action {
     }
 
     protected ParticleEffectActionType particleEffectActionType;
-    protected double radius = 10; // default to 10 blocks
+    protected final double radius = 10; // default to 10 blocks
     private Collection<ParticleEffect> effects = new ArrayList<>();
 
     public ParticleAction(Collection<ParticleEffect> effectsList) {
@@ -127,7 +127,7 @@ public class ParticleAction extends Action {
                 Log.dMsg("Sending effect: " + effect.getType().getName() + " speed: " + effect.getSpeed() + ", count:" + effect.getCount() + ", radius:" + effect.getRadius());
                 effect.sendToLocation(location, effect.getSpeed(), effect.getCount(), effect.getRadius());
             } catch (Exception e) {
-                e.printStackTrace();// TODO Auto-generated catch block
+                Log.logError("Error while applying particle action:", e);
             }
         }
 
@@ -140,7 +140,7 @@ public class ParticleAction extends Action {
                 Location location = lEnt.getLocation();
                 effect.sendToLocation(location, effect.getSpeed(), effect.getCount(), effect.getRadius());
             } catch (Exception e) {
-                e.printStackTrace();// TODO Auto-generated catch block
+                Log.logError("Error while applying particle action:", e);
             }
         }
     }

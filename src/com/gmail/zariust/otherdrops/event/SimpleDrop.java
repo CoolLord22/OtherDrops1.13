@@ -188,11 +188,6 @@ public class SimpleDrop extends CustomDrop {
         this.messages = msg;
     }
 
-    @Override
-    public List<String> getMessages() {
-        return messages;
-    }
-
     public String getMessagesString() {
         if (messages.isEmpty()) return "(none)";
         else if (messages.size() == 1) return quoted(messages.get(0));

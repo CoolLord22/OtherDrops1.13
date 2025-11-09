@@ -134,13 +134,13 @@ public class VehicleTarget implements Target {
     @SuppressWarnings("incomplete-switch")
     public static Target parse(Material type, String state) {
         if (type == null) return null;
-        Data data = null;
+        Data data;
         try {
             data = switch (type) {
                 case OAK_BOAT, SPRUCE_BOAT, BIRCH_BOAT, JUNGLE_BOAT, ACACIA_BOAT, DARK_OAK_BOAT, MINECART -> VehicleData.parse(type, state);
                 case HOPPER_MINECART, CHEST_MINECART -> ContainerData.parse(type, state);
                 case COMMAND_BLOCK_MINECART, TNT_MINECART, FURNACE_MINECART, PAINTING -> SimpleData.parse(type, state);
-                default -> data;
+                default -> null;
             };
         } catch (IllegalArgumentException e) {
             Log.logWarning(e.getMessage());

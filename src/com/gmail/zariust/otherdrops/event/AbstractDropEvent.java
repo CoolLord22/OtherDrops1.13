@@ -29,7 +29,7 @@ import static com.gmail.zariust.common.Verbosity.HIGHEST;
 public abstract class AbstractDropEvent {
     protected Target target;
     protected Trigger trigger;
-    public Random rng;
+    public final Random rng;
 
     public AbstractDropEvent(Target targ, Trigger trigger) {
         target = targ;

@@ -12,8 +12,8 @@ import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 
 public class VillagerData extends CreatureData {
-    Profession prof; // null = wildcard
-    Villager.Type type;
+    final Profession prof; // null = wildcard
+    final Villager.Type type;
 
     public VillagerData(Profession prof, Villager.Type type) {
         this.prof = prof;

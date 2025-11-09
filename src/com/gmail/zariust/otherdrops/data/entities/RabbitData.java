@@ -7,7 +7,7 @@ import com.gmail.zariust.otherdrops.data.Data;
 import org.bukkit.entity.*;
 
 public class RabbitData extends CreatureData {
-    Rabbit.Type type; // null = wildcard
+    final Rabbit.Type type; // null = wildcard
 
     public RabbitData(Rabbit.Type type) {
         this.type = type;

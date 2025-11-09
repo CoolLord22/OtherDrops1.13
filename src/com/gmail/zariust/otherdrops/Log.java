@@ -13,6 +13,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.gmail.zariust.common.Verbosity.EXTREME;
@@ -20,7 +21,7 @@ import static com.gmail.zariust.common.Verbosity.EXTREME;
 public class Log {
     static ConsoleCommandSender console = null;
     static String pluginName = "";
-    static Logger logger = Logger.getLogger("Minecraft");
+    final static Logger logger = Logger.getLogger("Minecraft");
 
     public Log(JavaPlugin plugin) {
         if (plugin != null) {
@@ -93,6 +94,10 @@ public class Log {
 
     public static void logWarning(String msg, Verbosity level) {
         if (OtherDropsConfig.verbosity.exceeds(level)) logWarning(msg);
+    }
+
+    public static void logError(String msg, Throwable cause) {
+        Log.logger.log(Level.SEVERE,"[" + pluginName + "] " + msg, cause);
     }
 
     // TODO: This is only for temporary debug purposes.

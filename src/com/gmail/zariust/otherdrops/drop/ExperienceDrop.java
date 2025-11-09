@@ -70,7 +70,7 @@ public class ExperienceDrop extends DropType {
     }
 
     public static DropType parse(String drop, String data, IntRange amount, double chance) {
-        String[] split = null;
+        String[] split;
         if (drop.matches("\\w+:.*")) {
             split = drop.split(":", 2);
         } else split = drop.split("@", 2);

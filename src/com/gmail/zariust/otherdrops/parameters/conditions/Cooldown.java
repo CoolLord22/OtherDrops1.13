@@ -8,7 +8,7 @@ import java.util.UUID;
  * @author Tirelessly @ Bukkit Forums, zarius (removed player name conditions)
  */
 public class Cooldown {
-    public static Set<PlayerCooldown> cooldowns = new HashSet<>();
+    public static final Set<PlayerCooldown> cooldowns = new HashSet<>();
 
     public static void addCooldown(String cooldownName, UUID playerID, long lengthInMillis) {
         PlayerCooldown pc = new PlayerCooldown(cooldownName, playerID, lengthInMillis);

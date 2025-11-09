@@ -52,7 +52,6 @@ public abstract class LivingSubject implements Agent, Target {
             Log.logInfo("LivingSubject.getLocation() - agent is null, this shouldn't happen.", HIGH);
             return null;
         }
-        if (entity != null) return entity.getLocation();
-        return null;
+        return entity.getLocation();
     }
 }

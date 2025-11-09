@@ -240,8 +240,8 @@ public class OtherDropsCommand implements CommandExecutor {
                 DropFlags flags = DropType.flags(dsl.player, (dsl.player == null ? null : new PlayerSubject(dsl.player, EquipmentSlot.HAND)), false, true, false, OtherDrops.rng, "odd", "odd", "");
                 DropResult dropResult = drop.drop(dsl.loc, null, null, 1, flags);
 
-                String dropped = "[NOTHING]";
-                if (dropResult.droppedEntities != null) dropped = dropResult.getDroppedString();
+                String dropped;
+                dropped = dropResult.getDroppedString();
                 sender.sendMessage("Dropped: " + dropResult.getQuantity() + "x" + dropped);
             }
         } else {
@@ -338,8 +338,10 @@ public class OtherDropsCommand implements CommandExecutor {
                 }
             } else {
                 String itemMsg = playerItem.getType() + "@" + playerItem.getDurability() + " maxdura:" + playerItem.getType().getMaxDurability() + " dura%:" + getDurabilityPercentage(playerItem) + " detail: " + playerItem;
-                if (playerItem.getItemMeta() != null && playerItem.getItemMeta().getDisplayName() != null)
+                if (playerItem.getItemMeta() != null) {
+                    playerItem.getItemMeta().getDisplayName();
                     itemMsg += " name: \"" + playerItem.getItemMeta().getDisplayName().replaceAll(" §", "&") + "\"";
+                }
 
                 ((Player) sender).sendRawMessage(ChatColor.GREEN + "Item in hand: " + ChatColor.WHITE + itemMsg.replaceAll("§", "&"));
                 sender.sendMessage("");
@@ -348,27 +350,27 @@ public class OtherDropsCommand implements CommandExecutor {
                 ((Player) sender).sendRawMessage(ChatColor.GREEN + "Block looked at is " + ChatColor.WHITE + block + " mat: " + block.getType() + " lightlevel: " + block.getLightLevel() + " lightfromsky: " + block.getLightFromSky() + " biome: " + block.getBiome());
             }
 
-            String itemFinalWriteData = "";
+            StringBuilder itemFinalWriteData = new StringBuilder();
 
-            itemFinalWriteData += playerItem.getType();
-            itemFinalWriteData += "@" + playerItem.getDurability();
+            itemFinalWriteData.append(playerItem.getType());
+            itemFinalWriteData.append("@").append(playerItem.getDurability());
             if (!playerItem.getEnchantments().isEmpty()) {
-                itemFinalWriteData += "!";
+                itemFinalWriteData.append("!");
                 for (Enchantment enchInMap : playerItem.getEnchantments().keySet()) {
-                    itemFinalWriteData += enchInMap.getKey().toString().replace("minecraft:", "") + "#" + playerItem.getEnchantmentLevel(enchInMap) + "!";
+                    itemFinalWriteData.append(enchInMap.getKey().toString().replace("minecraft:", "")).append("#").append(playerItem.getEnchantmentLevel(enchInMap)).append("!");
                 }
             }
             if (playerItem.getItemMeta() != null) {
-                itemFinalWriteData += "~" + playerItem.getItemMeta().getDisplayName();
+                itemFinalWriteData.append("~").append(playerItem.getItemMeta().getDisplayName());
                 if (playerItem.getItemMeta().getLore() != null) {
                     List<String> loreList = playerItem.getItemMeta().getLore();
                     for (String loreLine : loreList) {
-                        itemFinalWriteData += ";" + loreLine;
+                        itemFinalWriteData.append(";").append(loreLine);
                     }
                 }
             }
             sender.sendMessage("");
-            ((Player) sender).sendRawMessage(ChatColor.GREEN + "The item config is:§r " + ChatColor.WHITE + itemFinalWriteData.replaceAll("§", "&"));
+            player.sendRawMessage(ChatColor.GREEN + "The item config is:§r " + ChatColor.WHITE + itemFinalWriteData.toString().replaceAll("§", "&"));
         }
     }
 
@@ -376,30 +378,25 @@ public class OtherDropsCommand implements CommandExecutor {
         if (sender instanceof Player player) {
             File folder = new File("plugins" + File.separator + "OtherDrops");
             BufferedWriter out;
-
             ItemStack playerItem = player.getInventory().getItemInMainHand();
-
-            String itemFinalWriteData = "";
-
-            itemFinalWriteData += playerItem.getType();
-            itemFinalWriteData += "@" + playerItem.getDurability();
+            StringBuilder itemFinalWriteData = new StringBuilder();
+            itemFinalWriteData.append(playerItem.getType());
+            itemFinalWriteData.append("@").append(playerItem.getDurability());
             if (!playerItem.getEnchantments().isEmpty()) {
-                itemFinalWriteData += "!";
+                itemFinalWriteData.append("!");
                 for (Enchantment enchInMap : playerItem.getEnchantments().keySet()) {
-                    itemFinalWriteData += enchInMap.getKey().toString().replace("minecraft:", "") + "#" + playerItem.getEnchantmentLevel(enchInMap) + "!";
+                    itemFinalWriteData.append(enchInMap.getKey().toString().replace("minecraft:", "")).append("#").append(playerItem.getEnchantmentLevel(enchInMap)).append("!");
                 }
             }
-
             if (playerItem.getItemMeta() != null) {
-                itemFinalWriteData += "~" + playerItem.getItemMeta().getDisplayName();
+                itemFinalWriteData.append("~").append(playerItem.getItemMeta().getDisplayName());
                 if (playerItem.getItemMeta().getLore() != null) {
                     List<String> loreList = playerItem.getItemMeta().getLore();
                     for (String loreLine : loreList) {
-                        itemFinalWriteData += ";" + loreLine;
+                        itemFinalWriteData.append(";").append(loreLine);
                     }
                 }
             }
-
             try {
                 File configFile = new File(folder.getAbsolutePath() + File.separator + "ItemOutput" + ".txt");
                 configFile.getParentFile().mkdirs();
@@ -408,10 +405,10 @@ public class OtherDropsCommand implements CommandExecutor {
                 out.write(itemFinalWriteData + "\n");
                 out.close();
             } catch (IOException exception) {
-                exception.printStackTrace();
+                Log.logError("Encountered an error while writing ItemOutput.", exception);
             }
 
-            ((Player) sender).sendRawMessage(ChatColor.GREEN + "The item config is:§r " + ChatColor.WHITE + itemFinalWriteData.replaceAll("§", "&"));
+            player.sendRawMessage(ChatColor.GREEN + "The item config is:§r " + ChatColor.WHITE + itemFinalWriteData.toString().replaceAll("§", "&"));
         }
     }
 

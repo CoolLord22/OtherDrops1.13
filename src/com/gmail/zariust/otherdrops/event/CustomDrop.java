@@ -302,8 +302,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
     public int getRandomDelay() {
         if (Objects.equals(delay.getMin(), delay.getMax())) return delay.getMin();
 
-        int randomVal = (delay.getMin() + rng.nextInt(delay.getMax() - delay.getMin() + 1));
-        return randomVal;
+        return (delay.getMin() + rng.nextInt(delay.getMax() - delay.getMin() + 1));
     }
 
     public String getDelayRange() {

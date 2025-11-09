@@ -20,7 +20,6 @@ import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 import com.gmail.zariust.otherdrops.special.SpecialResultHandler;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class ExplosionEvents extends SpecialResultHandler {
@@ -37,7 +36,7 @@ public class ExplosionEvents extends SpecialResultHandler {
 
     @Override
     public List<String> getEvents() {
-        return Arrays.asList("EXPLOSION");
+        return List.of("EXPLOSION");
     }
 
     @Override

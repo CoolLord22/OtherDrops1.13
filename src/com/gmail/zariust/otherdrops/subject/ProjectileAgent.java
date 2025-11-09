@@ -41,7 +41,7 @@ public class ProjectileAgent implements Agent {
     private final boolean dispenser;
     private final Material mat;
     private Integer durability;
-    Projectile agent;
+    final Projectile agent;
 
     public ProjectileAgent() { // The wildcard
         this(null, false);
@@ -140,7 +140,7 @@ public class ProjectileAgent implements Agent {
         if (tool == null) return false;
 
         // if mat = null treat as wildcard, ie. match true, otherwise compare mat vs tool.mat
-        boolean matMatches = (mat == null) ? true : mat == tool.mat;
+        boolean matMatches = mat == null || mat == tool.mat;
 
         if (durability != null) {
             if (tool.agent instanceof ThrownPotion potionagent) {
@@ -217,7 +217,7 @@ public class ProjectileAgent implements Agent {
             inven = null;
         } else if (agent.getShooter() instanceof Player) {
             inven = ((Player) agent.getShooter()).getInventory();
-        } else return;
+        }
         // TODO: Now remove damage-1 of mat from inven
         // TODO: Option of failure if damage is greater that the amount remaining?
     }

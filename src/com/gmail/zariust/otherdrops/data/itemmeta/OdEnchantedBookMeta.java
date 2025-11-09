@@ -10,7 +10,7 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import java.util.List;
 
 public class OdEnchantedBookMeta extends OdItemMeta {
-    public List<CMEnchantment> cmEnch;
+    public final List<CMEnchantment> cmEnch;
 
     public OdEnchantedBookMeta(List<CMEnchantment> cmEnch) {
         this.cmEnch = cmEnch;

@@ -38,8 +38,7 @@ public class CustomMob {
     String passenger;
 
     public Map<String, String> getDropChanceQuantity(String toParse) {
-        Map<String, String> returnVal = new HashMap<String, String>();
-        return returnVal;
+        return new HashMap<>();
     }
 
     public boolean parse(ConfigurationNode node, String nodeName) {

@@ -65,7 +65,7 @@ public class ExplodeEvent extends SpecialResult {
                 power = Float.parseFloat(arg);
                 havePower = true;
                 used(arg);
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException ignored) {
             }
             if (haveFire && havePower && haveHarmless) break;
         }

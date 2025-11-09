@@ -46,15 +46,15 @@ public abstract class DropType {
     }
 
     public static class DropFlags {
-        protected boolean naturally, spread, dropToInventory;
-        protected Random rng;
-        protected Player recipient;
-        protected String victim;
-        protected Agent tool;
-        protected String eventType;
-        protected String spawnReason;
-        protected Set<ODItem> dropsFilter;
-        protected boolean toKeepDrops;
+        protected final boolean naturally, spread, dropToInventory;
+        protected final Random rng;
+        protected final Player recipient;
+        protected final String victim;
+        protected final Agent tool;
+        protected final String eventType;
+        protected final String spawnReason;
+        protected final Set<ODItem> dropsFilter;
+        protected final boolean toKeepDrops;
 
         protected DropFlags(boolean d, boolean n, boolean s, Random ran, Player who, Agent tool, String eventType, String spawnReason, String victim, boolean toKeepDrops, Set<ODItem> dropsFilter) {
             dropToInventory = d;

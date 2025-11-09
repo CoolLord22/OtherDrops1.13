@@ -31,7 +31,7 @@ public class MessageAction extends Action {
         ATTACKER, VICTIM, RADIUS, WORLD, SERVER
     }
 
-    static Map<String, MessageType> matches = new HashMap<>();
+    final static Map<String, MessageType> matches = new HashMap<>();
 
     static {
         matches.put("message", MessageType.ATTACKER);
@@ -133,7 +133,7 @@ public class MessageAction extends Action {
     }
 
     static public String parseVariables(String msg, CustomDrop drop, OccurredEvent occurence, double amount) {
-        if (msg == null) return msg;
+        if (msg == null) return null;
 
         Player player = null;
 

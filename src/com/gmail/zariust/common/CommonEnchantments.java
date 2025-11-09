@@ -79,7 +79,7 @@ public class CommonEnchantments {
         return cmEnch;
     }
 
-    static Map<String, String> aliases = new HashMap<>();
+    static final Map<String, String> aliases = new HashMap<>();
 
     static {
         aliases.put("aspectfire", "fireaspect");

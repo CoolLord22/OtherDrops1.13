@@ -13,8 +13,8 @@ import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 
 public class SheepData extends CreatureData {
-    Boolean sheared; // null = wildcard
-    DyeColor color;
+    final Boolean sheared; // null = wildcard
+    final DyeColor color;
 
     @SuppressWarnings("deprecation")
     public SheepData(Boolean sheared, DyeColor color) {

@@ -138,8 +138,7 @@ public class MaterialGroup {
                     String name = "TAG_" + tag.getKey().toString().toUpperCase().replace("MINECRAFT:", "");
                     register(name, List.copyOf(tag.getValues()));
                 } catch (Exception e) {
-                    Log.logWarning("Failed to register tag group: " + tag.getKey());
-                    e.printStackTrace();
+                    Log.logError("Failed to register tag group: " + tag.getKey(), e);
                 }
             }
         }

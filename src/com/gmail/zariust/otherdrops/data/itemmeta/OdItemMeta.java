@@ -29,15 +29,11 @@ public abstract class OdItemMeta {
     // This method released under Evil Software License v1.1
     // <http://fredrikvold.info/ESL.htm>
 
-    /**
+    /*
      * getColorFrom(string) - obtain "Rich" colors from org.bukkit.Color
      * otherwise match using DyeColor. (needed as there is no way to go from the
      * string directly to a "Color"). Support "R/G/B" format using hex format
      * eg. "#FF0000" = red
-     *
-     * @param sub
-     * @return
-     * @author zarius
      */
     public static Color getColorFrom(String sub) {
         Log.dMsg("PARSING COLOR!" + sub);

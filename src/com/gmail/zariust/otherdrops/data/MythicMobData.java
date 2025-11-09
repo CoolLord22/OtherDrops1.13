@@ -13,7 +13,7 @@ public class MythicMobData implements Data {
 
     public MythicMobData(String mythicMobType) {
         if (Dependencies.hasMythicMobs()) {
-            if (!mythicMobType.equalsIgnoreCase("ANY") && !Dependencies.getMythicMobs().getMobManager().getMythicMob(mythicMobType).isPresent()) {
+            if (!mythicMobType.equalsIgnoreCase("ANY") && Dependencies.getMythicMobs().getMobManager().getMythicMob(mythicMobType).isEmpty()) {
                 Log.logInfo("Invalid mythic mob specified/could not be found: " + mythicMobType, Verbosity.HIGHEST);
                 return;
             }

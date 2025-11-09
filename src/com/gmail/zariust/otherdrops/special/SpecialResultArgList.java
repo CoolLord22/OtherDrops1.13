@@ -17,6 +17,7 @@
 package com.gmail.zariust.otherdrops.special;
 
 import com.gmail.zariust.otherdrops.Log;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -153,23 +154,23 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
         Collections.addAll(this, array);
     }
 
+    @NotNull
     @Override
     public Iterator listIterator(int i) throws IndexOutOfBoundsException {
         if (i < 0 || i > size) throw new IndexOutOfBoundsException(Integer.toString(i));
         if (i == size) return new Iterator();
         else if (i > size / 2) {
             Node at = tail;
-            for (; ++i < size; at = at.prev)
-                ;
+            for (; ++i < size; at = at.prev);
             return new Iterator(at);
         } else {
             Node at = head;
-            for (; i-- > 0; at = at.next)
-                ;
+            for (; i-- > 0; at = at.next);
             return new Iterator(at);
         }
     }
 
+    @NotNull
     @Override
     public Iterator listIterator() throws IndexOutOfBoundsException {
         return (Iterator) super.listIterator();
@@ -180,7 +181,7 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
         return size;
     }
 
-    private class Node {
+    private static class Node {
         Node prev;
         String value;
         Node next;

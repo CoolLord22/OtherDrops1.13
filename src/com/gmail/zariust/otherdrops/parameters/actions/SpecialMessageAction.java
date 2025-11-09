@@ -46,11 +46,11 @@ public class SpecialMessageAction extends Action {
         this.sendType = sendType;
     }
 
-    protected SendType sendType;
+    protected final SendType sendType;
     private final List<ODBar> messages; // this can contain variables, parse at runtime
 
     public abstract static class ODBar {
-        String message;
+        final String message;
 
         public ODBar(String message) {
             this.message = message;
@@ -58,10 +58,10 @@ public class SpecialMessageAction extends Action {
     }
 
     public static class ODBossBar extends ODBar {
-        Integer timeToBeShowed;
-        BarColor barColor;
-        BarStyle barStyle;
-        double progress;
+        final Integer timeToBeShowed;
+        final BarColor barColor;
+        final BarStyle barStyle;
+        final double progress;
 
         public ODBossBar(BarColor barColor, BarStyle barStyle, Integer timeToBeShowed, String message, double progress) {
             super(message);
@@ -79,10 +79,10 @@ public class SpecialMessageAction extends Action {
     }
 
     public static class ODTitleMessage extends ODBar {
-        Integer fadeIn;
-        Integer stay;
-        Integer fadeOut;
-        String subtitle;
+        final Integer fadeIn;
+        final Integer stay;
+        final Integer fadeOut;
+        final String subtitle;
 
         public ODTitleMessage(Integer fadeIn, Integer stay, Integer fadeOut, String title, String subtitle) {
             super(title);

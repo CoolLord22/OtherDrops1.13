@@ -25,11 +25,11 @@ public abstract class Condition extends Parameter {
 
     // protected abstract static List<Condition> parseInstance(ConfigurationNode node);
 
-    protected static Set<Condition> conditions = new HashSet<>();
+    protected static final Set<Condition> conditions = new HashSet<>();
 
     // NOTE: currently this function is called before verbosity is loaded from the config file (so debug messages based on Verbosity.HIGH etc. won't work)
     public static boolean registerCondition(Condition register) {
-        if (register == null) Log.logInfo("Condition - registering FAILED" + register);
+        if (register == null) Log.logInfo("Condition - registering FAILED");
         else conditions.add(register);
         return false;
     }

@@ -63,23 +63,19 @@ public class ContainerData implements Data {
 
     public ContainerData(StorageMinecart vehicle) {
         Inventory inventory = vehicle.getInventory();
-        if (inventory != null) {
-            ItemStack[] contents = inventory.getContents();
-            for (ItemStack stack : contents) {
-                if (stack == null) continue;
-                inven.add(stack.getType());
-            }
+        ItemStack[] contents = inventory.getContents();
+        for (ItemStack stack : contents) {
+            if (stack == null) continue;
+            inven.add(stack.getType());
         }
     }
 
     public ContainerData(HopperMinecart vehicle) {
         Inventory inventory = vehicle.getInventory();
-        if (inventory != null) {
-            ItemStack[] contents = inventory.getContents();
-            for (ItemStack stack : contents) {
-                if (stack == null) continue;
-                inven.add(stack.getType());
-            }
+        ItemStack[] contents = inventory.getContents();
+        for (ItemStack stack : contents) {
+            if (stack == null) continue;
+            inven.add(stack.getType());
         }
     }
 

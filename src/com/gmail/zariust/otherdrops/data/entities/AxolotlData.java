@@ -7,7 +7,7 @@ import com.gmail.zariust.otherdrops.data.Data;
 import org.bukkit.entity.*;
 
 public class AxolotlData extends CreatureData {
-    Axolotl.Variant variant; // null = wildcard
+    final Axolotl.Variant variant; // null = wildcard
 
     public AxolotlData(Axolotl.Variant variant) {
         this.variant = variant;

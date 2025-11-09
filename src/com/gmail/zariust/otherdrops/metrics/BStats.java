@@ -43,12 +43,6 @@ public class BStats {
         }));
     }
 
-    /**
-     * Keeps a count of each individual trigger for the purpose of logging to
-     * Metrics custom graph
-     *
-     * @param triggerString
-     */
     public static void incrementTriggerCounts(String triggerString) {
         triggerCounts.merge(triggerString, 1, Integer::sum);
     }

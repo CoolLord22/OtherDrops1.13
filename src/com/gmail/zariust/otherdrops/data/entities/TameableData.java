@@ -7,7 +7,7 @@ import com.gmail.zariust.otherdrops.data.Data;
 import org.bukkit.entity.*;
 
 public class TameableData extends CreatureData {
-    Boolean isTamed;
+    final Boolean isTamed;
 
     public TameableData(Boolean isTamed) {
         this.isTamed = isTamed;

@@ -21,9 +21,9 @@ import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.things.ODVariables;
 
 public class LivingEntityData extends CreatureData {
-    Double maxHealth;
-    CreatureEquipment equip;
-    String customName;
+    final Double maxHealth;
+    final CreatureEquipment equip;
+    final String customName;
 
     public LivingEntityData(Double maxHealth, CreatureEquipment equip, String customName) {
         this.maxHealth = maxHealth;

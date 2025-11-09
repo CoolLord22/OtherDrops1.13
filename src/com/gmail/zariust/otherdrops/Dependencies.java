@@ -72,8 +72,7 @@ public class Dependencies {
             notFoundPlugins = ""; // need to reset variables to allow for reloads
             worldGuard = (WorldGuardPlugin) getPlugin("WorldGuard");
         } catch (Exception e) {
-            Log.logInfo("Failed to load one or more optional dependencies - continuing OtherDrops startup.");
-            e.printStackTrace();
+            Log.logError("Failed to load one or more optional dependencies - continuing OtherDrops startup.", e);
         }
         try {
             towny = (Towny) getPlugin("Towny");
@@ -89,15 +88,13 @@ public class Dependencies {
             rpgItems = (think.rpgitems.Plugin) getPlugin("RPG Items");
             mcmmo = (mcMMO) getPlugin("mcMMO");
         } catch (Exception e) {
-            Log.logInfo("Failed to load one or more optional dependencies - continuing OtherDrops startup.");
-            e.printStackTrace();
+            Log.logError("Failed to load one or more optional dependencies - continuing OtherDrops startup.", e);
         }
 
         try {
             setupVault();
         } catch (Exception e) {
-            Log.logInfo("Failed to load one or more optional dependencies - continuing OtherDrops startup.");
-            e.printStackTrace();
+            Log.logError("Failed to load one or more optional dependencies - continuing OtherDrops startup.", e);
         }
 
         try {
@@ -105,8 +102,7 @@ public class Dependencies {
                 mobArenaHandler = new MobArenaHandler();
             }
         } catch (Exception e) {
-            Log.logInfo("Failed to load one or more optional dependencies - continuing OtherDrops startup.");
-            e.printStackTrace();
+            Log.logError("Failed to load one or more optional dependencies - continuing OtherDrops startup.", e);
         }
         if (!foundPlugins.isEmpty()) Log.logInfo("Found supported plugin(s): '" + foundPlugins + "'", Verbosity.NORMAL);
         if (!notFoundPlugins.isEmpty())

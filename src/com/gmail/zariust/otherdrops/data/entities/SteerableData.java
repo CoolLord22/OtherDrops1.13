@@ -7,7 +7,7 @@ import com.gmail.zariust.otherdrops.data.Data;
 import org.bukkit.entity.*;
 
 public class SteerableData extends CreatureData {
-    Boolean isSaddled;
+    final Boolean isSaddled;
 
     public SteerableData(Boolean isSaddled) {
         this.isSaddled = isSaddled;

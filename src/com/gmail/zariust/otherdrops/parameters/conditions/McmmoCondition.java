@@ -49,7 +49,7 @@ public class McmmoCondition extends Condition {
 
     @Override
     protected boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
-        if (!Dependencies.hasMcmmo()) return false; // shouldn't happen, but just in case
+        // shouldn't happen, but just in case
 
         // Grab the character manager & check values against the saved
         // value/values

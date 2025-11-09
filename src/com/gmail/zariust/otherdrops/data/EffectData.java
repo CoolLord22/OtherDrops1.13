@@ -97,7 +97,7 @@ public class EffectData implements Data {
             try {
                 radius = Integer.parseInt(split[1]);
                 data.setRadius(radius);
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException ignored) {
             }
         }
         data.setRadius(radius);

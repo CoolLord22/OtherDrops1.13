@@ -25,7 +25,7 @@ public class SoundAction extends Action {
         ATTACKER, VICTIM, RADIUS, WORLD, SERVER, TOOL
     }
 
-    static Map<String, SoundLocation> matches = new HashMap<>();
+    static final Map<String, SoundLocation> matches = new HashMap<>();
 
     static {
         String name = "sound";
@@ -41,20 +41,20 @@ public class SoundAction extends Action {
     }
 
     protected SoundLocation damageActionType;
-    protected double radius = OtherDropsConfig.gActionRadius;
+    protected final double radius = OtherDropsConfig.gActionRadius;
     private final List<ODSound> sounds;
     private boolean pickOne = false;
 
-    private class ODSound {
+    private static class ODSound {
         public ODSound(Sound sound2, DoubleRange volume2, DoubleRange pitch2) {
             this.sound = sound2;
             this.volume = volume2;
             this.pitch = pitch2;
         }
 
-        Sound sound;
-        DoubleRange volume;
-        DoubleRange pitch;
+        final Sound sound;
+        final DoubleRange volume;
+        final DoubleRange pitch;
     }
 
     public SoundAction(Object object, SoundLocation damageEffectType2) {

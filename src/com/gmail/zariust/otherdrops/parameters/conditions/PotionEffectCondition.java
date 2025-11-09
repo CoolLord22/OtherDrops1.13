@@ -23,7 +23,7 @@ public class PotionEffectCondition extends Condition {
         ATTACKER, VICTIM
     }
 
-    static Map<String, PotionTarget> matches = new HashMap<>();
+    static final Map<String, PotionTarget> matches = new HashMap<>();
 
     static {
         matches.put("potionrequirement", PotionTarget.ATTACKER);

@@ -12,7 +12,7 @@ import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 
 public class PigZombieData extends CreatureData {
-    Integer anger; // null = wildcard
+    final Integer anger; // null = wildcard
 
     public PigZombieData(Integer type) {
         this.anger = type;

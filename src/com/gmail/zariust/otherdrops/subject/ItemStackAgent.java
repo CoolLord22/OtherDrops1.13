@@ -26,12 +26,12 @@ public class ItemStackAgent extends ToolAgent {
 
     @Override
     public boolean matches(Subject other) {
-        if (!(other instanceof PlayerSubject)) return false;
+        if (!(other instanceof PlayerSubject playerSubject)) return false;
 
         if (itemStack != null) {
-            ItemStack playerItem = ((PlayerSubject) other).getTool().getActualTool();
+            ItemStack playerItem = playerSubject.getTool().getActualTool();
             Log.logInfo("Checking ItemStack tool: " + itemStack + " vs player tool: " + playerItem, Verbosity.HIGHEST);
-            if (itemStack != null) {
+            if (playerItem != null) {
                 if (playerItem.getType() != itemStack.getType()) { // if the two materials are not equal
                     Log.logInfo("ItemStackToolCheck - failed (different materials).", Verbosity.HIGHEST);
                     return false;

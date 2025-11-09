@@ -12,7 +12,7 @@ import com.gmail.zariust.otherdrops.data.Data;
 
 public class CreeperData extends CreatureData {
     Creeper dummy; // used to represent main Entity class for this data object
-    Boolean powered; // null = wildcard
+    final Boolean powered; // null = wildcard
 
     public CreeperData(Boolean powered) {
         this.powered = powered;

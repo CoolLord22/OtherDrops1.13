@@ -59,7 +59,7 @@ public enum Adjacent {
                 }
                 checkLoc.add(-3, 0, 1);
             }
-        } else if (BlockFace.valueOf(faceName) != null) {
+        } else {
             if (block.getRelative(BlockFace.valueOf(faceName)).getType() == mat) match = true;
         }
 
@@ -76,12 +76,6 @@ public enum Adjacent {
         Map<Adjacent, Boolean> result = new HashMap<>();
         result.put(null, OtherDropsConfig.containsAll(adjactentList));
         for (String name : adjactentList) {
-            String[] split = name.split("/");
-            // BlockFace
-            if (BlockFace.valueOf(split[0]) == null) {
-
-            }
-
             Adjacent storm = parse(name);
             if (storm != null) result.put(storm, true);
             else if (name.startsWith("-")) {

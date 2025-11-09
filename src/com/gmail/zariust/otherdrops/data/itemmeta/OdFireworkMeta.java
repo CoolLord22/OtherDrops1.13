@@ -8,7 +8,7 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 public class OdFireworkMeta extends OdItemMeta {
-    public String owner;
+    public final String owner;
 
     public OdFireworkMeta(String owner) {
         this.owner = owner;

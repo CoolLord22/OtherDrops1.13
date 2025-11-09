@@ -32,7 +32,7 @@ public class DamageAction extends Action {
         NORMAL, FIRE, LIGHTNING
     }
 
-    static Map<String, DamageActionType> matches = new HashMap<>();
+    static final Map<String, DamageActionType> matches = new HashMap<>();
 
     static {
         matches.put("damage", DamageActionType.ATTACKER);
@@ -51,7 +51,7 @@ public class DamageAction extends Action {
     }
 
     protected DamageActionType damageActionType;
-    protected double radius = OtherDropsConfig.gActionRadius;
+    protected final double radius = OtherDropsConfig.gActionRadius;
     private final Map<DoubleRange, DamageType> damages; // this can contain variables, parse at runtime
 
     public DamageAction(Object object, DamageActionType damageEffectType2) {

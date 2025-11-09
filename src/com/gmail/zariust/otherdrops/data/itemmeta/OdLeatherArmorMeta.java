@@ -9,7 +9,7 @@ import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 public class OdLeatherArmorMeta extends OdItemMeta {
-    public Color color;
+    public final Color color;
 
     public OdLeatherArmorMeta(Color color2) {
         this.color = color2;

@@ -117,7 +117,7 @@ public class VehicleDrop extends DropType {
 
     public static DropType parse(String drop, String data, IntRange amount, double chance) {
         drop = drop.toUpperCase().replace("VEHICLE_", "");
-        String[] split = null;
+        String[] split;
         if (drop.matches("\\w+:.*")) {
             split = drop.split(":", 2);
         } else split = drop.split("@", 2);
