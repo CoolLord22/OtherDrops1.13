@@ -16,17 +16,16 @@
 
 package com.gmail.zariust.odspecialevents;
 
-import java.util.List;
-
-import org.bukkit.entity.Sheep;
-
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 import com.gmail.zariust.otherdrops.subject.CreatureSubject;
+import org.bukkit.entity.Sheep;
+
+import java.util.List;
 
 public class ShearEvent extends SpecialResult {
-    private Boolean state;
+    private final Boolean state;
 
     public ShearEvent(SheepEvents source, Boolean b) {
         super(b == null ? "SHEARTOGGLE" : (b ? "" : "UN") + "SHEAR", source);
@@ -38,10 +37,8 @@ public class ShearEvent extends SpecialResult {
         CreatureSubject target = (CreatureSubject) event.getTarget();
         Sheep sheep = (Sheep) target.getAgent();
         boolean newState;
-        if (state == null)
-            newState = !sheep.isSheared();
-        else
-            newState = state;
+        if (state == null) newState = !sheep.isSheared();
+        else newState = state;
         sheep.setSheared(newState);
     }
 

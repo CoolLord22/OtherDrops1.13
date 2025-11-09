@@ -16,14 +16,13 @@
 
 package com.gmail.zariust.odspecialevents;
 
-import java.util.List;
-
-import org.bukkit.Location;
-import org.bukkit.World;
-
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
+import org.bukkit.Location;
+import org.bukkit.World;
+
+import java.util.List;
 
 public class LightningEvent extends SpecialResult {
     private boolean harmless, player;
@@ -35,15 +34,11 @@ public class LightningEvent extends SpecialResult {
     @Override
     public void executeAt(OccurredEvent event) {
         Location location = null;
-        if (player)
-            location = event.getTool().getLocation();
-        if (location == null)
-            location = event.getLocation();
+        if (player) location = event.getTool().getLocation();
+        if (location == null) location = event.getLocation();
         World world = location.getWorld();
-        if (harmless)
-            world.strikeLightningEffect(location);
-        else
-            world.strikeLightning(location);
+        if (harmless) world.strikeLightningEffect(location);
+        else world.strikeLightning(location);
     }
 
     @Override

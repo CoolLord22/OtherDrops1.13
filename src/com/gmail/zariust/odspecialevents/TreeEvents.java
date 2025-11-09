@@ -16,31 +16,28 @@
 
 package com.gmail.zariust.odspecialevents;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 import com.gmail.zariust.otherdrops.special.SpecialResultHandler;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class TreeEvents extends SpecialResultHandler {
     public static boolean forceOnTileEntities;
 
     @Override
     public SpecialResult getNewEvent(String name) {
-        if (name.equalsIgnoreCase("TREE"))
-            return new TreeEvent(this, false);
-        else if (name.equalsIgnoreCase("FORCETREE"))
-            return new TreeEvent(this, true);
+        if (name.equalsIgnoreCase("TREE")) return new TreeEvent(this, false);
+        else if (name.equalsIgnoreCase("FORCETREE")) return new TreeEvent(this, true);
         return null;
     }
 
     @Override
     public void onLoad() {
         ConfigurationNode configNode = getConfiguration();
-        forceOnTileEntities = (configNode == null) ? false : configNode
-                .getBoolean("force-tile-entities", false);
+        forceOnTileEntities = configNode != null && configNode.getBoolean("force-tile-entities", false);
         logInfo("Trees v" + getVersion() + " loaded.", Verbosity.HIGH);
     }
 

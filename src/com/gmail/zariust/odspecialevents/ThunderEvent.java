@@ -35,12 +35,10 @@ public class ThunderEvent extends SpecialResult {
     @Override
     public void executeAt(OccurredEvent event) {
         World world = event.getWorld();
-        if (duration == 0)
-            world.setThundering(false);
+        if (duration == 0) world.setThundering(false);
         else {
             world.setThundering(true);
-            if (duration > 0)
-                world.setThunderDuration(duration);
+            if (duration > 0) world.setThunderDuration(duration);
         }
     }
 
@@ -53,12 +51,11 @@ public class ThunderEvent extends SpecialResult {
             } else if (time.equalsIgnoreCase("OFF")) {
                 duration = 0;
                 used(time);
-            } else
-                try {
-                    duration = Short.parseShort(time);
-                    used(time);
-                } catch (NumberFormatException e) {
-                }
+            } else try {
+                duration = Short.parseShort(time);
+                used(time);
+            } catch (NumberFormatException ignored) {
+            }
         }
     }
 
