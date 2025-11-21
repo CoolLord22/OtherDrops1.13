@@ -25,33 +25,26 @@ public class PermissionGroupCheck extends Condition {
 
     @Override
     protected boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
-        if (permissionGroupMap == null)
-            return true;
+        if (permissionGroupMap == null) return true;
         Agent agent = occurrence.getTool();
         Player player = null;
 
         if (!(agent instanceof PlayerSubject)) {
             if (agent instanceof ProjectileAgent) {
-                Entity shooter = ((ProjectileAgent) agent).getShooter()
-                        .getEntity();
+                Entity shooter = ((ProjectileAgent) agent).getShooter().getEntity();
                 if (shooter instanceof Player) {
                     player = (Player) shooter;
                 }
-            } else
-                return false; // if permissions is set and agent is not a
-            // player, fail
+            } else return false; // if permissions is set and agent is not a player, fail
         }
 
-        if (player == null)
-            player = ((PlayerSubject) agent).getPlayer();
+        if (player == null) player = ((PlayerSubject) agent).getPlayer();
 
         boolean match = false;
         for (String group : permissionGroupMap.keySet()) {
             if (OtherDrops.inGroup(player, group)) {
-                if (permissionGroupMap.get(group))
-                    match = true;
-                else
-                    return false;
+                if (permissionGroupMap.get(group)) match = true;
+                else return false;
             }
         }
         return match;
@@ -60,8 +53,7 @@ public class PermissionGroupCheck extends Condition {
     @Override
     public List<Condition> parse(ConfigurationNode parseMe) {
         Map<String, Boolean> result = OtherDropsConfig.parseGroupsFrom(parseMe);
-        if(result == null || result.isEmpty())
-            return null;
+        if (result == null || result.isEmpty()) return null;
         List<Condition> conditionList = new ArrayList<>();
         conditionList.add(new PermissionGroupCheck(result));
         return conditionList;

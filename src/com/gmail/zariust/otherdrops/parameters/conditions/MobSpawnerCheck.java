@@ -1,23 +1,22 @@
 package com.gmail.zariust.otherdrops.parameters.conditions;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.gmail.zariust.otherdrops.ConfigurationNode;
+import com.gmail.zariust.otherdrops.event.CustomDrop;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import com.gmail.zariust.otherdrops.parameters.Condition;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
-import com.gmail.zariust.otherdrops.ConfigurationNode;
-import com.gmail.zariust.otherdrops.event.CustomDrop;
-import com.gmail.zariust.otherdrops.event.OccurredEvent;
-import com.gmail.zariust.otherdrops.parameters.Condition;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MobSpawnerCheck extends Condition {
     private final Integer radius;
 
-    String          name = "MobSpawnerCheck";
-    Boolean not = false;
+    final String name = "MobSpawnerCheck";
+    final Boolean not;
 
     public MobSpawnerCheck(Integer radius, Boolean not) {
         this.radius = radius;
@@ -26,28 +25,21 @@ public class MobSpawnerCheck extends Condition {
 
     @Override
     public boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
-        if (not)
-            return (!MobSpawnerCheck.mobSpawnerNear(occurrence.getLocation(),
-                    radius));
-        else
-            return MobSpawnerCheck.mobSpawnerNear(occurrence.getLocation(),
-                    radius);
+        if (not) return (!MobSpawnerCheck.mobSpawnerNear(occurrence.getLocation(), radius));
+        else return MobSpawnerCheck.mobSpawnerNear(occurrence.getLocation(), radius);
     }
 
     @Override
     public List<Condition> parse(ConfigurationNode node) {
-        Integer radius = node.getInteger("mobspawnerinradius",
-                "mobspawnerwithinradius", "msir");
+        Integer radius = node.getInteger("mobspawnerinradius", "mobspawnerwithinradius", "msir");
         boolean not = false;
         if (radius == null) {
-            radius = node.getInteger("mobspawnerinradius.not",
-                    "mobspawnerwithinradius.not", "msir.not");
+            radius = node.getInteger("mobspawnerinradius.not", "mobspawnerwithinradius.not", "msir.not");
             not = true;
         }
-        if (radius == null)
-            return null;
+        if (radius == null) return null;
 
-        List<Condition> conditionList = new ArrayList<Condition>();
+        List<Condition> conditionList = new ArrayList<>();
         conditionList.add(new MobSpawnerCheck(radius, not));
         return conditionList;
     }
@@ -55,16 +47,13 @@ public class MobSpawnerCheck extends Condition {
     /**
      * mobSpawnerNear - determines if a mobspawner is within radius of a given
      * location (used under Public Domain licence from MobBounty by IchigoKyger)
-     * 
-     * @param loc
-     *            - location to check for spawners within given radius
-     * @param radius
-     *            - distance from location to check
+     *
+     * @param loc    - location to check for spawners within given radius
+     * @param radius - distance from location to check
      * @return true if spawner within radius, otherwise false
      */
     private static boolean mobSpawnerNear(Location loc, int radius) {
-        if (radius == 0 || loc == null)
-            return false;
+        if (radius == 0 || loc == null) return false;
 
         World world;
         int x1, x2, y1, y2, z1, z2;
@@ -74,13 +63,12 @@ public class MobSpawnerCheck extends Condition {
         y1 = (int) (loc.getY());
         z1 = (int) (loc.getZ());
 
-        for (x2 = 0 - radius; x2 <= radius; x2++) {
-            for (y2 = 0 - radius; y2 <= radius; y2++) {
-                for (z2 = 0 - radius; z2 <= radius; z2++) {
+        for (x2 = -radius; x2 <= radius; x2++) {
+            for (y2 = -radius; y2 <= radius; y2++) {
+                for (z2 = -radius; z2 <= radius; z2++) {
                     Block block = world.getBlockAt(x1 + x2, y1 + y2, z1 + z2);
 
-                    if (block.getType() == Material.SPAWNER)
-                        return true;
+                    if (block.getType() == Material.SPAWNER) return true;
                 }
             }
         }

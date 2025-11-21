@@ -12,7 +12,7 @@ import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 
 public class SlimeData extends CreatureData {
-    Integer          slimeSize = null; // null = wildcard
+    final Integer slimeSize; // null = wildcard
 
     public SlimeData(Integer type) {
         this.slimeSize = type;
@@ -20,23 +20,15 @@ public class SlimeData extends CreatureData {
 
     @Override
     public void setOn(Entity mob, Player owner) {
-        if (mob instanceof Slime) {
-            Slime z = (Slime) mob;
-            if (slimeSize != null)
-                z.setSize(slimeSize);
+        if (mob instanceof Slime z) {
+            if (slimeSize != null) z.setSize(slimeSize);
         }
     }
 
     @Override
     public boolean matches(Data d) {
-        if (!(d instanceof SlimeData))
-            return false;
-        SlimeData vd = (SlimeData) d;
-
-        if (this.slimeSize != null)
-            if (this.slimeSize != vd.slimeSize)
-                return false;
-
+        if (!(d instanceof SlimeData vd)) return false;
+        if (this.slimeSize != null) if (!this.slimeSize.equals(vd.slimeSize)) return false;
         return true;
     }
 
@@ -55,21 +47,15 @@ public class SlimeData extends CreatureData {
         Integer slimeSize = null;
 
         if (!state.isEmpty() && !state.equals("0")) {
-            String[] split = state
-                    .split(OtherDropsConfig.CreatureDataSeparator);
+            String[] split = state.split(OtherDropsConfig.CreatureDataSeparator);
 
             for (String sub : split) {
                 sub = sub.toLowerCase().replaceAll("[\\s-_]", "");
-                if (sub.equalsIgnoreCase("TINY"))
-                    slimeSize = 1;
-                else if (sub.equalsIgnoreCase("SMALL"))
-                    slimeSize = 2;
-                else if (sub.equalsIgnoreCase("BIG"))
-                    slimeSize = 3;
-                else if (sub.equalsIgnoreCase("HUGE"))
-                    slimeSize = 4;
-                else if (sub.matches("[0-9]+"))
-                    slimeSize = Integer.valueOf(sub);
+                if (sub.equalsIgnoreCase("TINY")) slimeSize = 1;
+                else if (sub.equalsIgnoreCase("SMALL")) slimeSize = 2;
+                else if (sub.equalsIgnoreCase("BIG")) slimeSize = 3;
+                else if (sub.equalsIgnoreCase("HUGE")) slimeSize = 4;
+                else if (sub.matches("[0-9]+")) slimeSize = Integer.valueOf(sub);
             }
         }
         return new SlimeData(slimeSize);
@@ -81,14 +67,10 @@ public class SlimeData extends CreatureData {
         if (slimeSize != null) {
             String slimeSizeMsg = slimeSize.toString();
             // TODO: make this an enum rather than ints to strings?
-            if (slimeSize == 0 || slimeSize == 1)
-                slimeSizeMsg = "TINY";
-            else if (slimeSize == 2)
-                slimeSizeMsg = "SMALL";
-            else if (slimeSize == 3)
-                slimeSizeMsg = "BIG";
-            else if (slimeSize == 4)
-                slimeSizeMsg = "HUGE";
+            if (slimeSize == 0 || slimeSize == 1) slimeSizeMsg = "TINY";
+            else if (slimeSize == 2) slimeSizeMsg = "SMALL";
+            else if (slimeSize == 3) slimeSizeMsg = "BIG";
+            else if (slimeSize == 4) slimeSizeMsg = "HUGE";
             val += "!!" + slimeSizeMsg;
         }
         return val;
@@ -96,8 +78,7 @@ public class SlimeData extends CreatureData {
 
     @Override
     public String get(Enum<?> creature) {
-        if (creature instanceof EntityType)
-            return this.toString();
+        if (creature instanceof EntityType) return this.toString();
         return "";
     }
 

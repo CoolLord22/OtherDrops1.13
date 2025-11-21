@@ -29,8 +29,8 @@ import org.bukkit.inventory.ItemStack;
 import static com.gmail.zariust.common.Verbosity.EXTREME;
 
 public class ItemData implements Data, RangeableData {
-    private int       data;
-    private String    dataString;
+    private int data;
+    private String dataString;
     public OdItemMeta itemMeta;
 
     public ItemData(int d) {
@@ -72,33 +72,22 @@ public class ItemData implements Data, RangeableData {
 
     @Override
     public String get(Enum<?> mat) {
-        if (mat instanceof Material)
-            return get((Material) mat);
+        if (mat instanceof Material) return get((Material) mat);
         return "";
     }
 
-    /**
-     * Called to retrieve the current data value stored in this class, as a
-     * string
-     * 
-     * @param mat
-     * @return
-     */
     @SuppressWarnings("incomplete-switch")
-	private String get(Material mat) {
-        if (data == -1)
-            return "THIS";
-        if (mat.isBlock())
-            return CommonMaterial.getBlockOrItemData(mat, data);
+    private String get(Material mat) {
+        if (data == -1) return "THIS";
+        if (mat.isBlock()) return CommonMaterial.getBlockOrItemData(mat, data);
         switch (mat) {
-        case LEATHER_BOOTS:
-        case LEATHER_CHESTPLATE:
-        case LEATHER_HELMET:
-        case LEATHER_LEGGINGS:
-            return dataString;
+            case LEATHER_BOOTS:
+            case LEATHER_CHESTPLATE:
+            case LEATHER_HELMET:
+            case LEATHER_LEGGINGS:
+                return dataString;
         }
-        if (data > 0)
-            return Integer.toString(data);
+        if (data > 0) return Integer.toString(data);
         return "";
     }
 
@@ -112,21 +101,10 @@ public class ItemData implements Data, RangeableData {
     public void setOn(Entity entity, Player witness) {
     }
 
-    /**
-     * Called to create a ItemData from a given config string.
-     * 
-     * @param mat
-     * @param state
-     * @return
-     * @throws IllegalArgumentException
-     */
-	public static Data parse(Material mat, String state)
-            throws IllegalArgumentException {
-        if (mat == null || state == null || state.isEmpty())
-            return null;
-        if (state.startsWith("RANGE") || state.matches("[0-9]+-[0-9]+"))
-            return RangeData.parse(state);
-        Integer data = 0;
+    public static Data parse(Material mat, String state) throws IllegalArgumentException {
+        if (mat == null || state == null || state.isEmpty()) return null;
+        if (state.startsWith("RANGE") || state.matches("[0-9]+-[0-9]+")) return RangeData.parse(state);
+        Integer data;
         switch (mat) {
             case POTION:
             case LINGERING_POTION:
@@ -153,11 +131,9 @@ public class ItemData implements Data, RangeableData {
                     data = CommonMaterial.parseBlockOrItemData(mat, state);
                     break;
                 }
-                if (!state.isEmpty())
-                    throw new IllegalArgumentException("Illegal data for " + mat + ": " + state);
+                throw new IllegalArgumentException("Illegal data for " + mat + ": " + state);
         }
-        if (state.equalsIgnoreCase("THIS"))
-            return new ItemData(-1, state);
+        if (state.equalsIgnoreCase("THIS")) return new ItemData(-1, state);
 
         return (data == null) ? null : new ItemData(data, state);
     }
@@ -168,25 +144,22 @@ public class ItemData implements Data, RangeableData {
 
     private static Data parseItemMeta(String state, ItemMetaType metaType) {
         // FIXME: add a safety check here
-        Log.logInfo("Parsing for possible metadata: " + state + " type="
-                + metaType.toString(), Verbosity.HIGH);
+        Log.logInfo("Parsing for possible metadata: " + state + " type=" + metaType.toString(), Verbosity.HIGH);
         int dataVal = 0;
 
         if (!state.isEmpty() && !state.equals("0")) {
             String separator = "=";
             String[] split = state.split(separator);
-            String subMinusDurability = "";
+            StringBuilder subMinusDurability = new StringBuilder();
 
             for (String sub : split) {
-                if (sub.matches("[0-9]+")) { // need to check numbers before any
-                                             // .toLowerCase()
-                    dataVal = Integer.valueOf(sub);
+                if (sub.matches("[0-9]+")) { // need to check numbers before any .toLowerCase()
+                    dataVal = Integer.parseInt(sub);
                 } else {
-                    subMinusDurability += sub + separator;
+                    subMinusDurability.append(sub).append(separator);
                 }
             }
-            return new ItemData(dataVal, OdItemMeta.parse(subMinusDurability
-                    .substring(0, subMinusDurability.length() - 1), metaType));
+            return new ItemData(dataVal, OdItemMeta.parse(subMinusDurability.substring(0, subMinusDurability.length() - 1), metaType));
         }
 
         return new ItemData(dataVal, state);
@@ -194,10 +167,8 @@ public class ItemData implements Data, RangeableData {
 
     @Override
     public String toString() {
-        // TODO: Should probably make sure this is not used, and always use the
-        // get method instead
-        Log.logWarning("ItemData.toString() was called! Is this right?",
-                EXTREME);
+        // TODO: Should probably make sure this is not used, and always use the get method instead
+        Log.logWarning("ItemData.toString() was called! Is this right?", EXTREME);
         Log.stackTrace();
         return String.valueOf(data);
     }

@@ -26,8 +26,7 @@ public class BiomeCheck extends Condition {
     @Override
     public List<Condition> parse(ConfigurationNode parseMe) {
         Map<Biome, Boolean> result = OtherDropsConfig.parseBiomesFrom(parseMe);
-        if(result == null || result.isEmpty())
-            return null;
+        if (result == null || result.isEmpty()) return null;
         List<Condition> conditionList = new ArrayList<>();
         conditionList.add(new BiomeCheck(result));
         return conditionList;

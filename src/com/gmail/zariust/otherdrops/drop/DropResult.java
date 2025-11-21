@@ -1,19 +1,18 @@
 package com.gmail.zariust.otherdrops.drop;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DropResult {
-    private int         quantity;
-    public List<Entity> droppedEntities   = new ArrayList<Entity>();
-    private boolean     overrideDefault;
-    private boolean     overrideDefaultXp = false;                  // default
-                                                                     // to false
-    private boolean     overrideEquipment = false;
+    private int quantity;
+    public final List<Entity> droppedEntities = new ArrayList<>();
+    private boolean overrideDefault;
+    private boolean overrideDefaultXp = false; // default to false
+    private boolean overrideEquipment = false;
 
     public DropResult() {
         quantity = 0;
@@ -74,17 +73,16 @@ public class DropResult {
     }
 
     public String getDroppedString() {
-        String val = "[";
+        StringBuilder valBuilder = new StringBuilder("[");
         for (Entity ent : droppedEntities) {
-            if (ent instanceof Item) {
-                val += ((Item) ent).getItemStack().toString();
+            if (ent instanceof Item item) {
+                valBuilder.append(item.getItemStack());
             } else if (ent instanceof LivingEntity) {
-                val += ((LivingEntity) ent).toString();
-            } else
-                val += ent.toString() + ",";
+                valBuilder.append(ent);
+            } else valBuilder.append(ent.toString()).append(",");
         }
-        if (val.length() > 1)
-            val.subSequence(0, val.length() - 1);
+        String val = valBuilder.toString();
+        if (val.length() > 1) val = val.substring(0, val.length() - 1);
         val += "]";
         return val;
     }
@@ -92,10 +90,8 @@ public class DropResult {
     public void add(DropResult drop) {
         this.quantity = drop.getQuantity();
         this.addDropped(drop.getDropped());
-        if (drop.getOverrideDefault())
-            this.setOverrideDefault(drop.getOverrideDefault());
-        if (drop.getOverrideDefaultXp())
-            this.setOverrideDefaultXp(drop.getOverrideDefaultXp());
+        if (drop.getOverrideDefault()) this.setOverrideDefault(drop.getOverrideDefault());
+        if (drop.getOverrideDefaultXp()) this.setOverrideDefaultXp(drop.getOverrideDefaultXp());
     }
 
     public void addWithoutOverride(DropResult drop) {

@@ -10,7 +10,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 public class FrogData extends CreatureData {
-    Frog.Variant variant = null; // null = wildcard
+    final Frog.Variant variant; // null = wildcard
 
     public FrogData(Frog.Variant variant) {
         this.variant = variant;
@@ -18,29 +18,20 @@ public class FrogData extends CreatureData {
 
     @Override
     public void setOn(Entity entity, Player owner) {
-        if (entity instanceof Frog) {
-            Frog frog = (Frog) entity;
-            if (variant != null)
-                frog.setVariant(variant);
+        if (entity instanceof Frog frog) {
+            if (variant != null) frog.setVariant(variant);
         }
     }
 
     @Override
     public boolean matches(Data d) {
-        if (!(d instanceof FrogData))
-            return false;
-        FrogData vd = (FrogData) d;
-
-        if (this.variant != null)
-            if (this.variant != vd.variant)
-                return false;
-
+        if (!(d instanceof FrogData vd)) return false;
+        if (this.variant != null) if (this.variant != vd.variant) return false;
         return true;
     }
 
     public static CreatureData parseFromEntity(Entity entity) {
-        if (entity instanceof Frog) {
-            Frog frog = (Frog) entity;
+        if (entity instanceof Frog frog) {
             return new FrogData(frog.getVariant());
         } else {
             Log.logInfo("FrogData: error, parseFromEntity given different creature - this shouldn't happen.");
@@ -58,11 +49,9 @@ public class FrogData extends CreatureData {
             for (String sub : split) {
                 sub = sub.toLowerCase().replaceAll("[\\s-_]", "");
                 for (Frog.Variant type : Frog.Variant.values()) {
-                    if (sub.equals(type.name().toLowerCase().replaceAll("[\\s-_]", "")))
-                        thisType = type;
+                    if (sub.equals(type.name().toLowerCase().replaceAll("[\\s-_]", ""))) thisType = type;
                 }
-                if (thisType == null)
-                    Log.logInfo("FrogData: type not found (" + sub + ")");
+                if (thisType == null) Log.logInfo("FrogData: type not found (" + sub + ")");
             }
         }
 
@@ -72,15 +61,13 @@ public class FrogData extends CreatureData {
     @Override
     public String toString() {
         String val = "";
-        if (variant != null)
-            val += variant.toString();
+        if (variant != null) val += variant.toString();
         return val;
     }
 
     @Override
     public String get(Enum<?> creature) {
-        if (creature instanceof EntityType)
-            return this.toString();
+        if (creature instanceof EntityType) return this.toString();
         return "";
     }
 }

@@ -31,7 +31,8 @@ public class MessageAction extends Action {
         ATTACKER, VICTIM, RADIUS, WORLD, SERVER
     }
 
-    static Map<String, MessageType> matches = new HashMap<String, MessageType>();
+    final static Map<String, MessageType> matches = new HashMap<>();
+
     static {
         matches.put("message", MessageType.ATTACKER);
         matches.put("message.attacker", MessageType.ATTACKER);
@@ -43,32 +44,28 @@ public class MessageAction extends Action {
         matches.put("message.radius", MessageType.RADIUS);
     }
 
-    protected MessageType           messageType;
-    protected double                radius  = OtherDropsConfig.gActionRadius;
-    private boolean                 variableParseRequired = false;
-    private final List<String>            messages = new ArrayList<String>(); // this can contain variables, parse at runtime
+    protected MessageType messageType;
+    protected double radius = OtherDropsConfig.gActionRadius;
+    private boolean variableParseRequired = false;
+    private final List<String> messages = new ArrayList<>(); // this can contain variables, parse at runtime
 
     public MessageAction(Object messageToParse, MessageType messageType2) {
         this(messageToParse, messageType2, 0);
     }
 
     @SuppressWarnings("unchecked")
-    public MessageAction(Object messageToParse, MessageType messageType2,
-            double radius) {
-        if (messageToParse == null)
-            return; // "Registration" passed a null value
+    public MessageAction(Object messageToParse, MessageType messageType2, double radius) {
+        if (messageToParse == null) return; // "Registration" passed a null value
 
-        List<String> tmpMessages = new ArrayList<String>();
-        if (messageToParse instanceof List)
-            tmpMessages = (List<String>) messageToParse;
-        else
-            tmpMessages = Collections.singletonList(messageToParse.toString());
+        List<String> tmpMessages;
+        if (messageToParse instanceof List) tmpMessages = (List<String>) messageToParse;
+        else tmpMessages = Collections.singletonList(messageToParse.toString());
 
         // OtherDrops.logInfo("Adding messages: "+messages.toString());
 
         messageType = messageType2;
         this.radius = radius;
-        
+
         for (String msg : tmpMessages) {
             messages.add(ODVariables.preParse(msg));
             if (msg.contains("%") || msg.contains("<")) variableParseRequired = true;
@@ -79,47 +76,38 @@ public class MessageAction extends Action {
     @Override
     public boolean act(CustomDrop drop, OccurredEvent occurence) {
         String message = getRandomMessage(drop, occurence, this.messages, variableParseRequired);
-        if (message.isEmpty())
-            return false;
+        if (message.isEmpty()) return false;
 
-        Log.logInfo("Message action - messages = " + messages
-                + ", message=" + message + ", type=" + messageType.toString(),
-                Verbosity.HIGH);
+        Log.logInfo("Message action - messages = " + messages + ", message=" + message + ", type=" + messageType.toString(), Verbosity.HIGH);
 
         switch (messageType) {
-        case ATTACKER:
-            if (occurence.getPlayerAttacker() != null)
-                occurence.getPlayerAttacker().sendMessage(message);
-            break;
-        case VICTIM:
-            if (occurence.getPlayerVictim() != null)
-                occurence.getPlayerVictim().sendMessage(message);
-            break;
-        case RADIUS:
-            // occurence.getLocation().getRadiusPlayers()? - how do we get
-            // players around radius without an entity?
-            Location loc = occurence.getLocation();
-            for (Player player : loc.getWorld().getPlayers()) {
-                if (player.getLocation().getX() > (loc.getX() - radius)
-                        || player.getLocation().getX() < (loc.getX() + radius))
-                    if (player.getLocation().getY() > (loc.getY() - radius)
-                            || player.getLocation().getY() < (loc.getY() + radius))
-                        if (player.getLocation().getZ() > (loc.getZ() - radius)
-                                || player.getLocation().getZ() < (loc.getZ() + radius))
-                            player.sendMessage(message);
-            }
+            case ATTACKER:
+                if (occurence.getPlayerAttacker() != null) occurence.getPlayerAttacker().sendMessage(message);
+                break;
+            case VICTIM:
+                if (occurence.getPlayerVictim() != null) occurence.getPlayerVictim().sendMessage(message);
+                break;
+            case RADIUS:
+                // occurence.getLocation().getRadiusPlayers()? - how do we get players around radius without an entity?
+                Location loc = occurence.getLocation();
+                for (Player player : loc.getWorld().getPlayers()) {
+                    if (player.getLocation().getX() > (loc.getX() - radius) || player.getLocation().getX() < (loc.getX() + radius))
+                        if (player.getLocation().getY() > (loc.getY() - radius) || player.getLocation().getY() < (loc.getY() + radius))
+                            if (player.getLocation().getZ() > (loc.getZ() - radius) || player.getLocation().getZ() < (loc.getZ() + radius))
+                                player.sendMessage(message);
+                }
 
-            break;
-        case SERVER:
-            for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                player.sendMessage(message);
-            }
-            break;
-        case WORLD:
-            for (Player player : occurence.getLocation().getWorld().getPlayers()) {
-                player.sendMessage(message);
-            }
-            break;
+                break;
+            case SERVER:
+                for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+                    player.sendMessage(message);
+                }
+                break;
+            case WORLD:
+                for (Player player : occurence.getLocation().getWorld().getPlayers()) {
+                    player.sendMessage(message);
+                }
+                break;
         }
         return false;
     }
@@ -127,31 +115,25 @@ public class MessageAction extends Action {
     // @Override
     @Override
     public List<Action> parse(ConfigurationNode parseMe) {
-        List<Action> actions = new ArrayList<Action>();
+        List<Action> actions = new ArrayList<>();
 
         for (String key : matches.keySet()) {
-            if (parseMe.get(key) != null)
-                actions.add(new MessageAction(parseMe.get(key), matches.get(key)));
+            if (parseMe.get(key) != null) actions.add(new MessageAction(parseMe.get(key), matches.get(key)));
         }
-        // messages = OtherDropsConfig.getMaybeList(new
-        // ConfigurationNode((Map<?, ?>)parseMe), "message", "messages");
+        // messages = OtherDropsConfig.getMaybeList(new ConfigurationNode((Map<?, ?>)parseMe), "message", "messages");
         return actions;
     }
 
-    static public String getRandomMessage(CustomDrop drop,
-            OccurredEvent occurence, List<String> messages, boolean parseVariablesRequired) {
+    static public String getRandomMessage(CustomDrop drop, OccurredEvent occurence, List<String> messages, boolean parseVariablesRequired) {
         double amount = occurence.getCustomDropAmount();
-        if (messages == null || messages.isEmpty())
-            return "";
+        if (messages == null || messages.isEmpty()) return "";
         String msg = messages.get(drop.rng.nextInt(messages.size()));
         if (parseVariablesRequired) msg = parseVariables(msg, drop, occurence, amount);
         return (msg == null) ? "" : msg;
     }
 
-    static public String parseVariables(String msg, CustomDrop drop,
-            OccurredEvent occurence, double amount) {
-        if (msg == null)
-            return msg;
+    static public String parseVariables(String msg, CustomDrop drop, OccurredEvent occurence, double amount) {
+        if (msg == null) return null;
 
         Player player = null;
 
@@ -169,23 +151,20 @@ public class MessageAction extends Action {
                 if (((SimpleDrop) drop).getDropped() != null) {
                     if (((SimpleDrop) drop).getDropped().isQuantityInteger())
                         quantityString = String.valueOf(Math.round(amount));
-                    else
-                        quantityString = Double.toString(amount);
+                    else quantityString = Double.toString(amount);
                 }
             }
             dropName = drop.getDropName();
         }
 
         if (occurence != null) {
-            if (occurence.getTool() != null)
-                toolName = occurence.getTool().getReadableName();
+            if (occurence.getTool() != null) toolName = occurence.getTool().getReadableName();
             if (occurence.getTool() instanceof PlayerSubject) {
                 toolName = ((PlayerSubject) occurence.getTool()).getTool().getReadableName();
                 ItemStack inHand = ((PlayerSubject) occurence.getTool()).getTool().getActualTool();
                 if (inHand != null)
                     loreName = (inHand.getItemMeta() == null ? null : inHand.getItemMeta().getDisplayName());
-                if (loreName == null)
-                    loreName = toolName;
+                if (loreName == null) loreName = toolName;
                 playerName = ((PlayerSubject) occurence.getTool()).getPlayer().getName();
                 player = ((PlayerSubject) occurence.getTool()).getPlayer();
             } else if (occurence.getTool() instanceof ProjectileAgent) {
@@ -199,22 +178,20 @@ public class MessageAction extends Action {
 
                     Entity ent = ((ProjectileAgent) occurence.getTool()).getShooter().getEntity();
                     if (ent instanceof LivingEntity) {
-                        loreName = ((LivingEntity) ent).getCustomName();
+                        loreName = ent.getCustomName();
                     }
                 }
             } else if (occurence.getTool() instanceof CreatureSubject) {
                 Entity ent = ((CreatureSubject) occurence.getTool()).getEntity();
                 if (ent instanceof LivingEntity) {
-                    loreName = ((LivingEntity) ent).getCustomName();
+                    loreName = ent.getCustomName();
                 }
             }
             victimName = occurence.getTarget().getReadableName();
 
-            if(occurence.getVictim() != null)
-                entUUID = occurence.getVictim().getUniqueId().toString();
+            if (occurence.getVictim() != null) entUUID = occurence.getVictim().getUniqueId().toString();
 
-            if (occurence.getRealEvent() instanceof PlayerDeathEvent ede)
-                deathMessage = ede.getDeathMessage();
+            if (occurence.getRealEvent() instanceof PlayerDeathEvent ede) deathMessage = ede.getDeathMessage();
 
             if (occurence.getRealEvent() instanceof CreatureSpawnEvent ede)
                 entUUID = ede.getEntity().getUniqueId().toString();

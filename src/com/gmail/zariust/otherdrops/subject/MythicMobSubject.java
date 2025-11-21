@@ -17,7 +17,7 @@ import java.util.List;
 import static com.gmail.zariust.common.Verbosity.HIGH;
 
 public class MythicMobSubject extends CreatureSubject {
-    private Data data = null; // MythicMobData
+    private final Data data; // MythicMobData
     private Entity entity = null;
 
     public MythicMobSubject(Data data) {
@@ -32,10 +32,8 @@ public class MythicMobSubject extends CreatureSubject {
 
     @Override
     public boolean matches(Subject other) {
-        if (!(other instanceof MythicMobSubject))
-            return false;
-        if(data != null)
-            return this.data.matches(((MythicMobSubject) other).data);
+        if (!(other instanceof MythicMobSubject)) return false;
+        if (data != null) return this.data.matches(((MythicMobSubject) other).data);
 
         return true;
     }
@@ -56,7 +54,7 @@ public class MythicMobSubject extends CreatureSubject {
 
     @Override
     public String getReadableName() {
-        if(data != null && data instanceof MythicMobData)
+        if (data != null && data instanceof MythicMobData)
             return "a Mythic " + ((MythicMobData) data).getMythicMobType();
         return null;
     }
@@ -68,11 +66,11 @@ public class MythicMobSubject extends CreatureSubject {
 
     @Override
     public List<Target> canMatch() {
-        List<Target> all = new ArrayList<Target>();
+        List<Target> all = new ArrayList<>();
         all.add(this);
-        if(((MythicMobData) data).getMythicMobType() != null)
-            if(((MythicMobData) data).getMythicMobType().equalsIgnoreCase("ANY")) {
-                for(String s : Dependencies.getMythicMobs().getMobManager().getMobNames()) {
+        if (((MythicMobData) data).getMythicMobType() != null)
+            if (((MythicMobData) data).getMythicMobType().equalsIgnoreCase("ANY")) {
+                for (String s : Dependencies.getMythicMobs().getMobManager().getMobNames()) {
                     all.add(new MythicMobSubject(new MythicMobData(s)));
                 }
             }
@@ -81,8 +79,7 @@ public class MythicMobSubject extends CreatureSubject {
 
     @Override
     public String getKey() {
-        if(data != null && data instanceof MythicMobData)
-            return ((MythicMobData) data).getMythicMobType();
+        if (data != null && data instanceof MythicMobData) return ((MythicMobData) data).getMythicMobType();
         return null;
     }
 
@@ -98,8 +95,7 @@ public class MythicMobSubject extends CreatureSubject {
     }
 
     public static MythicMobSubject parse(String data) {
-        if (data == null || data.isEmpty())
-            return new MythicMobSubject((Data) null);
+        if (data == null || data.isEmpty()) return new MythicMobSubject(null);
         Log.logInfo("Parsing MythicMob subject: " + data, Verbosity.HIGHEST);
         MythicMobData md = new MythicMobData(data);
         return md.getMythicMobType() == null ? null : new MythicMobSubject(md);

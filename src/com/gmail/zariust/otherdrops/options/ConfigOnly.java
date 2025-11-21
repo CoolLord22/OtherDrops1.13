@@ -32,7 +32,7 @@ public @interface ConfigOnly {
     /**
      * If making an OccurredDrop, you can use any of these classes instead of
      * the annotated class.
-     * 
+     *
      * @return The non-virtual agent classes it can match against
      */
     Class<?>[] value();

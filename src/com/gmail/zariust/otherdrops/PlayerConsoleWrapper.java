@@ -34,29 +34,28 @@ import java.util.UUID;
 
 public class PlayerConsoleWrapper implements ConsoleCommandSender {
     private static final ConsoleCommandSender console = Bukkit.getConsoleSender();
-    private boolean                           suppress;
-    private Player                            caller;
+    private final boolean suppress;
+    private final Player caller;
 
     public PlayerConsoleWrapper(Player player, boolean suppressMessages) {
         caller = player;
         suppress = suppressMessages;
     }
 
+    @NotNull
     @Override
     public String getName() {
-    	if(caller == null)
-    		return "console";
+        if (caller == null) return "console";
         return caller.getName();
     }
 
     @Override
     public void sendMessage(String message) {
-        if (suppress)
-            console.sendMessage(message);
-        else
-            caller.sendMessage(message);
+        if (suppress) console.sendMessage(message);
+        else caller.sendMessage(message);
     }
 
+    @NotNull
     @Override
     public Server getServer() {
         return console.getServer();
@@ -83,8 +82,7 @@ public class PlayerConsoleWrapper implements ConsoleCommandSender {
     }
 
     @Override
-    public PermissionAttachment addAttachment(Plugin plugin, String name,
-            boolean value) {
+    public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value) {
         return console.addAttachment(plugin, name, value);
     }
 
@@ -94,8 +92,7 @@ public class PlayerConsoleWrapper implements ConsoleCommandSender {
     }
 
     @Override
-    public PermissionAttachment addAttachment(Plugin plugin, String name,
-            boolean value, int ticks) {
+    public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value, int ticks) {
         return console.addAttachment(plugin, name, value, ticks);
     }
 
@@ -131,7 +128,7 @@ public class PlayerConsoleWrapper implements ConsoleCommandSender {
 
     @Override
     public void sendMessage(@NotNull String[] arg0) {
-		throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -146,28 +143,28 @@ public class PlayerConsoleWrapper implements ConsoleCommandSender {
 
     @Override
     public void abandonConversation(Conversation arg0) {
-		throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void acceptConversationInput(String arg0) {
-		throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported yet.");
 
     }
 
     @Override
     public boolean beginConversation(Conversation arg0) {
-		throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public boolean isConversing() {
-		throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void sendRawMessage(String arg0) {
-		throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -176,15 +173,13 @@ public class PlayerConsoleWrapper implements ConsoleCommandSender {
     }
 
     @Override
-    public void abandonConversation(Conversation arg0,
-            ConversationAbandonedEvent arg1) {
+    public void abandonConversation(Conversation arg0, ConversationAbandonedEvent arg1) {
         // TODO Auto-generated method stub
-
     }
 
-	@Override
-	public Spigot spigot() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public Spigot spigot() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

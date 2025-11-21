@@ -33,8 +33,7 @@ public class IntRange extends Range<Integer> {
 
     @Override
     public Integer getRandomIn(Random rng) {
-        if (min.equals(max))
-            return min;
+        if (min.equals(max)) return min;
         return min + rng.nextInt(max - min + 1);
     }
 

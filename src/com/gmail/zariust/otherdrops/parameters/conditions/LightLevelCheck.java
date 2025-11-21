@@ -19,16 +19,14 @@ public class LightLevelCheck extends Condition {
 
     @Override
     protected boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
-        if (lightLevel == null)
-            return true;
+        if (lightLevel == null) return true;
         return lightLevel.matches(occurrence.getLightLevel());
     }
 
     @Override
     public List<Condition> parse(ConfigurationNode parseMe) {
         Comparative result = Comparative.parseFrom(parseMe, "lightlevel", OtherDropsConfig.defaultLightLevel);
-        if(result == null)
-            return null;
+        if (result == null) return null;
         List<Condition> conditionList = new ArrayList<>();
         conditionList.add(new LightLevelCheck(result));
         return conditionList;

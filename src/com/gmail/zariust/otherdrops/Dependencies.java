@@ -41,257 +41,233 @@ import static com.gmail.zariust.common.Verbosity.*;
 
 @SuppressWarnings("unused")
 public class Dependencies {
-	// Plugin Dependencies
-	private static WorldGuardPlugin worldGuard      = null; // for WorldGuard support
-	private static PlaceholderAPIPlugin placeHolderAPI  = null;
-	private static Towny	 		towny 			= null;
-	private static WildStacker	    wildStacker 	= null;
-	private static MythicBukkit 	mythicMobs	 	= null;
-	private static Jobs	 			jobs 			= null;
-	private static NoCheatPlus		ncp 			= null;
-	private static GriefPrevention  gp 				= null;
+    // Plugin Dependencies
+    private static WorldGuardPlugin worldGuard = null; // for WorldGuard support
+    private static PlaceholderAPIPlugin placeHolderAPI = null;
+    private static Towny towny = null;
+    private static WildStacker wildStacker = null;
+    private static MythicBukkit mythicMobs = null;
+    private static Jobs jobs = null;
+    private static NoCheatPlus ncp = null;
+    private static GriefPrevention gp = null;
 
-	private static MobArena         mobArena        = null;
-	private static MobArenaHandler  mobArenaHandler = null; // for MobArena
-	private static MoneyDrop        moneyDrop       = null; // for MoneyDrop
+    private static MobArena mobArena = null;
+    private static MobArenaHandler mobArenaHandler = null; // for MobArena
+    private static MoneyDrop moneyDrop = null; // for MoneyDrop
 
 
-	private static Economy          vaultEcon       = null;
-	private static Permission       vaultPerms      = null;
+    private static Economy vaultEcon = null;
+    private static Permission vaultPerms = null;
 
-	static String                   foundPlugins;
-	static String                   notFoundPlugins;
-	private static Heroes           heroes;
+    static String foundPlugins;
+    static String notFoundPlugins;
+    private static Heroes heroes;
 
-	private static think.rpgitems.Plugin          rpgItems        = null;
-	private static mcMMO            mcmmo           = null;
+    private static think.rpgitems.Plugin rpgItems = null;
+    private static mcMMO mcmmo = null;
 
-	public static void init() {
-		try {
-			foundPlugins = "";
-			notFoundPlugins = ""; // need to reset variables to allow for
-			// reloads
-			worldGuard = (WorldGuardPlugin) getPlugin("WorldGuard");
-		} catch (Exception e) {
-			Log.logInfo("Failed to load one or more optional dependencies - continuing OtherDrops startup.");
-			e.printStackTrace();
-		}
-		try {
-			towny = (Towny) getPlugin("Towny");
-			placeHolderAPI = (PlaceholderAPIPlugin) getPlugin("PlaceholderAPI");
-			wildStacker = (WildStacker) getPlugin("WildStacker");
-			mythicMobs = (MythicBukkit) getPlugin("MythicMobs");
-			gp = (GriefPrevention) getPlugin("GriefPrevention");
-			jobs = (Jobs) getPlugin("Jobs");
-			ncp = (NoCheatPlus) getPlugin("NoCheatPlus");
-			mobArena = (MobArena) getPlugin("MobArena");
-			moneyDrop = (MoneyDrop) getPlugin("MoneyDrop");
-			heroes = (Heroes) getPlugin("Heroes");
-			rpgItems = (think.rpgitems.Plugin) getPlugin("RPG Items");
-			mcmmo = (mcMMO) getPlugin("mcMMO");
-		} catch (Exception e) {
-			Log.logInfo("Failed to load one or more optional dependencies - continuing OtherDrops startup.");
-			e.printStackTrace();
-		}
+    public static void init() {
+        try {
+            foundPlugins = "";
+            notFoundPlugins = ""; // need to reset variables to allow for reloads
+            worldGuard = (WorldGuardPlugin) getPlugin("WorldGuard");
+        } catch (Exception e) {
+            Log.logError("Failed to load one or more optional dependencies - continuing OtherDrops startup.", e);
+        }
+        try {
+            towny = (Towny) getPlugin("Towny");
+            placeHolderAPI = (PlaceholderAPIPlugin) getPlugin("PlaceholderAPI");
+            wildStacker = (WildStacker) getPlugin("WildStacker");
+            mythicMobs = (MythicBukkit) getPlugin("MythicMobs");
+            gp = (GriefPrevention) getPlugin("GriefPrevention");
+            jobs = (Jobs) getPlugin("Jobs");
+            ncp = (NoCheatPlus) getPlugin("NoCheatPlus");
+            mobArena = (MobArena) getPlugin("MobArena");
+            moneyDrop = (MoneyDrop) getPlugin("MoneyDrop");
+            heroes = (Heroes) getPlugin("Heroes");
+            rpgItems = (think.rpgitems.Plugin) getPlugin("RPG Items");
+            mcmmo = (mcMMO) getPlugin("mcMMO");
+        } catch (Exception e) {
+            Log.logError("Failed to load one or more optional dependencies - continuing OtherDrops startup.", e);
+        }
 
-		try {
-			setupVault();
-		} catch (Exception e) {
-			Log.logInfo("Failed to load one or more optional dependencies - continuing OtherDrops startup.");
-			e.printStackTrace();
-		}
+        try {
+            setupVault();
+        } catch (Exception e) {
+            Log.logError("Failed to load one or more optional dependencies - continuing OtherDrops startup.", e);
+        }
 
-		try {
-			if (mobArena != null) {
-				mobArenaHandler = new MobArenaHandler();
-			}
+        try {
+            if (mobArena != null) {
+                mobArenaHandler = new MobArenaHandler();
+            }
+        } catch (Exception e) {
+            Log.logError("Failed to load one or more optional dependencies - continuing OtherDrops startup.", e);
+        }
+        if (!foundPlugins.isEmpty()) Log.logInfo("Found supported plugin(s): '" + foundPlugins + "'", Verbosity.NORMAL);
+        if (!notFoundPlugins.isEmpty())
+            Log.logInfo("(Optional) plugin(s) not found: '" + notFoundPlugins + "' (OtherDrops will continue to load)", Verbosity.HIGHEST);
+    }
 
-		} catch (Exception e) {
-			Log.logInfo("Failed to load one or more optional dependencies - continuing OtherDrops startup.");
-			e.printStackTrace();
-		}
-		if (!foundPlugins.isEmpty())
-			Log.logInfo("Found supported plugin(s): '" + foundPlugins + "'",
-					Verbosity.NORMAL);
-		if (!notFoundPlugins.isEmpty())
-			Log.logInfo("(Optional) plugin(s) not found: '" + notFoundPlugins
-					+ "' (OtherDrops will continue to load)",
-					Verbosity.HIGHEST);
-	}
+    public static Plugin getPlugin(String name) {
+        Plugin plugin = OtherDrops.plugin.getServer().getPluginManager().getPlugin(name);
 
-	public static Plugin getPlugin(String name) {
-		Plugin plugin = OtherDrops.plugin.getServer().getPluginManager().getPlugin(name);
+        if (plugin == null) {
+            if (notFoundPlugins.isEmpty()) notFoundPlugins += name;
+            else notFoundPlugins += ", " + name;
+        } else {
+            if (foundPlugins.isEmpty()) foundPlugins += name;
+            else foundPlugins += ", " + name;
+        }
 
-		if (plugin == null) {
-			if (notFoundPlugins.isEmpty())
-				notFoundPlugins += name;
-			else
-				notFoundPlugins += ", " + name;
-		} else {
-			if (foundPlugins.isEmpty())
-				foundPlugins += name;
-			else
-				foundPlugins += ", " + name;
-		}
+        return plugin;
+    }
 
-		return plugin;
-	}
+    public static boolean hasPermission(Permissible who, String permission) {
+        if (who instanceof ConsoleCommandSender) return true;
+        boolean perm = who.hasPermission(permission);
+        if (!perm) {
+            Log.logInfo("SuperPerms - permission (" + permission + ") denied for " + who, HIGHEST);
+        } else {
+            Log.logInfo("SuperPerms - permission (" + permission + ") allowed for " + who, HIGHEST);
+        }
+        return perm;
+    }
 
-	public static boolean hasPermission(Permissible who, String permission) {
-		if (who instanceof ConsoleCommandSender)
-			return true;
-		boolean perm = who.hasPermission(permission);
-		if (!perm) {
-			Log.logInfo("SuperPerms - permission (" + permission
-					+ ") denied for " + who, HIGHEST);
-		} else {
-			Log.logInfo("SuperPerms - permission (" + permission
-					+ ") allowed for " + who, HIGHEST);
-		}
-		return perm;
-	}
+    private static void setupVault() {
+        if (OtherDrops.plugin.getServer().getPluginManager().getPlugin("Vault") == null) {
+            vaultEcon = null;
+            Log.logInfo("Couldn't load Vault.", EXTREME); // Vault's not essential so no need to worry.
+            return;
+        }
+        Log.logInfo("Hooked into Vault.", HIGH);
+        RegisteredServiceProvider<Economy> rsp = OtherDrops.plugin.getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            vaultEcon = null;
+            Log.logWarning("Found Vault but couldn't hook into Vault economy module (note: you need a separate economy plugin, eg. Essentials, iConomy, BosEconomy, etc.)", Verbosity.NORMAL);
+            return;
+        }
+        vaultEcon = rsp.getProvider();
 
-	private static void setupVault() {
-		if (OtherDrops.plugin.getServer().getPluginManager().getPlugin("Vault") == null) {
-			vaultEcon = null;
-			Log.logInfo("Couldn't load Vault.", EXTREME); // Vault's not
-			// essential so no
-			// need to worry.
-			return;
-		}
-		Log.logInfo("Hooked into Vault.", HIGH);
-		RegisteredServiceProvider<Economy> rsp = OtherDrops.plugin.getServer()
-				.getServicesManager().getRegistration(Economy.class);
-		if (rsp == null) {
-			vaultEcon = null;
-			Log.logWarning("Found Vault but couldn't hook into Vault economy module (note: you need a separate economy plugin, eg. Essentials, iConomy, BosEconomy, etc.)",
-					Verbosity.NORMAL);
-			return;
-		}
-		vaultEcon = rsp.getProvider();
+        // RegistereredServiceProvider<Chat> rsp =
+        // getServer().getServicesManager().getRegistration(Chat.class);
+        // chat = rsp.getProvider();
+        // return chat != null;
 
-		// RegistereredServiceProvider<Chat> rsp =
-		// getServer().getServicesManager().getRegistration(Chat.class);
-		// chat = rsp.getProvider();
-		// return chat != null;
+        RegisteredServiceProvider<Permission> rsp_perms = OtherDrops.plugin.getServer().getServicesManager().getRegistration(Permission.class);
+        if (rsp_perms == null) {
+            vaultPerms = null;
+            Log.logWarning("...couldn't hook into Vault permissions module.", Verbosity.NORMAL);
+            return;
+        }
+        vaultPerms = rsp_perms.getProvider();
+    }
 
-		RegisteredServiceProvider<Permission> rsp_perms = OtherDrops.plugin
-				.getServer().getServicesManager()
-				.getRegistration(Permission.class);
-		if (rsp_perms == null) {
-			vaultPerms = null;
-			Log.logWarning("...couldn't hook into Vault permissions module.",
-					Verbosity.NORMAL);
-			return;
-		}
-		vaultPerms = rsp_perms.getProvider();
-	}
+    public static boolean hasWildStacker() {
+        return Dependencies.wildStacker != null;
+    }
 
-	public static boolean hasWildStacker() {
-		return Dependencies.wildStacker != null;
-	}
+    public static boolean hasTowny() {
+        return Dependencies.towny != null;
+    }
 
-	public static boolean hasTowny() {
-		return Dependencies.towny != null;
-	}
+    public static Towny getTowny() {
+        return Dependencies.towny;
+    }
 
-	public static Towny getTowny() {
-		return Dependencies.towny;
-	}
+    public static boolean hasPAPI() {
+        return Dependencies.placeHolderAPI != null;
+    }
 
-	public static boolean hasPAPI() {
-		return Dependencies.placeHolderAPI != null;
-	}
+    public static PlaceholderAPIPlugin getPAPI() {
+        return Dependencies.placeHolderAPI;
+    }
 
-	public static PlaceholderAPIPlugin getPAPI() {
-		return Dependencies.placeHolderAPI;
-	}
+    public static boolean hasMythicMobs() {
+        return Dependencies.mythicMobs != null && mythicMobs.getMobManager() != null && mythicMobs.getItemManager() != null;
+    }
 
-	public static boolean hasMythicMobs() {
-		return Dependencies.mythicMobs != null && mythicMobs.getMobManager() != null && mythicMobs.getItemManager() != null;
-	}
+    public static MythicBukkit getMythicMobs() {
+        return Dependencies.mythicMobs;
+    }
 
-	public static MythicBukkit getMythicMobs() {
-		return Dependencies.mythicMobs;
-	}
+    public static boolean hasJobs() {
+        return Dependencies.jobs != null;
+    }
 
-	public static boolean hasJobs() {
-		return Dependencies.jobs != null;
-	}
+    public static Jobs getJobs() {
+        return Dependencies.jobs;
+    }
 
-	public static Jobs getJobs() {
-		return Dependencies.jobs;
-	}
+    public static boolean hasGriefPrevention() {
+        return Dependencies.gp != null;
+    }
 
-	public static boolean hasGriefPrevention() {
-		return Dependencies.gp != null;
-	}
+    public static GriefPrevention getGriefPrevention() {
+        return Dependencies.gp;
+    }
 
-	public static GriefPrevention getGriefPrevention() {
-		return Dependencies.gp;
-	}
+    public static boolean hasNCP() {
+        return Dependencies.ncp != null;
+    }
 
-	public static boolean hasNCP() {
-		return Dependencies.ncp != null;
-	}
+    public static NoCheatPlus getNCP() {
+        return Dependencies.ncp;
+    }
 
-	public static NoCheatPlus getNCP() {
-		return Dependencies.ncp;
-	}
+    public static boolean hasMobArena() {
+        return Dependencies.mobArena != null;
+    }
 
-	public static boolean hasMobArena() {
-		return Dependencies.mobArena != null;
-	}
+    public static MobArenaHandler getMobArenaHandler() {
+        return Dependencies.mobArenaHandler;
+    }
 
-	public static MobArenaHandler getMobArenaHandler() {
-		return Dependencies.mobArenaHandler;
-	}
+    public static boolean hasWorldGuard() {
+        return Dependencies.worldGuard != null;
+    }
 
-	public static boolean hasWorldGuard() {
-		return Dependencies.worldGuard != null;
-	}
+    public static WorldGuardPlugin getWorldGuard() {
+        return Dependencies.worldGuard;
+    }
 
-	public static WorldGuardPlugin getWorldGuard() {
-		return Dependencies.worldGuard;
-	}
+    public static boolean hasVaultEcon() {
+        return Dependencies.vaultEcon != null;
+    }
 
-	public static boolean hasVaultEcon() {
-		return Dependencies.vaultEcon != null;
-	}
+    public static Economy getVaultEcon() {
+        return Dependencies.vaultEcon;
+    }
 
-	public static Economy getVaultEcon() {
-		return Dependencies.vaultEcon;
-	}
+    public static boolean hasMoneyDrop() {
+        return Dependencies.moneyDrop != null;
+    }
 
-	public static boolean hasMoneyDrop() {
-		return Dependencies.moneyDrop != null;
-	}
+    public static MoneyDrop getMoneyDrop() {
+        return Dependencies.moneyDrop;
+    }
 
-	public static MoneyDrop getMoneyDrop() {
-		return Dependencies.moneyDrop;
-	}
+    public static boolean hasHeroes() {
+        return Dependencies.heroes != null;
+    }
 
-	public static boolean hasHeroes() {
-		return Dependencies.heroes != null;
-	}
+    public static Heroes getHeroes() {
+        return Dependencies.heroes;
+    }
 
-	public static Heroes getHeroes() {
-		return Dependencies.heroes;
-	}
+    public static think.rpgitems.Plugin getRpgItems() {
+        return rpgItems;
+    }
 
-	public static think.rpgitems.Plugin getRpgItems() {
-		return rpgItems;
-	}
+    public static boolean hasRpgItems() {
+        return rpgItems != null;
+    }
 
-	public static boolean hasRpgItems() {
-		return rpgItems != null;
-	}
+    public static mcMMO getMcmmo() {
+        return mcmmo;
+    }
 
-	public static mcMMO getMcmmo() {
-		return mcmmo;
-	}
-
-	public static boolean hasMcmmo() {
-		return mcmmo != null;
-	}
+    public static boolean hasMcmmo() {
+        return mcmmo != null;
+    }
 }

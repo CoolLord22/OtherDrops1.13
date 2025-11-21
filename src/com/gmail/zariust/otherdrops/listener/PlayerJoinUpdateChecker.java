@@ -10,18 +10,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 public class PlayerJoinUpdateChecker implements Listener {
-	private final OtherDrops plugin;
+    private final OtherDrops plugin;
 
-	public PlayerJoinUpdateChecker(OtherDrops plugin) {
-		this.plugin = plugin;
-	}
-
-	@EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerJoinUpdateCheck(PlayerJoinEvent evt) {
-    	Player player = evt.getPlayer(); 
-    	if(player.hasPermission("otherdrops.admin.updates") && OtherDropsConfig.globalUpdateChecking) {
-			Bukkit.getServer().getScheduler().runTaskLater(plugin, () -> plugin.updateChecker.checkForUpdate(evt.getPlayer()), 15L);
-    	}
+    public PlayerJoinUpdateChecker(OtherDrops plugin) {
+        this.plugin = plugin;
     }
 
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerJoinUpdateCheck(PlayerJoinEvent evt) {
+        Player player = evt.getPlayer();
+        if (player.hasPermission("otherdrops.admin.updates") && OtherDropsConfig.globalUpdateChecking) {
+            Bukkit.getServer().getScheduler().runTaskLater(plugin, () -> plugin.updateChecker.checkForUpdate(evt.getPlayer()), 15L);
+        }
+    }
 }

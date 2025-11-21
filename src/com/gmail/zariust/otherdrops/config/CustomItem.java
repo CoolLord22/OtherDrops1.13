@@ -1,28 +1,28 @@
 package com.gmail.zariust.otherdrops.config;
 
+import org.bukkit.enchantments.Enchantment;
+
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.enchantments.Enchantment;
-
 public class CustomItem {
-    String                    customName;
+    String customName;
 
     // for All
-    String                    material;
-    String                    loreName;
-    String                    loreText;
+    String material;
+    String loreName;
+    String loreText;
 
     // for Books
-    String                    bookTitle;
-    String                    bookAuthor;
-    List<String>              bookPages;
+    String bookTitle;
+    String bookAuthor;
+    List<String> bookPages;
 
     // for LeatherArmour
-    String                    armourColour;
+    String armourColour;
 
     // for Skulls
-    String                    owner;
+    String owner;
 
     Map<Enchantment, Integer> enchantments;
 

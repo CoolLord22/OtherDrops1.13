@@ -19,16 +19,14 @@ public class AttackRangeCheck extends Condition {
 
     @Override
     protected boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
-        if (attackRange == null)
-            return true;
+        if (attackRange == null) return true;
         return attackRange.matches(occurrence.getLightLevel());
     }
 
     @Override
     public List<Condition> parse(ConfigurationNode parseMe) {
         Comparative result = Comparative.parseFrom(parseMe, "attackrange", OtherDropsConfig.defaultAttackRange);
-        if(result == null)
-            return null;
+        if (result == null) return null;
         List<Condition> conditionList = new ArrayList<>();
         conditionList.add(new AttackRangeCheck(result));
         return conditionList;

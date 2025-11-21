@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class ItemStackAgent extends ToolAgent {
-    private ItemStack itemStack;
-    private String identifier = null;
+    private final ItemStack itemStack;
+    private final String identifier;
 
     public ItemStackAgent(ItemStack item, String identifier) {
         super(item);
@@ -26,27 +26,26 @@ public class ItemStackAgent extends ToolAgent {
 
     @Override
     public boolean matches(Subject other) {
-        if (!(other instanceof PlayerSubject))
-            return false;
+        if (!(other instanceof PlayerSubject playerSubject)) return false;
 
-        if(itemStack != null) {
-            ItemStack playerItem = ((PlayerSubject) other).getTool().getActualTool();
+        if (itemStack != null) {
+            ItemStack playerItem = playerSubject.getTool().getActualTool();
             Log.logInfo("Checking ItemStack tool: " + itemStack + " vs player tool: " + playerItem, Verbosity.HIGHEST);
-            if(itemStack != null) {
-                if(playerItem.getType() != itemStack.getType()) { // if the two materials are not equal
+            if (playerItem != null) {
+                if (playerItem.getType() != itemStack.getType()) { // if the two materials are not equal
                     Log.logInfo("ItemStackToolCheck - failed (different materials).", Verbosity.HIGHEST);
                     return false;
-                } else if(!itemStack.hasItemMeta()) { // if compare item has no custom data, the check should pass
+                } else if (!itemStack.hasItemMeta()) { // if compare item has no custom data, the check should pass
                     Log.logInfo("ItemStackToolCheck - passed (no meta on comparison item).", Verbosity.HIGHEST);
                     return true;
                 } else { // compare item has meta, lets check that it matches the player's item
-                    if(!playerItem.hasItemMeta()) // player item had no meta
+                    if (!playerItem.hasItemMeta()) // player item had no meta
                         return false;
 
                     ItemMeta thisMeta = playerItem.getItemMeta().clone();
                     ItemMeta stackMeta = itemStack.getItemMeta().clone();
 
-                    if(thisMeta.hasAttributeModifiers() || stackMeta.hasAttributeModifiers()) {
+                    if (thisMeta.hasAttributeModifiers() || stackMeta.hasAttributeModifiers()) {
                         for (Attribute attr : Attribute.values()) {
                             Collection<AttributeModifier> mods1 = thisMeta.getAttributeModifiers(attr);
                             Collection<AttributeModifier> mods2 = stackMeta.getAttributeModifiers(attr);
@@ -85,11 +84,7 @@ public class ItemStackAgent extends ToolAgent {
         List<AttributeModifier> listB = new ArrayList<>(b);
 
         for (AttributeModifier modA : listA) {
-            boolean matched = listB.removeIf(modB ->
-                    modA.getAmount() == modB.getAmount() &&
-                            modA.getOperation() == modB.getOperation() &&
-                            Objects.equals(modA.getSlot(), modB.getSlot())
-            );
+            boolean matched = listB.removeIf(modB -> modA.getAmount() == modB.getAmount() && modA.getOperation() == modB.getOperation() && Objects.equals(modA.getSlot(), modB.getSlot()));
             if (!matched) return false;
         }
         return true;

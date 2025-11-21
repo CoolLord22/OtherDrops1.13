@@ -10,17 +10,10 @@ public class ODMatch {
         this.msg = msg;
     }
 
-    /** Takes a given pattern, searches for any match & runs provided 
-     *  code (via custom ODMatchRunner) to transform each result.
-     *  
-     * @param msg
-     * @param patternString
-     * @return
-     */
     public String match(String patternString, ODMatchRunner runner) {
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(msg);
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         while (matcher.find()) {
             matcher.appendReplacement(sb, runner.runMatch(matcher.group(1)));
         }

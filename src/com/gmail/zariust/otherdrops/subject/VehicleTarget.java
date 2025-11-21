@@ -16,34 +16,25 @@
 
 package com.gmail.zariust.otherdrops.subject;
 
-import java.util.Collections;
-import java.util.List;
-
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.ContainerData;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.SimpleData;
 import com.gmail.zariust.otherdrops.data.VehicleData;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Boat;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Minecart;
-import org.bukkit.entity.Painting;
-import org.bukkit.entity.minecart.CommandMinecart;
-import org.bukkit.entity.minecart.ExplosiveMinecart;
-import org.bukkit.entity.minecart.HopperMinecart;
-import org.bukkit.entity.minecart.PoweredMinecart;
-import org.bukkit.entity.minecart.StorageMinecart;
-import org.bukkit.entity.Vehicle;
+import org.bukkit.entity.*;
+import org.bukkit.entity.minecart.*;
+
+import java.util.Collections;
+import java.util.List;
 
 public class VehicleTarget implements Target {
-    private Material material;
-    private Data     data;
-    private Entity   vessel;
+    private final Material material;
+    private final Data data;
+    private Entity vessel;
 
     public VehicleTarget() {
         this(null, null);
@@ -65,32 +56,23 @@ public class VehicleTarget implements Target {
     }
 
     private static Data getVehicleData(Vehicle vehicle) {
-        if (vehicle instanceof StorageMinecart)
-            return new ContainerData((StorageMinecart) vehicle);
-        else if (vehicle instanceof HopperMinecart)
-            return new ContainerData((HopperMinecart) vehicle);
-        else if (vehicle instanceof PoweredMinecart)
-            return new SimpleData();
-        else if (vehicle instanceof CommandMinecart)
-            return new SimpleData();
-        else if (vehicle instanceof ExplosiveMinecart)
-            return new SimpleData();
-        else if (vehicle instanceof Boat || vehicle instanceof Minecart)
-            return new VehicleData(vehicle);
+        if (vehicle instanceof StorageMinecart) return new ContainerData((StorageMinecart) vehicle);
+        else if (vehicle instanceof HopperMinecart) return new ContainerData((HopperMinecart) vehicle);
+        else if (vehicle instanceof PoweredMinecart) return new SimpleData();
+        else if (vehicle instanceof CommandMinecart) return new SimpleData();
+        else if (vehicle instanceof ExplosiveMinecart) return new SimpleData();
+        else if (vehicle instanceof Boat || vehicle instanceof Minecart) return new VehicleData(vehicle);
         return null;
     }
 
     @Override
     public ItemCategory getType() {
-        return ItemCategory.BLOCK; // TODO: Should we add an
-                                   // ItemCategory.VEHICLE?
+        return ItemCategory.BLOCK; // TODO: Should we add an ItemCategory.VEHICLE?
     }
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof VehicleTarget))
-            return false;
-        VehicleTarget targ = (VehicleTarget) other;
+        if (!(other instanceof VehicleTarget targ)) return false;
         return material == targ.material && data.equals(targ.data);
     }
 
@@ -101,13 +83,10 @@ public class VehicleTarget implements Target {
 
     @Override
     public boolean matches(Subject block) {
-        if (!(block instanceof VehicleTarget))
-            return false;
-        VehicleTarget targ = (VehicleTarget) block;
+        if (!(block instanceof VehicleTarget targ)) return false;
 
-        Boolean match = false;
-        if (material == targ.material)
-            match = true;
+        boolean match;
+        if (material == targ.material) match = true;
         if (data == null) { // Null data matches vehicles but not painting
             match = targ.material != Material.PAINTING;
         } else {
@@ -118,8 +97,7 @@ public class VehicleTarget implements Target {
 
     @Override
     public Location getLocation() {
-        if (vessel == null)
-            return null;
+        if (vessel == null) return null;
         return vessel.getLocation();
     }
 
@@ -130,7 +108,7 @@ public class VehicleTarget implements Target {
 
     @Override
     public List<Target> canMatch() {
-        return Collections.singletonList((Target) this);
+        return Collections.singletonList(this);
     }
 
     @Override
@@ -155,31 +133,15 @@ public class VehicleTarget implements Target {
 
     @SuppressWarnings("incomplete-switch")
     public static Target parse(Material type, String state) {
-        if (type == null)
-            return null;
-        Data data = null;
+        if (type == null) return null;
+        Data data;
         try {
-            switch (type) {
-            case OAK_BOAT:
-            case SPRUCE_BOAT:
-            case BIRCH_BOAT:
-            case JUNGLE_BOAT:
-            case ACACIA_BOAT:
-            case DARK_OAK_BOAT:
-            case MINECART:
-                data = VehicleData.parse(type, state);
-                break;
-            case HOPPER_MINECART:
-            case CHEST_MINECART:
-                data = ContainerData.parse(type, state);
-                break;
-            case COMMAND_BLOCK_MINECART:
-            case TNT_MINECART:
-            case FURNACE_MINECART:
-            case PAINTING:
-                data = SimpleData.parse(type, state);
-                break;
-            }
+            data = switch (type) {
+                case OAK_BOAT, SPRUCE_BOAT, BIRCH_BOAT, JUNGLE_BOAT, ACACIA_BOAT, DARK_OAK_BOAT, MINECART -> VehicleData.parse(type, state);
+                case HOPPER_MINECART, CHEST_MINECART -> ContainerData.parse(type, state);
+                case COMMAND_BLOCK_MINECART, TNT_MINECART, FURNACE_MINECART, PAINTING -> SimpleData.parse(type, state);
+                default -> null;
+            };
         } catch (IllegalArgumentException e) {
             Log.logWarning(e.getMessage());
             return null;
@@ -194,12 +156,10 @@ public class VehicleTarget implements Target {
 
     @Override
     public String toString() {
-        if (material == null)
-            return "ANY_VEHICLE";
+        if (material == null) return "ANY_VEHICLE";
         String ret = "VEHICLE_" + material;
         // TODO: Will data ever be null, or will it just be 0?
-        if (data != null)
-            ret += "@" + data.get(material);
+        if (data != null) ret += "@" + data.get(material);
         return ret;
     }
 
@@ -207,5 +167,4 @@ public class VehicleTarget implements Target {
     public String getReadableName() {
         return toString();
     }
-
 }

@@ -19,8 +19,9 @@ public class EquipmentSlotResolver {
 
     /**
      * Resolve the used equipment slot from the damage cause of an {@link EntityDamageByEntityEvent}.
+     *
      * @param damageCause The damage cause of the event.
-     * @param damager The {@link HumanEntity} who caused the event.
+     * @param damager     The {@link HumanEntity} who caused the event.
      * @return The used equipment slot. {@code null} if it could not be resolved.
      */
     public static EquipmentSlot resolve(DamageCause damageCause, HumanEntity damager) {
@@ -44,17 +45,17 @@ public class EquipmentSlotResolver {
 
     /**
      * Get the hand in which a player is holding an item with a specific material.
+     *
      * @param playerInventory The inventory of the player.
-     * @param material The material of the item that the player should be holding.
-     * @param preferMainHand Whether to prefer the player's main hand ({@code true}) or the
-     *                       off-hand ({@code false}), in case the player is holding an item with
-     *                       the requested material in both hands.
+     * @param material        The material of the item that the player should be holding.
+     * @param preferMainHand  Whether to prefer the player's main hand ({@code true}) or the
+     *                        off-hand ({@code false}), in case the player is holding an item with
+     *                        the requested material in both hands.
      * @return The {@link EquipmentSlot} representing the hand in which the player is holding an
-     *         item with the requested material. {@code null}, in case an item meeting the requirements
-     *         was found in none of the player's hands.
+     * item with the requested material. {@code null}, in case an item meeting the requirements
+     * was found in none of the player's hands.
      */
-    public static EquipmentSlot getHandWithMaterial(PlayerInventory playerInventory, Material material,
-                                                     boolean preferMainHand) {
+    public static EquipmentSlot getHandWithMaterial(PlayerInventory playerInventory, Material material, boolean preferMainHand) {
         boolean inMainHand = playerInventory.getItemInMainHand().getType() == material;
         boolean inOffHand = playerInventory.getItemInOffHand().getType() == material;
 

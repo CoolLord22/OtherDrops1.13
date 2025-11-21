@@ -7,7 +7,7 @@ import com.gmail.zariust.otherdrops.data.Data;
 import org.bukkit.entity.*;
 
 public class SteerableData extends CreatureData {
-    Boolean isSaddled = null;
+    final Boolean isSaddled;
 
     public SteerableData(Boolean isSaddled) {
         this.isSaddled = isSaddled;
@@ -15,25 +15,15 @@ public class SteerableData extends CreatureData {
 
     @Override
     public void setOn(Entity mob, Player owner) {
-        if (mob instanceof Steerable) {
-            Steerable z = (Steerable) mob;
-            if (isSaddled != null)
-                if (isSaddled)
-                    z.setSaddle(true);
+        if (mob instanceof Steerable z) {
+            if (isSaddled != null) if (isSaddled) z.setSaddle(true);
         }
     }
 
     @Override
     public boolean matches(Data d) {
-        if (!(d instanceof SteerableData))
-            return false;
-
-        SteerableData vd = (SteerableData) d;
-
-        if (this.isSaddled != null)
-            if (this.isSaddled != vd.isSaddled)
-                return false;
-
+        if (!(d instanceof SteerableData vd)) return false;
+        if (this.isSaddled != null) if (this.isSaddled != vd.isSaddled) return false;
         return true;
     }
 
@@ -55,10 +45,8 @@ public class SteerableData extends CreatureData {
 
             for (String sub : split) {
                 sub = sub.toLowerCase().replaceAll("[\\s-_]", "");
-                if (sub.contains("!saddled"))
-                    saddled = true;
-                else if (sub.contains("!unsaddled"))
-                    saddled = false;
+                if (sub.contains("!saddled")) saddled = true;
+                else if (sub.contains("!unsaddled")) saddled = false;
             }
         }
 
@@ -77,8 +65,7 @@ public class SteerableData extends CreatureData {
 
     @Override
     public String get(Enum<?> creature) {
-        if (creature instanceof EntityType)
-            return this.toString();
+        if (creature instanceof EntityType) return this.toString();
         return "";
     }
 }

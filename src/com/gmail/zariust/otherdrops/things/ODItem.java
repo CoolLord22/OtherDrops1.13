@@ -26,31 +26,26 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ODItem {
-    public String               name;
-    private String              dataString;
-    public String               enchantmentString;
-    public List<CMEnchantment>  enchantments = new ArrayList<CMEnchantment>();
-    public List<ItemFlag>       itemFlags = new ArrayList<>();
-    public String               displayname;
-    public final List<String>   lore         = new ArrayList<String>();
-    public ItemStack            itemStack;
+    public String name;
+    private String dataString;
+    public String enchantmentString;
+    public List<CMEnchantment> enchantments = new ArrayList<>();
+    public final List<ItemFlag> itemFlags = new ArrayList<>();
+    public String displayname;
+    public final List<String> lore = new ArrayList<>();
+    public ItemStack itemStack;
 
-    private Material            material;
-    private Data                data;
+    private Material material;
+    private Data data;
 
-    public ODItem(){}
+    public ODItem() {
+    }
 
     public ODItem(ItemStack itemStack, String identifier) {
         this.itemStack = itemStack;
         this.name = identifier;
     }
 
-    /**
-     * @param drop
-     * @param defaultData
-     * @param loreName
-     * @return
-     */
     public static ODItem parseItem(String drop, String defaultData) {
         ItemStack loadedItem = OtherDropsConfig.commonItemstack.getItemStack(drop);
         if (loadedItem != null) {
@@ -60,7 +55,7 @@ public class ODItem {
             String input = drop.replaceAll("MYTHIC_ITEM@", "");
             String itemIdentifier = "MYTHIC_" + input;
 
-            if(Dependencies.getMythicMobs().getItemManager().getItem(input).isPresent()) {
+            if (Dependencies.getMythicMobs().getItemManager().getItem(input).isPresent()) {
                 loadedItem = Dependencies.getMythicMobs().getItemManager().getItemStack(input);
                 OtherDrops.loadedItems.put(new NamespacedKey(OtherDrops.plugin, itemIdentifier), loadedItem);
                 Log.logInfo("Saving item: " + loadedItem, Verbosity.HIGHEST);
@@ -96,11 +91,10 @@ public class ODItem {
         if (firstSplit.length > 1) {
             // if extra fields are found, parse them - firstly separating out the type of "thing" this is
             item.name = firstSplit[0];
-            String firstChar = drop.substring(item.name.length(),
-                    item.name.length() + 1);
+            String firstChar = drop.substring(item.name.length(), item.name.length() + 1);
             if (firstChar.matches("[^~]")) {
                 // only want to use a semi-colon rather than @ or : but preserve the ~
-                firstChar = ";"; 
+                firstChar = ";";
             } else if (firstChar.matches("~")) {
                 item.displayname = "";
             }
@@ -111,8 +105,8 @@ public class ODItem {
                 Log.dMsg("PARSING INTIAL DATA");
                 String[] dataEnchSplit = drop.split("!", 2);
                 item.dataString = dataEnchSplit[0].substring(1);
-                drop = ";"+dataEnchSplit[1];
-                
+                drop = ";" + dataEnchSplit[1];
+
             }
 
             // then, loop through each ";<value>" or "~<value>" pair and parse accordingly
@@ -123,23 +117,18 @@ public class ODItem {
                 String value = m.group(2);
                 value = value.replaceAll("slashCharPlaceholder", "/");
 
-                if (key != null && value != null) {
+                if (key != null) {
                     if (key.equals("~")) {
                         item.displayname = ChatColor.translateAlternateColorCodes('&', value);
-                    } else if (item.displayname != null
-                            && !item.displayname.isEmpty()) {
-                        // displayname found, treat next as lore
-                    	value = ChatColor.translateAlternateColorCodes('&', value);
+                    } else if (item.displayname != null && !item.displayname.isEmpty()) {// displayname found, treat next as lore
+                        value = ChatColor.translateAlternateColorCodes('&', value);
                         item.lore.add(value);
                     } else if (getItemFlag(value) != null) {
                         item.itemFlags.add(getItemFlag(value));
-                    } else {
-                        // first check for enchantment
-                        List<CMEnchantment> ench = CommonEnchantments
-                                .parseEnchantments(value);
-                        if (ench == null || ench.isEmpty()) {
-                            // otherwise assume data
-                            item.dataString = value;
+                    } else { // first check for enchantment
+                        List<CMEnchantment> ench = CommonEnchantments.parseEnchantments(value);
+                        if (ench.isEmpty()) {
+                            item.dataString = value; // otherwise assume data
                         } else {
                             item.enchantments.addAll(ench);
                         }
@@ -150,21 +139,19 @@ public class ODItem {
             item.name = drop;
         }
 
-        if (drop.endsWith("~"))
-        	item.displayname = "";
+        if (drop.endsWith("~")) item.displayname = "";
 
         return item;
     }
 
-	public Material getMaterial() {
+    public Material getMaterial() {
         if (this.material == null) {
-        	if(this.name.matches("[0-9]+")) {
+            if (this.name.matches("[0-9]+")) {
                 Log.logWarning("Error while parsing: " + this.name + ". Support for numerical IDs has been dropped!");
-            	Log.logWarning("The drop has been disabled to prevent issues!");
-        	}
-        	else {
-        		material = CommonMaterial.matchMaterial(this.name);
-        	}
+                Log.logWarning("The drop has been disabled to prevent issues!");
+            } else {
+                material = CommonMaterial.matchMaterial(this.name);
+            }
         }
         return this.material;
     }
@@ -175,8 +162,7 @@ public class ODItem {
 
     public Data getData() {
         if (data == null && dataString != null) {
-            if (dataString.equals("!"))
-                dataString = "";
+            if (dataString.equals("!")) dataString = "";
 
             // Parse data, which could be an integer or an appropriate enum
             // name
@@ -190,16 +176,14 @@ public class ODItem {
         try {
             int d = Integer.parseInt(dataString);
             returnVal = new ItemData(d);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException ignored) {
         }
         if (returnVal == null) {
             try {
                 returnVal = ItemData.parse(this.getMaterial(), dataString);
-                if (returnVal == null)
-                    returnVal = new ItemData(0);
+                if (returnVal == null) returnVal = new ItemData(0);
             } catch (IllegalArgumentException e) {
                 Log.logWarning(e.getMessage());
-                returnVal = null;
             }
         }
         return returnVal;
@@ -212,10 +196,9 @@ public class ODItem {
     public List<CMEnchantment> getEnchantments() {
         if (enchantments == null) {
             if (enchantmentString == null) {
-                enchantments = new ArrayList<CMEnchantment>();
+                enchantments = new ArrayList<>();
             } else {
-                enchantments = CommonEnchantments
-                        .parseEnchantments(enchantmentString);
+                enchantments = CommonEnchantments.parseEnchantments(enchantmentString);
             }
         }
         return enchantments;
@@ -227,24 +210,23 @@ public class ODItem {
 
     private static ItemFlag getItemFlag(String flagName) {
         for (ItemFlag value : ItemFlag.values()) {
-            if(value.toString().replaceAll("_", "").equalsIgnoreCase(flagName.replaceAll("_", "")))
-                return value;
+            if (value.toString().replaceAll("_", "").equalsIgnoreCase(flagName.replaceAll("_", ""))) return value;
         }
         Log.logInfo("ODItem Parsing: ItemFlag not found: " + flagName, Verbosity.HIGH);
         return null;
     }
 
     public boolean matches(ItemStack playerItem) {
-        if(playerItem != null) {
-            if(this.itemStack != null) {
-                if(playerItem.getType() != this.itemStack.getType()) { // if the two materials are not equal
+        if (playerItem != null) {
+            if (this.itemStack != null) {
+                if (playerItem.getType() != this.itemStack.getType()) { // if the two materials are not equal
                     Log.logInfo("ODItem matches - failed (different materials).", Verbosity.HIGHEST);
                     return false;
-                } else if(!this.itemStack.hasItemMeta()) { // if compare item has no custom data, the check should pass
+                } else if (!this.itemStack.hasItemMeta()) { // if compare item has no custom data, the check should pass
                     Log.logInfo("ODItem matches - passed (no meta on comparison item).", Verbosity.HIGHEST);
                     return true;
                 } else { // compare item has meta, lets check that it matches the player's item
-                    if(!playerItem.hasItemMeta()) // player item had no meta
+                    if (!playerItem.hasItemMeta()) // player item had no meta
                         return false;
                     ItemMeta thisMeta = playerItem.getItemMeta();
                     ItemMeta stackMeta = this.itemStack.getItemMeta();
@@ -254,20 +236,18 @@ public class ODItem {
                     return Bukkit.getItemFactory().equals(thisMeta, stackMeta);
                 }
             } else {
-                if(playerItem.getType().equals(this.getMaterial())) {
+                if (playerItem.getType().equals(this.getMaterial())) {
                     boolean isContained = true;
                     if (this.displayname != null)
-                        if (!this.displayname.equals(playerItem.getItemMeta().getDisplayName()))
-                            isContained = false;
+                        if (!this.displayname.equals(playerItem.getItemMeta().getDisplayName())) isContained = false;
 
-                    if (isContained && this.lore != null && !this.lore.isEmpty())
-                        if (!this.lore.equals(playerItem.getItemMeta().getLore()))
-                            isContained = false;
+                    if (isContained && !this.lore.isEmpty())
+                        if (!this.lore.equals(playerItem.getItemMeta().getLore())) isContained = false;
 
                     if (isContained && !this.getEnchantments().isEmpty())
-                        if(playerItem.getEnchantments().isEmpty())
-                            isContained = false;
-                        else isContained = CommonEnchantments.matches(this.getEnchantments(), playerItem.getEnchantments());
+                        if (playerItem.getEnchantments().isEmpty()) isContained = false;
+                        else
+                            isContained = CommonEnchantments.matches(this.getEnchantments(), playerItem.getEnchantments());
 
                     return isContained;
                 }

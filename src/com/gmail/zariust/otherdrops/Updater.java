@@ -17,7 +17,7 @@ import java.util.List;
 public class Updater {
 
 	private final OtherDrops javaPlugin;
-	private String localPluginVersion;
+	private final String localPluginVersion;
 	private String spigotPluginVersion;
 
 	//Constants. Customize to your liking.
@@ -30,7 +30,7 @@ public class Updater {
 	}
 
 	public void checkForUpdate(Player p) {
-		List<String> UPDATE_MSG = new ArrayList<String>();
+		List<String> UPDATE_MSG = new ArrayList<>();
 		//The request is executed asynchronously as to not block the main thread.
 		Bukkit.getScheduler().runTaskAsynchronously(javaPlugin, () -> {
 			UPDATE_MSG.clear();
@@ -42,7 +42,7 @@ public class Updater {
 			} catch (final IOException e) {
 				UPDATE_MSG.add(ERR_MSG);
 				if(OtherDropsConfig.getVerbosity().exceeds(Verbosity.HIGHEST))
-					e.printStackTrace();
+					Log.logError("Encountered an error while checking for update:", e);
 			}
 
 			try {
@@ -72,7 +72,7 @@ public class Updater {
 			} catch (final NumberFormatException e) {
 				UPDATE_MSG.add(ERR_MSG);
 				if(OtherDropsConfig.getVerbosity().exceeds(Verbosity.HIGHEST))
-					e.printStackTrace();
+					Log.logError("Encountered an error while checking for update:", e);
 			}
 			if(!UPDATE_MSG.isEmpty()) {
 				for(String line : UPDATE_MSG) {

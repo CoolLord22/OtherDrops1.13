@@ -16,30 +16,28 @@
 
 package com.gmail.zariust.otherdrops.drop;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
-
 import com.gmail.zariust.common.CreatureGroup;
 import com.gmail.zariust.common.MaterialGroup;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.subject.Target;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This class represents an set of exclusive drops, eg. drop: {blah, blah2, etc}
  * # drops only one item in list
- * 
+ *
  * @author Celtic Minstrel, Zarius
- * 
  */
 public class DropListExclusive extends DropType {
     private final List<DropType> group;
-    private double               percentTotal;
+    private double percentTotal;
 
     public DropListExclusive(DropType... drops) {
         this(Arrays.asList(drops));
@@ -49,35 +47,27 @@ public class DropListExclusive extends DropType {
         super(DropCategory.GROUP);
         group = drops;
         percentTotal = 0;
-        for (DropType drop : group)
-            percentTotal += drop.getChance();
-        if (percentTotal < 100)
-            percentTotal = 100;
-
+        for (DropType drop : group) percentTotal += drop.getChance();
+        if (percentTotal < 100) percentTotal = 100;
     }
 
-    public DropListExclusive(List<Material> materials, int defaultData,
-            IntRange amount, double chance) {
+    public DropListExclusive(List<Material> materials, int defaultData, IntRange amount, double chance) {
         this(materialsToDrops(materials, defaultData, amount, chance));
     }
 
-    public DropListExclusive(List<EntityType> creatures, IntRange amount,
-            double chance) {
+    public DropListExclusive(List<EntityType> creatures, IntRange amount, double chance) {
         this(creaturesToDrops(creatures, amount, chance));
     }
 
-    private static DropType[] materialsToDrops(List<Material> materials,
-            int defaultData, IntRange amount, double chance) {
+    private static DropType[] materialsToDrops(List<Material> materials, int defaultData, IntRange amount, double chance) {
         DropType[] drops = new DropType[materials.size()];
         for (int i = 0; i < drops.length; i++) {
-            drops[i] = new ItemDrop(amount, materials.get(i), defaultData,
-                    chance, null, "");
+            drops[i] = new ItemDrop(amount, materials.get(i), defaultData, chance, null, "");
         }
         return drops;
     }
 
-    private static DropType[] creaturesToDrops(List<EntityType> creatures,
-            IntRange amount, double chance) {
+    private static DropType[] creaturesToDrops(List<EntityType> creatures, IntRange amount, double chance) {
         DropType[] drops = new DropType[creatures.size()];
         for (int i = 0; i < drops.length; i++) {
             drops[i] = new CreatureDrop(amount, creatures.get(i), chance);
@@ -90,8 +80,7 @@ public class DropListExclusive extends DropType {
     }
 
     @Override
-    protected DropResult performDrop(Target source, Location where,
-            DropFlags flags) {
+    protected DropResult performDrop(Target source, Location where, DropFlags flags) {
         // don't set override default here - it's set for each individual drop
         DropResult returnRes = DropResult.fromQuantity(0);
         double select = flags.rng.nextDouble() * percentTotal, cumul = 0;
@@ -107,50 +96,33 @@ public class DropListExclusive extends DropType {
     }
 
     public static DropType parse(List<String> dropList, String defaultData) {
-        List<DropType> drops = new ArrayList<DropType>();
+        List<DropType> drops = new ArrayList<>();
         for (String dropName : dropList) {
             DropType drop = DropType.parse(dropName, defaultData);
-            if (drop != null)
-                drops.add(drop);
+            if (drop != null) drops.add(drop);
         }
         return new DropListExclusive(drops);
     }
 
-    public static DropType parse(String drop, String data, IntRange amount,
-            double chance) {
+    public static DropType parse(String drop, String data, IntRange amount, double chance) {
         drop = drop.toUpperCase();
         MaterialGroup group = MaterialGroup.get(drop);
         if (group == null) {
             if (drop.equals("ANY_CREATURE"))
-                return new DropListExclusive(
-                        CreatureGroup.CREATURE_ANY.creatures(), amount, chance);
+                return new DropListExclusive(CreatureGroup.CREATURE_ANY.creatures(), amount, chance);
             else if (drop.equals("ANY_VEHICLE_SPAWN"))
-                return new DropListExclusive(new DropType[] {
-                        new VehicleDrop(amount, Material.MINECART, chance),
-                        new VehicleDrop(amount, Material.COMMAND_BLOCK_MINECART, chance),
-                        new VehicleDrop(amount, Material.TNT_MINECART, chance),
-                        new VehicleDrop(amount, Material.FURNACE_MINECART, chance),
-                        new VehicleDrop(amount, Material.HOPPER_MINECART, chance),
-                        new VehicleDrop(amount, Material.CHEST_MINECART, chance),
-                        new VehicleDrop(amount, Material.OAK_BOAT, chance),
-                        new VehicleDrop(amount, Material.ACACIA_BOAT, chance),
-                        new VehicleDrop(amount, Material.BIRCH_BOAT, chance),
-                        new VehicleDrop(amount, Material.DARK_OAK_BOAT, chance),
-                        new VehicleDrop(amount, Material.JUNGLE_BOAT, chance),
-                        new VehicleDrop(amount, Material.SPRUCE_BOAT, chance)});
+                return new DropListExclusive(new VehicleDrop(amount, Material.MINECART, chance), new VehicleDrop(amount, Material.COMMAND_BLOCK_MINECART, chance), new VehicleDrop(amount, Material.TNT_MINECART, chance), new VehicleDrop(amount, Material.FURNACE_MINECART, chance), new VehicleDrop(amount, Material.HOPPER_MINECART, chance), new VehicleDrop(amount, Material.CHEST_MINECART, chance), new VehicleDrop(amount, Material.OAK_BOAT, chance), new VehicleDrop(amount, Material.ACACIA_BOAT, chance), new VehicleDrop(amount, Material.BIRCH_BOAT, chance), new VehicleDrop(amount, Material.DARK_OAK_BOAT, chance), new VehicleDrop(amount, Material.JUNGLE_BOAT, chance), new VehicleDrop(amount, Material.SPRUCE_BOAT, chance));
             else {
                 drop = drop.replace("^ANY_", "^");
                 CreatureGroup cgroup = CreatureGroup.get(drop.substring(1));
-                if (cgroup != null)
-                    return new DropListExclusive(cgroup.creatures(), amount,
-                            chance);
+                if (cgroup != null) return new DropListExclusive(cgroup.creatures(), amount, chance);
             }
             return null;
         }
         int intData = 0;
         try {
             intData = Integer.parseInt(data);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException ignored) {
         }
         return new DropListExclusive(group.materials(), intData, amount, chance);
     }

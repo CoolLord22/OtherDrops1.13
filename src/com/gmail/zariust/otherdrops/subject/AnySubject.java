@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-@ConfigOnly({ Agent.class, Target.class })
+@ConfigOnly({Agent.class, Target.class})
 public class AnySubject implements Agent, Target {
     @Override
     public boolean equals(Object other) {
@@ -70,34 +70,26 @@ public class AnySubject implements Agent, Target {
                 return new ExplosionAgent();
         }
         MaterialGroup group = MaterialGroup.get(name);
-        if (group != null)
-            return new MaterialGroupAgent(group);
+        if (group != null) return new MaterialGroupAgent(group);
         return null;
     }
 
     public static Target parseTarget(String name) {
-        if (name.endsWith("ANY") || name.equals("ALL"))
-            return new AnySubject();
-        else if (name.startsWith("ANY_BLOCK"))
-            return parseTargetAnyBlock(name);
-        else if (name.equals("ANY_CREATURE"))
-            return new CreatureSubject();
-        else if (name.equals("ANY_VEHICLE"))
-            return new VehicleTarget();
+        if (name.endsWith("ANY") || name.equals("ALL")) return new AnySubject();
+        else if (name.startsWith("ANY_BLOCK")) return parseTargetAnyBlock(name);
+        else if (name.equals("ANY_CREATURE")) return new CreatureSubject();
+        else if (name.equals("ANY_VEHICLE")) return new VehicleTarget();
         MaterialGroup group = MaterialGroup.get(name);
-        if (group != null && group.isBlock())
-            return new BlocksTarget(group);
-        else
-            return null;
+        if (group != null && group.isBlock()) return new BlocksTarget(group);
+        else return null;
     }
 
     @SuppressWarnings("unused")
-	private static BlockTarget parseTargetAnyBlock(String name) {
+    private static BlockTarget parseTargetAnyBlock(String name) {
         name = name.replace("ANY_BLOCK", "").replaceAll("_", " ").trim();
-        if (name.isEmpty())
-            return new BlockTarget();
+        if (name.isEmpty()) return new BlockTarget();
 
-        List<Material> except = new ArrayList<Material>();
+        List<Material> except = new ArrayList<>();
         if (name.startsWith("EXCEPT")) {
             name = name.replace("EXCEPT", "").trim();
 
@@ -112,15 +104,12 @@ public class AnySubject implements Agent, Target {
                         MaterialGroup group = MaterialGroup.get(single);
                         if (group != null) {
                             for (Material material : group.materials()) {
-                                Log.logInfo(
-                                        "block except... group/multi - adding: "
-                                                + material, Verbosity.HIGHEST);
+                                Log.logInfo("block except... group/multi - adding: " + material, Verbosity.HIGHEST);
                                 except.add(material);
                             }
                         }
                     } else {
-                        Log.logInfo("block except... group/single - adding: \""
-                                + single + "\"", Verbosity.HIGHEST);
+                        Log.logInfo("block except... group/single - adding: \"" + single + "\"", Verbosity.HIGHEST);
                         except.add(mat);
                     }
                 }
@@ -129,16 +118,12 @@ public class AnySubject implements Agent, Target {
                 Material mat = CommonMaterial.matchMaterial(name);
 
                 if (mat != null) {
-                    Log.logInfo("block except... single - adding: " + mat,
-                            Verbosity.HIGHEST);
+                    Log.logInfo("block except... single - adding: " + mat, Verbosity.HIGHEST);
                     except.add(mat);
                 }
             }
         }
-        if (except != null)
-            return new BlockTarget(except);
-        else
-            return new BlockTarget();
+        return new BlockTarget(except);
     }
 
     @Override
@@ -156,7 +141,7 @@ public class AnySubject implements Agent, Target {
 
     @Override
     public List<Target> canMatch() {
-        List<Target> all = new ArrayList<Target>();
+        List<Target> all = new ArrayList<>();
         all.addAll(new BlockTarget().canMatch());
         all.addAll(new CreatureSubject().canMatch());
         return all;
@@ -178,8 +163,7 @@ public class AnySubject implements Agent, Target {
     }
 
     @Override
-    // It's a wildcard, so we don't need anything here. The annotation should
-    // prevent it from being called.
+    // It's a wildcard, so we don't need anything here. The annotation should prevent it from being called.
     public void setTo(BlockTarget replacement) {
     }
 

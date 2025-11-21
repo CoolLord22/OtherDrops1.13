@@ -40,7 +40,7 @@ public final class CommonEntity {
     public static EntityType getCreatureEntityType(String name) {
         if (name == null || name.isEmpty())
             return null;
-        List<String> conflictMobs = new ArrayList<String>();
+        List<String> conflictMobs = new ArrayList<>();
         conflictMobs.add("chicken");
         conflictMobs.add("cod");
         conflictMobs.add("salmon");
@@ -71,7 +71,7 @@ public final class CommonEntity {
 
         // Creature aliases - format: (<aliasvalue>, <bukkitmobname>) - must be
         // lowercase
-        Map<String, String> replacer = new HashMap<String, String>();
+        Map<String, String> replacer = new HashMap<>();
         replacer.put("mooshroom", "mushroomcow");
         replacer.put("endermen", "enderman");
         replacer.put("zombiepig", "pigzombie");
@@ -85,7 +85,7 @@ public final class CommonEntity {
         if(replacer.containsKey(name.toLowerCase()))
         	name = replacer.get(name.toLowerCase());
         
-        Set<EntityType> possibleMatches = new HashSet<EntityType>();
+        Set<EntityType> possibleMatches = new HashSet<>();
 
         for (EntityType creature : EntityType.values()) {
             String compareShortcut = ";" + (creature.toString().toLowerCase().replaceAll("[\\s-_]",""));

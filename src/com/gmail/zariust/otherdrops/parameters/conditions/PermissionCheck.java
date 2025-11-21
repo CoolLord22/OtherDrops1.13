@@ -25,46 +25,33 @@ public class PermissionCheck extends Condition {
 
     @Override
     protected boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
-        if (permissionMap == null)
-            return true;
+        if (permissionMap == null) return true;
         Agent agent = occurrence.getTool();
         Player player = null;
 
         if (!(agent instanceof PlayerSubject)) {
             if (agent instanceof ProjectileAgent) {
-                Entity shooter = ((ProjectileAgent) agent).getShooter()
-                        .getEntity();
+                Entity shooter = ((ProjectileAgent) agent).getShooter().getEntity();
                 if (shooter instanceof Player) {
                     player = (Player) shooter;
                 }
             }
-            if (player == null)
-                return false; // if permissions is set and agent (or shooter) is
-            // not a player, fail
+            if (player == null) return false; // if permissions is set and agent (or shooter) is not a player, fail
         }
 
-        if (player == null)
-            player = ((PlayerSubject) agent).getPlayer();
+        if (player == null) player = ((PlayerSubject) agent).getPlayer();
 
         boolean match = false;
         for (String perm : permissionMap.keySet()) {
             if (perm.startsWith("!")) {
                 if (Dependencies.hasPermission(player, perm.substring(1))) {
-                    if (permissionMap.get(perm))
-                        match = true;
-                    else {
-                        return false;
-                    }
+                    if (permissionMap.get(perm)) match = true;
+                    else return false;
                 }
-            }
-
-            else {
+            } else {
                 if (Dependencies.hasPermission(player, "otherdrops.custom." + perm)) {
-                    if (permissionMap.get(perm))
-                        match = true;
-                    else {
-                        return false;
-                    }
+                    if (permissionMap.get(perm)) match = true;
+                    else return false;
                 }
             }
         }
@@ -74,8 +61,7 @@ public class PermissionCheck extends Condition {
     @Override
     public List<Condition> parse(ConfigurationNode parseMe) {
         Map<String, Boolean> result = OtherDropsConfig.parsePermissionsFrom(parseMe);
-        if(result == null || result.isEmpty())
-            return null;
+        if (result == null || result.isEmpty()) return null;
         List<Condition> conditionList = new ArrayList<>();
         conditionList.add(new PermissionCheck(result));
         return conditionList;

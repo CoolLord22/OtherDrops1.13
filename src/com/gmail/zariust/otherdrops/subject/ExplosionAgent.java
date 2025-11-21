@@ -57,17 +57,13 @@ public class ExplosionAgent implements Agent {
 
     // TODO: Figure out if this needs to have mythicmob support?
     public ExplosionAgent(Entity boom) { // Actual explosion
-        this(new CreatureSubject(boom), CommonEntity
-                .getExplosiveType(boom));
+        this(new CreatureSubject(boom), CommonEntity.getExplosiveType(boom));
         bomb = boom;
     }
 
     private ExplosionAgent(CreatureSubject agent, Material mat) { // Rome
-        if (mat != null)
-            explosive = mat;
-        if (agent != null)
-            if (agent.getCreature() != null)
-                explosive = agent;
+        if (mat != null) explosive = mat;
+        if (agent != null) if (agent.getCreature() != null) explosive = agent;
     }
 
     public boolean isCreature() {
@@ -76,11 +72,8 @@ public class ExplosionAgent implements Agent {
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof ExplosionAgent))
-            return false;
-        if (explosive == null)
-            return true;
-        ExplosionAgent tool = (ExplosionAgent) other;
+        if (!(other instanceof ExplosionAgent tool)) return false;
+        if (explosive == null) return true;
         return explosive == tool.explosive;
     }
 
@@ -91,40 +84,20 @@ public class ExplosionAgent implements Agent {
 
     @Override
     public boolean matches(Subject other) {
-        // Alias for BLOCK_EXPLOSION = EXPLOSION_TNT, due to different events
-        // (entitydeathevent vs entityexplosion) they are handled
-        // differently but explosion_tnt in the config should match the
-        // block_explosion event
+        // Alias for BLOCK_EXPLOSION = EXPLOSION_TNT, due to different events (entitydeathevent vs entityexplosion) they
+        // are handled differently but explosion_tnt in the config should match the block_explosion event
         if (other instanceof EnvironmentAgent) {
-            if (this.toString().equalsIgnoreCase("explosion_tnt")
-                    && other.toString().equalsIgnoreCase("[block_explosion]")) {
-                return true;
-            } else {
-                return false;
-            }
+            return this.toString().equalsIgnoreCase("explosion_tnt") && other.toString().equalsIgnoreCase("[block_explosion]");
         } else if (other instanceof CreatureSubject) {
-            // Add further aliases - EXPLOSION_CREEPER in config matches
-            // CREATURE_CREEPER (since users will expect this)
-            if ((this.toString().equalsIgnoreCase("explosion_creeper") || this
-                    .toString().equalsIgnoreCase("explosion_creeper@unpowered"))
-                    && (other.toString().equalsIgnoreCase("CREATURE_CREEPER") || other
-                            .toString().equalsIgnoreCase(
-                                    "CREATURE_CREEPER@UNPOWERED"))) {
+            // Add further aliases - EXPLOSION_CREEPER in config matches CREATURE_CREEPER (since users will expect this)
+            if ((this.toString().equalsIgnoreCase("explosion_creeper") || this.toString().equalsIgnoreCase("explosion_creeper@unpowered")) && (other.toString().equalsIgnoreCase("CREATURE_CREEPER") || other.toString().equalsIgnoreCase("CREATURE_CREEPER@UNPOWERED"))) {
                 return true;
-            } else if ((this.toString().equalsIgnoreCase("explosion_creeper") || this
-                    .toString().equalsIgnoreCase("explosion_creeper@powered"))
-                    && other.toString().equalsIgnoreCase(
-                            "CREATURE_CREEPER@POWERED")) {
-                return true;
-            } else {
-                return false;
-            }
-        } else if (!(other instanceof ExplosionAgent))
-            return false;
+            } else
+                return (this.toString().equalsIgnoreCase("explosion_creeper") || this.toString().equalsIgnoreCase("explosion_creeper@powered")) && other.toString().equalsIgnoreCase("CREATURE_CREEPER@POWERED");
+        } else if (!(other instanceof ExplosionAgent)) return false;
         ExplosionAgent tool = (ExplosionAgent) other;
 
-        if (explosive == null)
-            return true; // wildcard
+        if (explosive == null) return true; // wildcard
 
         return explosive.equals(tool.explosive);
     }
@@ -135,20 +108,16 @@ public class ExplosionAgent implements Agent {
     }
 
     public static Agent parse(String name, String data) {
-        if (name.equalsIgnoreCase("EXPLOSION")
-                || name.equalsIgnoreCase("EXPLOSION_ANY"))
-            return new ExplosionAgent();
+        if (name.equalsIgnoreCase("EXPLOSION") || name.equalsIgnoreCase("EXPLOSION_ANY")) return new ExplosionAgent();
+
         name = name.toUpperCase().replace("EXPLOSION_", "");
-        if (name.equals("TNT"))
-            return new ExplosionAgent(EntityType.PRIMED_TNT);
-        else if (name.equals("FIRE") || name.equals("FIREBALL"))
-            return new ExplosionAgent(Material.FIRE);
+        if (name.equals("TNT")) return new ExplosionAgent(EntityType.PRIMED_TNT);
+        else if (name.equals("FIRE") || name.equals("FIREBALL")) return new ExplosionAgent(Material.FIRE);
+
         Log.logInfo("Parsing explosion for: " + name, Verbosity.HIGH);
         EntityType creature = CommonEntity.getCreatureEntityType(name);
         Data cdata = CreatureData.parse(creature, data);
-        if (cdata != null)
-            return new ExplosionAgent(creature, cdata);
-        return new ExplosionAgent(creature);
+        return new ExplosionAgent(creature, cdata);
     }
 
     @Override
@@ -161,27 +130,21 @@ public class ExplosionAgent implements Agent {
 
     @Override
     public Location getLocation() {
-        if (bomb != null)
-            return bomb.getLocation();
+        if (bomb != null) return bomb.getLocation();
         return null;
     }
 
     @Override
     public String toString() {
-        if (explosive == null)
-            return "EXPLOSION_ANY";
-        if (explosive instanceof CreatureSubject)
-            return "EXPLOSION_"
-                    + ((CreatureSubject) explosive).toString().replace(
-                            "CREATURE_", "");
+        if (explosive == null) return "EXPLOSION_ANY";
+        if (explosive instanceof CreatureSubject) return "EXPLOSION_" + explosive.toString().replace("CREATURE_", "");
         return "EXPLOSION_" + explosive;
     }
 
     @Override
     public Data getData() {
         CreatureSubject creature = null;
-        if (explosive instanceof CreatureSubject)
-            creature = (CreatureSubject) explosive;
+        if (explosive instanceof CreatureSubject) creature = (CreatureSubject) explosive;
         return creature == null ? null : creature.getData();
     }
 
@@ -189,5 +152,4 @@ public class ExplosionAgent implements Agent {
     public String getReadableName() {
         return toString();
     }
-
 }

@@ -11,8 +11,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 public class CatData extends CreatureData {
-    Cat.Type type  = null; // null = wildcard
-    DyeColor collarColor = null;
+    final Cat.Type type; // null = wildcard
+    final DyeColor collarColor;
 
     public CatData(Cat.Type type, DyeColor collarColor) {
         this.type = type;
@@ -21,36 +21,22 @@ public class CatData extends CreatureData {
 
     @Override
     public void setOn(Entity entity, Player owner) {
-        if (entity instanceof Cat) {
-            Cat cat = (Cat) entity;
-            if (type != null)
-                cat.setCatType(type);
-
-            if (collarColor != null)
-                cat.setCollarColor(collarColor);
+        if (entity instanceof Cat cat) {
+            if (type != null) cat.setCatType(type);
+            if (collarColor != null) cat.setCollarColor(collarColor);
         }
     }
 
     @Override
     public boolean matches(Data d) {
-        if (!(d instanceof CatData))
-            return false;
-        CatData vd = (CatData) d;
-
-        if (this.type != null)
-            if (this.type != vd.type)
-                return false;
-
-        if (this.collarColor != null)
-            if (this.collarColor != vd.collarColor)
-                return false;
-
+        if (!(d instanceof CatData vd)) return false;
+        if (this.type != null) if (this.type != vd.type) return false;
+        if (this.collarColor != null) if (this.collarColor != vd.collarColor) return false;
         return true;
     }
 
     public static CreatureData parseFromEntity(Entity entity) {
-        if (entity instanceof Cat) {
-            Cat cat = (Cat) entity;
+        if (entity instanceof Cat cat) {
             return new CatData(cat.getCatType(), cat.getCollarColor());
         } else {
             Log.logInfo("CatData: error, parseFromEntity given different creature - this shouldn't happen.");
@@ -69,26 +55,22 @@ public class CatData extends CreatureData {
             for (String sub : split) {
                 sub = sub.toLowerCase().replaceAll("[\\s-_]", "").replaceAll("cat", "");
                 for (Cat.Type type : Cat.Type.values()) {
-                    if (sub.equals(type.name().toLowerCase().replaceAll("[\\s-_]", "")))
-                        thisType = type;
+                    if (sub.equals(type.name().toLowerCase().replaceAll("[\\s-_]", ""))) thisType = type;
                 }
-                for(DyeColor color : DyeColor.values()) {
+                for (DyeColor color : DyeColor.values()) {
                     if (sub.replaceAll("!", "").equals(color.name().toLowerCase().replaceAll("[\\s-_]", "")))
                         collarColor = color;
                 }
-                if (thisType == null && collarColor == null)
-                    Log.logInfo("CatData: invalid data passed (" + sub + ")");
+                if (thisType == null && collarColor == null) Log.logInfo("CatData: invalid data passed (" + sub + ")");
             }
         }
-
         return new CatData(thisType, collarColor);
     }
 
     @Override
     public String toString() {
         String val = "";
-        if (type != null)
-            val += type.toString();
+        if (type != null) val += type.toString();
         if (collarColor != null) {
             val += "!";
             val += collarColor.name();
@@ -98,8 +80,7 @@ public class CatData extends CreatureData {
 
     @Override
     public String get(Enum<?> creature) {
-        if (creature instanceof EntityType)
-            return this.toString();
+        if (creature instanceof EntityType) return this.toString();
         return "";
     }
 }

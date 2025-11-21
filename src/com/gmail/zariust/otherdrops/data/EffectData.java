@@ -27,8 +27,8 @@ import com.gmail.zariust.otherdrops.data.effects.StepSoundEffectData;
 
 public class EffectData implements Data {
     public static final int DEFAULT_RADIUS = 16;
-    protected int             data;
-    protected int           radius;
+    protected int data;
+    protected int radius;
 
     public EffectData() {
         // nothing to do here, needed for subclasses
@@ -63,8 +63,7 @@ public class EffectData implements Data {
 
     @Override
     public String get(Enum<?> mat) {
-        if (mat instanceof Effect)
-            return get((Effect) mat);
+        if (mat instanceof Effect) return get((Effect) mat);
         return "";
     }
 
@@ -83,33 +82,22 @@ public class EffectData implements Data {
     }
 
     public static EffectData parse(Effect effect, String state) {
-        // note: null values are ok and should set reasonable defaults on the
-        // effects
+        // note: null values are ok and should set reasonable defaults on the effects
         String[] split = state.split("/");
         String key = split[0];
-        int radius = DEFAULT_RADIUS; // default radius that noise is heard
-                                     // within
-        EffectData data;
-        switch (effect) {
-        case RECORD_PLAY:
-            data = RecordData.parse(key);
-            break;
-        case SMOKE:
-            data = SmokeEffectData.parse(key);
-            break;
-        case STEP_SOUND: // apparently this is actually BLOCK_BREAK
-            data = StepSoundEffectData.parse(key);
-            break;
-        default:
-            data = new EffectData(0);
-            break;
-        }
-        
+        int radius = DEFAULT_RADIUS; // default radius that noise is heard within
+        EffectData data = switch (effect) {
+            case RECORD_PLAY -> RecordData.parse(key);
+            case SMOKE -> SmokeEffectData.parse(key);
+            case STEP_SOUND -> StepSoundEffectData.parse(key); // apparently this is actually BLOCK_BREAK
+            default -> new EffectData(0);
+        };
+
         if (split.length > 1) {
             try {
                 radius = Integer.parseInt(split[1]);
                 data.setRadius(radius);
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException ignored) {
             }
         }
         data.setRadius(radius);

@@ -17,7 +17,7 @@ import java.util.List;
 
 public class LoreNameCheck extends Condition {
 
-    String               name = "LoreNameCheck";
+    String name = "LoreNameCheck";
     private final String loreName;
 
     public LoreNameCheck(String loreName) {
@@ -26,18 +26,13 @@ public class LoreNameCheck extends Condition {
 
     @Override
     public boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
-        String parsedLorename = MessageAction.parseVariables(loreName, drop,
-                occurrence, -1);
-        Log.logInfo("Starting lorename check (" + parsedLorename + ")",
-                Verbosity.HIGHEST);
-        if (occurrence.getTool() instanceof PlayerSubject) {
-            return checkLoreName((PlayerSubject) occurrence.getTool(),
-                    parsedLorename);
-        } else if (occurrence.getTool() instanceof ProjectileAgent) {
-            ProjectileAgent pa = (ProjectileAgent) occurrence.getTool();
-            if (pa.getShooter() instanceof PlayerSubject) {
-                return checkLoreName((PlayerSubject) pa.getShooter(),
-                        parsedLorename);
+        String parsedLorename = MessageAction.parseVariables(loreName, drop, occurrence, -1);
+        Log.logInfo("Starting lorename check (" + parsedLorename + ")", Verbosity.HIGHEST);
+        if (occurrence.getTool() instanceof PlayerSubject ps) {
+            return checkLoreName(ps, parsedLorename);
+        } else if (occurrence.getTool() instanceof ProjectileAgent pa) {
+            if (pa.getShooter() instanceof PlayerSubject ps) {
+                return checkLoreName(ps, parsedLorename);
             }
         }
         return false;
@@ -45,21 +40,13 @@ public class LoreNameCheck extends Condition {
 
     private boolean checkLoreName(PlayerSubject player, String parsedLorename) {
         ItemStack item = player.getTool().getActualTool();
-        if (item == null)
-            return false; // not sure when item would be null but it can be
+        if (item == null) return false; // not sure when item would be null but it can be
 
         Log.logInfo("tool name = " + item.getType().name(), Verbosity.HIGHEST);
         if (item.hasItemMeta()) {
             String displayName = item.getItemMeta().getDisplayName();
-            if (displayName != null) {
-                Log.logInfo("Checking for lorename condition... '"
-                        + displayName + "' == '" + parsedLorename + "'",
-                        Verbosity.HIGHEST);
-                if (displayName.equalsIgnoreCase(parsedLorename))
-                    return true;
-            } else {
-                Log.logInfo("Displayname is null.", Verbosity.HIGHEST);
-            }
+            Log.logInfo("Checking for lorename condition... '" + displayName + "' == '" + parsedLorename + "'", Verbosity.HIGHEST);
+            return displayName.equalsIgnoreCase(parsedLorename);
         }
         return false;
     }
@@ -69,11 +56,10 @@ public class LoreNameCheck extends Condition {
         String loreName = node.getString("lorename");
         if (loreName == null) {
             loreName = node.getString("displayname");
-            if (loreName == null)
-                return null;
+            if (loreName == null) return null;
         }
 
-        List<Condition> conditionList = new ArrayList<Condition>();
+        List<Condition> conditionList = new ArrayList<>();
         conditionList.add(new LoreNameCheck(loreName));
         return conditionList;
     }

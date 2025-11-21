@@ -39,60 +39,51 @@ public class ContentsDrop extends DropType {
     @Override
     protected DropResult performDrop(Target source, Location where, DropFlags flags) {
         DropResult dropResult = DropResult.fromOverride(this.overrideDefault);
-
         // First locate the object; it's a block, storage minecart, or player
-        if (source instanceof BlockTarget) {
-            Block block = ((BlockTarget) source).getBlock();
+        if (source instanceof BlockTarget blockTarget) {
+            Block block = blockTarget.getBlock();
             BlockState state = block.getState();
-            if (state instanceof InventoryHolder) {
-                Inventory container = ((InventoryHolder) state).getInventory();
-                // If it's a furnace which is smelting, remove one of what's
-                // being smelted.
-                // TODO: A way to give the user a choice whether this happens
-                // (Zar: I don't think this option is needed, default action of
-                // removing what's being smelted is probably expected)
-                if (state instanceof Furnace) {
-                    Furnace oven = (Furnace) state;
+            if (state instanceof InventoryHolder inventoryHolder) {
+                Inventory container = inventoryHolder.getInventory();
+                if (state instanceof Furnace oven) {
                     ItemStack cooking = container.getItem(0); // first item is the item being smelted
-                    if (oven.getCookTime() > 0)
-                        cooking.setAmount(cooking.getAmount() - 1);
-                    if (cooking != null && cooking.getAmount() <= 0)
-                        container.setItem(0, null);
+                    if (oven.getCookTime() > 0) cooking.setAmount(cooking.getAmount() - 1);
+                    if (cooking != null && cooking.getAmount() <= 0) container.setItem(0, null);
+                } else if (state instanceof Jukebox jukebox) { // Drop the currently playing record
+                    Material mat = jukebox.getPlaying();
+                    dropResult.addWithoutOverride(drop(where, new ItemStack(mat, 1), flags));
                 }
                 dropResult.addWithoutOverride(drop(where, container, flags));
-            } else if (state instanceof Jukebox) { // Drop the currently playing record
-                Material mat = ((Jukebox) state).getPlaying();
-                if (mat != null)
-                    dropResult.addWithoutOverride(drop(where, new ItemStack(mat, 1), flags));
             } else if (state instanceof CreatureSpawner) // Drop the creature in the spawner
                 dropResult.addWithoutOverride(drop(where, flags.recipient, ((CreatureSpawner) state).getSpawnedType(), CreatureData.parse(((CreatureSpawner) state).getSpawnedType(), 0)));
         } else { // It's not a container block, so it must be an entity
-            if (source instanceof PlayerSubject)
-                dropResult.addWithoutOverride(drop(where, ((PlayerSubject) source).getPlayer().getInventory(), flags));
-            else if (source instanceof VehicleTarget) {
-                Entity vehicle = ((VehicleTarget) source).getVehicle();
-                if (vehicle instanceof StorageMinecart)
-                    dropResult.addWithoutOverride(drop(where, ((StorageMinecart) vehicle).getInventory(), flags));
+            if (source instanceof PlayerSubject playerSubject)
+                dropResult.addWithoutOverride(drop(where, playerSubject.getPlayer().getInventory(), flags));
+            else if (source instanceof VehicleTarget vehicleTarget) {
+                Entity vehicle = vehicleTarget.getVehicle();
+                if (vehicle instanceof StorageMinecart storageMinecart)
+                    dropResult.addWithoutOverride(drop(where, storageMinecart.getInventory(), flags));
             } else if (source instanceof CreatureSubject) {
                 // Endermen!
                 Entity creature = ((CreatureSubject) source).getAgent();
                 if (creature instanceof Enderman) {
                     ItemStack stack = ((Enderman) creature).getCarriedMaterial().toItemStack(1);
                     dropResult.addWithoutOverride(drop(where, stack, flags));
-                } else if (creature instanceof LivingEntity) {
-                    ItemStack stack = ((LivingEntity) creature).getEquipment().getItemInMainHand();
-                    ItemStack stackOffHand = ((LivingEntity) creature).getEquipment().getItemInOffHand();
-                    EntityEquipment mobEquipment = ((LivingEntity) creature).getEquipment();
+                } else if (creature instanceof LivingEntity livingEntity) {
+                    ItemStack stack = livingEntity.getEquipment().getItemInMainHand();
+                    ItemStack stackOffHand = livingEntity.getEquipment().getItemInOffHand();
+                    dropResult.addWithoutOverride(drop(where, stack, flags));
+                    dropResult.addWithoutOverride(drop(where, stackOffHand, flags));
+
+                    EntityEquipment mobEquipment = livingEntity.getEquipment();
                     ItemStack helmet = mobEquipment.getHelmet();
                     ItemStack chest = mobEquipment.getChestplate();
                     ItemStack legging = mobEquipment.getLeggings();
                     ItemStack boot = mobEquipment.getBoots();
-                    dropResult.addWithoutOverride(drop(where, stack, flags));
-                    dropResult.addWithoutOverride(drop(where, stackOffHand, flags));
-                    dropResult.addWithoutOverride(drop(where, helmet, flags));
-                    dropResult.addWithoutOverride(drop(where, chest, flags));
-                    dropResult.addWithoutOverride(drop(where, legging, flags));
-                    dropResult.addWithoutOverride(drop(where, boot, flags));
+                    if(helmet != null) dropResult.addWithoutOverride(drop(where, helmet, flags));
+                    if(chest != null) dropResult.addWithoutOverride(drop(where, chest, flags));
+                    if(legging != null) dropResult.addWithoutOverride(drop(where, legging, flags));
+                    if(boot != null) dropResult.addWithoutOverride(drop(where, boot, flags));
                 }
             }
         }
@@ -103,8 +94,7 @@ public class ContentsDrop extends DropType {
     private static DropResult drop(Location where, Inventory container, DropFlags flags) {
         DropResult dropResult = new DropResult();
         for (ItemStack item : container.getContents()) {
-            if (item == null)
-                continue;
+            if (item == null) continue;
             dropResult.add(drop(where, item, flags));
         }
         return dropResult;

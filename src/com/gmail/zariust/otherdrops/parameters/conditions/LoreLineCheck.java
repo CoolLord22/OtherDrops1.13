@@ -24,16 +24,14 @@ public class LoreLineCheck extends Condition {
 
     @Override
     public boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
-        if (loreLine == null)
-            return true;
+        if (loreLine == null) return true;
         String parsedLoreline = MessageAction.parseVariables(loreLine, drop, occurrence, -1);
         Log.logInfo("Starting loreline check (" + parsedLoreline + ")", Verbosity.HIGHEST);
-        if (occurrence.getTool() instanceof PlayerSubject) {
-            return checkLoreLines((PlayerSubject) occurrence.getTool(), parsedLoreline);
-        } else if (occurrence.getTool() instanceof ProjectileAgent) {
-            ProjectileAgent pa = (ProjectileAgent) occurrence.getTool();
-            if (pa.getShooter() instanceof PlayerSubject) {
-                return checkLoreLines((PlayerSubject) pa.getShooter(), parsedLoreline);
+        if (occurrence.getTool() instanceof PlayerSubject ps) {
+            return checkLoreLines(ps, parsedLoreline);
+        } else if (occurrence.getTool() instanceof ProjectileAgent pa) {
+            if (pa.getShooter() instanceof PlayerSubject ps) {
+                return checkLoreLines(ps, parsedLoreline);
             }
         }
         return false;
@@ -41,16 +39,14 @@ public class LoreLineCheck extends Condition {
 
     private boolean checkLoreLines(PlayerSubject player, String parsedLoreline) {
         ItemStack item = player.getTool().getActualTool();
-        if (item == null)
-            return false; // not sure when item would be null but it can be
+        if (item == null) return false; // not sure when item would be null but it can be
 
         Log.logInfo("Tool material = " + item.getType().name(), Verbosity.HIGHEST);
         if (item.hasItemMeta() && item.getItemMeta().hasLore()) {
             List<String> lore = ODVariables.preParse(item.getItemMeta().getLore());
-            for(String loreLine : lore) {
+            for (String loreLine : lore) {
                 Log.logInfo("Checking for loreline condition... '" + lore + "' == '" + parsedLoreline + "'", Verbosity.HIGHEST);
-                if(loreLine.equals(parsedLoreline))
-                    return true;
+                if (loreLine.equals(parsedLoreline)) return true;
             }
             Log.logInfo("Tool has no matching lore.", Verbosity.HIGHEST);
         }
@@ -61,9 +57,8 @@ public class LoreLineCheck extends Condition {
     @Override
     public List<Condition> parse(ConfigurationNode node) {
         String loreName = node.getString("loreline");
-        if(loreName == null)
-            return null;
-        List<Condition> conditionList = new ArrayList<Condition>();
+        if (loreName == null) return null;
+        List<Condition> conditionList = new ArrayList<>();
         conditionList.add(new LoreLineCheck(loreName));
         return conditionList;
     }

@@ -31,7 +31,7 @@ public interface Target extends Subject {
      * 
      * @return True or false.
      */
-    abstract boolean overrideOn100Percent();
+    boolean overrideOn100Percent();
 
     /**
      * A list of targets that this target can match; if it's not a wildcard, it

@@ -35,12 +35,10 @@ public class StormEvent extends SpecialResult {
     @Override
     public void executeAt(OccurredEvent event) {
         World world = event.getWorld();
-        if (duration == 0)
-            world.setStorm(false);
+        if (duration == 0) world.setStorm(false);
         else {
             world.setStorm(true);
-            if (duration > 0)
-                world.setWeatherDuration(duration);
+            if (duration > 0) world.setWeatherDuration(duration);
         }
     }
 
@@ -53,12 +51,11 @@ public class StormEvent extends SpecialResult {
             } else if (time.equalsIgnoreCase("OFF")) {
                 duration = 0;
                 used(time);
-            } else
-                try {
-                    duration = Integer.parseInt(time);
-                    used(time);
-                } catch (NumberFormatException e) {
-                }
+            } else try {
+                duration = Integer.parseInt(time);
+                used(time);
+            } catch (NumberFormatException ignored) {
+            }
         }
     }
 
@@ -71,8 +68,7 @@ public class StormEvent extends SpecialResult {
     @Override
     public boolean canRunFor(OccurredEvent drop) {
         Biome biome = drop.getBiome();
-        if (OtherDrops.NetherBiomes.contains(biome.name()))
-            return false;
+        if (OtherDrops.NetherBiomes.contains(biome.name())) return false;
         return true;
     }
 

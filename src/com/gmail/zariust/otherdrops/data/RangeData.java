@@ -30,7 +30,7 @@ import org.bukkit.material.MaterialData;
 
 public class RangeData implements Data {
     private IntRange range;
-    private Integer  val;
+    private Integer val;
 
     public RangeData(int lo, int hi) {
         this(new IntRange(lo, hi));
@@ -46,8 +46,7 @@ public class RangeData implements Data {
     }
 
     private void denullifyVal() {
-        if (val == null)
-            val = range.getRandomIn(OtherDrops.rng);
+        if (val == null) val = range.getRandomIn(OtherDrops.rng);
     }
 
     @Override
@@ -57,10 +56,8 @@ public class RangeData implements Data {
 
     @Override
     public boolean matches(Data d) {
-        // TODO: Allow range to match other sorts of data?
-        // I don't think other sorts really work though.
-        if (!(d instanceof RangeableData))
-            return false;
+        // TODO: Allow range to match other sorts of data? I don't think other sorts really work though.
+        if (!(d instanceof RangeableData)) return false;
         return range.contains(d.getData());
     }
 
@@ -69,38 +66,33 @@ public class RangeData implements Data {
         return "RANGE-" + range.toString();
     }
 
-	@Override
+    @Override
     public void setOn(BlockState state) {
         denullifyVal();
         state.setData(new MaterialData(state.getType(), val.byteValue()));
     }
 
-	@Override
+    @Override
     public void setOn(Entity mob, Player witness) {
         denullifyVal();
         switch (mob.getType()) {
-        case SHEEP:
-            if (val >= 32)
-                ((Sheep) mob).setSheared(true);
-            val -= 32;
-            if (val > 0)
-                ((Sheep) mob).setColor(DyeColor.getByDyeData((byte) (val - 1)));
-            break;
-        case SLIME:
-            if (val > 0)
-                ((Slime) mob).setSize(val);
-            break;
-        case ZOMBIFIED_PIGLIN:
-            if (val > 0)
-                ((PigZombie) mob).setAnger(val);
-            break;
-        default:
+            case SHEEP:
+                if (val >= 32) ((Sheep) mob).setSheared(true);
+                val -= 32;
+                if (val > 0) ((Sheep) mob).setColor(DyeColor.getByDyeData((byte) (val - 1)));
+                break;
+            case SLIME:
+                if (val > 0) ((Slime) mob).setSize(val);
+                break;
+            case ZOMBIFIED_PIGLIN:
+                if (val > 0) ((PigZombie) mob).setAnger(val);
+                break;
+            default:
         }
     }
 
     public static RangeData parse(String state) {
-        if (state == null || state.isEmpty())
-            return null;
+        if (state == null || state.isEmpty()) return null;
         state = state.toUpperCase().replace("RANGE-", "");
         return new RangeData(IntRange.parse(state));
     }

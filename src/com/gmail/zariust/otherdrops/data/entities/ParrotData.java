@@ -10,7 +10,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 public class ParrotData extends CreatureData {
-    Parrot.Variant variant = null; // null = wildcard
+    final Parrot.Variant variant; // null = wildcard
 
     public ParrotData(Parrot.Variant variant) {
         this.variant = variant;
@@ -18,29 +18,20 @@ public class ParrotData extends CreatureData {
 
     @Override
     public void setOn(Entity entity, Player owner) {
-        if (entity instanceof Parrot) {
-            Parrot parrot = (Parrot) entity;
-            if (variant != null)
-                parrot.setVariant(variant);
+        if (entity instanceof Parrot parrot) {
+            if (variant != null) parrot.setVariant(variant);
         }
     }
 
     @Override
     public boolean matches(Data d) {
-        if (!(d instanceof ParrotData))
-            return false;
-        ParrotData vd = (ParrotData) d;
-
-        if (this.variant != null)
-            if (this.variant != vd.variant)
-                return false;
-
+        if (!(d instanceof ParrotData vd)) return false;
+        if (this.variant != null) if (this.variant != vd.variant) return false;
         return true;
     }
 
     public static CreatureData parseFromEntity(Entity entity) {
-        if (entity instanceof Parrot) {
-            Parrot parrot = (Parrot) entity;
+        if (entity instanceof Parrot parrot) {
             return new ParrotData(parrot.getVariant());
         } else {
             Log.logInfo("ParrotData: error, parseFromEntity given different creature - this shouldn't happen.");
@@ -58,11 +49,9 @@ public class ParrotData extends CreatureData {
             for (String sub : split) {
                 sub = sub.toLowerCase().replaceAll("[\\s-_]", "");
                 for (Parrot.Variant type : Parrot.Variant.values()) {
-                    if (sub.equals(type.name().toLowerCase().replaceAll("[\\s-_]", "")))
-                        thisType = type;
+                    if (sub.equals(type.name().toLowerCase().replaceAll("[\\s-_]", ""))) thisType = type;
                 }
-                if (thisType == null)
-                    Log.logInfo("ParrotData: type not found (" + sub + ")");
+                if (thisType == null) Log.logInfo("ParrotData: type not found (" + sub + ")");
             }
         }
 
@@ -72,15 +61,13 @@ public class ParrotData extends CreatureData {
     @Override
     public String toString() {
         String val = "";
-        if (variant != null)
-            val += variant.toString();
+        if (variant != null) val += variant.toString();
         return val;
     }
 
     @Override
     public String get(Enum<?> creature) {
-        if (creature instanceof EntityType)
-            return this.toString();
+        if (creature instanceof EntityType) return this.toString();
         return "";
     }
 }

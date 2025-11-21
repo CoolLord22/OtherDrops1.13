@@ -16,15 +16,6 @@
 
 package com.gmail.zariust.otherdrops.drop;
 
-import static java.lang.Math.min;
-import static java.lang.Math.pow;
-import static java.lang.Math.round;
-
-import java.util.Random;
-
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
@@ -32,6 +23,12 @@ import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+
+import java.util.Random;
+
+import static java.lang.Math.*;
 
 public class MoneyDrop extends DropType {
     public enum MoneyDropType {
@@ -39,9 +36,8 @@ public class MoneyDrop extends DropType {
 
         public static MoneyDropType fromString(String other) {
             try {
-                MoneyDropType type = MoneyDropType.valueOf(other.toUpperCase());
-                return type;
-            } catch (Exception e) {
+                return MoneyDropType.valueOf(other.toUpperCase());
+            } catch (Exception ignored) {
             }
 
             return null;
@@ -50,10 +46,9 @@ public class MoneyDrop extends DropType {
 
     /**
      * Amount (range) of money this individual drop contains
-     * 
      */
-    protected DoubleRange   loot;
-    protected MoneyDropType type;
+    protected final DoubleRange loot;
+    protected final MoneyDropType type;
 
     public MoneyDrop(DoubleRange amount, double chance, MoneyDropType type) { // Rome
         super(DropCategory.MONEY, chance);
@@ -82,9 +77,8 @@ public class MoneyDrop extends DropType {
     /**
      * Round the money to the nearest x decimal places as specified in the
      * global config
-     * 
-     * @param val
-     *            - value to round off
+     *
+     * @param val - value to round off
      * @return Value rounded off as per global config "money_precision" setting
      */
     private double roundOffMoney(double val) {
@@ -96,69 +90,41 @@ public class MoneyDrop extends DropType {
     }
 
     @Override
-    protected DropResult performDrop(Target source, Location where,
-            DropFlags flags) {
+    protected DropResult performDrop(Target source, Location where, DropFlags flags) {
         DropResult dropResult = DropResult.fromOverride(this.overrideDefault);
 
         Player victim = null;
         double amount = total;
 
-        if (source instanceof PlayerSubject)
-            victim = ((PlayerSubject) source).getPlayer();
+        if (source instanceof PlayerSubject playerSubject) victim = playerSubject.getPlayer();
         if (victim != null) {
             if (type.equals(MoneyDropType.STEAL)) {
-                Log.logInfo(
-                        "(vault)Stealing money ("
-                                + amount
-                                + ") from "
-                                + victim.getName()
-                                + ", giving to "
-                                + (flags.recipient == null ? "no-one"
-                                        : flags.recipient.getName()) + ".",
-                        Verbosity.HIGHEST);
-                double balance = Dependencies.getVaultEcon().getBalance(
-                        victim.getName());
-                if (balance <= 0)
-                    return dropResult;
+                Log.logInfo("(vault)Stealing money (" + amount + ") from " + victim.getName() + ", giving to " + (flags.recipient == null ? "no-one" : flags.recipient.getName()) + ".", Verbosity.HIGHEST);
+                double balance = Dependencies.getVaultEcon().getBalance(victim);
+                if (balance <= 0) return dropResult;
                 amount = min(balance, amount);
-                Dependencies.getVaultEcon().withdrawPlayer(victim.getName(),
-                        amount);
+                Dependencies.getVaultEcon().withdrawPlayer(victim, amount);
             }
         } else {
-            Log.logInfo(
-                    "Processing money@"
-                            + type.toString()
-                            + "/"
-                            + amount
-                            + " to "
-                            + (flags.recipient == null ? "no-one"
-                                    : flags.recipient.getName()) + "",
-                    Verbosity.HIGHEST);
+            Log.logInfo("Processing money@" + type.toString() + "/" + amount + " to " + (flags.recipient == null ? "no-one" : flags.recipient.getName()), Verbosity.HIGHEST);
         }
         if (!canDrop(flags)) {
             return dropResult;
         }
 
         String amountString = String.valueOf(amount);
-        if (type.equals(MoneyDropType.PENALTY)
-                || type.equals(MoneyDropType.PERCENTPENALTY)) {
+        if (type.equals(MoneyDropType.PENALTY) || type.equals(MoneyDropType.PERCENTPENALTY)) {
             double withdraw = amount;
-            double balance = Dependencies.getVaultEcon().getBalance(
-                    flags.recipient.getName());
+            double balance = Dependencies.getVaultEcon().getBalance(flags.recipient);
             if (type.equals(MoneyDropType.PERCENTPENALTY)) {
                 withdraw = balance * amount / 100;
-                amountString = amountString + "% (" + roundOffMoney(withdraw)
-                        + ")";
+                amountString = amountString + "% (" + roundOffMoney(withdraw) + ")";
             }
 
-            double newBalance = Dependencies.getVaultEcon().withdrawPlayer(
-                    flags.recipient.getName(), withdraw).balance;
+            double newBalance = Dependencies.getVaultEcon().withdrawPlayer(flags.recipient, withdraw).balance;
 
             if (OtherDropsConfig.getVerbosity().exceeds(Verbosity.HIGHEST)) {
-                Log.logInfoNoVerbosity("(vault)Reducing attacker ("
-                        + flags.recipient.getName() + ") funds by "
-                        + amountString + ": " + roundOffMoney(balance) + "->"
-                        + roundOffMoney(newBalance));
+                Log.logInfoNoVerbosity("(vault)Reducing attacker (" + flags.recipient.getName() + ") funds by " + amountString + ": " + roundOffMoney(balance) + "->" + roundOffMoney(newBalance));
             }
 
             dropResult.setQuantity(1);
@@ -170,22 +136,16 @@ public class MoneyDrop extends DropType {
         return dropResult;
     }
 
-    protected void dropMoney(Target source, Location where, DropFlags flags,
-            double amount) {
+    protected void dropMoney(Target source, Location where, DropFlags flags, double amount) {
         if (Dependencies.hasVaultEcon()) {
-            Dependencies.getVaultEcon().depositPlayer(
-                    flags.recipient.getName(), amount); // TODO: is this right?
-                                                        // Or check for accounts
-                                                        // still?
+            Dependencies.getVaultEcon().depositPlayer(flags.recipient, amount); // TODO: is this right? Or check for accounts still?
             Log.logInfo("Funds deposited via VAULT.", Verbosity.HIGHEST);
         }
     }
 
     private boolean canDrop(DropFlags flags) {
         if (flags.recipient == null) {
-            Log.logInfo(
-                    "MoneyDrop - recipient is null, cannot give money to recipient.",
-                    Verbosity.HIGH);
+            Log.logInfo("MoneyDrop - recipient is null, cannot give money to recipient.", Verbosity.HIGH);
             return false;
         }
         if (!Dependencies.hasVaultEcon()) {
@@ -195,33 +155,22 @@ public class MoneyDrop extends DropType {
         return true;
     }
 
-    public static DropType parse(String drop, String data, DoubleRange amount,
-            double chance) {
-        String[] split = null;
+    public static DropType parse(String drop, String data, DoubleRange amount, double chance) {
+        String[] split;
         if (drop.matches("\\w+:.*")) {
             split = drop.toUpperCase().split(":", 2);
-        } else
-            split = drop.toUpperCase().split("@", 2);
+        } else split = drop.toUpperCase().split("@", 2);
 
         boolean real = split[0].matches("MONEY[ _-]DROP");
-        if (!real && !split[0].equals("MONEY"))
-            return null; // Invalid type of money
-        if (split.length > 1)
-            data = split[1];
+        if (!real && !split[0].equals("MONEY")) return null; // Invalid type of money
+        if (split.length > 1) data = split[1];
         MoneyDropType type = MoneyDropType.fromString(data);
-        if (type == null)
-            type = MoneyDropType.NORMAL;
+        if (type == null) type = MoneyDropType.NORMAL;
 
-        if (!type.equals(MoneyDropType.STEAL) && !data.isEmpty()
-                && !data.equals("0"))
+        if (!type.equals(MoneyDropType.STEAL) && !data.isEmpty() && !data.equals("0"))
             Log.logWarning("Invalid data for " + split[0] + ": " + data);
         if (real) {
-            return new RealMoneyDrop(amount.toIntRange(), chance, type); // TODO:
-                                                                         // should
-                                                                         // reduce
-                                                                         // apply
-                                                                         // to
-                                                                         // moneydrop?
+            return new RealMoneyDrop(amount.toIntRange(), chance, type); // TODO: should reduce apply to moneydrop?
         } else {
             if (Dependencies.hasVaultEcon()) {
                 return new MoneyDrop(amount, chance, type);

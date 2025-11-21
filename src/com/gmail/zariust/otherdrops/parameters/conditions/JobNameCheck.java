@@ -33,32 +33,28 @@ public class JobNameCheck extends Condition {
 
     @Override
     public boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
-        if(Dependencies.hasJobs()) {
+        if (Dependencies.hasJobs()) {
             if (occurrence.getEvent() instanceof JobsLevelUpEvent || occurrence.getEvent() instanceof JobsExpGainEvent) {
-                if(!(occurrence.getTarget() instanceof PlayerSubject p)) {
+                if (!(occurrence.getTarget() instanceof PlayerSubject p)) {
                     Log.logInfo("No player target found for jobs event.", Verbosity.HIGHEST);
                     return true;
                 }
-                if(jobNamesStored.containsKey(occurrence.getJobName())) {
+                if (jobNamesStored.containsKey(occurrence.getJobName())) {
                     Job job = Jobs.getJob(occurrence.getJobName());
                     return checkJob(jobNamesStored.get(occurrence.getJobName()), p.getPlayer(), job);
                 }
                 return false; // assume false if not specified?
             } else {
                 Player target = null;
-                if(occurrence.getAttacker() instanceof Player)
-                    target = (Player) occurrence.getAttacker();
-                else if(occurrence.getVictim() instanceof Player)
-                    target = (Player) occurrence.getVictim();
+                if (occurrence.getAttacker() instanceof Player) target = (Player) occurrence.getAttacker();
+                else if (occurrence.getVictim() instanceof Player) target = (Player) occurrence.getVictim();
 
-                if(target != null) {
+                if (target != null) {
                     Log.logInfo("JobNameCheck - Starting job checks for " + target.getName(), Verbosity.HIGHEST);
-                    for(Map.Entry<String, Boolean> entry : jobNamesStored.entrySet()) {
-                        if(entry.getKey() == null)
-                            continue;
+                    for (Map.Entry<String, Boolean> entry : jobNamesStored.entrySet()) {
+                        if (entry.getKey() == null) continue;
                         Job job = Jobs.getJob(entry.getKey());
-                        if(!checkJob(entry.getValue(), target, job))
-                            return false;
+                        if (!checkJob(entry.getValue(), target, job)) return false;
                     }
                 }
             }
@@ -67,8 +63,8 @@ public class JobNameCheck extends Condition {
     }
 
     private boolean checkJob(boolean requirement, Player target, Job jobToCheck) {
-        if(requirement) { // Player has to be in the job
-            if(!Jobs.getPlayerManager().getJobsPlayer(target).isInJob(jobToCheck)) {
+        if (requirement) { // Player has to be in the job
+            if (!Jobs.getPlayerManager().getJobsPlayer(target).isInJob(jobToCheck)) {
                 Log.logInfo("JobNameCheck - Player was not found in target job: " + jobToCheck.getName(), Verbosity.HIGHEST);
                 return false;
             }
@@ -76,7 +72,7 @@ public class JobNameCheck extends Condition {
             Log.logInfo("JobNameCheck - Checking player job level: " + jobProgress.getLevel() + " vs requirement: " + jobLevelsStored.get(jobToCheck.getName()) + " for " + jobToCheck.getName(), Verbosity.HIGHEST);
             return jobLevelsStored.get(jobToCheck.getName()).matches(jobProgress.getLevel());
         } else { // Player should not be in job
-            if(Jobs.getPlayerManager().getJobsPlayer(target).isInJob(jobToCheck)) {
+            if (Jobs.getPlayerManager().getJobsPlayer(target).isInJob(jobToCheck)) {
                 JobProgression jobProgress = Jobs.getPlayerManager().getJobsPlayer(target).getJobProgression(jobToCheck);
                 Log.logInfo("JobNameCheck - Player was found in target job: " + jobToCheck.getName() + " checking level exception: " + jobProgress.getLevel() + " vs requirement: " + jobLevelsStored.get(jobToCheck.getName()), Verbosity.HIGHEST);
                 return !jobLevelsStored.get(jobToCheck.getName()).matches(jobProgress.getLevel());
@@ -89,8 +85,7 @@ public class JobNameCheck extends Condition {
     public List<Condition> parse(ConfigurationNode node) {
         List<String> jobs = OtherDropsConfig.getMaybeList(node, "jobs");
 
-        if(jobs.isEmpty())
-            return null;
+        if (jobs.isEmpty()) return null;
 
         HashMap<String, Boolean> names = new HashMap<>();
         HashMap<String, Comparative> levels = new HashMap<>();
@@ -102,11 +97,9 @@ public class JobNameCheck extends Condition {
             Comparative level = null;
             String[] split = name.split("@");
 
-            if(split.length > 1)
-                level = Comparative.parse(split[1]);
+            if (split.length > 1) level = Comparative.parse(split[1]);
 
-            if(level == null)
-                level = Comparative.parse(">0");
+            if (level == null) level = Comparative.parse(">0");
 
             String tempJob = split[0];
             if (split[0].startsWith("-")) {
@@ -115,12 +108,11 @@ public class JobNameCheck extends Condition {
             }
 
             String finalJobName = null;
-            for(Job job : Jobs.getJobs()) {
-                if(job.getName().equalsIgnoreCase(tempJob))
-                    finalJobName = job.getName();
+            for (Job job : Jobs.getJobs()) {
+                if (job.getName().equalsIgnoreCase(tempJob)) finalJobName = job.getName();
             }
 
-            if(finalJobName != null) {
+            if (finalJobName != null) {
                 names.put(finalJobName, flag);
                 levels.put(finalJobName, level);
             } else {

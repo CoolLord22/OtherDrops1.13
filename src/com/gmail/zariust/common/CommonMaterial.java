@@ -26,8 +26,9 @@ import java.util.Map;
 public final class CommonMaterial {
     // Aliases definitions
     private static final Map<String, String> ALIASES;
+
     static {
-        Map<String, String> aMap = new HashMap<String, String>();
+        Map<String, String> aMap = new HashMap<>();
         aMap.put("THIN_GLASS", "GLASS_PANE");
         aMap.put("WOOD_SPADE", "WOODEN_SHOVEL");
         aMap.put("WOOD_AXE", "WOODEN_AXE");
@@ -152,7 +153,7 @@ public final class CommonMaterial {
         aMap.put("brewing_stand_block", "brewing_stand");
 
         aMap.put("bucket of milk", "milk_bucket");
-        
+
         aMap.put("fireball", "fire_charge");
 
         // Records
@@ -197,18 +198,15 @@ public final class CommonMaterial {
         ALIASES = Collections.unmodifiableMap(aMap);
     }
 
-	public static Material matchMaterial(String mat) {
-        // Aliases defined here override those in Material; the only example
-        // here is WOODEN_DOOR
-        // You can remove it if you prefer not to break the occasional config
-        // file.
-        // (I doubt many people assign drops to wooden doors, though, and
-        // including the BLOCK makes it less confusing.)
+    public static Material matchMaterial(String mat) {
+        // Aliases defined here override those in Material; the only example here is WOODEN_DOOR
+        // You can remove it if you prefer not to break the occasional config file.
+        // (I doubt many people assign drops to wooden doors, though, and including the BLOCK makes it less confusing.)
 
         // remove any trailing data (eg. from tool [item]/[quantity])
         String[] split = mat.split("/");
         mat = split[0];
-        
+
         if (mat.matches("[0-9]+")) {
             Log.logWarning("Error while parsing: " + mat + ". Support for numerical IDs has been dropped!");
         }
@@ -222,8 +220,7 @@ public final class CommonMaterial {
 
         Material matchedMat = null;
         for (Material loopMat : Material.values()) {
-            if (mat.equalsIgnoreCase(loopMat.name().toLowerCase().replaceAll("[\\s-_]", "")))
-                matchedMat = loopMat;
+            if (mat.equalsIgnoreCase(loopMat.name().toLowerCase().replaceAll("[\\s-_]", ""))) matchedMat = loopMat;
         }
 
         if (matchedMat == null) {
@@ -237,31 +234,25 @@ public final class CommonMaterial {
         return matchedMat;
     }
 
-    public static Integer parseBlockOrItemData(Material mat, String state)
-            throws IllegalArgumentException {
-    	
+    public static Integer parseBlockOrItemData(Material mat, String state) throws IllegalArgumentException {
         Log.logInfo("Checking block data for " + mat.toString() + "@" + state, Verbosity.HIGH);
-        
         state = state.toUpperCase();
-        if (state.equalsIgnoreCase("this"))
-            return -1;
+        if (state.equalsIgnoreCase("this")) return -1;
         return null;
     }
 
     public static String getBlockOrItemData(Material mat, int data) {
         try {
-            if (data > 0)
-                return Integer.toString(data);
+            if (data > 0) return Integer.toString(data);
             return "";
         } catch (NullPointerException ex) {
-            Log.logWarning(
-                    "CommonMaterial.getBlockOrItemData() failed. Material: " + mat.toString() + ", Data: " + data, Verbosity.NORMAL);
+            Log.logWarning("CommonMaterial.getBlockOrItemData() failed. Material: " + mat.toString() + ", Data: " + data, Verbosity.NORMAL);
             return "";
         }
     }
 
     public static String substituteAlias(String drop) {
-        Map<String, String> a2Map = new HashMap<String, String>();
+        Map<String, String> a2Map = new HashMap<>();
 
         // note: aliases (on left) need to be uppercase with no spaces, dashes or underscores
         a2Map.put("ANYSHOVEL", "ANY_SPADE");
@@ -274,10 +265,10 @@ public final class CommonMaterial {
                 String[] nameSplit2 = tmpDrop.split("!", 2);
                 tmpDrop = nameSplit2[0];
                 tmpDrop = tmpDrop.toUpperCase().replaceAll("[ _-]", "").replaceAll("(?i)" + alias, a2Map.get(alias));
-                if (nameSplit.length > 1) tmpDrop += "~"+nameSplit[1];
-                if (nameSplit2.length > 1) tmpDrop += "!"+nameSplit2[1];
+                if (nameSplit.length > 1) tmpDrop += "~" + nameSplit[1];
+                if (nameSplit2.length > 1) tmpDrop += "!" + nameSplit2[1];
                 return tmpDrop; // we only want to replace the first found result,
-                             // so return
+                // so return
             }
         }
 
@@ -285,9 +276,6 @@ public final class CommonMaterial {
     }
 
     public static boolean fuzzyMatchString(String one, String two) {
-
-        if (one.toLowerCase().replaceAll("[\\s-_]", "").equals(two.toLowerCase().replaceAll("[\\s-_]", "")))
-            return true;
-        return false;
+        return one.toLowerCase().replaceAll("[\\s-_]", "").equals(two.toLowerCase().replaceAll("[\\s-_]", ""));
     }
 }

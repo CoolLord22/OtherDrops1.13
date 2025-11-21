@@ -32,20 +32,16 @@ public class OdRedstoneListener implements Listener {
         Log.dMsg("Block Type: " + poweredBlockDataValue + ":" + poweredBlockMetaValue + " (current=" + event.getNewCurrent() + ")");
 
         if (OtherDropsConfig.dropForRedstoneTrigger) {
-            if ((event.getOldCurrent() - event.getNewCurrent()) > 0) { // POWER
-                                                                       // decreasing
+            if ((event.getOldCurrent() - event.getNewCurrent()) > 0) { // POWER decreasing
                 OccurredEvent drop = new OccurredEvent(event, poweredBlock);
                 parent.sectionManager.performDrop(drop);
             } else { // POWER increasing
-                OccurredEvent drop = new OccurredEvent(event, poweredBlock,
-                        "UP");
+                OccurredEvent drop = new OccurredEvent(event, poweredBlock, "UP");
                 parent.sectionManager.performDrop(drop);
             }
-            // Nothing done if newcurrent == oldcurrent as this wouldn't trigger
-            // the event
+            // Nothing done if newcurrent == oldcurrent as this wouldn't trigger the event
 
-            if (OtherDropsConfig.globalRedstonewireTriggersSurrounding
-                    && poweredBlock.getType() == Material.REDSTONE_WIRE) {
+            if (OtherDropsConfig.globalRedstonewireTriggersSurrounding && poweredBlock.getType() == Material.REDSTONE_WIRE) {
                 callOdEvent(event, poweredBlock.getRelative(BlockFace.NORTH));
                 callOdEvent(event, poweredBlock.getRelative(BlockFace.EAST));
                 callOdEvent(event, poweredBlock.getRelative(BlockFace.WEST));
@@ -55,11 +51,9 @@ public class OdRedstoneListener implements Listener {
     }
 
     private void callOdEvent(BlockRedstoneEvent event, Block block) {
-        // avoid powerable blocks (otherwise we'd double up since they also get
-        // a redstonechange event) and AIR
+        // avoid powerable blocks (otherwise we'd double up since they also get a redstonechange event) and AIR
         if (!isRedStone(block.getType()) && block.getType() != Material.AIR) {
-            if ((event.getOldCurrent() - event.getNewCurrent()) > 0) { // POWER
-                                                                       // decreasing
+            if ((event.getOldCurrent() - event.getNewCurrent()) > 0) { // POWER decreasing
                 OccurredEvent drop = new OccurredEvent(event, block);
                 parent.sectionManager.performDrop(drop);
             } else { // POWER increasing
@@ -71,25 +65,7 @@ public class OdRedstoneListener implements Listener {
 
     }
 
-    /**
-     * Return if the type of material is "powerable". Bit of a hack but best we
-     * can do for now.
-     * 
-     * @param type
-     * @return
-     */
     private boolean isRedStone(Material type) {
-        if (type == Material.REDSTONE_WIRE 
-        		|| type == Material.STONE_BUTTON  || type == Material.ACACIA_BUTTON
-        		|| type == Material.BIRCH_BUTTON  || type == Material.DARK_OAK_BUTTON
-                || type == Material.JUNGLE_BUTTON || type == Material.OAK_BUTTON
-                || type == Material.SPRUCE_BUTTON || type == Material.POWERED_RAIL
-                || type == Material.LEVER 		  || type == Material.TRIPWIRE_HOOK
-                || type == Material.PISTON 		  || type == Material.PISTON_HEAD
-                || type == Material.MOVING_PISTON || type == Material.STICKY_PISTON
-                || type == Material.REDSTONE_TORCH|| type == Material.REDSTONE_WALL_TORCH) {
-            return true;
-        }
-        return false;
+        return type == Material.REDSTONE_WIRE || type == Material.STONE_BUTTON || type == Material.ACACIA_BUTTON || type == Material.BIRCH_BUTTON || type == Material.DARK_OAK_BUTTON || type == Material.JUNGLE_BUTTON || type == Material.OAK_BUTTON || type == Material.SPRUCE_BUTTON || type == Material.POWERED_RAIL || type == Material.LEVER || type == Material.TRIPWIRE_HOOK || type == Material.PISTON || type == Material.PISTON_HEAD || type == Material.MOVING_PISTON || type == Material.STICKY_PISTON || type == Material.REDSTONE_TORCH || type == Material.REDSTONE_WALL_TORCH;
     }
 }

@@ -20,13 +20,13 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.*;
 
 public class PotionAction extends Action {
-    // "potioneffect: "
-    // message.player, message.radius@<r>, message.world, message.server
+    // "potioneffect: " message.player, message.radius@<r>, message.world, message.server
     public enum PotionEffectActionType {
         ATTACKER, VICTIM, RADIUS, WORLD, SERVER, DROP
     }
 
-    static Map<String, PotionEffectActionType> matches = new HashMap<String, PotionEffectActionType>();
+    static final Map<String, PotionEffectActionType> matches = new HashMap<>();
+
     static {
         matches.put("potioneffect", PotionEffectActionType.ATTACKER);
         matches.put("potioneffect.attacker", PotionEffectActionType.ATTACKER);
@@ -52,98 +52,86 @@ public class PotionAction extends Action {
 
     }
 
-    protected PotionEffectActionType           potionEffectActionType;
-    protected double                           radius  = OtherDropsConfig.gActionRadius;
+    protected PotionEffectActionType potionEffectActionType;
+    protected final double radius = OtherDropsConfig.gActionRadius;
 
-    private Collection<PotionEffect>           effects = new ArrayList<PotionEffect>();
-    private boolean                            onlyRemove;
+    private Collection<PotionEffect> effects = new ArrayList<>();
+    private boolean onlyRemove;
 
     public PotionAction(Collection<PotionEffect> effectsList) {
         this.effects = effectsList;
     }
 
-    public PotionAction(Object object,
-            PotionEffectActionType potionEffectType2, boolean onlyRemove) {
+    public PotionAction(Object object, PotionEffectActionType potionEffectType2, boolean onlyRemove) {
         this.potionEffectActionType = potionEffectType2;
         this.onlyRemove = onlyRemove;
 
         if (object instanceof List) {
-            @SuppressWarnings("unchecked")
-            List<String> stringList = (List<String>) object;
+            @SuppressWarnings("unchecked") List<String> stringList = (List<String>) object;
             for (String effect : stringList) {
                 PotionEffect singleEffect = getEffect(effect);
-                if (singleEffect != null)
-                    effects.add(singleEffect);
+                if (singleEffect != null) effects.add(singleEffect);
             }
         } else if (object instanceof String) {
             PotionEffect singleEffect = getEffect((String) object);
-            if (singleEffect != null)
-                effects.add(singleEffect);
+            if (singleEffect != null) effects.add(singleEffect);
         }
     }
 
     @Override
     public boolean act(CustomDrop drop, OccurredEvent occurence) {
         switch (potionEffectActionType) {
-        case ATTACKER:
-            if (occurence.getPlayerAttacker() != null & this.effects != null)
-                applyEffect(occurence.getPlayerAttacker());
-            return false;
-        case VICTIM:
-            if (occurence.getPlayerVictim() != null & this.effects != null)
-                applyEffect(occurence.getPlayerVictim());
-            else if (occurence.getTarget() instanceof CreatureSubject) {
-                Entity ent = ((CreatureSubject) occurence.getTarget())
-                        .getEntity();
-                if (ent instanceof LivingEntity) {
-                    applyEffect(((LivingEntity) ent));
+            case ATTACKER:
+                if (occurence.getPlayerAttacker() != null & this.effects != null)
+                    applyEffect(occurence.getPlayerAttacker());
+                return false;
+            case VICTIM:
+                if (occurence.getPlayerVictim() != null & this.effects != null)
+                    applyEffect(occurence.getPlayerVictim());
+                else if (occurence.getTarget() instanceof CreatureSubject) {
+                    Entity ent = ((CreatureSubject) occurence.getTarget()).getEntity();
+                    if (ent instanceof LivingEntity) {
+                        applyEffect(((LivingEntity) ent));
+                    }
                 }
-            }
 
-            return false;
+                return false;
 
-        case RADIUS:
-            // occurence.getLocation().getRadiusPlayers()? - how do we get
-            // players around radius without an entity?
-            Location loc = occurence.getLocation();
-            for (Player player : loc.getWorld().getPlayers()) {
-                if (player.getLocation().getX() > (loc.getX() - radius)
-                        || player.getLocation().getX() < (loc.getX() + radius))
-                    if (player.getLocation().getY() > (loc.getY() - radius)
-                            || player.getLocation().getY() < (loc.getY() + radius))
-                        if (player.getLocation().getZ() > (loc.getZ() - radius)
-                                || player.getLocation().getZ() < (loc.getZ() + radius))
-                            applyEffect(player);
-            }
+            case RADIUS:
+                // occurence.getLocation().getRadiusPlayers()? - how do we get players around radius without an entity?
+                Location loc = occurence.getLocation();
+                for (Player player : loc.getWorld().getPlayers()) {
+                    if (player.getLocation().getX() > (loc.getX() - radius) || player.getLocation().getX() < (loc.getX() + radius))
+                        if (player.getLocation().getY() > (loc.getY() - radius) || player.getLocation().getY() < (loc.getY() + radius))
+                            if (player.getLocation().getZ() > (loc.getZ() - radius) || player.getLocation().getZ() < (loc.getZ() + radius))
+                                applyEffect(player);
+                }
 
-            break;
-        case SERVER:
-            for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                applyEffect(player);
-            }
-            break;
-        case WORLD:
-            for (Player player : occurence.getLocation().getWorld()
-                    .getPlayers()) {
-                applyEffect(player);
-            }
-            break;
-        case DROP:
-            if (drop instanceof SimpleDrop) {
-                List<Entity> entList = ((SimpleDrop) drop).getDropped().gDropResult
-                        .getDropped();
-                if (entList != null) {
-                    for (Entity dropped : entList) {
-                        if (dropped instanceof LivingEntity) {
-                            LivingEntity le = (LivingEntity) dropped;
-                            applyEffect(le);
+                break;
+            case SERVER:
+                for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+                    applyEffect(player);
+                }
+                break;
+            case WORLD:
+                for (Player player : occurence.getLocation().getWorld().getPlayers()) {
+                    applyEffect(player);
+                }
+                break;
+            case DROP:
+                if (drop instanceof SimpleDrop) {
+                    List<Entity> entList = ((SimpleDrop) drop).getDropped().gDropResult.getDropped();
+                    if (entList != null) {
+                        for (Entity dropped : entList) {
+                            if (dropped instanceof LivingEntity le) {
+                                applyEffect(le);
+                            }
                         }
                     }
                 }
-            }
-            break;
-        default:
-            break;
+                break;
+            default:
+                break;
         }
 
         return false;
@@ -152,13 +140,9 @@ public class PotionAction extends Action {
     private void applyEffect(LivingEntity lEnt) {
         removeEffects(lEnt);
 
-        if (!onlyRemove)
-            lEnt.addPotionEffects(this.effects);
+        if (!onlyRemove) lEnt.addPotionEffects(this.effects);
     }
 
-    /**
-     * @param lEnt
-     */
     private void removeEffects(LivingEntity lEnt) {
         for (PotionEffect eff : this.effects) {
             lEnt.removePotionEffect(eff.getType());
@@ -168,18 +152,16 @@ public class PotionAction extends Action {
     // @Override
     @Override
     public List<Action> parse(ConfigurationNode parseMe) {
-        List<Action> actions = new ArrayList<Action>();
+        List<Action> actions = new ArrayList<>();
 
         for (String key : matches.keySet()) {
             boolean onlyRemove;
             if (parseMe.get(key) != null) {
                 onlyRemove = false;
-                actions.add(new PotionAction(parseMe.get(key),
-                        matches.get(key), onlyRemove));
+                actions.add(new PotionAction(parseMe.get(key), matches.get(key), onlyRemove));
             } else if (parseMe.get(key + ".remove") != null) {
                 onlyRemove = true;
-                actions.add(new PotionAction(parseMe.get(key + ".remove"),
-                        matches.get(key), onlyRemove));
+                actions.add(new PotionAction(parseMe.get(key + ".remove"), matches.get(key), onlyRemove));
             }
         }
         return actions;
@@ -191,35 +173,30 @@ public class PotionAction extends Action {
         int strength = 4;
 
         try {
-            if (split.length > 1)
-                duration = Integer.parseInt(split[1]);
+            if (split.length > 1) duration = Integer.parseInt(split[1]);
         } catch (NumberFormatException ex) {
             Log.logInfo("Potioneffect: invalid duration (" + split[1] + ")");
         }
 
         try {
-            if (split.length > 2)
-                strength = Integer.parseInt(split[2]);
+            if (split.length > 2) strength = Integer.parseInt(split[2]);
         } catch (NumberFormatException ex) {
             Log.logInfo("Potioneffect: invalid potion level (" + split[2] + ")");
         }
 
         // modify strength to match in-game values
-        if (strength > 0)
-            strength--;
+        if (strength > 0) strength--;
 
         if (split[0].equalsIgnoreCase("nausea")) split[0] = "CONFUSION";
         if (split[0].equalsIgnoreCase("strength")) split[0] = "INCREASE_DAMAGE";
-        
-        
+
+
         PotionEffectType effect = PotionEffectType.getByName(split[0]);
         if (effect == null) {
-            Log.logInfo("PotionEffect: INVALID effect (" + split[0] + ")",
-                    Verbosity.NORMAL);
+            Log.logInfo("PotionEffect: INVALID effect (" + split[0] + ")", Verbosity.NORMAL);
             return null;
         }
-        Log.logInfo("PotionEffect: adding effect (" + split[0] + ", duration: "
-                + duration + ", strength: " + strength + ")", Verbosity.HIGH);
+        Log.logInfo("PotionEffect: adding effect (" + split[0] + ", duration: " + duration + ", strength: " + strength + ")", Verbosity.HIGH);
 
         // FIXME: parse time and modifier
         return new PotionEffect(effect, duration, strength);

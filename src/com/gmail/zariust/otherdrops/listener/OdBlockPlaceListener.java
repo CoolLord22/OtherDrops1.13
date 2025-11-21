@@ -36,5 +36,4 @@ public class OdBlockPlaceListener implements Listener {
         OccurredEvent drop = new OccurredEvent(event);
         parent.sectionManager.performDrop(drop);
     }
-
 }

@@ -6,7 +6,7 @@ import java.util.NavigableMap;
 import java.util.TreeMap;
 
 public class RandomDropCollection<E> {
-    private final NavigableMap<Double, E> map = new TreeMap<Double, E>();
+    private final NavigableMap<Double, E> map = new TreeMap<>();
     private double total = 0;
 
     public RandomDropCollection<E> add(double weight, E result) {

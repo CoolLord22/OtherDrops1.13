@@ -17,16 +17,16 @@
 package com.gmail.zariust.otherdrops.special;
 
 import com.gmail.zariust.otherdrops.Log;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 public class SpecialResultArgList extends AbstractSequentialList<String> {
     public class Iterator implements ListIterator<String> {
         private Node cur, active;
-        private int  addCount;
+        private int addCount;
 
-        // An iterator where next() will throw but previous() will return the
-        // value of the last node
+        // An iterator where next() will throw but previous() will return the value of the last node
         private Iterator() {
             cur = tail;
             active = null;
@@ -44,22 +44,18 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
         public void add(String val) {
             synchronized (SpecialResultArgList.this) {
                 if (cur == null) {
-                    // We're pointing at the start of the list, which may even
-                    // be empty
+                    // We're pointing at the start of the list, which may even be empty
                     cur = new Node(null, val, head);
-                    if (head == null)
-                        head = cur;
+                    if (head == null) head = cur;
                 } else {
                     // We're pointing at some specific node
                     Node n = new Node(cur, val, cur.next);
                     n.prev.next = n;
-                    if (n.next != null)
-                        n.next.prev = n;
+                    if (n.next != null) n.next.prev = n;
                     cur = n;
                 }
                 // Check if the new element is now the last
-                if (cur.next == null)
-                    tail = cur;
+                if (cur.next == null) tail = cur;
                 active = cur;
                 size++;
                 modCount++;
@@ -70,79 +66,60 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
         @Override
         public boolean hasNext() {
             if (cur == null) {
-                if (head == null)
-                    return false;
+                if (head == null) return false;
                 return head.nextvalid();
-            } else if (cur.next == null)
-                return false;
-            else
-                return cur.next.nextvalid();
+            } else if (cur.next == null) return false;
+            else return cur.next.nextvalid();
         }
 
         @Override
         public boolean hasPrevious() {
-            if (cur == null)
-                return false;
+            if (cur == null) return false;
             return cur.prevvalid();
         }
 
         @Override
         public String next() throws NoSuchElementException {
-            if (modCount > addCount)
-                throw new ConcurrentModificationException();
-            if (cur == null)
-                cur = head;
-            else if (!hasNext())
-                throw new NoSuchElementException();
-            else
-                cur = cur.next;
+            if (modCount > addCount) throw new ConcurrentModificationException();
+            if (cur == null) cur = head;
+            else if (!hasNext()) throw new NoSuchElementException();
+            else cur = cur.next;
             active = cur;
-            if (active.deleted)
-                return next();
+            if (active.deleted) return next();
             return cur.value;
         }
 
         @Override
         public int nextIndex() {
-            if (cur.next == null)
-                return size;
+            if (cur.next == null) return size;
             return cur.next.index();
         }
 
         @Override
         public String previous() throws NoSuchElementException {
-            if (modCount > addCount)
-                throw new ConcurrentModificationException();
-            if (cur == null)
-                throw new NoSuchElementException();
+            if (modCount > addCount) throw new ConcurrentModificationException();
+            if (cur == null) throw new NoSuchElementException();
             String val = cur.value;
             active = cur;
             cur = cur.prev;
-            if (active.deleted)
-                return previous();
+            if (active.deleted) return previous();
             return val;
         }
 
         @Override
         public int previousIndex() {
-            if (cur == null)
-                return -1;
+            if (cur == null) return -1;
             return cur.index();
         }
 
         @Override
         public void remove() throws IllegalStateException {
             synchronized (SpecialResultArgList.this) {
-                if (active == null || active.deleted)
-                    throw new IllegalStateException();
-                if (active.prev == null)
-                    head = active.next;
-                else
-                    active.prev.next = active.next;
-                if (active.next == null)
-                    tail = active.prev;
-                else
-                    active.next.prev = active.prev;
+                if (active == null || active.deleted) throw new IllegalStateException();
+                if (active.prev == null) head = active.next;
+                else active.prev.next = active.next;
+                if (active.next == null) tail = active.prev;
+                else active.next.prev = active.prev;
                 active.deleted = true;
                 cur = cur.prev; // so that remove followed by add works
                 size--;
@@ -151,19 +128,17 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
 
         @Override
         public void set(String val) throws IllegalStateException {
-            if (active == null || active.deleted)
-                throw new IllegalStateException();
+            if (active == null || active.deleted) throw new IllegalStateException();
             active.value = val;
         }
 
         public String get() {
-            if (active == null)
-                throw new IllegalStateException();
+            if (active == null) throw new IllegalStateException();
             return active.value;
         }
     }
 
-    private Node         head, tail;
+    private Node head, tail;
     private volatile int size;
 
     public SpecialResultArgList() {
@@ -179,25 +154,23 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
         Collections.addAll(this, array);
     }
 
+    @NotNull
     @Override
     public Iterator listIterator(int i) throws IndexOutOfBoundsException {
-        if (i < 0 || i > size)
-            throw new IndexOutOfBoundsException(Integer.toString(i));
-        if (i == size)
-            return new Iterator();
+        if (i < 0 || i > size) throw new IndexOutOfBoundsException(Integer.toString(i));
+        if (i == size) return new Iterator();
         else if (i > size / 2) {
             Node at = tail;
-            for (; ++i < size; at = at.prev)
-                ;
+            for (; ++i < size; at = at.prev);
             return new Iterator(at);
         } else {
             Node at = head;
-            for (; i-- > 0; at = at.next)
-                ;
+            for (; i-- > 0; at = at.next);
             return new Iterator(at);
         }
     }
 
+    @NotNull
     @Override
     public Iterator listIterator() throws IndexOutOfBoundsException {
         return (Iterator) super.listIterator();
@@ -208,10 +181,10 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
         return size;
     }
 
-    private class Node {
-        Node    prev;
-        String  value;
-        Node    next;
+    private static class Node {
+        Node prev;
+        String value;
+        Node next;
         boolean deleted = false;
 
         public Node(Node before, String val, Node after) {
@@ -221,20 +194,17 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
         }
 
         public boolean nextvalid() {
-            if (!deleted)
-                return true;
+            if (!deleted) return true;
             return next.nextvalid();
         }
 
         public boolean prevvalid() {
-            if (!deleted)
-                return true;
+            if (!deleted) return true;
             return prev.prevvalid();
         }
 
         public int index() {
-            if (prev == null)
-                return 0;
+            if (prev == null) return 0;
             return prev.index() + 1;
         }
     }
@@ -253,8 +223,7 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
         iter1 = list.listIterator(2);
         iter2 = list.listIterator(2);
         Log.logInfoNoVerbosity("iter1 and iter2 pointing at element 2");
-        Log.logInfoNoVerbosity("iter1: " + iter1.next() + ", iter2: "
-                + iter2.next());
+        Log.logInfoNoVerbosity("iter1: " + iter1.next() + ", iter2: " + iter2.next());
         iter1.remove();
         Log.logInfoNoVerbosity("Removed through iter1");
         Log.logInfoNoVerbosity("Advancing iter2 to " + iter2.next());
@@ -265,8 +234,7 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
         Log.logInfoNoVerbosity(list + " " + list.size());
         // More testing concurrent removal
         Log.logInfoNoVerbosity("---");
-        list = new SpecialResultArgList("PING", "PONG", "CLANG", "PRANG",
-                "BOOM", "BANG", "SPLOOSH");
+        list = new SpecialResultArgList("PING", "PONG", "CLANG", "PRANG", "BOOM", "BANG", "SPLOOSH");
         Log.logInfoNoVerbosity(list + " " + list.size());
         list.removeIf(str -> str.startsWith("P"));
         Log.logInfoNoVerbosity(list + " " + list.size());
@@ -286,10 +254,8 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
         list = new SpecialResultArgList("RADIUS=3", "HEIGHT=5", "QUACK", "MOO");
         Log.logInfoNoVerbosity(list + " " + list.size());
         for (String arg : list) {
-            if (arg.startsWith("RADIUS"))
-                list.remove(arg);
-            else if (arg.startsWith("HEIGHT"))
-                list.remove(arg);
+            if (arg.startsWith("RADIUS")) list.remove(arg);
+            else if (arg.startsWith("HEIGHT")) list.remove(arg);
         }
         Log.logInfoNoVerbosity(list + " " + list.size());
         // Profiling

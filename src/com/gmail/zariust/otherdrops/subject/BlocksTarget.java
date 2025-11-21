@@ -16,19 +16,18 @@
 
 package com.gmail.zariust.otherdrops.subject;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-
 import com.gmail.zariust.common.MaterialGroup;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
+import org.bukkit.Location;
+import org.bukkit.Material;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @ConfigOnly(BlockTarget.class)
 public class BlocksTarget implements Target {
-    private MaterialGroup group;
+    private final MaterialGroup group;
 
     public BlocksTarget(MaterialGroup grp) {
         group = grp;
@@ -45,8 +44,7 @@ public class BlocksTarget implements Target {
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof BlocksTarget))
-            return false;
+        if (!(other instanceof BlocksTarget)) return false;
         return group == ((BlocksTarget) other).group;
     }
 
@@ -57,9 +55,7 @@ public class BlocksTarget implements Target {
 
     @Override
     public boolean matches(Subject other) {
-        if (!(other instanceof BlockTarget))
-            return false;
-        BlockTarget block = (BlockTarget) other;
+        if (!(other instanceof BlockTarget block)) return false;
         return group.contains(block.getMaterial());
     }
 
@@ -70,14 +66,13 @@ public class BlocksTarget implements Target {
 
     @Override
     public String toString() {
-        if (group == null)
-            return "ANY_BLOCK";
+        if (group == null) return "ANY_BLOCK";
         return group.toString();
     }
 
     @Override
     public List<Target> canMatch() {
-        List<Target> all = new ArrayList<Target>();
+        List<Target> all = new ArrayList<>();
         List<Material> materials = group.materials();
         for (Material block : materials)
             all.add(new BlockTarget(block));

@@ -8,5 +8,4 @@ package com.gmail.zariust.otherdrops.things;
  */
 public abstract class ODMatchRunner {
     abstract public String runMatch(String blah);
-
 }

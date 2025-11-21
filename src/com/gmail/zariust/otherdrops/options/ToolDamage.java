@@ -30,9 +30,9 @@ import java.util.Random;
 
 public class ToolDamage {
     private ShortRange durabilityRange;
-    private IntRange   consumeRange;
-    private ODItem     replaceItem;
-    private IntRange   replaceItemQuantity = new IntRange(1);
+    private IntRange consumeRange;
+    private ODItem replaceItem;
+    private IntRange replaceItemQuantity;
 
     public ToolDamage() {
         this(null, 1);
@@ -43,20 +43,18 @@ public class ToolDamage {
     }
 
     public ToolDamage(Integer damage, int replaceQuantity) {
-        if (damage != null)
-            durabilityRange = ShortRange.parse(String.valueOf(damage));
+        if (damage != null) durabilityRange = ShortRange.parse(String.valueOf(damage));
         this.replaceItemQuantity = new IntRange(replaceQuantity);
     }
 
-	public boolean apply(ItemStack stack, Random rng) {
+    public boolean apply(ItemStack stack, Random rng) {
         boolean fullyConsumed = false;
         short maxDurability = stack.getType().getMaxDurability();
         if (maxDurability > 0 && durabilityRange != null) {
             short durability = stack.getDurability();
             short damage = durabilityRange.getRandomIn(rng);
-            
-            if (durability + damage >= maxDurability)
-                fullyConsumed = true;
+
+            if (durability + damage >= maxDurability) fullyConsumed = true;
             setDurability(stack, (short) (durability + damage), rng);
         }
         if (consumeRange != null && (fullyConsumed || durabilityRange == null)) {
@@ -66,13 +64,9 @@ public class ToolDamage {
             }
             int count = stack.getAmount();
             int take = consumeRange.getRandomIn(rng);
-            if (count <= take)
-                fullyConsumed = true;
-            else
-                stack.setAmount(count - take);
-            Log.logInfo("Tool consume: " + take + "x " + stack
-                    + " consumed (" + (count - take) + ") remaining.",
-                    Verbosity.HIGH);
+            if (count <= take) fullyConsumed = true;
+            else stack.setAmount(count - take);
+            Log.logInfo("Tool consume: " + take + "x " + stack + " consumed (" + (count - take) + ") remaining.", Verbosity.HIGH);
         }
         if (replaceItem != null && fullyConsumed) {
             fullyConsumed = false;
@@ -84,7 +78,7 @@ public class ToolDamage {
             meta.setDisplayName(replaceItem.getDisplayName());
             meta.setLore(replaceItem.lore);
             stack.setItemMeta(meta);
-            stack = CommonEnchantments.applyEnchantments(stack, replaceItem.getEnchantments());
+            CommonEnchantments.applyEnchantments(stack, replaceItem.getEnchantments());
 
             Log.logInfo("Tool replaced.", Verbosity.HIGH);
         } else if (durabilityRange == null && consumeRange == null) {
@@ -97,43 +91,41 @@ public class ToolDamage {
             meta.setDisplayName(replaceItem.getDisplayName());
             meta.setLore(replaceItem.lore);
             stack.setItemMeta(meta);
-            stack = CommonEnchantments.applyEnchantments(stack, replaceItem.getEnchantments());
+            CommonEnchantments.applyEnchantments(stack, replaceItem.getEnchantments());
 
             Log.logInfo("Tool replaced.", Verbosity.HIGH);
         }
         return fullyConsumed;
     }
-	
-	private void setDurability(ItemStack stack, short durability, Random rng) {
-		if(stack.getItemMeta().isUnbreakable())
-			return;
-		
-		if (stack.containsEnchantment(Enchantment.DURABILITY)) {
-        	int durabilityLevel = (stack.getEnchantmentLevel(Enchantment.DURABILITY) + 1);
-        	double chanceOfDamage = 100 / (durabilityLevel);
-        	
-        	String name = stack.getType().toString().toLowerCase();
-        	if(name.contains("_helmet") || name.contains("_chestplate") || name.contains("_leggings") || name.contains("_boots"))
-        		chanceOfDamage = 60 + (40 / durabilityLevel);
 
-        	int n = rng.nextInt(100) + 1;
-        	
-        	if(n > chanceOfDamage) {
+    private void setDurability(ItemStack stack, short durability, Random rng) {
+        if (stack.getItemMeta().isUnbreakable()) return;
+
+        if (stack.containsEnchantment(Enchantment.DURABILITY)) {
+            int durabilityLevel = (stack.getEnchantmentLevel(Enchantment.DURABILITY) + 1);
+            double chanceOfDamage = (double) 100 / (durabilityLevel);
+
+            String name = stack.getType().toString().toLowerCase();
+            if (name.contains("_helmet") || name.contains("_chestplate") || name.contains("_leggings") || name.contains("_boots"))
+                chanceOfDamage = 60 + ((double) 40 / durabilityLevel);
+
+            int n = rng.nextInt(100) + 1;
+
+            if (n > chanceOfDamage) {
                 Log.logInfo("Tool with unbreaking failed damage (expected behavior).", Verbosity.HIGH);
                 return;
-        	}
+            }
         }
 
-		Log.logInfo("Tool damaged.", Verbosity.HIGH);
+        Log.logInfo("Tool damaged.", Verbosity.HIGH);
         stack.setDurability(durability);
-	}
+    }
 
     public static ToolDamage parseFrom(ConfigurationNode node) {
         ToolDamage damage = new ToolDamage();
         // Durability
         String durability = node.getString("damagetool");
-        if (durability != null)
-            damage.durabilityRange = ShortRange.parse(durability);
+        if (durability != null) damage.durabilityRange = ShortRange.parse(durability);
         else {
             durability = node.getString("fixtool");
             if (durability != null) {
@@ -143,8 +135,7 @@ public class ToolDamage {
         }
         // Amount
         String consume = node.getString("consumetool");
-        if (consume != null)
-            damage.consumeRange = IntRange.parse(consume);
+        if (consume != null) damage.consumeRange = IntRange.parse(consume);
         else {
             consume = node.getString("growtool");
             if (consume != null) {
@@ -156,14 +147,12 @@ public class ToolDamage {
         String replace = node.getString("replacetool");
         if (replace != null) {
             String[] replaceSplit = replace.split("/q#");
-            if (replaceSplit.length > 1)
-                damage.replaceItemQuantity = IntRange.parse(replaceSplit[1]);
+            if (replaceSplit.length > 1) damage.replaceItemQuantity = IntRange.parse(replaceSplit[1]);
             damage.replaceItem = ODItem.parseItem(replace.replaceAll("(\\/q#\\d{1,9}-\\d{1,9}|\\/q#\\d{1,9})", ""));
 
             Log.logInfo("...tool will be replaced by " + damage.replaceItem, Verbosity.NORMAL);
         }
-        if (damage.durabilityRange != null || damage.consumeRange != null || damage.replaceItem != null)
-            return damage;
+        if (damage.durabilityRange != null || damage.consumeRange != null || damage.replaceItem != null) return damage;
         return null;
     }
 
@@ -173,14 +162,6 @@ public class ToolDamage {
 
     @Override
     public String toString() {
-        StringBuilder dmg = new StringBuilder("{");
-        dmg.append("damage: ");
-        dmg.append(durabilityRange);
-        dmg.append("quantity: ");
-        dmg.append(consumeRange);
-        dmg.append("replace: ");
-        dmg.append(replaceItem);
-        dmg.append("}");
-        return dmg.toString();
+        return "{" + "damage: " + durabilityRange + "quantity: " + consumeRange + "replace: " + replaceItem + "}";
     }
 }

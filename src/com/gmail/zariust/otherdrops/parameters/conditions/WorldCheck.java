@@ -21,14 +21,13 @@ public class WorldCheck extends Condition {
     public boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
         return CustomDrop.checkList(occurrence.getWorld().getName(), worldMap);
     }
+
     @Override
     public List<Condition> parse(ConfigurationNode parseMe) {
         Map<String, Boolean> result = OtherDropsConfig.parseWorldsFrom(parseMe);
-        if(result == null || result.isEmpty())
-            return null;
+        if (result == null || result.isEmpty()) return null;
         List<Condition> conditionList = new ArrayList<>();
         conditionList.add(new WorldCheck(result));
         return conditionList;
     }
-
 }

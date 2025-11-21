@@ -7,7 +7,7 @@ import com.gmail.zariust.otherdrops.data.Data;
 import org.bukkit.entity.*;
 
 public class RabbitData extends CreatureData {
-    Rabbit.Type type  = null; // null = wildcard
+    final Rabbit.Type type; // null = wildcard
 
     public RabbitData(Rabbit.Type type) {
         this.type = type;
@@ -15,35 +15,25 @@ public class RabbitData extends CreatureData {
 
     @Override
     public void setOn(Entity entity, Player owner) {
-        if (entity instanceof Rabbit) {
-            Rabbit rabbit = (Rabbit) entity;
-            if (type != null)
-                rabbit.setRabbitType(type);
+        if (entity instanceof Rabbit rabbit) {
+            if (type != null) rabbit.setRabbitType(type);
         }
     }
 
     @Override
     public boolean matches(Data d) {
-        if (!(d instanceof RabbitData))
-            return false;
-        RabbitData vd = (RabbitData) d;
-
-        if (this.type != null)
-            if (this.type != vd.type)
-                return false;
-
+        if (!(d instanceof RabbitData vd)) return false;
+        if (this.type != null) if (this.type != vd.type) return false;
         return true;
     }
 
     public static CreatureData parseFromEntity(Entity entity) {
-        if (entity instanceof Rabbit) {
-            Rabbit rabbit = (Rabbit) entity;
+        if (entity instanceof Rabbit rabbit) {
             return new RabbitData(rabbit.getRabbitType());
         } else {
             Log.logInfo("RabbitData: error, parseFromEntity given different creature - this shouldn't happen.");
             return null;
         }
-
     }
 
     public static CreatureData parseFromString(String state) {
@@ -55,11 +45,9 @@ public class RabbitData extends CreatureData {
             for (String sub : split) {
                 sub = sub.toLowerCase().replaceAll("[\\s-_]", "");
                 for (Rabbit.Type type : Rabbit.Type.values()) {
-                    if (sub.equals(type.name().toLowerCase().replaceAll("[\\s-_]", "")))
-                        thisType = type;
+                    if (sub.equals(type.name().toLowerCase().replaceAll("[\\s-_]", ""))) thisType = type;
                 }
-                if (thisType == null)
-                    Log.logInfo("RabbitData: type not found (" + sub + ")");
+                if (thisType == null) Log.logInfo("RabbitData: type not found (" + sub + ")");
             }
         }
 
@@ -69,15 +57,13 @@ public class RabbitData extends CreatureData {
     @Override
     public String toString() {
         String val = "";
-        if (type != null)
-            val += type.toString();
+        if (type != null) val += type.toString();
         return val;
     }
 
     @Override
     public String get(Enum<?> creature) {
-        if (creature instanceof EntityType)
-            return this.toString();
+        if (creature instanceof EntityType) return this.toString();
         return "";
     }
 }

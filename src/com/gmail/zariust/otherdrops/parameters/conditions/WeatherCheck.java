@@ -21,16 +21,13 @@ public class WeatherCheck extends Condition {
 
     @Override
     protected boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
-        if (weatherMap == null || weatherMap.isEmpty())
-            return true;
+        if (weatherMap == null || weatherMap.isEmpty()) return true;
         boolean match = weatherMap.get(null);
         for (Weather type : weatherMap.keySet()) {
             if (type != null) {
                 if (type.matches(occurrence.getWeather())) {
-                    if (weatherMap.get(type))
-                        match = true;
-                    else
-                        return false;
+                    if (weatherMap.get(type)) match = true;
+                    else return false;
                 }
             }
         }
@@ -40,8 +37,7 @@ public class WeatherCheck extends Condition {
     @Override
     public List<Condition> parse(ConfigurationNode parseMe) {
         Map<Weather, Boolean> result = Weather.parseFrom(parseMe, OtherDropsConfig.defaultWeather);
-        if(result == null  || result.isEmpty())
-            return null;
+        if (result == null || result.isEmpty()) return null;
         List<Condition> conditionList = new ArrayList<>();
         conditionList.add(new WeatherCheck(result));
         return conditionList;

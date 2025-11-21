@@ -29,19 +29,19 @@ import java.util.List;
 import java.util.Random;
 
 public class PlayerSubject extends LivingSubject {
-    private ToolAgent tool;
+    private final ToolAgent tool;
     private EquipmentSlot hand;
-    private String    name;
-    private Player    agent;
-    private boolean   anyObject;
+    private final String name;
+    private Player agent;
+    private boolean anyObject;
 
     public PlayerSubject(boolean anyObject) {
-        this((String) null);
+        this(null);
         this.anyObject = anyObject;
     }
 
     public PlayerSubject() {
-        this((String) null);
+        this(null);
     }
 
     public PlayerSubject(String attacker) {
@@ -50,7 +50,7 @@ public class PlayerSubject extends LivingSubject {
 
     public PlayerSubject(Player attacker, EquipmentSlot hand) {
         super(attacker);
-        if(hand == null) hand = EquipmentSlot.HAND;
+        if (hand == null) hand = EquipmentSlot.HAND;
         tool = new ToolAgent(attacker.getInventory().getItem(hand));
         name = attacker.getName();
         agent = attacker;
@@ -69,16 +69,13 @@ public class PlayerSubject extends LivingSubject {
     }
 
     private PlayerSubject equalsHelper(Object other) {
-        if (!(other instanceof PlayerSubject))
-            return null;
+        if (!(other instanceof PlayerSubject)) return null;
         return (PlayerSubject) other;
     }
 
     private boolean isEqual(PlayerSubject player) {
-        if (player == null)
-            return false;
-        return tool.equals(player.tool)
-                && name.toUpperCase().equals(player.name.toUpperCase());
+        if (player == null) return false;
+        return tool.equals(player.tool) && name.equalsIgnoreCase(player.name);
     }
 
     @Override
@@ -91,22 +88,14 @@ public class PlayerSubject extends LivingSubject {
     public boolean matches(Subject other) {
         // ProjectileAgent could be a player, so check against it if neccessary
         if (!anyObject && other instanceof ProjectileAgent) {
-            if (name == null)
-                return ProjectileAgent.parse("PROJECTILE_ANY", "PLAYER")
-                        .matches(other);
-            else
-                return ProjectileAgent
-                        .parse("PROJECTILE_ANY", "PLAYER;" + name).matches(
-                                other);
+            if (name == null) return ProjectileAgent.parse("PROJECTILE_ANY", "PLAYER").matches(other);
+            else return ProjectileAgent.parse("PROJECTILE_ANY", "PLAYER;" + name).matches(other);
         }
 
-        if (!(other instanceof PlayerSubject))
-            return false;
+        if (!(other instanceof PlayerSubject)) return false;
         PlayerSubject player = equalsHelper(other);
-        if (name == null)
-            return true;
-        else
-            return isEqual(player);
+        if (name == null) return true;
+        else return isEqual(player);
     }
 
     @Override
@@ -118,25 +107,19 @@ public class PlayerSubject extends LivingSubject {
         return tool.getMaterial();
     }
 
-	public Player getPlayer() {
-        if (name == null)
-            return null;
-        if (agent == null)
-            agent = Bukkit.getServer().getPlayer(name);
+    public Player getPlayer() {
+        if (name == null) return null;
+        if (agent == null) agent = Bukkit.getServer().getPlayer(name);
         return agent;
     }
 
-	@Override
+    @Override
     public void damageTool(ToolDamage damage, Random rng) {
-        if (damage == null)
-            return;
+        if (damage == null) return;
         ItemStack stack = agent.getInventory().getItem(hand);
-        if (stack == null)
-            return;
-        if (damage.apply(stack, rng))
-            agent.getInventory().setItemInMainHand(null);
-        else
-            agent.updateInventory(); // because we've edited the stack directly
+        if (stack == null) return;
+        if (damage.apply(stack, rng)) agent.getInventory().setItemInMainHand(null);
+        else agent.updateInventory(); // because we've edited the stack directly
         // TODO: Option of failure if damage is greater that the amount
         // remaining?
     }
@@ -167,7 +150,7 @@ public class PlayerSubject extends LivingSubject {
 
     @Override
     public List<Target> canMatch() {
-        return Collections.singletonList((Target) this);
+        return Collections.singletonList(this);
     }
 
     @Override
@@ -178,26 +161,23 @@ public class PlayerSubject extends LivingSubject {
     @Override
     public String toString() {
         if (name == null) {
-            if (tool == null)
-                return "PLAYER";
+            if (tool == null) return "PLAYER";
             return tool.toString();
         }
         return "PLAYER@" + name + " with " + tool.toString(); // TODO: does
-                                                              // adding the tool
-                                                              // here break
-                                                              // anything?
+        // adding the tool
+        // here break
+        // anything?
     }
 
     public static PlayerSubject parse(String data) {
-        if (data == null || data.isEmpty())
-            return new PlayerSubject();
+        if (data == null || data.isEmpty()) return new PlayerSubject();
         return new PlayerSubject(data);
     }
 
     @Override
     public String getReadableName() {
-        if (name == null)
-            return "unknown player";
+        if (name == null) return "unknown player";
 
         return name;
     }

@@ -1,12 +1,12 @@
 package com.gmail.zariust.otherdrops.parameters.actions;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.parameters.Action;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClearDropsAction extends Action {
 
@@ -16,7 +16,7 @@ public class ClearDropsAction extends Action {
     }
 
     @SuppressWarnings("unused")
-	private final ClearType clearType;
+    private final ClearType clearType;
 
     public ClearDropsAction(ClearType cType) {
         this.clearType = cType;
@@ -24,25 +24,23 @@ public class ClearDropsAction extends Action {
 
     @Override
     public boolean act(CustomDrop drop, OccurredEvent occurence) {
-
         return true;
     }
 
     static List<Action> getClearXpAction() {
-        List<Action> actions = new ArrayList<Action>();
+        List<Action> actions = new ArrayList<>();
         actions.add(new ClearDropsAction(ClearType.XP));
         return actions;
-
     }
 
     static List<Action> getClearDropsAction() {
-        List<Action> actions = new ArrayList<Action>();
+        List<Action> actions = new ArrayList<>();
         actions.add(new ClearDropsAction(ClearType.DROP));
         return actions;
     }
 
     static List<Action> getClearEquipmentAction() {
-        List<Action> actions = new ArrayList<Action>();
+        List<Action> actions = new ArrayList<>();
         actions.add(new ClearDropsAction(ClearType.EQUIPMENT));
         return actions;
     }

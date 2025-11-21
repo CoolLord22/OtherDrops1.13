@@ -19,19 +19,16 @@ public class RegionCheck extends Condition {
 
     @Override
     protected boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
-        if (regionMap == null)
-            return true;
+        if (regionMap == null) return true;
 
         Set<String> inRegions = occurrence.getRegions();
-        HashSet<String> tempConfigRegionKeys = new HashSet<String>(regionMap.keySet());
+        HashSet<String> tempConfigRegionKeys = new HashSet<>(regionMap.keySet());
 
-        // set matched flag to false, since we know there's at least something
-        // in the customRegion condition
+        // set matched flag to false, since we know there's at least something in the customRegion condition
         boolean matchedRegion = false;
         int positiveRegions = 0;
 
-        // loop through each region within the customRegions and check if it
-        // matches all current regions
+        // loop through each region within the customRegions and check if it matches all current regions
         for (String dropRegion : tempConfigRegionKeys) {
             dropRegion = dropRegion.toLowerCase();
             boolean exception = false;
@@ -47,9 +44,7 @@ public class RegionCheck extends Condition {
             if (exception) {
                 if (inRegions.contains(dropRegion)) {
                     Log.logInfo("Failed check: regions (exception: " + dropRegion + ")", Verbosity.HIGH);
-                    return false; // if this is an exception and you are in that
-                    // region then all other checks are moot -
-                    // hence immediate "return false"
+                    return false; // if this is an exception and you are in that region then all other checks are moot -hence immediate "return false"
                 } else {
                     Log.logInfo("Exception check: region " + dropRegion + " passed", Verbosity.HIGHEST);
                 }
@@ -61,10 +56,8 @@ public class RegionCheck extends Condition {
             }
         }
 
-        // If there were only exception conditions then return true as we
-        // haven't been kicked by a matched exception
-        if (positiveRegions < 1)
-            matchedRegion = true;
+        // If there were only exception conditions then return true as we haven't been kicked by a matched exception
+        if (positiveRegions < 1) matchedRegion = true;
 
         return matchedRegion;
     }
@@ -72,8 +65,7 @@ public class RegionCheck extends Condition {
     @Override
     public List<Condition> parse(ConfigurationNode parseMe) {
         Map<String, Boolean> result = OtherDropsConfig.parseRegionsFrom(parseMe);
-        if(result == null || result.isEmpty())
-            return null;
+        if (result == null || result.isEmpty()) return null;
         List<Condition> conditionList = new ArrayList<>();
         conditionList.add(new RegionCheck(result));
         return conditionList;

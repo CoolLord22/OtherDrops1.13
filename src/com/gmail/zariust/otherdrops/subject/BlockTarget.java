@@ -36,20 +36,19 @@ import java.util.Collections;
 import java.util.List;
 
 public class BlockTarget implements Target {
-    private Material      id;
-    private Data          data;
-    private Block         bl;
+    private final Material id;
+    private final Data data;
+    private Block bl;
     public List<Material> except;
     private String customName;
     private Location location;
 
     public BlockTarget() {
-        this(null, (Data)null);
+        this(null, (Data) null);
     }
 
     public BlockTarget(Material block) {
-        this(block, (Data)null); // note: leave as null for "wildcard" to match block
-                           // with any data
+        this(block, (Data) null); // note: leave as null for "wildcard" to match block with any data
     }
 
     public BlockTarget(Material block, byte d) {
@@ -70,9 +69,9 @@ public class BlockTarget implements Target {
         bl = block;
         location = bl.getLocation();
         if (block.getState() instanceof CommandBlock) {
-            customName = ((CommandBlock)block.getState()).getName();
+            customName = ((CommandBlock) block.getState()).getName();
         } else if (block.getState() instanceof InventoryHolder) {
-        	// TODO: This really shouldn't be toString, but rather an inventory view? But not sure how to get that from a break event.
+            // TODO: This really shouldn't be toString, but rather an inventory view? But not sure how to get that from a break event.
             customName = block.getState().toString();
         }
     }
@@ -88,7 +87,7 @@ public class BlockTarget implements Target {
     }
 
     public BlockTarget(List<Material> except2) {
-        this(null, (Data)null);
+        this(null, (Data) null);
         except = except2;
     }
 
@@ -108,30 +107,24 @@ public class BlockTarget implements Target {
     }
 
     @SuppressWarnings("deprecation")
-	private static Data getData(Block block) {
-        if (block == null)
-            return new SimpleData();
-        switch (block.getType()) {
-        case FURNACE:
-        case DISPENSER:
-        case CHEST:
-            return new ContainerData(block.getState());
-        case SPAWNER:
-            return new SpawnerData(block.getState());
-        case NOTE_BLOCK:
-            return new NoteData(block.getBlockData());
-        case JUKEBOX:
-            return new RecordData(block.getState());
-        default:
-            if(block.getBlockData() instanceof Ageable tempData) {
-                return new SimpleData(tempData.getAge());
-            } else if(block.getBlockData() instanceof Levelled tempData) {
-                return new SimpleData(tempData.getLevel());
-            } else if(block.getBlockData() instanceof Beehive tempData) {
-                return new SimpleData(tempData.getHoneyLevel());
+    private static Data getData(Block block) {
+        if (block == null) return new SimpleData();
+        return switch (block.getType()) {
+            case FURNACE, DISPENSER, CHEST -> new ContainerData(block.getState());
+            case SPAWNER -> new SpawnerData(block.getState());
+            case NOTE_BLOCK -> new NoteData(block.getBlockData());
+            case JUKEBOX -> new RecordData(block.getState());
+            default -> {
+                if (block.getBlockData() instanceof Ageable tempData) {
+                    yield new SimpleData(tempData.getAge());
+                } else if (block.getBlockData() instanceof Levelled tempData) {
+                    yield new SimpleData(tempData.getLevel());
+                } else if (block.getBlockData() instanceof Beehive tempData) {
+                    yield new SimpleData(tempData.getHoneyLevel());
+                }
+                yield new SimpleData(block.getData());
             }
-            return new SimpleData(block.getData());
-        }
+        };
     }
 
     public Material getMaterial() {
@@ -139,7 +132,7 @@ public class BlockTarget implements Target {
     }
 
     @SuppressWarnings("deprecation")
-	public int getId() {
+    public int getId() {
         return id.getId();
     }
 
@@ -150,9 +143,7 @@ public class BlockTarget implements Target {
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof BlockTarget))
-            return false;
-        BlockTarget targ = (BlockTarget) other;
+        if (!(other instanceof BlockTarget targ)) return false;
         return id == targ.id && data.equals(targ.data);
     }
 
@@ -173,18 +164,14 @@ public class BlockTarget implements Target {
 
     @Override
     public boolean matches(Subject block) {
-        if (!(block instanceof BlockTarget))
-            return false;
-        BlockTarget targ = (BlockTarget) block;
-        
+        if (!(block instanceof BlockTarget targ)) return false;
+
         if (this.customName != null) {
-            if (!this.customName.equals(targ.customName))
-                return false;
+            if (!this.customName.equals(targ.customName)) return false;
         }
 
-        Boolean match = false;
-        if (id == targ.id)
-            match = true;
+        boolean match;
+        if (id == targ.id) match = true;
         if (data == null) {
             match = true;
         } else {
@@ -193,73 +180,56 @@ public class BlockTarget implements Target {
         return match;
     }
 
-	public static Target parse(String name, String state, String customName) {        
+    public static Target parse(String name, String state, String customName) {
         name = name.toUpperCase();
         state = state.toUpperCase();
-        Material mat = null;
-        if(name.matches("[0-9]+")) {
+        Material mat;
+        if (name.matches("[0-9]+")) {
             Log.logWarning("Error while parsing: " + name + ". Support for numerical IDs has been dropped!");
         }
-        
+
         mat = Material.getMaterial(name.toUpperCase());
-        
-        if(mat == null) {
+
+        if (mat == null) {
             mat = CommonMaterial.matchMaterial(name);
         }
-        
+
         if (mat == null) {
             return null;
         }
         if (!mat.isBlock()) {
             // Only a very select few non-blocks are permitted as a target
-            if (mat != Material.PAINTING && mat != Material.OAK_BOAT
-                    && mat != Material.MINECART
-                    && mat != Material.COMMAND_BLOCK_MINECART
-                    && mat != Material.TNT_MINECART
-                    && mat != Material.HOPPER_MINECART
-                    && mat != Material.FURNACE_MINECART
-                    && mat != Material.CHEST_MINECART
-                    && mat != Material.OAK_BOAT
-                    && mat != Material.ACACIA_BOAT
-                    && mat != Material.BIRCH_BOAT
-                    && mat != Material.DARK_OAK_BOAT
-                    && mat != Material.JUNGLE_BOAT
-                    && mat != Material.SPRUCE_BOAT)
+            if (mat != Material.PAINTING && mat != Material.MINECART && mat != Material.COMMAND_BLOCK_MINECART && mat != Material.TNT_MINECART && mat != Material.HOPPER_MINECART && mat != Material.FURNACE_MINECART && mat != Material.CHEST_MINECART && mat != Material.OAK_BOAT && mat != Material.ACACIA_BOAT && mat != Material.BIRCH_BOAT && mat != Material.DARK_OAK_BOAT && mat != Material.JUNGLE_BOAT && mat != Material.SPRUCE_BOAT)
                 return null;
-            else
-                return VehicleTarget.parse(mat, state);
+            else return VehicleTarget.parse(mat, state);
         }
         try {
             int val = Integer.parseInt(state);
             return new BlockTarget(mat, customName, val);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException ignored) {
         }
-        Data data = null;
+        Data data;
         try {
             data = SimpleData.parse(mat, state);
         } catch (IllegalArgumentException e) {
             Log.logWarning(e.getMessage());
             return null;
         }
-        if (data != null)
-            return new BlockTarget(mat, customName, data);
+        if (data != null) return new BlockTarget(mat, customName, data);
         return new BlockTarget(mat, customName);
     }
 
     @Override
     public String toString() {
-        if (id == null)
-            return "ANY_BLOCK";
-        if (data == null)
-            return id.toString();
+        if (id == null) return "ANY_BLOCK";
+        if (data == null) return id.toString();
         return id + "@" + data.get(id);
     }
 
     @Override
     public List<Target> canMatch() {
-        if (id == null)
-            return new BlocksTarget(MaterialGroup.ANY_BLOCK).canMatch();
-        return Collections.singletonList((Target) this);
+        if (id == null) return new BlocksTarget(MaterialGroup.ANY_BLOCK).canMatch();
+        return Collections.singletonList(this);
     }
 
     @Override
@@ -276,15 +246,13 @@ public class BlockTarget implements Target {
         bl = location.getBlock();
         bl.setType(replacement.getMaterial());
         BlockState state = bl.getState();
-        if (replacement.data != null)
-            replacement.data.setOn(state);
+        if (replacement.data != null) replacement.data.setOn(state);
         state.update(true);
     }
 
     @Override
     public Location getLocation() {
-        if (location != null)
-            return location;
+        if (location != null) return location;
         return null;
     }
 
@@ -294,9 +262,7 @@ public class BlockTarget implements Target {
 
     @Override
     public String getReadableName() {
-        String readableName = id.toString().toLowerCase()
-                .replaceAll("[-_]", " ");
-        return readableName;
+        return id.toString().toLowerCase().replaceAll("[-_]", " ");
     }
 
 }

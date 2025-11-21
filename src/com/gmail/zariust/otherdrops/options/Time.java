@@ -16,22 +16,22 @@
 
 package com.gmail.zariust.otherdrops.options;
 
+import com.gmail.zariust.otherdrops.ConfigurationNode;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import com.gmail.zariust.otherdrops.ConfigurationNode;
-import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDropsConfig;
-
 import static java.lang.Math.abs;
 
 public class Time extends Range<Long> {
-    public final static Time DAY      = new Time(0, 12000 - 1);
-    public final static Time NIGHT    = new Time(13800, 22200 - 1);
-    public final static Time DUSK     = new Time(12000, 13800 - 1);
-    public final static Time DAWN     = new Time(22200, 24000 - 1);
+    public final static Time DAY = new Time(0, 12000 - 1);
+    public final static Time NIGHT = new Time(13800, 22200 - 1);
+    public final static Time DUSK = new Time(12000, 13800 - 1);
+    public final static Time DAWN = new Time(22200, 24000 - 1);
     public final static Time DARKNESS = new Time(12000, 24000 - 1);
 
     public Time() {
@@ -56,8 +56,7 @@ public class Time extends Range<Long> {
 
     @Override
     public Long getRandomIn(Random rng) {
-        if (min.equals(max))
-            return min;
+        if (min.equals(max)) return min;
         return min + abs(rng.nextLong() % (max - min + 1));
     }
 
@@ -72,27 +71,18 @@ public class Time extends Range<Long> {
     }
 
     public static Time parse(String range) {
-        if (range.equalsIgnoreCase("day"))
-            return DAY;
-        else if (range.equalsIgnoreCase("night"))
-            return NIGHT;
-        else if (range.equalsIgnoreCase("darkness"))
-            return DARKNESS;
-        else if (range.equalsIgnoreCase("dawn"))
-            return DAWN;
-        else if (range.equalsIgnoreCase("dusk"))
-            return DUSK;
-        else
-            return (Time) Range.parse(range, new Time());
+        if (range.equalsIgnoreCase("day")) return DAY;
+        else if (range.equalsIgnoreCase("night")) return NIGHT;
+        else if (range.equalsIgnoreCase("darkness")) return DARKNESS;
+        else if (range.equalsIgnoreCase("dawn")) return DAWN;
+        else if (range.equalsIgnoreCase("dusk")) return DUSK;
+        else return (Time) Range.parse(range, new Time());
     }
 
-    public static Map<Time, Boolean> parseFrom(ConfigurationNode node,
-            Map<Time, Boolean> def) {
-        List<String> times = OtherDropsConfig.getMaybeList(node, "time",
-                "times");
-        if (times.isEmpty())
-            return def;
-        HashMap<Time, Boolean> result = new HashMap<Time, Boolean>();
+    public static Map<Time, Boolean> parseFrom(ConfigurationNode node, Map<Time, Boolean> def) {
+        List<String> times = OtherDropsConfig.getMaybeList(node, "time", "times");
+        if (times.isEmpty()) return def;
+        HashMap<Time, Boolean> result = new HashMap<>();
         for (String name : times) {
             Time time = parse(name);
             if (time == null && name.startsWith("-")) {
@@ -102,26 +92,19 @@ public class Time extends Range<Long> {
                     continue;
                 }
                 result.put(time, false);
-            } else
-                result.put(time, true);
+            } else result.put(time, true);
         }
-        if (result.isEmpty())
-            return null;
+        if (result.isEmpty()) return null;
         return result;
     }
 
     @Override
     public String toString() {
-        if (equals(DAY))
-            return "DAY";
-        else if (equals(NIGHT))
-            return "NIGHT";
-        else if (equals(DUSK))
-            return "DUSK";
-        else if (equals(DAWN))
-            return "DAWN";
-        else if (equals(DARKNESS))
-            return "DARKNESS";
+        if (equals(DAY)) return "DAY";
+        else if (equals(NIGHT)) return "NIGHT";
+        else if (equals(DUSK)) return "DUSK";
+        else if (equals(DAWN)) return "DAWN";
+        else if (equals(DARKNESS)) return "DARKNESS";
         return super.toString();
     }
 }

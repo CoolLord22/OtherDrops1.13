@@ -12,7 +12,7 @@ import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 
 public class PigZombieData extends CreatureData {
-    Integer    anger  = null; // null = wildcard
+    final Integer anger; // null = wildcard
 
     public PigZombieData(Integer type) {
         this.anger = type;
@@ -20,23 +20,15 @@ public class PigZombieData extends CreatureData {
 
     @Override
     public void setOn(Entity mob, Player owner) {
-        if (mob instanceof PigZombie) {
-            PigZombie z = (PigZombie) mob;
-            if (anger != null)
-                z.setAnger(anger);
+        if (mob instanceof PigZombie z) {
+            if (anger != null) z.setAnger(anger);
         }
     }
 
     @Override
     public boolean matches(Data d) {
-        if (!(d instanceof PigZombieData))
-            return false;
-        PigZombieData vd = (PigZombieData) d;
-
-        if (this.anger != null)
-            if (this.anger != vd.anger)
-                return false;
-
+        if (!(d instanceof PigZombieData vd)) return false;
+        if (this.anger != null) if (!this.anger.equals(vd.anger)) return false;
         return true;
     }
 
@@ -62,19 +54,15 @@ public class PigZombieData extends CreatureData {
          * catch(NumberFormatException e) {} break;
          */
         if (!state.isEmpty() && !state.equals("0")) {
-            String[] split = state
-                    .split(OtherDropsConfig.CreatureDataSeparator);
+            String[] split = state.split(OtherDropsConfig.CreatureDataSeparator);
 
             for (String sub : split) {
-
                 if (sub.matches("[0-9]+")) { // need to check numbers before any
-                                             // .toLowerCase()
+                    // .toLowerCase()
                     anger = Integer.valueOf(sub);
                 }
             }
-
         }
-
         return new PigZombieData(anger);
     }
 
@@ -89,8 +77,7 @@ public class PigZombieData extends CreatureData {
 
     @Override
     public String get(Enum<?> creature) {
-        if (creature instanceof EntityType)
-            return this.toString();
+        if (creature instanceof EntityType) return this.toString();
         return "";
     }
 

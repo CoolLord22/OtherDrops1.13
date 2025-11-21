@@ -46,7 +46,7 @@ public class MoonPhaseCheck extends Condition {
     @Override
     public List<Condition> parse(ConfigurationNode parseMe) {
         Map<MoonPhase, Boolean> result = OtherDropsConfig.parseMoonPhaseFrom(parseMe);
-        if(result == null || result.isEmpty())
+        if (result == null || result.isEmpty())
             return null;
         List<Condition> conditionList = new ArrayList<>();
         conditionList.add(new MoonPhaseCheck(result));

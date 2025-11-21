@@ -16,20 +16,20 @@
 
 package com.gmail.zariust.otherdrops.event;
 
-import static com.gmail.zariust.common.Verbosity.HIGHEST;
-
-import java.util.Random;
-
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
 import com.gmail.zariust.otherdrops.parameters.Trigger;
 import com.gmail.zariust.otherdrops.subject.Target;
 
+import java.util.Random;
+
+import static com.gmail.zariust.common.Verbosity.HIGHEST;
+
 public abstract class AbstractDropEvent {
-    protected Target  target;
+    protected Target target;
     protected Trigger trigger;
-    public Random     rng;
+    public final Random rng;
 
     public AbstractDropEvent(Target targ, Trigger trigger) {
         target = targ;
@@ -38,16 +38,13 @@ public abstract class AbstractDropEvent {
     }
 
     /**
-     * @param diff
-     *            A flag whose value doesn't matter but whose presence means
-     *            "validate the target".
+     * @param diff A flag whose value doesn't matter but whose presence means
+     *             "validate the target".
      */
-    protected AbstractDropEvent(Target targ, Trigger act, boolean diff)
-            throws DropCreateException {
+    protected AbstractDropEvent(Target targ, Trigger act, boolean diff) throws DropCreateException {
         this(targ, act);
         if (targ.getClass().isAnnotationPresent(ConfigOnly.class)) {
-            ConfigOnly annotate = targ.getClass().getAnnotation(
-                    ConfigOnly.class);
+            ConfigOnly annotate = targ.getClass().getAnnotation(ConfigOnly.class);
             throw new DropCreateException(targ.getClass(), annotate.value());
         }
     }
@@ -76,25 +73,18 @@ public abstract class AbstractDropEvent {
 
     @Override
     public String toString() {
-        return trigger.toString() + " on "
-                + ((target == null) ? "<no block>" : target.toString());
+        return trigger.toString() + " on " + ((target == null) ? "<no block>" : target.toString());
     }
 
     public abstract String getLogMessage();
 
     public boolean basicMatch(AbstractDropEvent other) {
         if (!target.matches(other.target)) {
-            Log.logInfo(
-                    "AbstractDrop - basicMatch/target (type=" + target.getClass() + ") - failed. this.target="
-                            + target + " other.target="
-                            + other.target.toString(), HIGHEST);
+            Log.logInfo("AbstractDrop - basicMatch/target (type=" + target.getClass() + ") - failed. this.target=" + target + " other.target=" + other.target.toString(), HIGHEST);
             return false;
         }
         if (!trigger.equals(other.trigger)) {
-            Log.logInfo(
-                    "AbstractDrop - basicMatch/trigger - failed. this.trigger="
-                            + trigger + " other.trigger="
-                            + other.trigger.toString(), HIGHEST);
+            Log.logInfo("AbstractDrop - basicMatch/trigger - failed. this.trigger=" + trigger + " other.trigger=" + other.trigger.toString(), HIGHEST);
             return false;
         }
         return true;

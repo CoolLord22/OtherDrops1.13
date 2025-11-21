@@ -8,7 +8,7 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 public class OdFireworkMeta extends OdItemMeta {
-    public String owner;
+    public final String owner;
 
     public OdFireworkMeta(String owner) {
         this.owner = owner;
@@ -16,14 +16,12 @@ public class OdFireworkMeta extends OdItemMeta {
 
     @Override
     public ItemStack setOn(ItemStack stack, Target source) {
-        if (owner == null)
-            return null;
+        if (owner == null) return null;
         FireworkMeta meta = (FireworkMeta) stack.getItemMeta();
         // FIXME: allow for custom details
         Color color = OdItemMeta.getColorFrom(owner);
         if (color != null) {
-            meta.addEffect(FireworkEffect.builder().trail(false).flicker(false)
-                    .withColor(color).build());
+            meta.addEffect(FireworkEffect.builder().trail(false).flicker(false).withColor(color).build());
         }
         stack.setItemMeta(meta);
         return stack;

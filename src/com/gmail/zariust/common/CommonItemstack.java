@@ -11,9 +11,9 @@ import java.io.File;
 import java.io.IOException;
 
 public class CommonItemstack {
-    OtherDrops plugin;
-    File savedItemsFile;
-    YamlConfiguration config;
+    final OtherDrops plugin;
+    final File savedItemsFile;
+    final YamlConfiguration config;
 
     public CommonItemstack(OtherDrops plugin) {
         this.plugin = plugin;
@@ -55,7 +55,7 @@ public class CommonItemstack {
             Log.logWarning("An error occurred while loading ODItems.yml!");
         }
         int count = 0;
-        for(String key : config.getKeys(false)) {
+        for (String key : config.getKeys(false)) {
             NamespacedKey nkey = new NamespacedKey(plugin, "OD_ITEM_" + key);
             ItemStack itemStack = config.getItemStack(key);
             OtherDrops.loadedItems.put(nkey, itemStack);
@@ -67,27 +67,28 @@ public class CommonItemstack {
     public ItemStack getItemStack(String key) {
         try {
             NamespacedKey nkey = new NamespacedKey(plugin, parseKey(key));
-            if(OtherDrops.loadedItems.containsKey(nkey)) {
+            if (OtherDrops.loadedItems.containsKey(nkey)) {
                 return OtherDrops.loadedItems.get(nkey);
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         return null;
     }
 
     private String parseKey(String key) {
         key = key.toUpperCase();
         String itemIdentifier = key;
-        if(key.startsWith("MYTHIC_ITEM@")) {
+        if (key.startsWith("MYTHIC_ITEM@")) {
             String input = key.replaceAll("MYTHIC_ITEM@", "");
             itemIdentifier = "MYTHIC_" + input;
-        } else if(key.startsWith("NAMESPACE_ITEM@")) {
+        } else if (key.startsWith("NAMESPACE_ITEM@")) {
             String input = key.replaceAll("NAMESPACE_ITEM@", "");
             String[] inputSplit = input.toLowerCase().split(":");
 
             if (inputSplit.length == 2) {
                 itemIdentifier = "NAMESPACE_" + inputSplit[0] + "_" + inputSplit[1];
             }
-        } else if(key.startsWith("OD_ITEM@")) {
+        } else if (key.startsWith("OD_ITEM@")) {
             String input = key.replaceAll("OD_ITEM@", "");
             itemIdentifier = "OD_ITEM_" + input;
         }

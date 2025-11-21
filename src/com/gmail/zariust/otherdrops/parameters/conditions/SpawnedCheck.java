@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class SpawnedCheck extends Condition {
 
-    String                             name = "SpawnedCheck";
+    String name = "SpawnedCheck";
     private final Map<String, Boolean> spawnReasonsStored;
 
     public SpawnedCheck(Map<String, Boolean> value) {
@@ -30,9 +30,7 @@ public class SpawnedCheck extends Condition {
 
         if (entity != null) {
             String spawnReason = "";
-            if (!entity.getMetadata("CreatureSpawnedBy").isEmpty())
-                spawnReason = (String) entity.getMetadata("CreatureSpawnedBy").get(0).value();
-
+            if (!entity.getMetadata("CreatureSpawnedBy").isEmpty()) spawnReason = (String) entity.getMetadata("CreatureSpawnedBy").get(0).value();
             Log.logInfo("SpawnedCheck - checking: " + spawnReasonsStored.toString() + " vs actual: " + spawnReason, Verbosity.HIGHEST);
             return CustomDrop.checkList(spawnReason.toUpperCase(), spawnReasonsStored);
         } else {
@@ -43,24 +41,20 @@ public class SpawnedCheck extends Condition {
 
     @Override
     public List<Condition> parse(ConfigurationNode node) {
-        Map<String, Boolean> value = new HashMap<String, Boolean>();
+        Map<String, Boolean> value;
         value = parseSpawnedFrom(node, null);
-        if (value == null)
-            return null;
+        if (value == null) return null;
         OtherDropsConfig.dropForSpawned = true;
 
-        List<Condition> conditionList = new ArrayList<Condition>();
+        List<Condition> conditionList = new ArrayList<>();
         conditionList.add(new SpawnedCheck(value));
         return conditionList;
     }
 
-    public static Map<String, Boolean> parseSpawnedFrom(ConfigurationNode node,
-            Map<String, Boolean> def) {
-        List<String> spawnReasons = OtherDropsConfig.getMaybeList(node,
-                "spawnedby");
-        if (spawnReasons.isEmpty())
-            return def;
-        HashMap<String, Boolean> result = new HashMap<String, Boolean>();
+    public static Map<String, Boolean> parseSpawnedFrom(ConfigurationNode node, Map<String, Boolean> def) {
+        List<String> spawnReasons = OtherDropsConfig.getMaybeList(node, "spawnedby");
+        if (spawnReasons.isEmpty()) return def;
+        HashMap<String, Boolean> result = new HashMap<>();
         result.put(null, OtherDropsConfig.containsAll(spawnReasons));
         for (String name : spawnReasons) {
             name = name.toUpperCase();

@@ -40,22 +40,22 @@ import static com.gmail.zariust.common.Verbosity.HIGHEST;
 
 public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
     // Fortune enhancer setting
-    private Boolean                 fortuneEnhance;
+    private Boolean fortuneEnhance;
     // Conditions
-    private Set<ODItem>             dropsFilter = new HashSet<>();
-    private boolean                 toKeepDrops = false;
-    private Map<Agent, Boolean>     tools;
-    private Set<Flag>               flags;
-    private final Flag.FlagState    flagState = new Flag.FlagState();
+    private Set<ODItem> dropsFilter = new HashSet<>();
+    private boolean toKeepDrops = false;
+    private Map<Agent, Boolean> tools;
+    private Set<Flag> flags;
+    private final Flag.FlagState flagState = new Flag.FlagState();
     // Chance
-    private double                  chance;
-    private double                  weight;
-    private boolean                 weighted  = false;
-    private String                  exclusiveKey;
+    private double chance;
+    private double weight;
+    private boolean weighted = false;
+    private String exclusiveKey;
     // Delay
-    private IntRange                delay;
+    private IntRange delay;
     // Execution; this is the actual event that this matched
-    protected OccurredEvent         currentEvent;
+    protected OccurredEvent currentEvent;
 
     // Will this drop the default items?
     public abstract boolean isDefault();
@@ -63,20 +63,19 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
     // The name of this drop
     public abstract String getDropName();
 
-    protected List<String>        messages;
-    private final List<Action>    actions    = new ArrayList<Action>();
-    private final List<Condition> conditions = new ArrayList<Condition>();
-    private boolean               defaultOverride;
+    protected List<String> messages;
+    private final List<Action> actions = new ArrayList<>();
+    private final List<Condition> conditions = new ArrayList<>();
+    private boolean defaultOverride;
 
     // Conditions
     @Override
     public boolean matches(AbstractDropEvent other) {
         // TODO: not as elegant as the single liner but needed for debugging
-        Double rolledValue = rng.nextDouble();
+        double rolledValue = rng.nextDouble();
         boolean chancePassed = rolledValue <= chance / 100.0;
         if (!chancePassed) {
-            Log.logInfo("Drop failed due to chance *matches* (" + chance
-                    + ", rolled: " + rolledValue * 100 + ")", HIGHEST);
+            Log.logInfo("Drop failed due to chance *matches* (" + chance + ", rolled: " + rolledValue * 100 + ")", HIGHEST);
             return false;
         }
 
@@ -84,41 +83,34 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
             Log.logInfo("CustomDrop.matches(): basic match failed.", HIGHEST);
             return false;
         }
-        if (other instanceof OccurredEvent) {
-            OccurredEvent drop = (OccurredEvent) other;
+        if (other instanceof OccurredEvent drop) {
             currentEvent = drop;
 
-            if (!isTool(drop.getTool()))
-                return false;
+            if (!isTool(drop.getTool())) return false;
             if (!checkFlags(drop)) {
-                Log.logInfo("CustomDrop.matches(): a flag match failed.",
-                        HIGHEST);
+                Log.logInfo("CustomDrop.matches(): a flag match failed.", HIGHEST);
                 return false;
             }
 
             boolean inMobArenaFlag = false;
             for (Flag activeflag : flags) {
-                if (activeflag.toString().matches("IN_MOB_ARENA"))
+                if (activeflag.toString().matches("IN_MOB_ARENA")) {
                     inMobArenaFlag = true;
+                    break;
+                }
             }
 
-            if (!inMobArenaFlag)
-                if (Dependencies.hasMobArena())
-                    if (Dependencies.getMobArenaHandler().inRunningRegion(
-                            this.currentEvent.getLocation()))
-                        return false;
+            if (!inMobArenaFlag) if (Dependencies.hasMobArena())
+                if (Dependencies.getMobArenaHandler().inRunningRegion(this.currentEvent.getLocation())) return false;
 
             for (Condition condition : conditions) {
-                if (!condition.check(this, currentEvent))
-                    return false;
+                if (!condition.check(this, currentEvent)) return false;
             }
 
             return true;
         }
 
-        Log.logInfo(
-                "CustomDrop.matches(): match failed - not an OccuredEvent?",
-                HIGHEST);
+        Log.logInfo("CustomDrop.matches(): match failed - not an OccuredEvent?", HIGHEST);
         return false;
     }
 
@@ -136,16 +128,14 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
 
     public boolean isTool(Agent tool) {
         boolean positiveMatch = false;
-        if (tools == null)
-            return true;
+        if (tools == null) return true;
         // tools={DIAMOND_SPADE@=true}
         // tool=PLAYER@Xarqn with DIAMOND_SPADE@4
         // Note: tools.get(tool) fails with a player.
 
         // Check for tool matches
         for (Map.Entry<Agent, Boolean> agent : tools.entrySet()) {
-            if (!agent.getValue())
-                continue;
+            if (!agent.getValue()) continue;
             if (agent.getKey().matches(tool)) {
                 positiveMatch = true;
                 break;
@@ -154,40 +144,28 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
 
         // Check for tool exception matches
         for (Map.Entry<Agent, Boolean> agent : tools.entrySet()) {
-            if (agent.getValue())
-                continue;
+            if (agent.getValue()) continue;
             if (agent.getKey().matches(tool)) {
                 positiveMatch = false;
                 break;
             }
         }
         if (!positiveMatch)
-            Log.logInfo(
-                    "Tool match = " + positiveMatch + " - tool="
-                            + tool + " tools="
-                            + tools.toString(), HIGHEST);
+            Log.logInfo("Tool match = " + positiveMatch + " - tool=" + tool + " tools=" + tools.toString(), HIGHEST);
         return positiveMatch;
     }
 
     public static <T> boolean checkList(T obj, Map<T, Boolean> list) {
-        // Check if null - return true (this should only happen if no defaults
-        // have been set)
-        if (list == null || obj == null)
-            return true;
+        // Check if null - return true (this should only happen if no defaults have been set)
+        if (list == null || obj == null) return true;
 
-        // Check if empty (this should only happen if an invalid world or biome,
-        // etc is set)
-        // We return false as the user obviously wants it only to occur for a
-        // specific world, even if that world doesn't exist
-        if (list.isEmpty())
-            return false;
+        // Check if empty (this should only happen if an invalid world or biome, etc is set) We return false as the user
+        // obviously wants it only to occur for a specific world, even if that world doesn't exist
+        if (list.isEmpty()) return false;
 
-        // Check if a key matches (important to do this before checking for null
-        // key [all])
-        // eg. for the config [ALL, -DESERT] this will return false for desert
-        // before it gets to true for all
-        if (list.containsKey(obj))
-            return list.get(obj);
+        // Check if a key matches (important to do this before checking for null key [all]) eg. for the config [ALL,
+        // -DESERT] this will return false for desert before it gets to true for all
+        if (list.containsKey(obj)) return list.get(obj);
 
         return list.get(null);
     }
@@ -205,20 +183,17 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
     }
 
     public void setFlag(Flag flag) {
-        if (flags == null)
-            setFlags(new HashSet<Flag>());
+        if (flags == null) setFlags(new HashSet<>());
         flags.add(flag);
     }
 
     public boolean hasFlag(Flag flag) {
-        if (flags == null)
-            setFlags(new HashSet<Flag>());
+        if (flags == null) setFlags(new HashSet<>());
         return flags.contains(flag);
     }
 
     public void unsetFlag(Flag flag) {
-        if (flags == null)
-            setFlags(new HashSet<Flag>());
+        if (flags == null) setFlags(new HashSet<>());
         flags.remove(flag);
     }
 
@@ -229,17 +204,17 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
     public boolean checkFlags(OccurredEvent drop) {
         boolean shouldDrop = true;
         for (Flag flag : Flag.values()) {
-            // Error: flags.contains(flag) was returning true even for flags not
-            // in the hashset
+            // Error: flags.contains(flag) was returning true even for flags not in the hashset
             boolean match = false;
             for (Flag activeflag : flags) {
-                if (activeflag.toString().matches(flag.toString()))
+                if (activeflag.toString().matches(flag.toString())) {
                     match = true;
+                    break;
+                }
             }
-            // Logic issue: if flags that are not active are processed we may
-            // override continuedropping and dropthis settings...
+            // Logic issue: if flags that are not active are processed we may override continuedropping and dropthis settings...
             if (match) {
-                flag.matches(drop, match, flagState);
+                flag.matches(drop, true, flagState);
                 shouldDrop = shouldDrop && flagState.dropThis;
             }
         }
@@ -256,19 +231,17 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
             ExclusiveKey key = exclusives.get(exclusiveKey);
             key.cumul += getChance();
             if (key.select > key.cumul) {
-                Log.logInfo("Drop failed due to exclusive key (" + exclusiveKey
-                        + ").", HIGHEST);
+                Log.logInfo("Drop failed due to exclusive key (" + exclusiveKey + ").", HIGHEST);
                 return false;
             }
         }
         // TODO: not as elegant as the single liner but needed for debugging
-        Double rolledValue = rng.nextDouble();
+        double rolledValue = rng.nextDouble();
         boolean chancePassed = rolledValue <= chance / 100.0;
         if (chancePassed) {
             return true;
         } else {
-            Log.logInfo("Drop failed due to chance *exclusiveMap* (" + chance
-                    + ", rolled: " + rolledValue * 100 + ")", HIGHEST);
+            Log.logInfo("Drop failed due to chance *exclusiveMap* (" + chance + ", rolled: " + rolledValue * 100 + ")", HIGHEST);
             return false;
         }
     }
@@ -327,18 +300,13 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
 
     // Delay
     public int getRandomDelay() {
-        if (delay.getMin() == delay.getMax())
-            return delay.getMin();
+        if (Objects.equals(delay.getMin(), delay.getMax())) return delay.getMin();
 
-        int randomVal = (delay.getMin() + rng.nextInt(delay.getMax()
-                - delay.getMin() + 1));
-        return randomVal;
+        return (delay.getMin() + rng.nextInt(delay.getMax() - delay.getMin() + 1));
     }
 
     public String getDelayRange() {
-        return delay.getMin().equals(delay.getMax()) ? delay.getMin()
-                .toString() : delay.getMin().toString() + "-"
-                + delay.getMax().toString();
+        return delay.getMin().equals(delay.getMax()) ? delay.getMin().toString() : delay.getMin().toString() + "-" + delay.getMax().toString();
     }
 
     public void setDelay(IntRange val) {
@@ -361,40 +329,23 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
         currentEvent = evt;
 
         int schedule = getRandomDelay();
-        // if(schedule > 0.0)
-        // Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(OtherDrops.plugin,
-        // this, schedule);
-        // else run();
 
         Location playerLoc = null;
         Player player = null; // FIXME: need to get player early - in event
         // if (evt.player != null) playerLoc = player.getLocation();
-        DropRunner dropRunner = new DropRunner(OtherDrops.plugin, evt, this,
-                player, playerLoc, this.isDefault());
+        DropRunner dropRunner = new DropRunner(OtherDrops.plugin, evt, this, player, playerLoc, this.isDefault());
 
-        // schedule the task - NOTE: this must be a sync task due to the changes
-        // made in the performActualDrop function
-        if (schedule > 0.0)
-            Bukkit.getServer()
-                    .getScheduler()
-                    .scheduleSyncDelayedTask(OtherDrops.plugin, dropRunner,
-                            schedule);
-        else
-            dropRunner.run();
-        // }
+        // schedule the task - NOTE: this must be a sync task due to the changes made in the performActualDrop function
+        if (schedule > 0.0) Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(OtherDrops.plugin, dropRunner, schedule);
+        else dropRunner.run();
     }
 
     private static String setToString(Set<?> set) {
-        if (set.size() > 1)
-            return set.toString();
-        if (set.isEmpty())
-            return "(any/none)";
-        List<Object> list = new ArrayList<Object>();
-        list.addAll(set);
+        if (set.size() > 1) return set.toString();
+        if (set.isEmpty()) return "(any/none)";
+        List<Object> list = new ArrayList<>(set);
         if (list.get(0) == null) {
-            Log.logWarning(
-                    "CustomDropEvent.setToString - list.get(0) is null?",
-                    Verbosity.HIGHEST);
+            Log.logWarning("CustomDropEvent.setToString - list.get(0) is null?", Verbosity.HIGHEST);
             return "";
         }
         return list.get(0).toString();
@@ -405,25 +356,23 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
     }
 
     private static Set<?> stripFalse(Map<?, Boolean> map) {
-        Set<Object> set = new HashSet<Object>();
+        Set<Object> set = new HashSet<>();
         for (Object key : map.keySet()) {
-            if (map.get(key))
-                set.add(key);
+            if (map.get(key)) set.add(key);
         }
         return set;
     }
 
     @Override
     public String getLogMessage() {
-        StringBuilder log = new StringBuilder();
-        log.append(this + ": ");
-        // Tool
-        log.append(mapToString(tools));
-        // Placeholder for drops info
-        log.append(" now drops %d");
-        // Chance
-        log.append(" with " + chance + "% chance");
-        return log.toString();
+        // Tool Placeholder for drops info Chance
+        return this + ": " +
+                // Tool
+                mapToString(tools) +
+                // Placeholder for drops info
+                " now drops %d" +
+                // Chance
+                " with " + chance + "% chance";
     }
 
     public void setMessages(List<String> messages) {
@@ -436,14 +385,11 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
 
     @Override
     public String toString() {
-        return (trigger.toString() + " on "
-                + ((target == null) ? "<no block>" : target.toString())
-                + " drops " + getDropName());
+        return (trigger.toString() + " on " + ((target == null) ? "<no block>" : target.toString()) + " drops " + getDropName());
     }
 
     public void addActions(List<Action> parse) {
-        if (parse != null)
-            this.actions.addAll(parse);
+        if (parse != null) this.actions.addAll(parse);
     }
 
     public List<Action> getActions() {
@@ -451,8 +397,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
     }
 
     public void addConditions(List<Condition> parse) {
-        if (parse != null)
-            this.conditions.addAll(parse);
+        if (parse != null) this.conditions.addAll(parse);
     }
 
     public boolean getDefaultOverride() {

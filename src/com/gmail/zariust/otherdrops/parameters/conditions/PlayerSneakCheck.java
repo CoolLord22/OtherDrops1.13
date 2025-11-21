@@ -1,20 +1,18 @@
 package com.gmail.zariust.otherdrops.parameters.conditions;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.entity.Player;
-
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.parameters.Condition;
+import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Bane
- * 
  */
 public class PlayerSneakCheck extends Condition {
 
@@ -22,8 +20,7 @@ public class PlayerSneakCheck extends Condition {
 
     final private Boolean isEnabled;
 
-    public PlayerSneakCheck(Boolean Enable)
-    {
+    public PlayerSneakCheck(Boolean Enable) {
         isEnabled = Enable;
     }
 
@@ -33,12 +30,7 @@ public class PlayerSneakCheck extends Condition {
 
         Player aPlayer = occurrence.getPlayerAttacker();
 
-        if (aPlayer instanceof Player && aPlayer.isSneaking() == isEnabled)
-        {
-            return true;
-        } else {
-            return false;
-        }
+        return aPlayer != null && aPlayer.isSneaking() == isEnabled;
     }
 
     @Override
@@ -48,10 +40,9 @@ public class PlayerSneakCheck extends Condition {
         Boolean sneakSetting = node.getBoolean("player.sneaking", null);
 
         Log.dMsg("PlayerSneakCheck.parse(): Player.sneaking=" + sneakSetting);
-        List<Condition> conditionList = new ArrayList<Condition>();
+        List<Condition> conditionList = new ArrayList<>();
 
-        if (sneakSetting != null)
-        {
+        if (sneakSetting != null) {
             Log.logInfo("PlayerSneakCheck.parse(): Adding PlayerSneakcheck to list of valid conditions!", Verbosity.HIGHEST);
             conditionList.add(new PlayerSneakCheck(sneakSetting));
         }

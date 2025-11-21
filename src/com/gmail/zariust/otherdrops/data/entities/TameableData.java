@@ -7,7 +7,7 @@ import com.gmail.zariust.otherdrops.data.Data;
 import org.bukkit.entity.*;
 
 public class TameableData extends CreatureData {
-    Boolean isTamed = null;
+    final Boolean isTamed;
 
     public TameableData(Boolean isTamed) {
         this.isTamed = isTamed;
@@ -15,25 +15,15 @@ public class TameableData extends CreatureData {
 
     @Override
     public void setOn(Entity mob, Player owner) {
-        if (mob instanceof Tameable) {
-            Tameable z = (Tameable) mob;
-            if (isTamed != null)
-                if (isTamed)
-                    z.setOwner(owner);
+        if (mob instanceof Tameable z) {
+            if (isTamed != null) if (isTamed) z.setOwner(owner);
         }
     }
 
     @Override
     public boolean matches(Data d) {
-        if (!(d instanceof TameableData))
-            return false;
-
-        TameableData vd = (TameableData) d;
-
-        if (this.isTamed != null)
-            if (this.isTamed != vd.isTamed)
-                return false;
-
+        if (!(d instanceof TameableData vd)) return false;
+        if (this.isTamed != null) if (this.isTamed != vd.isTamed) return false;
         return true;
     }
 
@@ -55,10 +45,8 @@ public class TameableData extends CreatureData {
 
             for (String sub : split) {
                 sub = sub.toLowerCase().replaceAll("[\\s-_]", "");
-                if (sub.matches("(tame[d]*)"))
-                    tamed = true;
-                else if (sub.matches("(untamed|wild)"))
-                    tamed = false;
+                if (sub.matches("(tame[d]*)")) tamed = true;
+                else if (sub.matches("(untamed|wild)")) tamed = false;
             }
         }
 
@@ -77,8 +65,7 @@ public class TameableData extends CreatureData {
 
     @Override
     public String get(Enum<?> creature) {
-        if (creature instanceof EntityType)
-            return this.toString();
+        if (creature instanceof EntityType) return this.toString();
         return "";
     }
 }

@@ -16,6 +16,10 @@
 
 package com.gmail.zariust.otherdrops.special;
 
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,29 +27,21 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import static com.gmail.zariust.common.Verbosity.*;
 
-import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDrops;
-import com.gmail.zariust.otherdrops.OtherDropsConfig;
-
 public class SpecialResultLoader {
-    private static Map<String, SpecialResultHandler> knownEvents = new HashMap<String, SpecialResultHandler>();
+    private static final Map<String, SpecialResultHandler> knownEvents = new HashMap<>();
 
     /*
      * Load all the external classes.
      */
     public static void loadEvents() {
         File dir = new File(OtherDrops.plugin.getDataFolder(), "events");
-        ArrayList<String> loaded = new ArrayList<String>();
+        ArrayList<String> loaded = new ArrayList<>();
         dir.mkdir();
         boolean added = false;
         for (String f : dir.list()) {
@@ -55,109 +51,74 @@ public class SpecialResultLoader {
                     if (event != null) {
                         event.onLoad();
                         if (!added) {
-                            Log.logInfo("Collecting and loading events",
-                                    HIGHEST);
+                            Log.logInfo("Collecting and loading events", HIGHEST);
                             added = true;
                         }
                         List<String> known = event.getEvents();
                         for (String e : known) {
-                            // FIXME: ignore re-registration - update with
-                            // latest event (or ignore if event is the same)
+                            // FIXME: ignore re-registration - update with latest event (or ignore if event is the same)
                             if (knownEvents.containsKey(e))
-                                Log.logWarning(
-                                        "Warning: handler "
-                                                + event.getName()
-                                                + " attempted to register event "
-                                                + e
-                                                + ", but that was already registered "
-                                                + "by handler "
-                                                + knownEvents.get(e).getName()
-                                                + ". The event was not re-registered.",
-                                        EXTREME);
-                            else
-                                knownEvents.put(e, event);
+                                Log.logWarning("Warning: handler " + event.getName() + " attempted to register event " + e + ", but that was already registered " + "by handler " + knownEvents.get(e).getName() + ". The event was not re-registered.", EXTREME);
+                            else knownEvents.put(e, event);
                         }
                         loaded.addAll(known);
-                        Log.logInfo("Event group " + event.getName()
-                                + " loaded", HIGHEST);
+                        Log.logInfo("Event group " + event.getName() + " loaded", HIGHEST);
                     }
                 } catch (Exception ex) {
-                    Log.logWarning("Event file: " + f + " failed to load... ("
-                            + ex + ")", NORMAL);
-                    if (OtherDropsConfig.getVerbosity().exceeds(HIGH))
-                        ex.printStackTrace();
+                    Log.logWarning("Event file: " + f + " failed to load... (" + ex + ")", NORMAL);
+                    if (OtherDropsConfig.getVerbosity().exceeds(HIGH)) Log.logError("Error trace:", ex);
                 }
             }
         }
-        if (added)
-            Log.logInfo("Events loaded: " + loaded, HIGH);
+        if (added) Log.logInfo("Events loaded: " + loaded, HIGH);
     }
 
     private static SpecialResultHandler loadEvent(File file) {
         String name = file.getName();
-        try (JarFile jarFile = new JarFile(file)){
+        try (JarFile jarFile = new JarFile(file)) {
             JarEntry infoEntry = jarFile.getJarEntry("event.info");
-            if (infoEntry == null)
-                throw new SpecialResultLoadException("No event.info file found.");
+            if (infoEntry == null) throw new SpecialResultLoadException("No event.info file found.");
 
             InputStream stream = jarFile.getInputStream(infoEntry);
             Properties info = new Properties();
             info.load(stream);
             String mainClass = info.getProperty("class");
             jarFile.close();
-            
+
             if (mainClass != null) {
-                ClassLoader loader = URLClassLoader.newInstance(
-                        new URL[] { file.toURI().toURL() },
-                        SpecialResultHandler.class.getClassLoader());
+                ClassLoader loader = URLClassLoader.newInstance(new URL[]{file.toURI().toURL()}, SpecialResultHandler.class.getClassLoader());
                 Class<?> clazz = Class.forName(mainClass, true, loader);
                 for (Class<?> subclazz : clazz.getClasses()) {
                     Class.forName(subclazz.getName(), true, loader);
                 }
-                Class<? extends SpecialResultHandler> skillClass = clazz
-                        .asSubclass(SpecialResultHandler.class);
+                Class<? extends SpecialResultHandler> skillClass = clazz.asSubclass(SpecialResultHandler.class);
                 SpecialResultHandler event;
                 try { // Try default constructor first
                     event = skillClass.newInstance();
-                } catch (InstantiationException e) { // If that fails, try
-                                                     // OtherDrops constructor
-                    Constructor<? extends SpecialResultHandler> ctor = skillClass
-                            .getConstructor(OtherDrops.class);
+                } catch (InstantiationException e) { // If that fails, try OtherDrops constructor
+                    Constructor<? extends SpecialResultHandler> ctor = skillClass.getConstructor(OtherDrops.class);
                     event = ctor.newInstance(OtherDrops.plugin);
                 }
                 event.info = info;
                 event.version = info.getProperty("version");
                 return event;
-            }
-            else {
+            } else {
                 throw new SpecialResultLoadException("Missing class= property in event.info.");
             }
-        } 
-        
-        catch (IOException e) { // Failed to load jar or event.info
-            Log.logWarning("Failed to load event from file " + name + ":");
-            e.printStackTrace();
+        } catch (IOException e) { // Failed to load jar or event.info
+            if (OtherDropsConfig.getVerbosity().exceeds(HIGH)) Log.logError("Failed to load event from file " + name + ":", e);
         } catch (ClassNotFoundException e) { // Couldn't find specified class
-            Log.logWarning("The class specified in event.info for " + name
-                    + " could not be found.");
-        } catch (IllegalAccessException e) { // Constructor was inaccessible
-                                             // (not public)
-            Log.logWarning("The constructor for the event in " + name
-                    + " was not public.");
-        } catch (InvocationTargetException e) { // Constructor threw an
-                                                // exception
-            Log.logWarning("The event in " + name
-                    + " threw an exception while loading:");
-            e.getCause().printStackTrace();
+            Log.logWarning("The class specified in event.info for " + name + " could not be found.");
+        } catch (IllegalAccessException e) { // Constructor was inaccessible (not public)
+            Log.logWarning("The constructor for the event in " + name + " was not public.");
+        } catch (InvocationTargetException e) { // Constructor threw an exception
+            Log.logError("The event in " + name + " threw an exception while loading:", e);
         } catch (NoSuchMethodException e) { // Constructor does not exist
-            Log.logWarning("The event in " + name
-                    + " is missing a default or OtherDrops constructor.");
+            Log.logWarning("The event in " + name + " is missing a default or OtherDrops constructor.");
         } catch (SpecialResultLoadException e) {
-            Log.logWarning("Could not load event in " + name + ": "
-                    + e.getLocalizedMessage());
+            Log.logWarning("Could not load event in " + name + ": " + e.getLocalizedMessage());
         } catch (Exception e) {
-            Log.logWarning("The events in " + name + " failed to load");
-            e.printStackTrace();
+            Log.logError("The events in " + name + " failed to load", e);
         }
         return null;
     }

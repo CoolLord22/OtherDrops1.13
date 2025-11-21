@@ -30,37 +30,33 @@ public class SpawnerData implements Data {
     private EntityType creature;
 
     public SpawnerData(BlockState state) {
-        if (state instanceof CreatureSpawner)
-            creature = ((CreatureSpawner) state).getSpawnedType();
+        if (state instanceof CreatureSpawner creatureSpawner) creature = creatureSpawner.getSpawnedType();
     }
 
     public SpawnerData(EntityType type) {
         creature = type;
     }
 
-	@Override
+    @Override
     public int getData() {
         return creature.getTypeId();
     }
 
     @Override
     public void setData(int d) {
-		EntityType c = EntityType.fromId(d);
-        if (c != null)
-            creature = c;
+        EntityType c = EntityType.fromId(d);
+        if (c != null) creature = c;
     }
 
     @Override
     public boolean matches(Data d) {
-        if (!(d instanceof SpawnerData))
-            return false;
+        if (!(d instanceof SpawnerData)) return false;
         return creature == ((SpawnerData) d).creature;
     }
 
     @Override
     public String get(Enum<?> mat) {
-        if (mat == Material.SPAWNER)
-            return creature.toString();
+        if (mat == Material.SPAWNER) return creature.toString();
         return "";
     }
 
@@ -83,8 +79,7 @@ public class SpawnerData implements Data {
             return new ItemData(-1, state);
         }
         EntityType type = CommonEntity.getCreatureEntityType(state);
-        if (type != null)
-            return new SpawnerData(type);
+        if (type != null) return new SpawnerData(type);
         return null;
     }
 

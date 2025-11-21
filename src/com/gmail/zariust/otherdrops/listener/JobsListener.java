@@ -16,33 +16,27 @@ public class JobsListener implements Listener {
     public JobsListener(OtherDrops instance) {
         parent = instance;
     }
-    
+
     @EventHandler
     public void onJobLevelUp(JobsLevelUpEvent event) {
-        if (event.isCancelled())
-            return;
-        if (!OtherDropsConfig.dropForJobsLevelUp)
-            return;
+        if (event.isCancelled()) return;
+        if (!OtherDropsConfig.dropForJobsLevelUp) return;
         OccurredEvent drop = new OccurredEvent(event);
         parent.sectionManager.performDrop(drop);
     }
-    
+
     @EventHandler
     public void onJobExpGain(JobsExpGainEvent event) {
-        if (event.isCancelled())
-            return;
-        if (!OtherDropsConfig.dropForJobsExpGain)
-            return;
+        if (event.isCancelled()) return;
+        if (!OtherDropsConfig.dropForJobsExpGain) return;
         OccurredEvent drop = new OccurredEvent(event);
         parent.sectionManager.performDrop(drop);
     }
-    
+
     @EventHandler
     public void onJobPayment(JobsPaymentEvent event) {
-        if (event.isCancelled())
-            return;
-        if (!OtherDropsConfig.dropForJobsPayment)
-            return;
+        if (event.isCancelled()) return;
+        if (!OtherDropsConfig.dropForJobsPayment) return;
         OccurredEvent drop = new OccurredEvent(event);
         parent.sectionManager.performDrop(drop);
     }

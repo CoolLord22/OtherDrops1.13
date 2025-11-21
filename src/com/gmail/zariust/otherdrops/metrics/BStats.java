@@ -7,12 +7,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class BStats {
-	private final OtherDrops plugin;
-	private Metrics metrics;
-    private final static Map<String, Integer> triggerCounts = new HashMap<String, Integer>();
-	
+    private final OtherDrops plugin;
+    private Metrics metrics;
+    private final static Map<String, Integer> triggerCounts = new HashMap<>();
+
     public BStats(OtherDrops plugin) {
-    	this.plugin = plugin;
+        this.plugin = plugin;
     }
 
     public void registerMetrics() {
@@ -21,7 +21,7 @@ public class BStats {
             registerCustomMetrics();
         }
     }
-    
+
     private void registerCustomMetrics() {
         registerTriggers();
         // more custom charts
@@ -30,32 +30,20 @@ public class BStats {
     /**
      * Set up any required custom graphs that count data from config loading.
      * Currently counts used triggers
-     * 
      */
     void registerTriggers() {
         metrics.addCustomChart(new Metrics.AdvancedPie("triggers", () -> {
             Map<String, Integer> values = new HashMap<>();
-            for(Entry<String, Integer> entry : triggerCounts.entrySet()) {
-            	String trigger = entry.getKey();
-            	Integer amount = entry.getValue();
-            	values.put(trigger, amount);
+            for (Entry<String, Integer> entry : triggerCounts.entrySet()) {
+                String trigger = entry.getKey();
+                Integer amount = entry.getValue();
+                values.put(trigger, amount);
             }
             return values;
         }));
     }
-    
-    /**
-     * Keeps a count of each individual trigger for the purpose of logging to
-     * Metrics custom graph
-     * 
-     * @param triggerString
-     */
+
     public static void incrementTriggerCounts(String triggerString) {
-        if (triggerCounts.get(triggerString) == null) {
-            triggerCounts.put(triggerString, 1);
-        } else {
-            triggerCounts.put(triggerString,
-                    triggerCounts.get(triggerString) + 1);
-        }
+        triggerCounts.merge(triggerString, 1, Integer::sum);
     }
 }

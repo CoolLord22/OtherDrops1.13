@@ -24,7 +24,7 @@ import org.bukkit.entity.EntityType;
 import java.util.*;
 
 public class CreatureGroup {
-    private static Map<String, CreatureGroup> lookup = new HashMap<String, CreatureGroup>();
+    private static final Map<String, CreatureGroup> lookup = new HashMap<>();
 
     private final ArrayList<EntityType> mob = new ArrayList<>();
     private final String name;
@@ -36,7 +36,7 @@ public class CreatureGroup {
 
     private CreatureGroup(String name, String... entities) {
         this.name = name;
-        for(String ent : entities) {
+        for (String ent : entities) {
             try {
                 EntityType entity = EntityType.valueOf(ent);
                 this.mob.add(entity);
@@ -66,18 +66,15 @@ public class CreatureGroup {
     public static final CreatureGroup CREATURE_ANY = register("CREATURE_ANY");
 
     static {
-        register("CREATURE_HOSTILE","BLAZE", "CREEPER", "ELDER_GUARDIAN", "ENDER_DRAGON", "ENDERMITE", "EVOKER", "DROWNED", "GHAST", "GIANT", "GUARDIAN", "HOGLIN", "HUSK", "ILLUSIONER", "MAGMA_CUBE", "PHANTOM", "PIGLIN_BRUTE",
-                "PILLAGER", "RAVAGER", "SHULKER", "SILVERFISH", "SKELETON", "SLIME", "STRAY", "VEX", "VINDICATOR", "WARDEN", "WITCH", "WITHER", "WITHER_SKELETON", "ZOGLIN", "ZOMBIE", "ZOMBIE_VILLAGER");
-        register("CREATURE_FRIENDLY","ALLAY", "BAT", "CAMEL", "CAT", "CHICKEN", "COD", "COW", "DONKEY", "FOX", "FROG", "HORSE", "MUSHROOM_COW", "MULE", "OCELOT", "PARROT", "PIG", "PUFFERFISH", "RABBIT", "SHEEP", "SALMON", "SKELETON_HORSE",
-                "SNIFFER", "SNOWMAN", "SQUID", "STRIDER", "TADPOLE", "TROPICAL_FISH", "TURTLE", "VILLAGER", "WANDERING_TRADER", "ZOMBIE_HORSE");
-        register("CREATURE_NEUTRAL","BEE", "DOLPHIN", "ENDERMAN", "GOAT", "IRON_GOLEM", "LLAMA", "PANDA", "PIGLIN", "POLAR_BEAR", "WOLF", "ZOMBIFIED_PIGLIN");
-        register("CREATURE_ANIMAL","AXOLOTL", "BAT", "BEE", "CAMEL", "CAT", "COD", "COW", "CHICKEN", "DOLPHIN", "DONKEY", "FOX", "FROG", "GLOW_SQUID", "HORSE", "LLAMA", "MULE", "MUSHROOM_COW", "OCELOT", "PANDA", "PARROT", "PIG", "POLAR_BEAR",
-                "PUFFERFISH", "RABBIT", "SALMON", "SHEEP", "SNIFFER", "SQUID", "TADPOLE", "TROPICAL_FISH", "TURTLE", "WOLF");
-        register("CREATURE_UNDEAD","DROWNED", "ENDERMAN", "HUSK", "PHANTOM", "SKELETON", "STRAY", "WITHER_SKELETON", "ZOGLIN", "ZOMBIE", "ZOMBIE_VILLAGER", "ZOMBIFIED_PIGLIN");
-        register("CREATURE_BUG","BEE", "CAVE_SPIDER", "ENDERMITE", "SILVERFISH", "SPIDER");
-        register("CREATURE_WATER","AXOLOTL", "COD", "DOLPHIN", "ELDER_GUARDIAN", "GLOW_SQUID", "GUARDIAN", "PUFFERFISH", "SALMON", "SQUID", "TADPOLE", "TROPICAL_FISH", "TURTLE");
-        register("CREATURE_BOSS","ENDER_DRAGON", "WITHER");
-        register("CREATURE_NETHER","BLAZE", "CHICKEN", "ENDERMAN", "GHAST", "HOGLIN", "MAGMA_CUBE", "PIGLIN", "PIGLIN_BRUTE", "SKELETON", "STRIDER", "WITHER_SKELETON", "ZOMBIFIED_PIGLIN");
+        register("CREATURE_HOSTILE", "BLAZE", "CREEPER", "ELDER_GUARDIAN", "ENDER_DRAGON", "ENDERMITE", "EVOKER", "DROWNED", "GHAST", "GIANT", "GUARDIAN", "HOGLIN", "HUSK", "ILLUSIONER", "MAGMA_CUBE", "PHANTOM", "PIGLIN_BRUTE", "PILLAGER", "RAVAGER", "SHULKER", "SILVERFISH", "SKELETON", "SLIME", "STRAY", "VEX", "VINDICATOR", "WARDEN", "WITCH", "WITHER", "WITHER_SKELETON", "ZOGLIN", "ZOMBIE", "ZOMBIE_VILLAGER");
+        register("CREATURE_FRIENDLY", "ALLAY", "BAT", "CAMEL", "CAT", "CHICKEN", "COD", "COW", "DONKEY", "FOX", "FROG", "HORSE", "MUSHROOM_COW", "MULE", "OCELOT", "PARROT", "PIG", "PUFFERFISH", "RABBIT", "SHEEP", "SALMON", "SKELETON_HORSE", "SNIFFER", "SNOWMAN", "SQUID", "STRIDER", "TADPOLE", "TROPICAL_FISH", "TURTLE", "VILLAGER", "WANDERING_TRADER", "ZOMBIE_HORSE");
+        register("CREATURE_NEUTRAL", "BEE", "DOLPHIN", "ENDERMAN", "GOAT", "IRON_GOLEM", "LLAMA", "PANDA", "PIGLIN", "POLAR_BEAR", "WOLF", "ZOMBIFIED_PIGLIN");
+        register("CREATURE_ANIMAL", "AXOLOTL", "BAT", "BEE", "CAMEL", "CAT", "COD", "COW", "CHICKEN", "DOLPHIN", "DONKEY", "FOX", "FROG", "GLOW_SQUID", "HORSE", "LLAMA", "MULE", "MUSHROOM_COW", "OCELOT", "PANDA", "PARROT", "PIG", "POLAR_BEAR", "PUFFERFISH", "RABBIT", "SALMON", "SHEEP", "SNIFFER", "SQUID", "TADPOLE", "TROPICAL_FISH", "TURTLE", "WOLF");
+        register("CREATURE_UNDEAD", "DROWNED", "ENDERMAN", "HUSK", "PHANTOM", "SKELETON", "STRAY", "WITHER_SKELETON", "ZOGLIN", "ZOMBIE", "ZOMBIE_VILLAGER", "ZOMBIFIED_PIGLIN");
+        register("CREATURE_BUG", "BEE", "CAVE_SPIDER", "ENDERMITE", "SILVERFISH", "SPIDER");
+        register("CREATURE_WATER", "AXOLOTL", "COD", "DOLPHIN", "ELDER_GUARDIAN", "GLOW_SQUID", "GUARDIAN", "PUFFERFISH", "SALMON", "SQUID", "TADPOLE", "TROPICAL_FISH", "TURTLE");
+        register("CREATURE_BOSS", "ENDER_DRAGON", "WITHER");
+        register("CREATURE_NETHER", "BLAZE", "CHICKEN", "ENDERMAN", "GHAST", "HOGLIN", "MAGMA_CUBE", "PIGLIN", "PIGLIN_BRUTE", "SKELETON", "STRIDER", "WITHER_SKELETON", "ZOMBIFIED_PIGLIN");
         register("CREATURE_END", "ENDER_DRAGON", "ENDERMAN", "ENDERMITE", "SHULKER");
         register("CREATURE_ANY", List.of(EntityType.values()));
         registerTagMaterials();
@@ -91,8 +88,7 @@ public class CreatureGroup {
                 String name = "CREATURE_TAG_" + tag.getKey().toString().toUpperCase().replace("MINECRAFT:", "");
                 register(name, List.copyOf(tag.getValues()));
             } catch (Exception e) {
-                Log.logWarning("Failed to register tag group: " + tag.getKey());
-                e.printStackTrace();
+                Log.logError("Failed to register tag group: " + tag.getKey(), e);
             }
         }
     }

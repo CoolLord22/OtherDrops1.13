@@ -27,7 +27,7 @@ import java.util.*;
 import static org.bukkit.Material.*;
 
 public class MaterialGroup {
-    private static final Map<String, MaterialGroup> lookup = new HashMap<String, MaterialGroup>();
+    private static final Map<String, MaterialGroup> lookup = new HashMap<>();
 
     private final ArrayList<Material> mat = new ArrayList<>();
     private final String name;
@@ -48,7 +48,7 @@ public class MaterialGroup {
     }
 
     private void combine(MaterialGroup... groups) {
-        for(MaterialGroup group : groups) {
+        for (MaterialGroup group : groups) {
             this.mat.addAll(group.mat);
         }
     }
@@ -65,13 +65,13 @@ public class MaterialGroup {
     public static final MaterialGroup ANY_PICKAXE = register("ANY_PICKAXE");
     public static final MaterialGroup ANY_SWORD = register("ANY_SWORD");
     public static final MaterialGroup ANY_BUCKET = register("ANY_BUCKET");
-    
+
     // Armour
     public static final MaterialGroup ANY_HELMET = register("ANY_HELMET");
     public static final MaterialGroup ANY_CHESTPLATE = register("ANY_CHESTPLATE");
     public static final MaterialGroup ANY_LEGGINGS = register("ANY_LEGGINGS");
     public static final MaterialGroup ANY_BOOTS = register("ANY_BOOTS");
-    
+
     // Wildcards
     public static final MaterialGroup ANY_SPADE = register("ANY_SPADE");
     public static final MaterialGroup ANY_TOOL = register("ANY_TOOL", FLINT_AND_STEEL, BOW, FISHING_ROD, SADDLE);
@@ -99,37 +99,22 @@ public class MaterialGroup {
             ANY_OBJECT.mat.add(mat);
             if (mat.isBlock()) {
                 ANY_BLOCK.mat.add(mat);
-                if(mat.name().contains("_SIGN"))
-                    ANY_SIGN.mat.add(mat);
-                if(mat.name().contains("_LEAVES"))
-                    ANY_LEAVES.mat.add(mat);
-                if(mat.name().contains("_LOG"))
-                    ANY_LOGS.mat.add(mat);
-            }
-            else {
+                if (mat.name().contains("_SIGN")) ANY_SIGN.mat.add(mat);
+                if (mat.name().contains("_LEAVES")) ANY_LEAVES.mat.add(mat);
+                if (mat.name().contains("_LOG")) ANY_LOGS.mat.add(mat);
+            } else {
                 ANY_ITEM.mat.add(mat);
-                if(mat.name().contains("_SHOVEL"))
-                    ANY_SHOVEL.mat.add(mat);
-                else if(mat.name().contains("_HOE"))
-                    ANY_HOE.mat.add(mat);
-                else if(mat.name().contains("_AXE"))
-                    ANY_AXE.mat.add(mat);
-                else if(mat.name().contains("_PICKAXE"))
-                    ANY_PICKAXE.mat.add(mat);
-                else if(mat.name().contains("_SWORD"))
-                    ANY_SWORD.mat.add(mat);
-                else if(mat.name().contains("_BUCKET"))
-                    ANY_BUCKET.mat.add(mat);
-                else if(mat.name().contains("_HELMET"))
-                    ANY_HELMET.mat.add(mat);
-                else if(mat.name().contains("_CHESTPLATE"))
-                    ANY_CHESTPLATE.mat.add(mat);
-                else if(mat.name().contains("_LEGGINGS"))
-                    ANY_LEGGINGS.mat.add(mat);
-                else if(mat.name().contains("_BOOTS"))
-                    ANY_BOOTS.mat.add(mat);
-                else if(mat.name().contains("MUSIC_DISC"))
-                    ANY_RECORD.mat.add(mat);
+                if (mat.name().contains("_SHOVEL")) ANY_SHOVEL.mat.add(mat);
+                else if (mat.name().contains("_HOE")) ANY_HOE.mat.add(mat);
+                else if (mat.name().contains("_AXE")) ANY_AXE.mat.add(mat);
+                else if (mat.name().contains("_PICKAXE")) ANY_PICKAXE.mat.add(mat);
+                else if (mat.name().contains("_SWORD")) ANY_SWORD.mat.add(mat);
+                else if (mat.name().contains("_BUCKET")) ANY_BUCKET.mat.add(mat);
+                else if (mat.name().contains("_HELMET")) ANY_HELMET.mat.add(mat);
+                else if (mat.name().contains("_CHESTPLATE")) ANY_CHESTPLATE.mat.add(mat);
+                else if (mat.name().contains("_LEGGINGS")) ANY_LEGGINGS.mat.add(mat);
+                else if (mat.name().contains("_BOOTS")) ANY_BOOTS.mat.add(mat);
+                else if (mat.name().contains("MUSIC_DISC")) ANY_RECORD.mat.add(mat);
             }
         }
         ANY_SPADE.combine(ANY_SHOVEL);
@@ -153,8 +138,7 @@ public class MaterialGroup {
                     String name = "TAG_" + tag.getKey().toString().toUpperCase().replace("MINECRAFT:", "");
                     register(name, List.copyOf(tag.getValues()));
                 } catch (Exception e) {
-                    Log.logWarning("Failed to register tag group: " + tag.getKey());
-                    e.printStackTrace();
+                    Log.logError("Failed to register tag group: " + tag.getKey(), e);
                 }
             }
         }
@@ -179,15 +163,13 @@ public class MaterialGroup {
 
     public boolean isBlock() {
         for (Material obj : mat)
-            if (obj.isBlock())
-                return true;
+            if (obj.isBlock()) return true;
         return false;
     }
 
     public boolean isItem() {
         for (Material obj : mat)
-            if (!obj.isBlock())
-                return true;
+            if (!obj.isBlock()) return true;
         return false;
     }
 

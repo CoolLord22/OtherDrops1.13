@@ -26,58 +26,39 @@ import java.util.List;
 import java.util.Map;
 
 public enum Weather {
-    RAIN(true), SNOW(true), THUNDER(true), CLEAR(false), CLOUD(true), NONE(
-            false), STORM(true) {
+    RAIN(true), SNOW(true), THUNDER(true), CLEAR(false), CLOUD(true), NONE(false), STORM(true) {
         @Override
         public boolean matches(Weather sky) {
-            if (sky.stormy && sky != THUNDER)
-                return true;
+            if (sky.stormy && sky != THUNDER) return true;
             return false;
         }
     };
-    private boolean                     stormy;
-    private static Map<String, Weather> nameLookup = new HashMap<String, Weather>();
+    private final boolean stormy;
+    private static final Map<String, Weather> nameLookup = new HashMap<>();
 
     static {
         for (Weather storm : values())
             nameLookup.put(storm.name(), storm);
     }
 
-    private Weather(boolean storm) {
+    Weather(boolean storm) {
         stormy = storm;
     }
 
     public static Weather match(Biome biome, boolean hasStorm, boolean thundering) {
-        if (biome == null)
-            biome = Biome.PLAINS;
-        switch (biome) {
-            case NETHER_WASTES:
-            case CRIMSON_FOREST:
-            case WARPED_FOREST:
-            case SOUL_SAND_VALLEY:
-            case BASALT_DELTAS:
-            case THE_END:
-            case DESERT:
-                return NONE;
-            case GROVE:
-            case JAGGED_PEAKS:
-            case FROZEN_PEAKS:
-            case SNOWY_BEACH:
-            case SNOWY_TAIGA:
-            case SNOWY_PLAINS:
-            case SNOWY_SLOPES:
-            case ICE_SPIKES:
-            case DEEP_FROZEN_OCEAN:
-            case FROZEN_OCEAN:
-            case FROZEN_RIVER:
-                if (hasStorm)
-                    return SNOW;
-                return CLEAR;
-            default:
-                if (hasStorm)
-                    return thundering ? THUNDER : RAIN;
-                return CLEAR;
-        }
+        if (biome == null) biome = Biome.PLAINS;
+        return switch (biome) {
+            case NETHER_WASTES, CRIMSON_FOREST, WARPED_FOREST, SOUL_SAND_VALLEY, BASALT_DELTAS, THE_END, DESERT -> NONE;
+            case GROVE, JAGGED_PEAKS, FROZEN_PEAKS, SNOWY_BEACH, SNOWY_TAIGA, SNOWY_PLAINS, SNOWY_SLOPES, ICE_SPIKES,
+                 DEEP_FROZEN_OCEAN, FROZEN_OCEAN, FROZEN_RIVER -> {
+                if (hasStorm) yield SNOW;
+                yield CLEAR;
+            }
+            default -> {
+                if (hasStorm) yield thundering ? THUNDER : RAIN;
+                yield CLEAR;
+            }
+        };
     }
 
     public boolean isStormy() {
@@ -85,8 +66,7 @@ public enum Weather {
     }
 
     public boolean matches(Weather sky) {
-        if (stormy && sky == STORM)
-            return true;
+        if (stormy && sky == STORM) return true;
         return this == sky;
     }
 
@@ -94,17 +74,14 @@ public enum Weather {
         return nameLookup.get(storm.toUpperCase());
     }
 
-    public static Map<Weather, Boolean> parseFrom(ConfigurationNode node,
-            Map<Weather, Boolean> def) {
+    public static Map<Weather, Boolean> parseFrom(ConfigurationNode node, Map<Weather, Boolean> def) {
         List<String> weather = OtherDropsConfig.getMaybeList(node, "weather");
-        if (weather.isEmpty())
-            return def;
-        Map<Weather, Boolean> result = new HashMap<Weather, Boolean>();
+        if (weather.isEmpty()) return def;
+        Map<Weather, Boolean> result = new HashMap<>();
         result.put(null, OtherDropsConfig.containsAll(weather));
         for (String name : weather) {
             Weather storm = parse(name);
-            if (storm != null)
-                result.put(storm, true);
+            if (storm != null) result.put(storm, true);
             else if (name.startsWith("-")) {
                 result.put(null, true);
                 storm = parse(name.substring(1));
@@ -117,8 +94,7 @@ public enum Weather {
                 Log.logWarning("Invalid weather " + name + "; skipping...");
             }
         }
-        if (result.isEmpty())
-            return null;
+        if (result.isEmpty()) return null;
         return result;
     }
 }

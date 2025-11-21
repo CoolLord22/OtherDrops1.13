@@ -12,8 +12,8 @@ public class MythicMobData implements Data {
     String mythicMobType = null;
 
     public MythicMobData(String mythicMobType) {
-        if(Dependencies.hasMythicMobs()) {
-            if(!mythicMobType.equalsIgnoreCase("ANY") && !Dependencies.getMythicMobs().getMobManager().getMythicMob(mythicMobType).isPresent()) {
+        if (Dependencies.hasMythicMobs()) {
+            if (!mythicMobType.equalsIgnoreCase("ANY") && Dependencies.getMythicMobs().getMobManager().getMythicMob(mythicMobType).isEmpty()) {
                 Log.logInfo("Invalid mythic mob specified/could not be found: " + mythicMobType, Verbosity.HIGHEST);
                 return;
             }
@@ -27,15 +27,15 @@ public class MythicMobData implements Data {
     }
 
     @Override
-    public void setData(int d) { }
+    public void setData(int d) {
+    }
 
     @Override
     public boolean matches(Data d) {
-        if (!(d instanceof MythicMobData))
-            return false;
+        if (!(d instanceof MythicMobData)) return false;
 
-        if(this.mythicMobType != null) {
-            if(this.mythicMobType.equalsIgnoreCase("ANY") || ((MythicMobData) d).mythicMobType.equalsIgnoreCase("ANY"))
+        if (this.mythicMobType != null) {
+            if (this.mythicMobType.equalsIgnoreCase("ANY") || ((MythicMobData) d).mythicMobType.equalsIgnoreCase("ANY"))
                 return true;
             return this.mythicMobType.equalsIgnoreCase(((MythicMobData) d).mythicMobType);
         }
@@ -45,13 +45,13 @@ public class MythicMobData implements Data {
 
     @Override
     public String get(Enum<?> mat) {
-        if (mat instanceof EntityType)
-            return this.toString();
+        if (mat instanceof EntityType) return this.toString();
         return "";
     }
 
     @Override
-    public void setOn(BlockState state) { }
+    public void setOn(BlockState state) {
+    }
 
     @Override
     public void setOn(Entity entity, Player witness) {
@@ -66,6 +66,7 @@ public class MythicMobData implements Data {
     public String getMythicMobType() {
         return mythicMobType;
     }
+
     @Override
     public String toString() {
         String val = "MYTHIC_MOB@";

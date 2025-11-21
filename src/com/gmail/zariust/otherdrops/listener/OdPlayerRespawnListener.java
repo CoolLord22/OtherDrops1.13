@@ -36,5 +36,4 @@ public class OdPlayerRespawnListener implements Listener {
         OccurredEvent drop = new OccurredEvent(event);
         parent.sectionManager.performDrop(drop);
     }
-
 }
