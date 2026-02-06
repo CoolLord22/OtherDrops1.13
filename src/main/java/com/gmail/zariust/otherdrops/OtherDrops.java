@@ -129,7 +129,7 @@ public class OtherDrops extends JavaPlugin {
         writeNames(null, "org.bukkit.Sound");
         writeNames(null, "org.bukkit.block.Biome");
         writeNames(null, "org.bukkit.entity.EntityType");
-        writeNames("main/resources/Weather", Weather.class);
+        writeNames("Weather", Weather.class);
         writeNames("MoonPhase", MoonPhaseCheck.MoonPhase.class);
         writeNames(null, "org.bukkit.event.entity.CreatureSpawnEvent$SpawnReason");
         writeNames(null, "org.bukkit.event.entity.EntityDamageEvent$DamageCause");
