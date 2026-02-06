@@ -418,6 +418,7 @@ public class OtherDropsConfig {
         if (enableBlockTo) Log.logWarning("blockto/damage_water enabled - BE CAREFUL");
 
         try {
+            SpecialResultLoader.updateEvents();
             SpecialResultLoader.loadEvents();
         } catch (Exception except) {
             Log.logWarning("Event files failed to load - this shouldn't happen, please inform developer.");

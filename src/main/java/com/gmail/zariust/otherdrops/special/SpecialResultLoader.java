@@ -27,14 +27,43 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.jar.JarInputStream;
 
 import static com.gmail.zariust.common.Verbosity.*;
 
 public class SpecialResultLoader {
     private static final Map<String, SpecialResultHandler> knownEvents = new HashMap<>();
+    private static final List<String> bundledJars = Arrays.asList(
+            "Explosions.jar",
+            "Weather.jar",
+            "Trees.jar",
+            "Sheep.jar");
+
+    public static void updateEvents() {
+        File eventsDir = new File(OtherDrops.plugin.getDataFolder(), "events");
+        eventsDir.mkdirs();
+
+        for (String jarName : bundledJars) {
+            File extracted = new File(eventsDir, jarName);
+
+            if (!extracted.exists()) {
+                extractEventJar(jarName);
+                continue;
+            }
+
+            String bundledVersion = readEventVersionFromResource(jarName);
+            String extractedVersion = readEventVersionFromFile(extracted);
+
+            if (isOlder(extractedVersion, bundledVersion)) {
+                extractEventJar(jarName);
+            }
+        }
+    }
 
     /*
      * Load all the external classes.
@@ -109,6 +138,7 @@ public class SpecialResultLoader {
             if (OtherDropsConfig.getVerbosity().exceeds(HIGH)) Log.logError("Failed to load event from file " + name + ":", e);
         } catch (ClassNotFoundException e) { // Couldn't find specified class
             Log.logWarning("The class specified in event.info for " + name + " could not be found.");
+            e.printStackTrace();
         } catch (IllegalAccessException e) { // Constructor was inaccessible (not public)
             Log.logWarning("The constructor for the event in " + name + " was not public.");
         } catch (InvocationTargetException e) { // Constructor threw an exception
@@ -125,5 +155,62 @@ public class SpecialResultLoader {
 
     public static SpecialResultHandler getHandlerFor(String name) {
         return knownEvents.get(name);
+    }
+
+    private static void extractEventJar(String jarName) {
+        File out = new File(OtherDrops.plugin.getDataFolder(), "events/" + jarName);
+
+        try (InputStream in = OtherDrops.plugin.getResource("events/" + jarName)) {
+            if (in == null) {
+                Log.logWarning("Missing bundled event jar: " + jarName);
+                return;
+            }
+            Files.copy(in, out.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Log.logInfo("Extracted event jar: " + jarName, HIGH);
+        } catch (IOException e) {
+            Log.logError("Failed to extract event jar: " + jarName, e);
+        }
+    }
+    private static String readEventVersionFromFile(File jar) {
+        try (JarFile jf = new JarFile(jar)) {
+            JarEntry entry = jf.getJarEntry("event.info");
+            if (entry == null) return null;
+
+            Properties p = new Properties();
+            p.load(jf.getInputStream(entry));
+            return p.getProperty("version");
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    private static String readEventVersionFromResource(String jarName) {
+        try (InputStream in = OtherDrops.plugin.getResource("events/" + jarName)) {
+            if (in == null) return null;
+
+            try (JarInputStream jis = new JarInputStream(in)) {
+                JarEntry e;
+                while ((e = jis.getNextJarEntry()) != null) {
+                    if ("event.info".equals(e.getName())) {
+                        Properties p = new Properties();
+                        p.load(jis);
+                        return p.getProperty("version");
+                    }
+                }
+            }
+        } catch (Exception ignored) {}
+        return null;
+    }
+    private static boolean isOlder(String a, String b) {
+        if (a == null) return true;
+        if (b == null) return false;
+
+        String[] x = a.split("\\.");
+        String[] y = b.split("\\.");
+        for (int i = 0; i < Math.max(x.length, y.length); i++) {
+            int ai = i < x.length ? Integer.parseInt(x[i]) : 0;
+            int bi = i < y.length ? Integer.parseInt(y[i]) : 0;
+            if (ai != bi) return ai < bi;
+        }
+        return false;
     }
 }
