@@ -1,6 +1,8 @@
 package com.gmail.zariust.otherdrops.metrics;
 
 import com.gmail.zariust.otherdrops.OtherDrops;
+import org.bstats.bukkit.Metrics;
+import org.bstats.charts.AdvancedPie;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +34,7 @@ public class BStats {
      * Currently counts used triggers
      */
     void registerTriggers() {
-        metrics.addCustomChart(new Metrics.AdvancedPie("triggers", () -> {
+        metrics.addCustomChart(new AdvancedPie("triggers", () -> {
             Map<String, Integer> values = new HashMap<>();
             for (Entry<String, Integer> entry : triggerCounts.entrySet()) {
                 String trigger = entry.getKey();
