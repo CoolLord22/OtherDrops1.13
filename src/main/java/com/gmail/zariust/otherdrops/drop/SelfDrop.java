@@ -16,6 +16,15 @@
 
 package com.gmail.zariust.otherdrops.drop;
 
+import com.gmail.zariust.common.CommonEntity;
+import com.gmail.zariust.otherdrops.data.CreatureData;
+import com.gmail.zariust.otherdrops.data.Data;
+import com.gmail.zariust.otherdrops.options.DoubleRange;
+import com.gmail.zariust.otherdrops.options.IntRange;
+import com.gmail.zariust.otherdrops.subject.BlockTarget;
+import com.gmail.zariust.otherdrops.subject.CreatureSubject;
+import com.gmail.zariust.otherdrops.subject.Target;
+import com.gmail.zariust.otherdrops.subject.VehicleTarget;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -26,16 +35,6 @@ import org.bukkit.entity.Painting;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.PistonExtensionMaterial;
-
-import com.gmail.zariust.common.CommonEntity;
-import com.gmail.zariust.otherdrops.data.CreatureData;
-import com.gmail.zariust.otherdrops.data.Data;
-import com.gmail.zariust.otherdrops.options.DoubleRange;
-import com.gmail.zariust.otherdrops.options.IntRange;
-import com.gmail.zariust.otherdrops.subject.BlockTarget;
-import com.gmail.zariust.otherdrops.subject.CreatureSubject;
-import com.gmail.zariust.otherdrops.subject.Target;
-import com.gmail.zariust.otherdrops.subject.VehicleTarget;
 
 public class SelfDrop extends DropType {
     private final IntRange count;

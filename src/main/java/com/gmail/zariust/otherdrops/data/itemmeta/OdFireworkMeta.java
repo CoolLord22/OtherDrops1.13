@@ -1,11 +1,10 @@
 package com.gmail.zariust.otherdrops.data.itemmeta;
 
+import com.gmail.zariust.otherdrops.subject.Target;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
-
-import com.gmail.zariust.otherdrops.subject.Target;
 
 public class OdFireworkMeta extends OdItemMeta {
     public final String owner;

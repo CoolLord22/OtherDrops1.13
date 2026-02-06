@@ -16,13 +16,12 @@
 
 package com.gmail.zariust.otherdrops.listener;
 
+import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-
-import com.gmail.zariust.otherdrops.OtherDrops;
-import com.gmail.zariust.otherdrops.event.OccurredEvent;
 
 public class OdPlayerJoinListener implements Listener {
     private final OtherDrops parent;

@@ -16,9 +16,8 @@
 
 package com.gmail.zariust.otherdrops.subject;
 
-import org.bukkit.Location;
-
 import com.gmail.zariust.otherdrops.data.Data;
+import org.bukkit.Location;
 
 /**
  * A subject which may be either a target or agent

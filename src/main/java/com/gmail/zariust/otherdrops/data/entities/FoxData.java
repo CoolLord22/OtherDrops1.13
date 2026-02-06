@@ -6,8 +6,8 @@ import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.Fox;
+import org.bukkit.entity.Player;
 
 public class FoxData extends CreatureData {
     final Fox.Type type; // null = wildcard

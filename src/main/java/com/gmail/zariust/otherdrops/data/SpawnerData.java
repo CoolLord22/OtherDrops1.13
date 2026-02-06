@@ -16,15 +16,14 @@
 
 package com.gmail.zariust.otherdrops.data;
 
+import com.gmail.zariust.common.CommonEntity;
+import com.gmail.zariust.otherdrops.Log;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-
-import com.gmail.zariust.common.CommonEntity;
-import com.gmail.zariust.otherdrops.Log;
 
 public class SpawnerData implements Data {
     private EntityType creature;

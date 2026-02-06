@@ -1,9 +1,8 @@
 package com.gmail.zariust.otherdrops;
 
+import com.gmail.zariust.common.Verbosity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-
-import com.gmail.zariust.common.Verbosity;
 import org.bukkit.entity.Player;
 
 import javax.net.ssl.HttpsURLConnection;

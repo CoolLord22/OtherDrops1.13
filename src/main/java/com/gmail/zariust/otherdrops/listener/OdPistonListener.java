@@ -16,15 +16,14 @@
 
 package com.gmail.zariust.otherdrops.listener;
 
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDrops;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.*;
-
-import com.gmail.zariust.common.Verbosity;
-import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDrops;
+import org.bukkit.event.block.BlockPistonExtendEvent;
 
 public class OdPistonListener implements Listener {
     @SuppressWarnings("unused")

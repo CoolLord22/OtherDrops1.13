@@ -1,14 +1,13 @@
 package com.gmail.zariust.otherdrops.listener;
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-
 import com.gamingmesh.jobs.api.JobsExpGainEvent;
 import com.gamingmesh.jobs.api.JobsLevelUpEvent;
 import com.gamingmesh.jobs.api.JobsPaymentEvent;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 public class JobsListener implements Listener {
     private final OtherDrops parent;

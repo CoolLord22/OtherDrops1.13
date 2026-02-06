@@ -21,7 +21,6 @@ import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.subject.Target;
-
 import org.bukkit.Location;
 import org.bukkit.entity.ExperienceOrb;
 

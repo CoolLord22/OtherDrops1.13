@@ -17,13 +17,12 @@
 package com.gmail.zariust.otherdrops.data;
 
 
+import com.gmail.zariust.otherdrops.data.effects.SmokeEffectData;
+import com.gmail.zariust.otherdrops.data.effects.StepSoundEffectData;
 import org.bukkit.Effect;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-
-import com.gmail.zariust.otherdrops.data.effects.SmokeEffectData;
-import com.gmail.zariust.otherdrops.data.effects.StepSoundEffectData;
 
 public class EffectData implements Data {
     public static final int DEFAULT_RADIUS = 16;

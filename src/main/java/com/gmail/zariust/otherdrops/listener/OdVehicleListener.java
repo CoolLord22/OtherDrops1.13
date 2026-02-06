@@ -16,16 +16,15 @@
 
 package com.gmail.zariust.otherdrops.listener;
 
-import static com.gmail.zariust.common.Verbosity.HIGHEST;
-
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 
-import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDrops;
-import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import static com.gmail.zariust.common.Verbosity.HIGHEST;
 
 public class OdVehicleListener implements Listener {
     private final OtherDrops parent;

@@ -1,15 +1,5 @@
 package com.gmail.zariust.otherdrops.data.entities;
 
-import org.bukkit.Material;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.Stray;
-import org.bukkit.entity.WitherSkeleton;
-import org.bukkit.inventory.ItemStack;
-
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.EntityWrapper;
 import com.gmail.zariust.otherdrops.Log;
@@ -19,6 +9,9 @@ import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.drop.ItemDrop;
 import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.things.ODVariables;
+import org.bukkit.Material;
+import org.bukkit.entity.*;
+import org.bukkit.inventory.ItemStack;
 
 public class LivingEntityData extends CreatureData {
     final Double maxHealth;

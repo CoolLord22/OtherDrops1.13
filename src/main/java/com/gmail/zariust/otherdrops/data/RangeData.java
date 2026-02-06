@@ -18,14 +18,9 @@ package com.gmail.zariust.otherdrops.data;
 
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.options.IntRange;
-
 import org.bukkit.DyeColor;
 import org.bukkit.block.BlockState;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.PigZombie;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Sheep;
-import org.bukkit.entity.Slime;
+import org.bukkit.entity.*;
 import org.bukkit.material.MaterialData;
 
 public class RangeData implements Data {
