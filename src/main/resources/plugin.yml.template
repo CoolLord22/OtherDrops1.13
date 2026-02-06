@@ -1,5 +1,5 @@
 name: OtherDrops_1.13
-main: main.java.com.gmail.zariust.otherdrops.OtherDrops
+main: com.gmail.zariust.otherdrops.OtherDrops
 version: <Version>
 author: Zarius
 authors: [<Name>, Updated by CoolLord22]
