@@ -1,8 +1,8 @@
-package main.java.com.gmail.zariust.otherdrops.listener;
+package com.gmail.zariust.otherdrops.listener;
 
 import org.bukkit.Bukkit;
-import main.java.com.gmail.zariust.otherdrops.OtherDrops;
-import main.java.com.gmail.zariust.otherdrops.OtherDropsConfig;
+import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

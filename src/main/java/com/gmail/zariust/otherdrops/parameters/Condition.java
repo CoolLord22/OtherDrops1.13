@@ -1,11 +1,11 @@
-package main.java.com.gmail.zariust.otherdrops.parameters;
+package com.gmail.zariust.otherdrops.parameters;
 
-import main.java.com.gmail.zariust.common.Verbosity;
-import main.java.com.gmail.zariust.otherdrops.ConfigurationNode;
-import main.java.com.gmail.zariust.otherdrops.Log;
-import main.java.com.gmail.zariust.otherdrops.event.CustomDrop;
-import main.java.com.gmail.zariust.otherdrops.event.OccurredEvent;
-import main.java.com.gmail.zariust.otherdrops.parameters.conditions.*;
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.ConfigurationNode;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.event.CustomDrop;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import com.gmail.zariust.otherdrops.parameters.conditions.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;

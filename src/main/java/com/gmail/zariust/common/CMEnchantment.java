@@ -1,10 +1,10 @@
-package main.java.com.gmail.zariust.common;
+package com.gmail.zariust.common;
 
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
-import main.java.com.gmail.zariust.otherdrops.OtherDrops;
-import main.java.com.gmail.zariust.otherdrops.options.IntRange;
+import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.options.IntRange;
 
 public class CMEnchantment {
     private Enchantment ench;

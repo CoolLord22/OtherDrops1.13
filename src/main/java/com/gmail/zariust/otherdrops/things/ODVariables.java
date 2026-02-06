@@ -1,9 +1,9 @@
-package main.java.com.gmail.zariust.otherdrops.things;
+package com.gmail.zariust.otherdrops.things;
 
-import main.java.com.gmail.zariust.otherdrops.Log;
-import main.java.com.gmail.zariust.otherdrops.OtherDrops;
-import main.java.com.gmail.zariust.otherdrops.OtherDropsConfig;
-import main.java.com.gmail.zariust.otherdrops.options.IntRange;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
+import com.gmail.zariust.otherdrops.options.IntRange;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 

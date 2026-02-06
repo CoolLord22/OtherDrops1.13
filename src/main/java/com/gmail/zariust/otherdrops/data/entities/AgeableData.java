@@ -1,14 +1,14 @@
-package main.java.com.gmail.zariust.otherdrops.data.entities;
+package com.gmail.zariust.otherdrops.data.entities;
 
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-import main.java.com.gmail.zariust.otherdrops.Log;
-import main.java.com.gmail.zariust.otherdrops.OtherDropsConfig;
-import main.java.com.gmail.zariust.otherdrops.data.CreatureData;
-import main.java.com.gmail.zariust.otherdrops.data.Data;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
+import com.gmail.zariust.otherdrops.data.CreatureData;
+import com.gmail.zariust.otherdrops.data.Data;
 
 /**
  * Used for Ageable mobs that don't have other data of interest (as at

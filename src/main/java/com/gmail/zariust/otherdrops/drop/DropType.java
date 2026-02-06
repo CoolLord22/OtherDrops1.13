@@ -14,18 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.otherdrops.drop;
+package com.gmail.zariust.otherdrops.drop;
 
-import main.java.com.gmail.zariust.common.CommonMaterial;
-import main.java.com.gmail.zariust.common.Verbosity;
-import main.java.com.gmail.zariust.otherdrops.*;
-import main.java.com.gmail.zariust.otherdrops.data.Data;
-import main.java.com.gmail.zariust.otherdrops.listener.OdSpawnListener;
-import main.java.com.gmail.zariust.otherdrops.options.DoubleRange;
-import main.java.com.gmail.zariust.otherdrops.subject.Agent;
-import main.java.com.gmail.zariust.otherdrops.subject.PlayerSubject;
-import main.java.com.gmail.zariust.otherdrops.subject.Target;
-import main.java.com.gmail.zariust.otherdrops.things.ODItem;
+import com.gmail.zariust.common.CommonMaterial;
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.*;
+import com.gmail.zariust.otherdrops.data.Data;
+import com.gmail.zariust.otherdrops.listener.OdSpawnListener;
+import com.gmail.zariust.otherdrops.options.DoubleRange;
+import com.gmail.zariust.otherdrops.subject.Agent;
+import com.gmail.zariust.otherdrops.subject.PlayerSubject;
+import com.gmail.zariust.otherdrops.subject.Target;
+import com.gmail.zariust.otherdrops.things.ODItem;
 import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.core.mobs.ActiveMob;

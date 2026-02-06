@@ -1,9 +1,9 @@
-package main.java.com.gmail.zariust.otherdrops.data.itemmeta;
+package com.gmail.zariust.otherdrops.data.itemmeta;
 
-import main.java.com.gmail.zariust.common.CommonEntity;
-import main.java.com.gmail.zariust.otherdrops.subject.CreatureSubject;
-import main.java.com.gmail.zariust.otherdrops.subject.PlayerSubject;
-import main.java.com.gmail.zariust.otherdrops.subject.Target;
+import com.gmail.zariust.common.CommonEntity;
+import com.gmail.zariust.otherdrops.subject.CreatureSubject;
+import com.gmail.zariust.otherdrops.subject.PlayerSubject;
+import com.gmail.zariust.otherdrops.subject.Target;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import org.bukkit.Bukkit;

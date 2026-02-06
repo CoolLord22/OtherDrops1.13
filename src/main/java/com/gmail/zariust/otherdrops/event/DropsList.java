@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.otherdrops.event;
+package com.gmail.zariust.otherdrops.event;
 
-import main.java.com.gmail.zariust.otherdrops.data.Data;
-import main.java.com.gmail.zariust.otherdrops.options.Flag;
+import com.gmail.zariust.otherdrops.data.Data;
+import com.gmail.zariust.otherdrops.options.Flag;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;

@@ -14,13 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.otherdrops.data;
+package com.gmail.zariust.otherdrops.data;
 
-import main.java.com.gmail.zariust.common.CommonMaterial;
-import main.java.com.gmail.zariust.common.MaterialGroup;
-import main.java.com.gmail.zariust.common.Verbosity;
-import main.java.com.gmail.zariust.otherdrops.Log;
-import main.java.com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.common.CommonMaterial;
+import com.gmail.zariust.common.MaterialGroup;
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDrops;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Material;

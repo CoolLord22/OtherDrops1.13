@@ -14,18 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.otherdrops.data;
+package com.gmail.zariust.otherdrops.data;
 
-import main.java.com.gmail.zariust.common.Verbosity;
-import main.java.com.gmail.zariust.otherdrops.Log;
-import main.java.com.gmail.zariust.otherdrops.data.entities.*;
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.data.entities.*;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-import static main.java.com.gmail.zariust.common.Verbosity.EXTREME;
+import static com.gmail.zariust.common.Verbosity.EXTREME;
 
 // Range only allowed for SHEEP, SLIME, and PIG_ZOMBIE
 public class CreatureData implements Data, RangeableData {

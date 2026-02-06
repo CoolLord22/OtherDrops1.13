@@ -1,11 +1,11 @@
-package main.java.com.gmail.zariust.otherdrops.data.effects;
+package com.gmail.zariust.otherdrops.data.effects;
 
-import main.java.com.gmail.zariust.otherdrops.OtherDrops;
-import main.java.com.gmail.zariust.otherdrops.data.EffectData;
+import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.data.EffectData;
 import org.bukkit.Effect;
 import org.bukkit.block.BlockFace;
 
-import static main.java.com.gmail.zariust.common.CommonPlugin.enumValue;
+import static com.gmail.zariust.common.CommonPlugin.enumValue;
 
 public class SmokeEffectData extends EffectData {
 

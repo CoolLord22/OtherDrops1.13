@@ -1,13 +1,13 @@
-package main.java.com.gmail.zariust.otherdrops.parameters.actions;
+package com.gmail.zariust.otherdrops.parameters.actions;
 
-import main.java.com.gmail.zariust.otherdrops.ConfigurationNode;
-import main.java.com.gmail.zariust.otherdrops.Dependencies;
-import main.java.com.gmail.zariust.otherdrops.Log;
-import main.java.com.gmail.zariust.otherdrops.OtherDrops;
-import main.java.com.gmail.zariust.otherdrops.event.CustomDrop;
-import main.java.com.gmail.zariust.otherdrops.event.OccurredEvent;
-import main.java.com.gmail.zariust.otherdrops.options.DoubleRange;
-import main.java.com.gmail.zariust.otherdrops.parameters.Action;
+import com.gmail.zariust.otherdrops.ConfigurationNode;
+import com.gmail.zariust.otherdrops.Dependencies;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.event.CustomDrop;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import com.gmail.zariust.otherdrops.options.DoubleRange;
+import com.gmail.zariust.otherdrops.parameters.Action;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;

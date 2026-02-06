@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.otherdrops.listener;
+package com.gmail.zariust.otherdrops.listener;
 
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -22,9 +22,9 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 
-import main.java.com.gmail.zariust.common.Verbosity;
-import main.java.com.gmail.zariust.otherdrops.Log;
-import main.java.com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDrops;
 
 public class OdPistonListener implements Listener {
     @SuppressWarnings("unused")

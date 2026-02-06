@@ -14,14 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.otherdrops;
+package com.gmail.zariust.otherdrops;
 
 import com.bgsoftware.wildstacker.api.WildStacker;
 import com.gamingmesh.jobs.Jobs;
 import com.garbagemule.MobArena.MobArena;
 import com.garbagemule.MobArena.MobArenaHandler;
 import com.gmail.nossr50.mcMMO;
-import main.java.com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.common.Verbosity;
 import com.herocraftonline.heroes.Heroes;
 import com.palmergames.bukkit.towny.Towny;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -37,7 +37,7 @@ import org.bukkit.permissions.Permissible;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import static main.java.com.gmail.zariust.common.Verbosity.*;
+import static com.gmail.zariust.common.Verbosity.*;
 
 @SuppressWarnings("unused")
 public class Dependencies {

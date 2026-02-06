@@ -4,7 +4,7 @@
 // This file released under Evil Software License v1.1
 // <http://fredrikvold.info/ESL.htm>
 
-package main.java.com.gmail.zariust.otherdrops;
+package com.gmail.zariust.otherdrops;
 
 import org.bukkit.configuration.ConfigurationSection;
 

@@ -14,19 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.otherdrops.special;
+package com.gmail.zariust.otherdrops.special;
 
-import main.java.com.gmail.zariust.otherdrops.ConfigurationNode;
-import main.java.com.gmail.zariust.otherdrops.Log;
-import main.java.com.gmail.zariust.otherdrops.OtherDropsConfig;
-import main.java.com.gmail.zariust.otherdrops.event.OccurredEvent;
-import main.java.com.gmail.zariust.otherdrops.event.SimpleDrop;
+import com.gmail.zariust.otherdrops.ConfigurationNode;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import com.gmail.zariust.otherdrops.event.SimpleDrop;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import static main.java.com.gmail.zariust.common.Verbosity.EXTREME;
+import static com.gmail.zariust.common.Verbosity.EXTREME;
 
 /**
  * Represents some kind of event that can occur alongside or instead of a drop.

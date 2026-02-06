@@ -14,14 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.otherdrops.subject;
+package com.gmail.zariust.otherdrops.subject;
 
-import main.java.com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.Log;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 
-import static main.java.com.gmail.zariust.common.Verbosity.HIGH;
+import static com.gmail.zariust.common.Verbosity.HIGH;
 
 public abstract class LivingSubject implements Agent, Target {
     private final Entity entity;

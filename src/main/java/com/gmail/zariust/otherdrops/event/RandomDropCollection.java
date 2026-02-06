@@ -1,6 +1,6 @@
-package main.java.com.gmail.zariust.otherdrops.event;
+package com.gmail.zariust.otherdrops.event;
 
-import main.java.com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.OtherDrops;
 
 import java.util.NavigableMap;
 import java.util.TreeMap;

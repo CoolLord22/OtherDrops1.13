@@ -1,20 +1,20 @@
-package main.java.com.gmail.zariust.otherdrops.parameters.conditions;
+package com.gmail.zariust.otherdrops.parameters.conditions;
 
 import com.gamingmesh.jobs.Jobs;
 import com.gamingmesh.jobs.api.JobsExpGainEvent;
 import com.gamingmesh.jobs.api.JobsLevelUpEvent;
 import com.gamingmesh.jobs.container.Job;
 import com.gamingmesh.jobs.container.JobProgression;
-import main.java.com.gmail.zariust.common.Verbosity;
-import main.java.com.gmail.zariust.otherdrops.ConfigurationNode;
-import main.java.com.gmail.zariust.otherdrops.Dependencies;
-import main.java.com.gmail.zariust.otherdrops.Log;
-import main.java.com.gmail.zariust.otherdrops.OtherDropsConfig;
-import main.java.com.gmail.zariust.otherdrops.event.CustomDrop;
-import main.java.com.gmail.zariust.otherdrops.event.OccurredEvent;
-import main.java.com.gmail.zariust.otherdrops.options.Comparative;
-import main.java.com.gmail.zariust.otherdrops.parameters.Condition;
-import main.java.com.gmail.zariust.otherdrops.subject.PlayerSubject;
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.ConfigurationNode;
+import com.gmail.zariust.otherdrops.Dependencies;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
+import com.gmail.zariust.otherdrops.event.CustomDrop;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import com.gmail.zariust.otherdrops.options.Comparative;
+import com.gmail.zariust.otherdrops.parameters.Condition;
+import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;

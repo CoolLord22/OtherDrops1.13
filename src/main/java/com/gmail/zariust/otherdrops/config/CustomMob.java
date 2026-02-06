@@ -1,6 +1,6 @@
-package main.java.com.gmail.zariust.otherdrops.config;
+package com.gmail.zariust.otherdrops.config;
 
-import main.java.com.gmail.zariust.otherdrops.ConfigurationNode;
+import com.gmail.zariust.otherdrops.ConfigurationNode;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;

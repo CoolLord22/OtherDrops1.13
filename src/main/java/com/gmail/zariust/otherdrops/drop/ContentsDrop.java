@@ -14,11 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.otherdrops.drop;
+package com.gmail.zariust.otherdrops.drop;
 
-import main.java.com.gmail.zariust.otherdrops.data.CreatureData;
-import main.java.com.gmail.zariust.otherdrops.options.DoubleRange;
-import main.java.com.gmail.zariust.otherdrops.subject.*;
+import com.gmail.zariust.otherdrops.data.CreatureData;
+import com.gmail.zariust.otherdrops.options.DoubleRange;
+import com.gmail.zariust.otherdrops.subject.*;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.*;

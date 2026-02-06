@@ -14,29 +14,29 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.otherdrops.event;
+package com.gmail.zariust.otherdrops.event;
 
-import main.java.com.gmail.zariust.common.Verbosity;
-import main.java.com.gmail.zariust.otherdrops.Dependencies;
-import main.java.com.gmail.zariust.otherdrops.Log;
-import main.java.com.gmail.zariust.otherdrops.OtherDrops;
-import main.java.com.gmail.zariust.otherdrops.data.Data;
-import main.java.com.gmail.zariust.otherdrops.event.ExclusiveMap.ExclusiveKey;
-import main.java.com.gmail.zariust.otherdrops.options.Flag;
-import main.java.com.gmail.zariust.otherdrops.options.IntRange;
-import main.java.com.gmail.zariust.otherdrops.parameters.Action;
-import main.java.com.gmail.zariust.otherdrops.parameters.Condition;
-import main.java.com.gmail.zariust.otherdrops.parameters.Trigger;
-import main.java.com.gmail.zariust.otherdrops.subject.Agent;
-import main.java.com.gmail.zariust.otherdrops.subject.Target;
-import main.java.com.gmail.zariust.otherdrops.things.ODItem;
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Dependencies;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.data.Data;
+import com.gmail.zariust.otherdrops.event.ExclusiveMap.ExclusiveKey;
+import com.gmail.zariust.otherdrops.options.Flag;
+import com.gmail.zariust.otherdrops.options.IntRange;
+import com.gmail.zariust.otherdrops.parameters.Action;
+import com.gmail.zariust.otherdrops.parameters.Condition;
+import com.gmail.zariust.otherdrops.parameters.Trigger;
+import com.gmail.zariust.otherdrops.subject.Agent;
+import com.gmail.zariust.otherdrops.subject.Target;
+import com.gmail.zariust.otherdrops.things.ODItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.*;
 
-import static main.java.com.gmail.zariust.common.Verbosity.HIGHEST;
+import static com.gmail.zariust.common.Verbosity.HIGHEST;
 
 public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
     // Fortune enhancer setting

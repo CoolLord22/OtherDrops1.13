@@ -14,21 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.otherdrops;
+package com.gmail.zariust.otherdrops;
 
-import main.java.com.gmail.zariust.common.Verbosity;
-import main.java.com.gmail.zariust.otherdrops.data.CreatureData;
-import main.java.com.gmail.zariust.otherdrops.drop.DropResult;
-import main.java.com.gmail.zariust.otherdrops.drop.DropType;
-import main.java.com.gmail.zariust.otherdrops.drop.DropType.DropFlags;
-import main.java.com.gmail.zariust.otherdrops.event.CustomDrop;
-import main.java.com.gmail.zariust.otherdrops.event.DropsList;
-import main.java.com.gmail.zariust.otherdrops.event.GroupDropEvent;
-import main.java.com.gmail.zariust.otherdrops.event.SimpleDrop;
-import main.java.com.gmail.zariust.otherdrops.parameters.Trigger;
-import main.java.com.gmail.zariust.otherdrops.parameters.conditions.Cooldown;
-import main.java.com.gmail.zariust.otherdrops.subject.PlayerSubject;
-import main.java.com.gmail.zariust.otherdrops.subject.Target;
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.data.CreatureData;
+import com.gmail.zariust.otherdrops.drop.DropResult;
+import com.gmail.zariust.otherdrops.drop.DropType;
+import com.gmail.zariust.otherdrops.drop.DropType.DropFlags;
+import com.gmail.zariust.otherdrops.event.CustomDrop;
+import com.gmail.zariust.otherdrops.event.DropsList;
+import com.gmail.zariust.otherdrops.event.GroupDropEvent;
+import com.gmail.zariust.otherdrops.event.SimpleDrop;
+import com.gmail.zariust.otherdrops.parameters.Trigger;
+import com.gmail.zariust.otherdrops.parameters.conditions.Cooldown;
+import com.gmail.zariust.otherdrops.subject.PlayerSubject;
+import com.gmail.zariust.otherdrops.subject.Target;
 import com.herocraftonline.heroes.characters.Hero;
 import org.bukkit.*;
 import org.bukkit.block.Block;

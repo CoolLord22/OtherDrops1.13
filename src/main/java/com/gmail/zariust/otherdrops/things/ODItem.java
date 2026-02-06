@@ -1,15 +1,15 @@
-package main.java.com.gmail.zariust.otherdrops.things;
+package com.gmail.zariust.otherdrops.things;
 
-import main.java.com.gmail.zariust.common.CMEnchantment;
-import main.java.com.gmail.zariust.common.CommonEnchantments;
-import main.java.com.gmail.zariust.common.CommonMaterial;
-import main.java.com.gmail.zariust.common.Verbosity;
-import main.java.com.gmail.zariust.otherdrops.Dependencies;
-import main.java.com.gmail.zariust.otherdrops.Log;
-import main.java.com.gmail.zariust.otherdrops.OtherDrops;
-import main.java.com.gmail.zariust.otherdrops.OtherDropsConfig;
-import main.java.com.gmail.zariust.otherdrops.data.Data;
-import main.java.com.gmail.zariust.otherdrops.data.ItemData;
+import com.gmail.zariust.common.CMEnchantment;
+import com.gmail.zariust.common.CommonEnchantments;
+import com.gmail.zariust.common.CommonMaterial;
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Dependencies;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
+import com.gmail.zariust.otherdrops.data.Data;
+import com.gmail.zariust.otherdrops.data.ItemData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.otherdrops.drop;
+package com.gmail.zariust.otherdrops.drop;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -27,15 +27,15 @@ import org.bukkit.entity.Vehicle;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.PistonExtensionMaterial;
 
-import main.java.com.gmail.zariust.common.CommonEntity;
-import main.java.com.gmail.zariust.otherdrops.data.CreatureData;
-import main.java.com.gmail.zariust.otherdrops.data.Data;
-import main.java.com.gmail.zariust.otherdrops.options.DoubleRange;
-import main.java.com.gmail.zariust.otherdrops.options.IntRange;
-import main.java.com.gmail.zariust.otherdrops.subject.BlockTarget;
-import main.java.com.gmail.zariust.otherdrops.subject.CreatureSubject;
-import main.java.com.gmail.zariust.otherdrops.subject.Target;
-import main.java.com.gmail.zariust.otherdrops.subject.VehicleTarget;
+import com.gmail.zariust.common.CommonEntity;
+import com.gmail.zariust.otherdrops.data.CreatureData;
+import com.gmail.zariust.otherdrops.data.Data;
+import com.gmail.zariust.otherdrops.options.DoubleRange;
+import com.gmail.zariust.otherdrops.options.IntRange;
+import com.gmail.zariust.otherdrops.subject.BlockTarget;
+import com.gmail.zariust.otherdrops.subject.CreatureSubject;
+import com.gmail.zariust.otherdrops.subject.Target;
+import com.gmail.zariust.otherdrops.subject.VehicleTarget;
 
 public class SelfDrop extends DropType {
     private final IntRange count;

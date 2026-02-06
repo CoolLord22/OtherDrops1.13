@@ -1,4 +1,4 @@
-package main.java.com.gmail.zariust.otherdrops.drop;
+package com.gmail.zariust.otherdrops.drop;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;

@@ -14,14 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.otherdrops.parameters;
+package com.gmail.zariust.otherdrops.parameters;
 
-import main.java.com.gmail.zariust.otherdrops.*;
+import com.gmail.zariust.otherdrops.*;
 import org.bukkit.plugin.Plugin;
 
 import java.util.*;
 
-import static main.java.com.gmail.zariust.common.Verbosity.NORMAL;
+import static com.gmail.zariust.common.Verbosity.NORMAL;
 
 /**
  * Represents an action that can be taken to lead to a drop.

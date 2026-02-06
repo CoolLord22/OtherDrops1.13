@@ -12,7 +12,7 @@
  *
  * Violations will result in a ban of your plugin and account from bStats.
  */
-package main.java.com.gmail.zariust.otherdrops.metrics;
+package com.gmail.zariust.otherdrops.metrics;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;

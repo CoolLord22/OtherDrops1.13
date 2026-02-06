@@ -1,9 +1,9 @@
-package main.java.com.gmail.zariust.otherdrops.parameters.actions;
+package com.gmail.zariust.otherdrops.parameters.actions;
 
-import main.java.com.gmail.zariust.otherdrops.ConfigurationNode;
-import main.java.com.gmail.zariust.otherdrops.event.CustomDrop;
-import main.java.com.gmail.zariust.otherdrops.event.OccurredEvent;
-import main.java.com.gmail.zariust.otherdrops.parameters.Action;
+import com.gmail.zariust.otherdrops.ConfigurationNode;
+import com.gmail.zariust.otherdrops.event.CustomDrop;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import com.gmail.zariust.otherdrops.parameters.Action;
 
 import java.util.ArrayList;
 import java.util.List;

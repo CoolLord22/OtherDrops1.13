@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.otherdrops.special;
+package com.gmail.zariust.otherdrops.special;
 
 import java.io.Serial;
 

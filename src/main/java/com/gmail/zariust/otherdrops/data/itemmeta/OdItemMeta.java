@@ -1,12 +1,12 @@
-package main.java.com.gmail.zariust.otherdrops.data.itemmeta;
+package com.gmail.zariust.otherdrops.data.itemmeta;
 
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.inventory.ItemStack;
 
-import main.java.com.gmail.zariust.otherdrops.Log;
-import main.java.com.gmail.zariust.otherdrops.data.ItemData;
-import main.java.com.gmail.zariust.otherdrops.subject.Target;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.data.ItemData;
+import com.gmail.zariust.otherdrops.subject.Target;
 
 public abstract class OdItemMeta {
 

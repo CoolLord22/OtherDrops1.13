@@ -1,12 +1,12 @@
-package main.java.com.gmail.zariust.otherdrops.data.itemmeta;
+package com.gmail.zariust.otherdrops.data.itemmeta;
 
 import org.bukkit.Color;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
-import main.java.com.gmail.zariust.common.Verbosity;
-import main.java.com.gmail.zariust.otherdrops.Log;
-import main.java.com.gmail.zariust.otherdrops.subject.Target;
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.subject.Target;
 
 public class OdLeatherArmorMeta extends OdItemMeta {
     public final Color color;

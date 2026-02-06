@@ -4,9 +4,9 @@
 // This file released under Evil Software License v1.1
 // <http://fredrikvold.info/ESL.htm>
 
-package main.java.com.gmail.zariust.otherdrops;
+package com.gmail.zariust.otherdrops;
 
-import main.java.com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.common.Verbosity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static main.java.com.gmail.zariust.common.Verbosity.EXTREME;
+import static com.gmail.zariust.common.Verbosity.EXTREME;
 
 public class Log {
     static ConsoleCommandSender console = null;

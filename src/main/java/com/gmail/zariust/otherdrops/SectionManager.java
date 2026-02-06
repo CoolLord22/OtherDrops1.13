@@ -1,11 +1,11 @@
-package main.java.com.gmail.zariust.otherdrops;
+package com.gmail.zariust.otherdrops;
 
-import main.java.com.gmail.zariust.otherdrops.event.*;
-import main.java.com.gmail.zariust.otherdrops.parameters.Trigger;
-import main.java.com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
-import main.java.com.gmail.zariust.otherdrops.subject.BlockTarget;
-import main.java.com.gmail.zariust.otherdrops.subject.PlayerSubject;
-import main.java.com.gmail.zariust.otherdrops.subject.Subject.ItemCategory;
+import com.gmail.zariust.otherdrops.event.*;
+import com.gmail.zariust.otherdrops.parameters.Trigger;
+import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
+import com.gmail.zariust.otherdrops.subject.BlockTarget;
+import com.gmail.zariust.otherdrops.subject.PlayerSubject;
+import com.gmail.zariust.otherdrops.subject.Subject.ItemCategory;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -25,7 +25,7 @@ import org.bukkit.inventory.EntityEquipment;
 import java.util.ArrayList;
 import java.util.List;
 
-import static main.java.com.gmail.zariust.common.Verbosity.*;
+import static com.gmail.zariust.common.Verbosity.*;
 
 public class SectionManager {
 

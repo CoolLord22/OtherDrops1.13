@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.otherdrops.listener;
+package com.gmail.zariust.otherdrops.listener;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -23,8 +23,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import main.java.com.gmail.zariust.otherdrops.OtherDrops;
-import main.java.com.gmail.zariust.otherdrops.event.OccurredEvent;
+import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
 
 public class OdPlayerMoveListener implements Listener {
     private final OtherDrops parent;

@@ -1,7 +1,7 @@
-package main.java.com.gmail.zariust.otherdrops.things;
+package com.gmail.zariust.otherdrops.things;
 
-import main.java.com.gmail.zariust.otherdrops.options.Comparative;
-import main.java.com.gmail.zariust.otherdrops.parameters.conditions.PotionEffectCondition;
+import com.gmail.zariust.otherdrops.options.Comparative;
+import com.gmail.zariust.otherdrops.parameters.conditions.PotionEffectCondition;
 import org.bukkit.potion.PotionEffectType;
 
 public class ODPotionEffect {

@@ -1,10 +1,10 @@
-package main.java.com.gmail.zariust.otherdrops.subject;
+package com.gmail.zariust.otherdrops.subject;
 
-import main.java.com.gmail.zariust.common.Verbosity;
-import main.java.com.gmail.zariust.otherdrops.Dependencies;
-import main.java.com.gmail.zariust.otherdrops.Log;
-import main.java.com.gmail.zariust.otherdrops.data.Data;
-import main.java.com.gmail.zariust.otherdrops.data.MythicMobData;
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Dependencies;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.data.Data;
+import com.gmail.zariust.otherdrops.data.MythicMobData;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -14,7 +14,7 @@ import org.bukkit.entity.LivingEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-import static main.java.com.gmail.zariust.common.Verbosity.HIGH;
+import static com.gmail.zariust.common.Verbosity.HIGH;
 
 public class MythicMobSubject extends CreatureSubject {
     private final Data data; // MythicMobData

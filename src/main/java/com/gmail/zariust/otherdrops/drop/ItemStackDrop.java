@@ -1,9 +1,9 @@
-package main.java.com.gmail.zariust.otherdrops.drop;
+package com.gmail.zariust.otherdrops.drop;
 
-import main.java.com.gmail.zariust.otherdrops.OtherDropsConfig;
-import main.java.com.gmail.zariust.otherdrops.options.DoubleRange;
-import main.java.com.gmail.zariust.otherdrops.options.IntRange;
-import main.java.com.gmail.zariust.otherdrops.subject.Target;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
+import com.gmail.zariust.otherdrops.options.DoubleRange;
+import com.gmail.zariust.otherdrops.options.IntRange;
+import com.gmail.zariust.otherdrops.subject.Target;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

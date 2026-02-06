@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.otherdrops.data;
+package com.gmail.zariust.otherdrops.data;
 
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
@@ -23,8 +23,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-import main.java.com.gmail.zariust.common.CommonEntity;
-import main.java.com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.common.CommonEntity;
+import com.gmail.zariust.otherdrops.Log;
 
 public class SpawnerData implements Data {
     private EntityType creature;

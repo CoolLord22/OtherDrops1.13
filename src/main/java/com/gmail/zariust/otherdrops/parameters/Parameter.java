@@ -1,4 +1,4 @@
-package main.java.com.gmail.zariust.otherdrops.parameters;
+package com.gmail.zariust.otherdrops.parameters;
 
 public abstract class Parameter {
     // public abstract boolean parse(Object parseMe);

@@ -14,11 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.otherdrops.subject;
+package com.gmail.zariust.otherdrops.subject;
 
 import org.bukkit.Location;
 
-import main.java.com.gmail.zariust.otherdrops.data.Data;
+import com.gmail.zariust.otherdrops.data.Data;
 
 /**
  * A subject which may be either a target or agent

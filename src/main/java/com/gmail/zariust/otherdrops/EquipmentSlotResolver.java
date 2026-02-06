@@ -1,4 +1,4 @@
-package main.java.com.gmail.zariust.otherdrops;
+package com.gmail.zariust.otherdrops;
 
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;

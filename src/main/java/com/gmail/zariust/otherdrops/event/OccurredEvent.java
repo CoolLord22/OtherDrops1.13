@@ -14,20 +14,20 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.otherdrops.event;
+package com.gmail.zariust.otherdrops.event;
 
 import com.gamingmesh.jobs.Jobs;
 import com.gamingmesh.jobs.api.JobsExpGainEvent;
 import com.gamingmesh.jobs.api.JobsLevelUpEvent;
 import com.gamingmesh.jobs.api.JobsPaymentEvent;
-import main.java.com.gmail.zariust.common.Verbosity;
-import main.java.com.gmail.zariust.otherdrops.Dependencies;
-import main.java.com.gmail.zariust.otherdrops.EquipmentSlotResolver;
-import main.java.com.gmail.zariust.otherdrops.Log;
-import main.java.com.gmail.zariust.otherdrops.options.ConfigOnly;
-import main.java.com.gmail.zariust.otherdrops.options.Weather;
-import main.java.com.gmail.zariust.otherdrops.parameters.Trigger;
-import main.java.com.gmail.zariust.otherdrops.subject.*;
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Dependencies;
+import com.gmail.zariust.otherdrops.EquipmentSlotResolver;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.options.ConfigOnly;
+import com.gmail.zariust.otherdrops.options.Weather;
+import com.gmail.zariust.otherdrops.parameters.Trigger;
+import com.gmail.zariust.otherdrops.subject.*;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.internal.platform.WorldGuardPlatform;
@@ -55,7 +55,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static main.java.com.gmail.zariust.common.Verbosity.HIGHEST;
+import static com.gmail.zariust.common.Verbosity.HIGHEST;
 
 /**
  * An actual drop that has occurred and may match one of the configured drops.

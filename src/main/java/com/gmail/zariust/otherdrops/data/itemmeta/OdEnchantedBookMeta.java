@@ -1,9 +1,9 @@
-package main.java.com.gmail.zariust.otherdrops.data.itemmeta;
+package com.gmail.zariust.otherdrops.data.itemmeta;
 
-import main.java.com.gmail.zariust.common.CMEnchantment;
-import main.java.com.gmail.zariust.common.CommonEnchantments;
-import main.java.com.gmail.zariust.otherdrops.Log;
-import main.java.com.gmail.zariust.otherdrops.subject.Target;
+import com.gmail.zariust.common.CMEnchantment;
+import com.gmail.zariust.common.CommonEnchantments;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.subject.Target;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 

@@ -1,6 +1,6 @@
-package main.java.com.gmail.zariust.otherdrops.parameters.actions;
+package com.gmail.zariust.otherdrops.parameters.actions;
 
-import main.java.com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.Log;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;

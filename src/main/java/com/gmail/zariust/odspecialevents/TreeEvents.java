@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.odspecialevents;
+package com.gmail.zariust.odspecialevents;
 
-import main.java.com.gmail.zariust.common.Verbosity;
-import main.java.com.gmail.zariust.otherdrops.ConfigurationNode;
-import main.java.com.gmail.zariust.otherdrops.special.SpecialResult;
-import main.java.com.gmail.zariust.otherdrops.special.SpecialResultHandler;
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.ConfigurationNode;
+import com.gmail.zariust.otherdrops.special.SpecialResult;
+import com.gmail.zariust.otherdrops.special.SpecialResultHandler;
 
 import java.util.Arrays;
 import java.util.List;

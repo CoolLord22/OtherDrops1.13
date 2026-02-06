@@ -14,17 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.otherdrops.event;
+package com.gmail.zariust.otherdrops.event;
 
-import main.java.com.gmail.zariust.otherdrops.Log;
-import main.java.com.gmail.zariust.otherdrops.OtherDrops;
-import main.java.com.gmail.zariust.otherdrops.options.ConfigOnly;
-import main.java.com.gmail.zariust.otherdrops.parameters.Trigger;
-import main.java.com.gmail.zariust.otherdrops.subject.Target;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.options.ConfigOnly;
+import com.gmail.zariust.otherdrops.parameters.Trigger;
+import com.gmail.zariust.otherdrops.subject.Target;
 
 import java.util.Random;
 
-import static main.java.com.gmail.zariust.common.Verbosity.HIGHEST;
+import static com.gmail.zariust.common.Verbosity.HIGHEST;
 
 public abstract class AbstractDropEvent {
     protected Target target;

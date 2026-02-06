@@ -1,4 +1,4 @@
-package main.java.com.gmail.zariust.otherdrops.parameters.actions;
+package com.gmail.zariust.otherdrops.parameters.actions;
 
 public class DropAction {
 

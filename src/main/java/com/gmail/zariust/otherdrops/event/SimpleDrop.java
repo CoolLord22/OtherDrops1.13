@@ -14,21 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.otherdrops.event;
+package com.gmail.zariust.otherdrops.event;
 
-import main.java.com.gmail.zariust.otherdrops.ConfigurationNode;
-import main.java.com.gmail.zariust.otherdrops.OtherDrops;
-import main.java.com.gmail.zariust.otherdrops.OtherDropsConfig;
-import main.java.com.gmail.zariust.otherdrops.drop.DropType;
-import main.java.com.gmail.zariust.otherdrops.drop.ItemDrop;
-import main.java.com.gmail.zariust.otherdrops.options.DoubleRange;
-import main.java.com.gmail.zariust.otherdrops.options.IntRange;
-import main.java.com.gmail.zariust.otherdrops.options.SoundEffect;
-import main.java.com.gmail.zariust.otherdrops.options.ToolDamage;
-import main.java.com.gmail.zariust.otherdrops.parameters.Trigger;
-import main.java.com.gmail.zariust.otherdrops.special.SpecialResult;
-import main.java.com.gmail.zariust.otherdrops.subject.BlockTarget;
-import main.java.com.gmail.zariust.otherdrops.subject.Target;
+import com.gmail.zariust.otherdrops.ConfigurationNode;
+import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
+import com.gmail.zariust.otherdrops.drop.DropType;
+import com.gmail.zariust.otherdrops.drop.ItemDrop;
+import com.gmail.zariust.otherdrops.options.DoubleRange;
+import com.gmail.zariust.otherdrops.options.IntRange;
+import com.gmail.zariust.otherdrops.options.SoundEffect;
+import com.gmail.zariust.otherdrops.options.ToolDamage;
+import com.gmail.zariust.otherdrops.parameters.Trigger;
+import com.gmail.zariust.otherdrops.special.SpecialResult;
+import com.gmail.zariust.otherdrops.subject.BlockTarget;
+import com.gmail.zariust.otherdrops.subject.Target;
 import org.bukkit.Location;
 import org.bukkit.Material;
 

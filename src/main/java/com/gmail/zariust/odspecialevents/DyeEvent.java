@@ -14,15 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.odspecialevents;
+package com.gmail.zariust.odspecialevents;
 
-import main.java.com.gmail.zariust.otherdrops.event.OccurredEvent;
-import main.java.com.gmail.zariust.otherdrops.event.SimpleDrop;
-import main.java.com.gmail.zariust.otherdrops.special.SpecialResult;
-import main.java.com.gmail.zariust.otherdrops.subject.Agent;
-import main.java.com.gmail.zariust.otherdrops.subject.CreatureSubject;
-import main.java.com.gmail.zariust.otherdrops.subject.PlayerSubject;
-import main.java.com.gmail.zariust.otherdrops.subject.ToolAgent;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import com.gmail.zariust.otherdrops.event.SimpleDrop;
+import com.gmail.zariust.otherdrops.special.SpecialResult;
+import com.gmail.zariust.otherdrops.subject.Agent;
+import com.gmail.zariust.otherdrops.subject.CreatureSubject;
+import com.gmail.zariust.otherdrops.subject.PlayerSubject;
+import com.gmail.zariust.otherdrops.subject.ToolAgent;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Sheep;

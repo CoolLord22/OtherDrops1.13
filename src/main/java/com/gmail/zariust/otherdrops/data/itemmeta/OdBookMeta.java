@@ -1,7 +1,7 @@
-package main.java.com.gmail.zariust.otherdrops.data.itemmeta;
+package com.gmail.zariust.otherdrops.data.itemmeta;
 
-import main.java.com.gmail.zariust.otherdrops.subject.Target;
-import main.java.com.gmail.zariust.otherdrops.things.ODVariables;
+import com.gmail.zariust.otherdrops.subject.Target;
+import com.gmail.zariust.otherdrops.things.ODVariables;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 

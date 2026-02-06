@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.odspecialevents;
+package com.gmail.zariust.odspecialevents;
 
-import main.java.com.gmail.zariust.otherdrops.Log;
-import main.java.com.gmail.zariust.otherdrops.event.OccurredEvent;
-import main.java.com.gmail.zariust.otherdrops.event.SimpleDrop;
-import main.java.com.gmail.zariust.otherdrops.special.SpecialResult;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import com.gmail.zariust.otherdrops.event.SimpleDrop;
+import com.gmail.zariust.otherdrops.special.SpecialResult;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
@@ -30,7 +30,7 @@ import org.bukkit.block.BlockState;
 import java.util.Arrays;
 import java.util.List;
 
-import static main.java.com.gmail.zariust.common.Verbosity.HIGHEST;
+import static com.gmail.zariust.common.Verbosity.HIGHEST;
 
 public class TreeEvent extends SpecialResult {
     private final boolean forceTree;

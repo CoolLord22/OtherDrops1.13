@@ -1,9 +1,9 @@
-package main.java.com.gmail.zariust.otherdrops.data.entities;
+package com.gmail.zariust.otherdrops.data.entities;
 
-import main.java.com.gmail.zariust.otherdrops.Log;
-import main.java.com.gmail.zariust.otherdrops.OtherDropsConfig;
-import main.java.com.gmail.zariust.otherdrops.data.CreatureData;
-import main.java.com.gmail.zariust.otherdrops.data.Data;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
+import com.gmail.zariust.otherdrops.data.CreatureData;
+import com.gmail.zariust.otherdrops.data.Data;
 import org.bukkit.entity.*;
 
 public class RabbitData extends CreatureData {

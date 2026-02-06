@@ -14,11 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.otherdrops.data;
+package com.gmail.zariust.otherdrops.data;
 
-import main.java.com.gmail.zariust.common.CommonMaterial;
-import main.java.com.gmail.zariust.common.Verbosity;
-import main.java.com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.common.CommonMaterial;
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Log;
 import org.bukkit.Art;
 import org.bukkit.CropState;
 import org.bukkit.Material;
@@ -33,7 +33,7 @@ import org.bukkit.entity.Painting;
 import org.bukkit.entity.Player;
 import org.bukkit.material.*;
 
-import static main.java.com.gmail.zariust.common.Verbosity.EXTREME;
+import static com.gmail.zariust.common.Verbosity.EXTREME;
 
 @SuppressWarnings("deprecation")
 public class SimpleData implements Data, RangeableData {

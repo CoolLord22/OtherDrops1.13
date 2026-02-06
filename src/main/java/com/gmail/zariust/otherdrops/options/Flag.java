@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.otherdrops.options;
+package com.gmail.zariust.otherdrops.options;
 
-import main.java.com.gmail.zariust.common.Verbosity;
-import main.java.com.gmail.zariust.otherdrops.*;
-import main.java.com.gmail.zariust.otherdrops.event.OccurredEvent;
-import main.java.com.gmail.zariust.otherdrops.subject.PlayerSubject;
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.*;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.palmergames.bukkit.towny.object.TownyPermission;
 import com.palmergames.bukkit.towny.utils.PlayerCacheUtil;
 import me.ryanhamshire.GriefPrevention.Claim;
@@ -30,7 +30,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.*;
 
-import static main.java.com.gmail.zariust.common.Verbosity.HIGHEST;
+import static com.gmail.zariust.common.Verbosity.HIGHEST;
 
 /**
  * Represents a boolean flag which a drop can either satisfy or not satisfy.

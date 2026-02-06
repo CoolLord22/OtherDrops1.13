@@ -1,4 +1,4 @@
-package main.java.com.gmail.zariust.otherdrops.things;
+package com.gmail.zariust.otherdrops.things;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

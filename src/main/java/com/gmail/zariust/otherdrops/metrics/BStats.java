@@ -1,6 +1,6 @@
-package main.java.com.gmail.zariust.otherdrops.metrics;
+package com.gmail.zariust.otherdrops.metrics;
 
-import main.java.com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.OtherDrops;
 
 import java.util.HashMap;
 import java.util.Map;

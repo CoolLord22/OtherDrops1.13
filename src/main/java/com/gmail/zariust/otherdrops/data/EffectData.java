@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.otherdrops.data;
+package com.gmail.zariust.otherdrops.data;
 
 
 import org.bukkit.Effect;
@@ -22,8 +22,8 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import main.java.com.gmail.zariust.otherdrops.data.effects.SmokeEffectData;
-import main.java.com.gmail.zariust.otherdrops.data.effects.StepSoundEffectData;
+import com.gmail.zariust.otherdrops.data.effects.SmokeEffectData;
+import com.gmail.zariust.otherdrops.data.effects.StepSoundEffectData;
 
 public class EffectData implements Data {
     public static final int DEFAULT_RADIUS = 16;

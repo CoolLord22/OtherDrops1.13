@@ -1,11 +1,11 @@
-package main.java.com.gmail.zariust.otherdrops.parameters.conditions;
+package com.gmail.zariust.otherdrops.parameters.conditions;
 
-import main.java.com.gmail.zariust.otherdrops.ConfigurationNode;
-import main.java.com.gmail.zariust.otherdrops.Log;
-import main.java.com.gmail.zariust.otherdrops.OtherDropsConfig;
-import main.java.com.gmail.zariust.otherdrops.event.CustomDrop;
-import main.java.com.gmail.zariust.otherdrops.event.OccurredEvent;
-import main.java.com.gmail.zariust.otherdrops.parameters.Condition;
+import com.gmail.zariust.otherdrops.ConfigurationNode;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
+import com.gmail.zariust.otherdrops.event.CustomDrop;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import com.gmail.zariust.otherdrops.parameters.Condition;
 import org.bukkit.block.BlockFace;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static main.java.com.gmail.zariust.common.CommonPlugin.enumValue;
+import static com.gmail.zariust.common.CommonPlugin.enumValue;
 
 public class BlockFaceCheck extends Condition {
     private final Map<BlockFace, Boolean> facesMap;

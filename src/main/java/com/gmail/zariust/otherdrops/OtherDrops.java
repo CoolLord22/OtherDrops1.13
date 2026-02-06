@@ -14,14 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.otherdrops;
+package com.gmail.zariust.otherdrops;
 
 
-import main.java.com.gmail.zariust.common.Verbosity;
-import main.java.com.gmail.zariust.otherdrops.listener.*;
-import main.java.com.gmail.zariust.otherdrops.metrics.BStats;
-import main.java.com.gmail.zariust.otherdrops.options.Weather;
-import main.java.com.gmail.zariust.otherdrops.parameters.conditions.MoonPhaseCheck;
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.listener.*;
+import com.gmail.zariust.otherdrops.metrics.BStats;
+import com.gmail.zariust.otherdrops.options.Weather;
+import com.gmail.zariust.otherdrops.parameters.conditions.MoonPhaseCheck;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -280,8 +280,8 @@ public class OtherDrops extends JavaPlugin {
     }
 
     public void registerParameters() {
-        main.java.com.gmail.zariust.otherdrops.parameters.Action.registerDefaultActions();
-        main.java.com.gmail.zariust.otherdrops.parameters.Condition.registerDefaultConditions();
+        com.gmail.zariust.otherdrops.parameters.Action.registerDefaultActions();
+        com.gmail.zariust.otherdrops.parameters.Condition.registerDefaultConditions();
     }
 
     @Override

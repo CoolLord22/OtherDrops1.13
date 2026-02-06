@@ -1,4 +1,4 @@
-package main.java.com.gmail.zariust.otherdrops.config;
+package com.gmail.zariust.otherdrops.config;
 
 import org.bukkit.enchantments.Enchantment;
 

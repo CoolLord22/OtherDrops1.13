@@ -1,19 +1,19 @@
-package main.java.com.gmail.zariust.otherdrops.event;
+package com.gmail.zariust.otherdrops.event;
 
 import com.bgsoftware.wildstacker.api.WildStackerAPI;
 import com.bgsoftware.wildstacker.api.objects.StackedEntity;
-import main.java.com.gmail.zariust.common.Verbosity;
-import main.java.com.gmail.zariust.otherdrops.*;
-import main.java.com.gmail.zariust.otherdrops.drop.DropResult;
-import main.java.com.gmail.zariust.otherdrops.drop.DropType;
-import main.java.com.gmail.zariust.otherdrops.drop.DropType.DropFlags;
-import main.java.com.gmail.zariust.otherdrops.options.SoundEffect;
-import main.java.com.gmail.zariust.otherdrops.options.ToolDamage;
-import main.java.com.gmail.zariust.otherdrops.parameters.Action;
-import main.java.com.gmail.zariust.otherdrops.parameters.Trigger;
-import main.java.com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
-import main.java.com.gmail.zariust.otherdrops.special.SpecialResult;
-import main.java.com.gmail.zariust.otherdrops.subject.*;
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.*;
+import com.gmail.zariust.otherdrops.drop.DropResult;
+import com.gmail.zariust.otherdrops.drop.DropType;
+import com.gmail.zariust.otherdrops.drop.DropType.DropFlags;
+import com.gmail.zariust.otherdrops.options.SoundEffect;
+import com.gmail.zariust.otherdrops.options.ToolDamage;
+import com.gmail.zariust.otherdrops.parameters.Action;
+import com.gmail.zariust.otherdrops.parameters.Trigger;
+import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
+import com.gmail.zariust.otherdrops.special.SpecialResult;
+import com.gmail.zariust.otherdrops.subject.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -31,7 +31,7 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.List;
 
-import static main.java.com.gmail.zariust.common.Verbosity.*;
+import static com.gmail.zariust.common.Verbosity.*;
 import static java.lang.Math.max;
 
 public class DropRunner implements Runnable {
@@ -235,7 +235,7 @@ public class DropRunner implements Runnable {
                     }
                 }
                 amount *= customDrop.getDropped().getAmount();
-                if (customDrop.getDropped() instanceof main.java.com.gmail.zariust.otherdrops.drop.MoneyDrop) {
+                if (customDrop.getDropped() instanceof com.gmail.zariust.otherdrops.drop.MoneyDrop) {
                     amount = customDrop.getDropped().total;
                 }
                 currentEvent.setCustomDropAmount(amount);

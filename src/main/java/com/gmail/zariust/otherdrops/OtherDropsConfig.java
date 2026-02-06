@@ -14,29 +14,29 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.otherdrops;
+package com.gmail.zariust.otherdrops;
 
-import main.java.com.gmail.zariust.common.CommonItemstack;
-import main.java.com.gmail.zariust.common.CommonMaterial;
-import main.java.com.gmail.zariust.common.MaterialGroup;
-import main.java.com.gmail.zariust.common.Verbosity;
-import main.java.com.gmail.zariust.otherdrops.data.Data;
-import main.java.com.gmail.zariust.otherdrops.data.SimpleData;
-import main.java.com.gmail.zariust.otherdrops.drop.*;
-import main.java.com.gmail.zariust.otherdrops.event.CustomDrop;
-import main.java.com.gmail.zariust.otherdrops.event.DropsMap;
-import main.java.com.gmail.zariust.otherdrops.event.GroupDropEvent;
-import main.java.com.gmail.zariust.otherdrops.event.SimpleDrop;
-import main.java.com.gmail.zariust.otherdrops.metrics.BStats;
-import main.java.com.gmail.zariust.otherdrops.options.*;
-import main.java.com.gmail.zariust.otherdrops.parameters.Trigger;
-import main.java.com.gmail.zariust.otherdrops.parameters.conditions.MoonPhaseCheck;
-import main.java.com.gmail.zariust.otherdrops.special.SpecialResult;
-import main.java.com.gmail.zariust.otherdrops.special.SpecialResultHandler;
-import main.java.com.gmail.zariust.otherdrops.special.SpecialResultLoader;
-import main.java.com.gmail.zariust.otherdrops.subject.*;
-import main.java.com.gmail.zariust.otherdrops.subject.Subject.ItemCategory;
-import main.java.com.gmail.zariust.otherdrops.things.ODItem;
+import com.gmail.zariust.common.CommonItemstack;
+import com.gmail.zariust.common.CommonMaterial;
+import com.gmail.zariust.common.MaterialGroup;
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.data.Data;
+import com.gmail.zariust.otherdrops.data.SimpleData;
+import com.gmail.zariust.otherdrops.drop.*;
+import com.gmail.zariust.otherdrops.event.CustomDrop;
+import com.gmail.zariust.otherdrops.event.DropsMap;
+import com.gmail.zariust.otherdrops.event.GroupDropEvent;
+import com.gmail.zariust.otherdrops.event.SimpleDrop;
+import com.gmail.zariust.otherdrops.metrics.BStats;
+import com.gmail.zariust.otherdrops.options.*;
+import com.gmail.zariust.otherdrops.parameters.Trigger;
+import com.gmail.zariust.otherdrops.parameters.conditions.MoonPhaseCheck;
+import com.gmail.zariust.otherdrops.special.SpecialResult;
+import com.gmail.zariust.otherdrops.special.SpecialResultHandler;
+import com.gmail.zariust.otherdrops.special.SpecialResultLoader;
+import com.gmail.zariust.otherdrops.subject.*;
+import com.gmail.zariust.otherdrops.subject.Subject.ItemCategory;
+import com.gmail.zariust.otherdrops.things.ODItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -50,8 +50,8 @@ import org.bukkit.entity.EntityType;
 import java.io.*;
 import java.util.*;
 
-import static main.java.com.gmail.zariust.common.CommonPlugin.getConfigVerbosity;
-import static main.java.com.gmail.zariust.common.Verbosity.*;
+import static com.gmail.zariust.common.CommonPlugin.getConfigVerbosity;
+import static com.gmail.zariust.common.Verbosity.*;
 
 public class OtherDropsConfig {
 
@@ -712,8 +712,8 @@ public class OtherDropsConfig {
     }
 
     private void loadConditions(ConfigurationNode node, CustomDrop drop) {
-        drop.addActions(main.java.com.gmail.zariust.otherdrops.parameters.Action.parseNodes(node));
-        drop.addConditions(main.java.com.gmail.zariust.otherdrops.parameters.Condition.parseNodes(node));
+        drop.addActions(com.gmail.zariust.otherdrops.parameters.Action.parseNodes(node));
+        drop.addConditions(com.gmail.zariust.otherdrops.parameters.Condition.parseNodes(node));
 
         // Read tool
         drop.setTool(parseAgentFrom(node));

@@ -14,11 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package main.java.com.gmail.zariust.otherdrops.subject;
+package com.gmail.zariust.otherdrops.subject;
 
-import main.java.com.gmail.zariust.common.CommonEntity;
-import main.java.com.gmail.zariust.otherdrops.data.Data;
-import main.java.com.gmail.zariust.otherdrops.options.ToolDamage;
+import com.gmail.zariust.common.CommonEntity;
+import com.gmail.zariust.otherdrops.data.Data;
+import com.gmail.zariust.otherdrops.options.ToolDamage;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static main.java.com.gmail.zariust.common.CommonPlugin.enumValue;
+import static com.gmail.zariust.common.CommonPlugin.enumValue;
 
 public class EnvironmentAgent implements Agent {
     private final List<DamageCause> dmg;

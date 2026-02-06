@@ -1,4 +1,4 @@
-package main.java.com.gmail.zariust.otherdrops;
+package com.gmail.zariust.otherdrops;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
