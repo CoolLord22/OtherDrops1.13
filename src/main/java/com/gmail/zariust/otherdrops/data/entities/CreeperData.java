@@ -1,0 +1,79 @@
+package com.gmail.zariust.otherdrops.data.entities;
+
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
+import com.gmail.zariust.otherdrops.data.CreatureData;
+import com.gmail.zariust.otherdrops.data.Data;
+import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+
+public class CreeperData extends CreatureData {
+    Creeper dummy; // used to represent main Entity class for this data object
+    final Boolean powered; // null = wildcard
+
+    public CreeperData(Boolean powered) {
+        this.powered = powered;
+    }
+
+    @Override
+    public void setOn(Entity mob, Player owner) {
+        if (mob instanceof Creeper creeper) {
+            if (powered != null)
+                if (powered) creeper.setPowered(true);
+        }
+    }
+
+    @Override
+    public boolean matches(Data d) {
+        if (!(d instanceof CreeperData vd)) return false;
+        if (this.powered != null) if (this.powered != vd.powered) return false;
+        return true;
+    }
+
+    public static CreatureData parseFromEntity(Entity entity) {
+        if (entity == null) return null;
+        if (entity instanceof Creeper) {
+            return new CreeperData(((Creeper) entity).isPowered());
+        } else {
+            Log.logInfo("CreeperData: error, parseFromEntity given different creature - this shouldn't happen.");
+            return null;
+        }
+
+    }
+
+    public static CreatureData parseFromString(String state) {
+        Boolean powered = null;
+        LivingEntityData leData = (LivingEntityData) LivingEntityData.parseFromString(state);
+
+        if (!state.isEmpty() && !state.equals("0")) {
+            String[] split = state.split(OtherDropsConfig.CreatureDataSeparator);
+
+            for (String sub : split) {
+                sub = sub.toLowerCase().replaceAll("[\\s-_]", "");
+                if (sub.equalsIgnoreCase("powered")) powered = true;
+                if (sub.equalsIgnoreCase("unpowered")) powered = false;
+            }
+        }
+
+        return new CreeperData(powered);
+    }
+
+    @Override
+    public String toString() {
+        String val = "";
+        if (powered != null) {
+            val += powered ? "POWERED" : "UNPOWERED";
+        }
+
+        return val;
+    }
+
+    @Override
+    public String get(Enum<?> creature) {
+        if (creature instanceof EntityType) return this.toString();
+        return "";
+    }
+
+}
