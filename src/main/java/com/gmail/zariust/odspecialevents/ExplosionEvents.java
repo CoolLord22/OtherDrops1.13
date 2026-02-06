@@ -41,7 +41,7 @@ public class ExplosionEvents extends SpecialResultHandler {
 
     @Override
     public String getName() {
-        return "main/resources/Explosions";
+        return "Explosions";
     }
 
 }

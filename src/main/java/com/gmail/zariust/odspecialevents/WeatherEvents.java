@@ -44,7 +44,7 @@ public class WeatherEvents extends SpecialResultHandler {
 
     @Override
     public String getName() {
-        return "main/resources/Weather";
+        return "Weather";
     }
 
 }

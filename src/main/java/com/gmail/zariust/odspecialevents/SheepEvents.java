@@ -49,7 +49,7 @@ public class SheepEvents extends SpecialResultHandler {
 
     @Override
     public String getName() {
-        return "main/resources/Sheep";
+        return "Sheep";
     }
 
     public static boolean canRunFor(AbstractDropEvent drop) {

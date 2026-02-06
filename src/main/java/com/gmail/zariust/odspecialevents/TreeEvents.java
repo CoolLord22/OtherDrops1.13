@@ -48,7 +48,7 @@ public class TreeEvents extends SpecialResultHandler {
 
     @Override
     public String getName() {
-        return "main/resources/Trees";
+        return "Trees";
     }
 
 }
