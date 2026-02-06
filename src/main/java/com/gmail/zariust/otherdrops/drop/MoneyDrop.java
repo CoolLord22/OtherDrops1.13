@@ -170,7 +170,8 @@ public class MoneyDrop extends DropType {
         if (!type.equals(MoneyDropType.STEAL) && !data.isEmpty() && !data.equals("0"))
             Log.logWarning("Invalid data for " + split[0] + ": " + data);
         if (real) {
-            return new RealMoneyDrop(amount.toIntRange(), chance, type); // TODO: should reduce apply to moneydrop?
+            Log.logWarning("Real money drop support has been dropped! Please remove from config.");
+            return null;
         } else {
             if (Dependencies.hasVaultEcon()) {
                 return new MoneyDrop(amount, chance, type);

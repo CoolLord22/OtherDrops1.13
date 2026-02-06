@@ -27,7 +27,6 @@ import com.palmergames.bukkit.towny.Towny;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.clip.placeholderapi.PlaceholderAPIPlugin;
-import me.drakespirit.plugins.moneydrop.MoneyDrop;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -51,8 +50,6 @@ public class Dependencies {
 
     private static MobArena mobArena = null;
     private static MobArenaHandler mobArenaHandler = null; // for MobArena
-    private static MoneyDrop moneyDrop = null; // for MoneyDrop
-
 
     private static Economy vaultEcon = null;
     private static Permission vaultPerms = null;
@@ -79,7 +76,6 @@ public class Dependencies {
             gp = (GriefPrevention) getPlugin("GriefPrevention");
             jobs = (Jobs) getPlugin("Jobs");
             mobArena = (MobArena) getPlugin("MobArena");
-            moneyDrop = (MoneyDrop) getPlugin("MoneyDrop");
             heroes = (Heroes) getPlugin("Heroes");
             mcmmo = (mcMMO) getPlugin("mcMMO");
         } catch (Exception e) {
@@ -224,14 +220,6 @@ public class Dependencies {
 
     public static Economy getVaultEcon() {
         return Dependencies.vaultEcon;
-    }
-
-    public static boolean hasMoneyDrop() {
-        return Dependencies.moneyDrop != null;
-    }
-
-    public static MoneyDrop getMoneyDrop() {
-        return Dependencies.moneyDrop;
     }
 
     public static boolean hasHeroes() {
