@@ -25,7 +25,6 @@ import com.gmail.zariust.common.Verbosity;
 import com.herocraftonline.heroes.Heroes;
 import com.palmergames.bukkit.towny.Towny;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import fr.neatmonster.nocheatplus.NoCheatPlus;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import me.drakespirit.plugins.moneydrop.MoneyDrop;
@@ -48,7 +47,6 @@ public class Dependencies {
     private static WildStacker wildStacker = null;
     private static MythicBukkit mythicMobs = null;
     private static Jobs jobs = null;
-    private static NoCheatPlus ncp = null;
     private static GriefPrevention gp = null;
 
     private static MobArena mobArena = null;
@@ -80,7 +78,6 @@ public class Dependencies {
             mythicMobs = (MythicBukkit) getPlugin("MythicMobs");
             gp = (GriefPrevention) getPlugin("GriefPrevention");
             jobs = (Jobs) getPlugin("Jobs");
-            ncp = (NoCheatPlus) getPlugin("NoCheatPlus");
             mobArena = (MobArena) getPlugin("MobArena");
             moneyDrop = (MoneyDrop) getPlugin("MoneyDrop");
             heroes = (Heroes) getPlugin("Heroes");
@@ -203,14 +200,6 @@ public class Dependencies {
 
     public static GriefPrevention getGriefPrevention() {
         return Dependencies.gp;
-    }
-
-    public static boolean hasNCP() {
-        return Dependencies.ncp != null;
-    }
-
-    public static NoCheatPlus getNCP() {
-        return Dependencies.ncp;
     }
 
     public static boolean hasMobArena() {
