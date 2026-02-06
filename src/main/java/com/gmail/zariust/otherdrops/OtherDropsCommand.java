@@ -30,7 +30,10 @@ import com.gmail.zariust.otherdrops.parameters.conditions.Cooldown;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
 import com.herocraftonline.heroes.characters.Hero;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.*;
 import org.bukkit.enchantments.Enchantment;
@@ -42,9 +45,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.util.BlockIterator;
 import org.jetbrains.annotations.NotNull;
-import think.rpgitems.data.Locale;
-import think.rpgitems.item.ItemManager;
-import think.rpgitems.item.RPGItem;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -68,7 +68,6 @@ public class OtherDropsCommand implements CommandExecutor {
         DISABLE("disable,disabled,off", "", "otherdrops.admin.enabledisable"),
         ENABLE("enable,enabled,on", "e", "otherdrops.admin.enabledisable"),
         HEROESTEST("heroestest", "ht", ""),
-        RPGTEST("rpg", "", ""),
         DROP("drop", "d,o", "otherdrops.admin.drop"),
         TRIGGERS("triggers", "t", "otherdrops.admin.triggers");
 
@@ -169,9 +168,6 @@ public class OtherDropsCommand implements CommandExecutor {
             case HEROESTEST:
                 cmdHeroesTest(sender);
                 break;
-            case RPGTEST:
-                cmdRpgTest(sender, args);
-                break;
             case WRITE:
                 cmdWriteFile(sender);
                 break;
@@ -187,26 +183,6 @@ public class OtherDropsCommand implements CommandExecutor {
 
         }
         return true;
-    }
-
-    private void cmdRpgTest(CommandSender sender, String[] args) {
-        if (sender instanceof Player player) {
-            if (!Dependencies.hasRpgItems()) {
-                player.sendMessage("Error: RPGITEMs not found.");
-                return;
-            }
-            if (args.length > 0) {
-                RPGItem blah2 = ItemManager.getItemByName(args[0]);
-                Location loc = player.getTargetBlock(new HashSet<>(), 100).getLocation().add(0, 1, 0); // (???, max distance)
-                ItemStack item2 = blah2.item;
-                item2.setItemMeta(blah2.getLocaleMeta(Locale.getPlayerLocale(player)));
-
-                loc.getWorld().dropItemNaturally(loc, item2);
-                player.sendMessage("RPG: Test finished - RPG item should have dropped where you are looking.");
-            } else {
-                player.sendMessage("RPG: Test failed.");
-            }
-        }
     }
 
     private void cmdHeroesTest(CommandSender sender) {

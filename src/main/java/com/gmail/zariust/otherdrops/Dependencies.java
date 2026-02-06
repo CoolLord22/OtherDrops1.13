@@ -63,7 +63,6 @@ public class Dependencies {
     static String notFoundPlugins;
     private static Heroes heroes;
 
-    private static think.rpgitems.Plugin rpgItems = null;
     private static mcMMO mcmmo = null;
 
     public static void init() {
@@ -85,7 +84,6 @@ public class Dependencies {
             mobArena = (MobArena) getPlugin("MobArena");
             moneyDrop = (MoneyDrop) getPlugin("MoneyDrop");
             heroes = (Heroes) getPlugin("Heroes");
-            rpgItems = (think.rpgitems.Plugin) getPlugin("RPG Items");
             mcmmo = (mcMMO) getPlugin("mcMMO");
         } catch (Exception e) {
             Log.logError("Failed to load one or more optional dependencies - continuing OtherDrops startup.", e);
@@ -253,14 +251,6 @@ public class Dependencies {
 
     public static Heroes getHeroes() {
         return Dependencies.heroes;
-    }
-
-    public static think.rpgitems.Plugin getRpgItems() {
-        return rpgItems;
-    }
-
-    public static boolean hasRpgItems() {
-        return rpgItems != null;
     }
 
     public static mcMMO getMcmmo() {
