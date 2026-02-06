@@ -1,9 +1,9 @@
-name: OtherDrops_1.13
+name: OtherDrops
 main: com.gmail.zariust.otherdrops.OtherDrops
 version: <Version>
 author: Zarius
 authors: [<Name>, Updated by CoolLord22]
-website: http://dev.bukkit.org/server-mods/otherdrops/
+website: https://www.spigotmc.org/resources/otherdrops-updated.51793/
 commands:
     od:
         description: Administrate the OtherDrops plugin
@@ -19,15 +19,7 @@ commands:
             §a/od show <block> §7- show custom drops for particular blocktype
             §a/od settings §7- show current global settings
 
-softdepend:
-  - WorldGuard
-  - Towny
-  - NoCheatPlus
-  - GriefPrevention
-  - Vault
-  - Multiverse-Core
-  - CoreProtect
-  - Jobs
+softdepend: [GriefPrevention, Heroes, Jobs, mcMMO, MobArena, MythicMobs, PlaceholderAPI, Towny, WildStacker, WorldGuard, Vault, Multiverse-Core]
 permissions:
     otherdrops.admin.id:
         default: op
