@@ -1,0 +1,97 @@
+package main.java.com.gmail.zariust.common;
+
+import main.java.com.gmail.zariust.otherdrops.Log;
+import main.java.com.gmail.zariust.otherdrops.OtherDrops;
+import org.bukkit.NamespacedKey;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
+
+import java.io.File;
+import java.io.IOException;
+
+public class CommonItemstack {
+    final OtherDrops plugin;
+    final File savedItemsFile;
+    final YamlConfiguration config;
+
+    public CommonItemstack(OtherDrops plugin) {
+        this.plugin = plugin;
+
+        savedItemsFile = new File(plugin.getDataFolder(), "ODItems.yml");
+        if (!savedItemsFile.exists()) {
+            savedItemsFile.getParentFile().mkdirs();
+            try {
+                savedItemsFile.createNewFile();
+            } catch (final IOException e) {
+                Log.logWarning("An error occurred while creating ODItems.yml!");
+            }
+        }
+        config = new YamlConfiguration();
+        try {
+            config.load(savedItemsFile);
+        } catch (IOException | InvalidConfigurationException e) {
+            Log.logWarning("An error occurred while loading ODItems.yml!");
+        }
+    }
+
+    public boolean saveODItemStack(String key, ItemStack itemStack) {
+        config.set(key, itemStack);
+        NamespacedKey nkey = new NamespacedKey(plugin, "OD_ITEM_" + key);
+        OtherDrops.loadedItems.put(nkey, itemStack);
+        try {
+            config.save(savedItemsFile);
+            return true;
+        } catch (final IOException e) {
+            Log.logWarning("An error occurred while saving ODItems.yml!");
+        }
+        return false;
+    }
+
+    public void loadItemStacks() {
+        try {
+            config.load(savedItemsFile);
+        } catch (IOException | InvalidConfigurationException e) {
+            Log.logWarning("An error occurred while loading ODItems.yml!");
+        }
+        int count = 0;
+        for (String key : config.getKeys(false)) {
+            NamespacedKey nkey = new NamespacedKey(plugin, "OD_ITEM_" + key);
+            ItemStack itemStack = config.getItemStack(key);
+            OtherDrops.loadedItems.put(nkey, itemStack);
+            count++;
+        }
+        Log.logInfo("Successfully loaded " + count + " ODItems.", Verbosity.NORMAL);
+    }
+
+    public ItemStack getItemStack(String key) {
+        try {
+            NamespacedKey nkey = new NamespacedKey(plugin, parseKey(key));
+            if (OtherDrops.loadedItems.containsKey(nkey)) {
+                return OtherDrops.loadedItems.get(nkey);
+            }
+        } catch (Exception ignored) {
+        }
+        return null;
+    }
+
+    private String parseKey(String key) {
+        key = key.toUpperCase();
+        String itemIdentifier = key;
+        if (key.startsWith("MYTHIC_ITEM@")) {
+            String input = key.replaceAll("MYTHIC_ITEM@", "");
+            itemIdentifier = "MYTHIC_" + input;
+        } else if (key.startsWith("NAMESPACE_ITEM@")) {
+            String input = key.replaceAll("NAMESPACE_ITEM@", "");
+            String[] inputSplit = input.toLowerCase().split(":");
+
+            if (inputSplit.length == 2) {
+                itemIdentifier = "NAMESPACE_" + inputSplit[0] + "_" + inputSplit[1];
+            }
+        } else if (key.startsWith("OD_ITEM@")) {
+            String input = key.replaceAll("OD_ITEM@", "");
+            itemIdentifier = "OD_ITEM_" + input;
+        }
+        return itemIdentifier.toLowerCase();
+    }
+}

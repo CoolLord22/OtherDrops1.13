@@ -1,0 +1,82 @@
+package main.java.com.gmail.zariust.otherdrops.parameters.conditions;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
+/**
+ * @author Tirelessly @ Bukkit Forums, zarius (removed player name conditions)
+ */
+public class Cooldown {
+    public static final Set<PlayerCooldown> cooldowns = new HashSet<>();
+
+    public static void addCooldown(String cooldownName, UUID playerID, long lengthInMillis) {
+        PlayerCooldown pc = new PlayerCooldown(cooldownName, playerID, lengthInMillis);
+        // This section prevents duplicate cooldowns
+        cooldowns.removeIf(iterated -> iterated.getUUID().equals(pc.getUUID()) && iterated.getCooldownName().equalsIgnoreCase(pc.getCooldownName()));
+        cooldowns.add(pc);
+    }
+
+    public static PlayerCooldown getCooldown(String cooldownName, UUID Player) {
+        for (PlayerCooldown pc : cooldowns) {
+            if (pc.getCooldownName().equalsIgnoreCase(cooldownName) && pc.getUUID().equals(Player)) {
+                return pc;
+            }
+        }
+        return null;
+    }
+
+    public static void addGlobalCooldown(String cooldownName, long lengthInMillis) {
+        PlayerCooldown pc = new PlayerCooldown(cooldownName, null, lengthInMillis);
+        // This section prevents duplicate cooldowns
+        cooldowns.removeIf(iterated -> iterated.getCooldownName().equalsIgnoreCase(pc.getCooldownName()));
+        cooldowns.add(pc);
+    }
+
+    public static PlayerCooldown getGlobalCooldown(String cooldownName) {
+        for (PlayerCooldown pc : cooldowns) {
+            if (pc.getCooldownName().equalsIgnoreCase(cooldownName)) {
+                return pc;
+            }
+        }
+        return null;
+    }
+}
+
+class PlayerCooldown {
+
+    private long startTime;
+    private final String cooldownName;
+    private final UUID player;
+    private final long lengthInMillis;
+    private long endTime;
+
+    PlayerCooldown(String cooldownName, UUID playerID, long lengthInMillis) {
+        this.cooldownName = cooldownName;
+        this.startTime = System.currentTimeMillis();
+        this.player = playerID;
+        this.lengthInMillis = lengthInMillis;
+        this.endTime = startTime + this.lengthInMillis;
+    }
+
+    public boolean isOver() {
+        return endTime < System.currentTimeMillis();
+    }
+
+    public int getTimeLeft() {
+        return (int) (endTime - System.currentTimeMillis());
+    }
+
+    public String getCooldownName() {
+        return cooldownName;
+    }
+
+    public UUID getUUID() {
+        return player;
+    }
+
+    public void reset() {
+        startTime = System.currentTimeMillis();
+        endTime = startTime + lengthInMillis;
+    }
+}

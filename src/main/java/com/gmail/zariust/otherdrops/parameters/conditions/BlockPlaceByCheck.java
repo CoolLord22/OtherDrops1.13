@@ -1,0 +1,76 @@
+package main.java.com.gmail.zariust.otherdrops.parameters.conditions;
+
+import main.java.com.gmail.zariust.common.Verbosity;
+import main.java.com.gmail.zariust.otherdrops.ConfigurationNode;
+import main.java.com.gmail.zariust.otherdrops.Log;
+import main.java.com.gmail.zariust.otherdrops.OtherDrops;
+import main.java.com.gmail.zariust.otherdrops.OtherDropsConfig;
+import main.java.com.gmail.zariust.otherdrops.event.CustomDrop;
+import main.java.com.gmail.zariust.otherdrops.event.OccurredEvent;
+import main.java.com.gmail.zariust.otherdrops.parameters.Condition;
+import main.java.com.gmail.zariust.otherdrops.subject.BlockTarget;
+import com.jeff_media.customblockdata.CustomBlockData;
+import org.bukkit.block.Block;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class BlockPlaceByCheck extends Condition {
+
+    String name = "BlockPlaceByCheck";
+    private final Map<String, Boolean> placeByStored;
+
+    public BlockPlaceByCheck(Map<String, Boolean> value) {
+        this.placeByStored = value;
+    }
+
+    @Override
+    public boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
+        Block block = null;
+        Log.logInfo("BlockPlaceByCheck - start", Verbosity.HIGHEST);
+
+        if (occurrence.getTarget() instanceof BlockTarget) {
+            block = ((BlockTarget) occurrence.getTarget()).getBlock();
+        }
+        if (block != null) {
+            String placeBy;
+            final PersistentDataContainer customBlockData = new CustomBlockData(block, OtherDrops.plugin);
+            if (!customBlockData.has(OtherDrops.playerPlacedKey, PersistentDataType.STRING)) {
+                placeBy = "NATURAL";
+            } else {
+                placeBy = customBlockData.get(OtherDrops.playerPlacedKey, PersistentDataType.STRING);
+            }
+            Log.logInfo("BlockPlaceByCheck - checking: " + placeByStored.toString() + " vs actual: " + placeBy, Verbosity.HIGHEST);
+            return CustomDrop.checkList(placeBy.toUpperCase(), placeByStored);
+        } else {
+            Log.logInfo("BlockPlaceByCheck - failed, no block target.", Verbosity.HIGHEST);
+            return false;
+        }
+    }
+
+    @Override
+    public List<Condition> parse(ConfigurationNode node) {
+        List<String> placedBy = OtherDropsConfig.getMaybeList(node, "placedby");
+        if (placedBy.isEmpty()) return null;
+
+        HashMap<String, Boolean> result = new HashMap<>();
+        result.put(null, OtherDropsConfig.containsAll(placedBy));
+        for (String name : placedBy) {
+            name = name.toUpperCase();
+            if (name.startsWith("-")) {
+                result.put(null, true);
+                result.put(name.substring(1), false);
+            } else {
+                result.put(name, true);
+            }
+        }
+
+        List<Condition> conditionList = new ArrayList<>();
+        conditionList.add(new BlockPlaceByCheck(result));
+        return conditionList;
+    }
+}

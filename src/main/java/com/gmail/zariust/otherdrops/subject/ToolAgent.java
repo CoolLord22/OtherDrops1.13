@@ -1,0 +1,263 @@
+// OtherDrops - a Bukkit plugin
+// Copyright (C) 2011 Robert Sargant, Zarius Tularial, Celtic Minstrel
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.	 If not, see <http://www.gnu.org/licenses/>.
+
+package main.java.com.gmail.zariust.otherdrops.subject;
+
+import main.java.com.gmail.zariust.common.CMEnchantment;
+import main.java.com.gmail.zariust.common.CommonEnchantments;
+import main.java.com.gmail.zariust.common.CommonMaterial;
+import main.java.com.gmail.zariust.common.Verbosity;
+import main.java.com.gmail.zariust.otherdrops.Log;
+import main.java.com.gmail.zariust.otherdrops.data.Data;
+import main.java.com.gmail.zariust.otherdrops.data.ItemData;
+import main.java.com.gmail.zariust.otherdrops.options.ConfigOnly;
+import main.java.com.gmail.zariust.otherdrops.options.ToolDamage;
+import main.java.com.gmail.zariust.otherdrops.things.ODItem;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
+
+import static main.java.com.gmail.zariust.common.Verbosity.HIGHEST;
+
+@ConfigOnly(PlayerSubject.class)
+public class ToolAgent implements Agent {
+    private ItemStack actualTool;
+    private final Material id;
+    private final Data data;
+    private List<CMEnchantment> enchantments;
+    public final int quantityRequired;
+    private String loreName;
+    private List<String> loreText;
+
+    public ToolAgent() {
+        this((Material) null);
+    }
+
+    public ToolAgent(Material tool) {
+        this(tool, null, 1);
+    }
+
+    public ToolAgent(Material tool, int d, List<CMEnchantment> enchantment, int quantity) {
+        this(tool, new ItemData(d), quantity);
+        enchantments = enchantment;
+    }
+
+    public ToolAgent(Material tool, int d) {
+        this(tool, new ItemData(d), 1);
+    }
+
+    public ToolAgent(ItemStack item) {
+        this(item == null ? null : item.getType(), item == null ? null : new ItemData(item), item == null ? 1 : item.getAmount());
+
+        actualTool = item;
+        if (item != null && item.getItemMeta() != null) {
+            loreName = item.getItemMeta().getDisplayName();
+            loreText = item.getItemMeta().getLore();
+        }
+    }
+
+    public ToolAgent(Material tool, Data d, List<CMEnchantment> enchList, int quantity, String loreName, List<String> loreText) {
+        id = tool;
+        data = d;
+        enchantments = enchList;
+        this.quantityRequired = quantity;
+        this.loreName = loreName;
+        this.loreText = loreText;
+    }
+
+    public ToolAgent(Material tool, Data d, List<CMEnchantment> enchList, int quantity) {
+        id = tool;
+        data = d;
+        enchantments = enchList;
+        this.quantityRequired = quantity;
+    }
+
+    public ToolAgent(Material tool, Data d, int quantity) {
+        id = tool;
+        data = d;
+        this.quantityRequired = quantity;
+    }
+
+    private boolean isMatch(ToolAgent tool) {
+        if (tool == null) return false;
+        return id.equals(tool.id) && data.matches(tool.data);
+    }
+
+    public List<CMEnchantment> getEnch() {
+        return enchantments;
+    }
+
+    public ItemStack getActualTool() {
+        return actualTool;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof ToolAgent tool)) return false;
+
+        if (!Objects.equals(id, tool.id)) return false;
+
+        if (!Objects.equals(loreName, tool.loreName)) return false;
+
+        if (!Objects.equals(loreText, tool.loreText)) return false;
+
+        if (!Objects.equals(quantityRequired, tool.quantityRequired)) return false;
+
+        if (!Objects.equals(actualTool, tool.actualTool)) return false;
+
+        return true; // assume if everything has passed by now we are matching
+    }
+
+    @Override
+    public boolean matches(Subject other) {
+        // example of data passed:
+        // this: id=DIAMOND_SPADE, data=null (data is null unless specified in the config) other=PLAYER@Xarqn with
+        // DIAMOND_SPADE@4
+
+        // Only players can hold & use tools - fail match if not a PlayerSubject
+        if (!(other instanceof PlayerSubject tool)) return false;
+        // Find the tool that the player is holding
+        Log.logInfo("tool agent check : id=" + id.toString() + " gettool=" + tool.getTool() + " material=" + tool.getMaterial() + " id=mat:" + (id == tool.getMaterial()), Verbosity.EXTREME);
+        if (!enchantments.isEmpty()) {
+            boolean match;
+            match = CommonEnchantments.matches(enchantments, tool.getTool().actualTool.getEnchantments());
+            if (!match) return false;
+        }
+
+        if (loreName != null && !loreName.isEmpty()) {
+            if (tool.getTool().loreName == null) return false;
+            if (!this.loreName.equals(tool.getTool().loreName)) return false;
+        }
+
+        if (loreText != null && !loreText.isEmpty()) {
+            if (tool.getTool().loreText == null) return false;
+            if (!this.loreText.equals(tool.getTool().loreText)) return false;
+        }
+
+        if (quantityRequired > tool.getTool().quantityRequired && !Objects.equals(id.toString(), "AIR")) {
+            Log.logInfo("Toolagent check: quantity required failed.", Verbosity.HIGHEST);
+            return false;
+        }
+        if (data == null) return id.equals(tool.getMaterial());
+        else return isMatch(tool.getTool());
+    }
+
+    public Material getMaterial() {
+        return id;
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCode(this).get(id);
+    }
+
+    @Override
+    public Data getData() {
+        return data;
+    }
+
+    @Override
+    public ItemCategory getType() {
+        return ItemCategory.PLAYER;
+    }
+
+    @Override
+    public Location getLocation() {
+        return null;
+    }
+
+    public static Agent parse(ODItem item) {
+        if (item.itemStack != null) {
+            Log.logInfo("ToolAgent: ODItem parsing returned an ItemStack: " + item.name, Verbosity.HIGHEST);
+            return new ItemStackAgent(item.itemStack, item.name);
+        } else {
+            return parse(item.name, item.getDataString(), item.getEnchantments(), item.getDisplayName(), item.lore);
+        }
+    }
+
+    public static Agent parse(String name, String state) {
+        return parse(name, state, null, "", null);
+    }
+
+    public static Agent parse(String name, String state, List<CMEnchantment> enchPass, String loreName, List<String> loreText) {
+        name = name.toUpperCase();
+        state = state.toUpperCase();
+
+        int quantityRequired = getToolQuantity(name, state);
+
+        Material mat = CommonMaterial.matchMaterial(name);
+        if (mat == null) {
+            Log.logInfo("Unrecognized tool: " + name + (state.isEmpty() ? "" : "@" + state), HIGHEST);
+            return null;
+        }
+
+        // If "state" is empty then no data defined, make sure we don't use 0 as data otherwise later matching fails
+        if (state.isEmpty()) return new ToolAgent(mat, null, enchPass, quantityRequired, loreName, loreText);
+
+        // Parse data, which could be an integer or an appropriate enum name
+        try {
+            int d = Integer.parseInt(state);
+            return new ToolAgent(mat, d, enchPass, quantityRequired);
+        } catch (NumberFormatException ignored) {
+        }
+        Data data;
+        try {
+            data = ItemData.parse(mat, state);
+        } catch (IllegalArgumentException e) {
+            Log.logWarning(e.getMessage());
+            return null;
+        }
+        if (data != null) return new ToolAgent(mat, data, enchPass, quantityRequired, loreName, loreText);
+        return new ToolAgent(mat, null, enchPass, quantityRequired, loreName, loreText);
+    }
+
+    private static int getToolQuantity(String name, String state) {
+        String[] nameSplit = name.split("/");
+        String[] stateSplit = state.split("/");
+
+        if (nameSplit.length > 1) return Integer.parseInt(nameSplit[1]);
+        else if (stateSplit.length > 1) return Integer.parseInt(stateSplit[1]);
+        else return 1;
+    }
+
+    @Override
+    public void damage(int amount) {
+    }
+
+    @Override
+    public void damageTool(ToolDamage amount, Random rng) {
+    }
+
+    @Override
+    public String toString() {
+        if (id == null) return "ANY_OBJECT";
+        String ret = id.toString();
+        // TODO: Will data ever be null, or will it just be 0?
+        if (data != null) ret += "@" + data.get(id);
+        ret += "/" + quantityRequired;
+        return ret;
+    }
+
+    @Override
+    public String getReadableName() {
+        if (id == null) return "ANY_OBJECT";
+        return id.toString().toLowerCase().replace("_", " ");
+    }
+}

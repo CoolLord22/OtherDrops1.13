@@ -1,0 +1,71 @@
+package main.java.com.gmail.zariust.otherdrops.listener;
+
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.material.MaterialData;
+
+import main.java.com.gmail.zariust.common.Verbosity;
+import main.java.com.gmail.zariust.otherdrops.Log;
+import main.java.com.gmail.zariust.otherdrops.OtherDrops;
+import main.java.com.gmail.zariust.otherdrops.OtherDropsConfig;
+import main.java.com.gmail.zariust.otherdrops.event.OccurredEvent;
+
+public class OdRedstoneListener implements Listener {
+    private final OtherDrops parent;
+
+    public OdRedstoneListener(OtherDrops instance) {
+        parent = instance;
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onBlockRedstoneChange(BlockRedstoneEvent event) {
+        Log.logInfo("RedstoneEvent: before checks.", Verbosity.EXTREME);
+
+        Block poweredBlock = event.getBlock();
+        Material poweredBlockDataValue = poweredBlock.getType();
+        MaterialData poweredBlockMetaValue = poweredBlock.getState().getData();
+        Log.dMsg("Block Type: " + poweredBlockDataValue + ":" + poweredBlockMetaValue + " (current=" + event.getNewCurrent() + ")");
+
+        if (OtherDropsConfig.dropForRedstoneTrigger) {
+            if ((event.getOldCurrent() - event.getNewCurrent()) > 0) { // POWER decreasing
+                OccurredEvent drop = new OccurredEvent(event, poweredBlock);
+                parent.sectionManager.performDrop(drop);
+            } else { // POWER increasing
+                OccurredEvent drop = new OccurredEvent(event, poweredBlock, "UP");
+                parent.sectionManager.performDrop(drop);
+            }
+            // Nothing done if newcurrent == oldcurrent as this wouldn't trigger the event
+
+            if (OtherDropsConfig.globalRedstonewireTriggersSurrounding && poweredBlock.getType() == Material.REDSTONE_WIRE) {
+                callOdEvent(event, poweredBlock.getRelative(BlockFace.NORTH));
+                callOdEvent(event, poweredBlock.getRelative(BlockFace.EAST));
+                callOdEvent(event, poweredBlock.getRelative(BlockFace.WEST));
+                callOdEvent(event, poweredBlock.getRelative(BlockFace.SOUTH));
+            }
+        }
+    }
+
+    private void callOdEvent(BlockRedstoneEvent event, Block block) {
+        // avoid powerable blocks (otherwise we'd double up since they also get a redstonechange event) and AIR
+        if (!isRedStone(block.getType()) && block.getType() != Material.AIR) {
+            if ((event.getOldCurrent() - event.getNewCurrent()) > 0) { // POWER decreasing
+                OccurredEvent drop = new OccurredEvent(event, block);
+                parent.sectionManager.performDrop(drop);
+            } else { // POWER increasing
+                OccurredEvent drop = new OccurredEvent(event, block, "UP");
+                parent.sectionManager.performDrop(drop);
+
+            }
+        }
+
+    }
+
+    private boolean isRedStone(Material type) {
+        return type == Material.REDSTONE_WIRE || type == Material.STONE_BUTTON || type == Material.ACACIA_BUTTON || type == Material.BIRCH_BUTTON || type == Material.DARK_OAK_BUTTON || type == Material.JUNGLE_BUTTON || type == Material.OAK_BUTTON || type == Material.SPRUCE_BUTTON || type == Material.POWERED_RAIL || type == Material.LEVER || type == Material.TRIPWIRE_HOOK || type == Material.PISTON || type == Material.PISTON_HEAD || type == Material.MOVING_PISTON || type == Material.STICKY_PISTON || type == Material.REDSTONE_TORCH || type == Material.REDSTONE_WALL_TORCH;
+    }
+}
