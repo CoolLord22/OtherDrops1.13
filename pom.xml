@@ -11,6 +11,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>16</java.version>
+        <events-dir>${project.build.directory}/generated-events</events-dir>
     </properties>
 
     <scm>
@@ -69,22 +70,15 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <!-- Works with local git, no pushing required -->
-                    <doCheck>false</doCheck>
-                    <doUpdate>false</doUpdate>
-
                     <!-- buildNumber -->
                     <format>{0,number}</format>
                     <items>
                         <item>buildNumber</item>
                     </items>
-
-                    <!-- short git hash -->
-                    <shortRevisionLength>7</shortRevisionLength>
                 </configuration>
             </plugin>
 
-            <!-- Build 4 mini event jars using AntRun -->
+            <!-- Build 4 event jars using AntRun -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -96,17 +90,36 @@
                         <configuration>
                             <target>
                                 <mkdir dir="${project.build.directory}/generated-events"/>
-                                <jar destfile="${project.build.directory}/generated-events/Explosions.jar">
+                                <jar destfile="${events-dir}/Explosions.jar">
                                     <fileset dir="${basedir}/src/main/resources/events/Explosions" includes="event.info"/>
+                                    <fileset dir="${project.build.outputDirectory}">
+                                        <include name="**/odspecialevents/ExplosionEvents.*" />
+                                        <include name="**/odspecialevents/ExplodeEvent.*" />
+                                    </fileset>
                                 </jar>
-                                <jar destfile="${project.build.directory}/generated-events/Sheep.jar">
+                                <jar destfile="${events-dir}/Sheep.jar">
                                     <fileset dir="${basedir}/src/main/resources/events/Sheep" includes="event.info"/>
+                                    <fileset dir="${project.build.outputDirectory}">
+                                        <include name="**/odspecialevents/SheepEvents.*" />
+                                        <include name="**/odspecialevents/ShearEvent.*" />
+                                        <include name="**/odspecialevents/DyeEvent.*" />
+                                    </fileset>
                                 </jar>
-                                <jar destfile="${project.build.directory}/generated-events/Trees.jar">
+                                <jar destfile="${events-dir}/Trees.jar">
                                     <fileset dir="${basedir}/src/main/resources/events/Trees" includes="event.info"/>
+                                    <fileset dir="${project.build.outputDirectory}">
+                                        <include name="**/odspecialevents/TreeEvent.*" />
+                                        <include name="**/odspecialevents/TreeEvents.*" />
+                                    </fileset>
                                 </jar>
-                                <jar destfile="${project.build.directory}/generated-events/Weather.jar">
+                                <jar destfile="${events-dir}/Weather.jar">
                                     <fileset dir="${basedir}/src/main/resources/events/Weather" includes="event.info"/>
+                                    <fileset dir="${project.build.outputDirectory}">
+                                        <include name="**/odspecialevents/LightningEvent.*" />
+                                        <include name="**/odspecialevents/StormEvent.*" />
+                                        <include name="**/odspecialevents/ThunderEvent.*" />
+                                        <include name="**/odspecialevents/WeatherEvents.*" />
+                                    </fileset>
                                 </jar>
                             </target>
                         </configuration>
@@ -114,6 +127,7 @@
                 </executions>
             </plugin>
 
+            <!-- Copy generated event jars into events folder -->
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>3.3.1</version>
@@ -137,7 +151,7 @@
                 </executions>
             </plugin>
 
-            <!-- Shade CustomBlockData -->
+            <!-- Shade -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -149,6 +163,15 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>com/gmail/zariust/odspecialevents/**</exclude>
+                                        <exclude>META-INF/MANIFEST.MF</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
                             <!-- Relocate CustomBlockData -->
                             <relocations>
                                 <relocation>
@@ -161,17 +184,6 @@
                                     <shadedPattern>libs.bstats</shadedPattern>
                                 </relocation>
                             </relocations>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/MANIFEST.MF</exclude>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
                         </configuration>
                     </execution>
                 </executions>
