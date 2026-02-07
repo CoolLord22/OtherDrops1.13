@@ -15,10 +15,7 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SoundAction extends Action {
     public enum SoundLocation {
@@ -88,24 +85,25 @@ public class SoundAction extends Action {
         // split out sound/volume <#v>/pitch <#p>
         String[] split = sub.split("/");
         for (String value : split) {
-
             if (value.matches("[0-9.~-]*v")) {
-                Log.dMsg("Found volume");
-
+                Log.dMsg("Found volume " + value);
                 volume = DoubleRange.parse(value.substring(0, value.length() - 1));
             } else if (value.matches("[0-9.~-]*p")) {
-                Log.dMsg("Found pitch");
+                Log.dMsg("Found pitch " + value);
                 pitch = DoubleRange.parse(value.substring(0, value.length() - 1));
             } else {
+                Log.dMsg("Checking sound " + value);
                 for (Sound loopValue : Sound.values()) {
-                    if (CommonMaterial.fuzzyMatchString(value, loopValue.toString())) {
-                        Log.logInfo("Matched sound " + loopValue + " = " + value, Verbosity.HIGHEST);
+                    if (CommonMaterial.fuzzyMatchString(value, loopValue.getKey().getKey())) {
+                        Log.logInfo("Matched sound " + loopValue.getKey().getKey() + " = " + value, Verbosity.HIGHEST);
                         sound = loopValue;
+                        break;
                     }
                 }
             }
         }
-        sounds.add(new ODSound(sound, volume, pitch));
+        if(sound == null) Log.logWarning("Invalid sound " + Arrays.toString(split));
+        else sounds.add(new ODSound(sound, volume, pitch));
     }
 
     @Override
