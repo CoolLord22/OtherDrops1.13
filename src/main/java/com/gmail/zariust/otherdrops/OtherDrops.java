@@ -41,7 +41,7 @@ import java.util.*;
 
 public class OtherDrops extends JavaPlugin {
     public static OtherDrops plugin;
-    public static NamespacedKey playerPlacedKey;
+    public static NamespacedKey PLAYER_PLACED;
     boolean enabled;
     public Log log = null;
     public final SectionManager sectionManager;
@@ -61,7 +61,7 @@ public class OtherDrops extends JavaPlugin {
 
     public OtherDrops() {
         plugin = this;
-        playerPlacedKey = new NamespacedKey(this, "playerplaced");
+        PLAYER_PLACED = new NamespacedKey(this, "playerplaced");
         this.sectionManager = new SectionManager(this);
     }
 

@@ -75,7 +75,7 @@ public class OdBlockListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
         final PersistentDataContainer customBlockData = new CustomBlockData(event.getBlock(), parent);
-        customBlockData.set(OtherDrops.playerPlacedKey, PersistentDataType.STRING, "PLAYER");
+        customBlockData.set(OtherDrops.PLAYER_PLACED, PersistentDataType.STRING, "PLAYER");
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

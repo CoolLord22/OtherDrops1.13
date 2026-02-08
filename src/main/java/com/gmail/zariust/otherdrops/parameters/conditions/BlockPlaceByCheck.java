@@ -39,10 +39,10 @@ public class BlockPlaceByCheck extends Condition {
         if (block != null) {
             String placeBy;
             final PersistentDataContainer customBlockData = new CustomBlockData(block, OtherDrops.plugin);
-            if (!customBlockData.has(OtherDrops.playerPlacedKey, PersistentDataType.STRING)) {
+            if (!customBlockData.has(OtherDrops.PLAYER_PLACED, PersistentDataType.STRING)) {
                 placeBy = "NATURAL";
             } else {
-                placeBy = customBlockData.get(OtherDrops.playerPlacedKey, PersistentDataType.STRING);
+                placeBy = customBlockData.get(OtherDrops.PLAYER_PLACED, PersistentDataType.STRING);
             }
             Log.logInfo("BlockPlaceByCheck - checking: " + placeByStored.toString() + " vs actual: " + placeBy, Verbosity.HIGHEST);
             return CustomDrop.checkList(placeBy.toUpperCase(), placeByStored);
