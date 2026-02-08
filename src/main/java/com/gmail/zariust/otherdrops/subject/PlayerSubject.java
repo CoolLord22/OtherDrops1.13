@@ -118,7 +118,7 @@ public class PlayerSubject extends LivingSubject {
         if (damage == null) return;
         ItemStack stack = agent.getInventory().getItem(hand);
         if (stack == null) return;
-        if (damage.apply(stack, rng)) agent.getInventory().setItemInMainHand(null);
+        if (damage.apply(stack, rng)) agent.getInventory().setItem(hand, null);
         else agent.updateInventory(); // because we've edited the stack directly
         // TODO: Option of failure if damage is greater that the amount
         // remaining?
