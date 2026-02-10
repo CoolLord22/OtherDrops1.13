@@ -42,6 +42,7 @@ import java.util.*;
 public class OtherDrops extends JavaPlugin {
     public static OtherDrops plugin;
     public static NamespacedKey PLAYER_PLACED;
+    public static NamespacedKey SPAWNED_BY;
     boolean enabled;
     public Log log = null;
     public final SectionManager sectionManager;
@@ -62,6 +63,7 @@ public class OtherDrops extends JavaPlugin {
     public OtherDrops() {
         plugin = this;
         PLAYER_PLACED = new NamespacedKey(this, "playerplaced");
+        SPAWNED_BY = new NamespacedKey(this, "spawnedBy");
         this.sectionManager = new SectionManager(this);
     }
 

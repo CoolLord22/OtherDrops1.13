@@ -8,11 +8,14 @@ import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.parameters.Condition;
 import org.bukkit.entity.Entity;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.gmail.zariust.otherdrops.OtherDrops.SPAWNED_BY;
 
 public class SpawnedCheck extends Condition {
 
@@ -29,8 +32,7 @@ public class SpawnedCheck extends Condition {
         Log.logInfo("SpawnedCheck - start", Verbosity.HIGHEST);
 
         if (entity != null) {
-            String spawnReason = "";
-            if (!entity.getMetadata("CreatureSpawnedBy").isEmpty()) spawnReason = (String) entity.getMetadata("CreatureSpawnedBy").get(0).value();
+            String spawnReason = entity.getPersistentDataContainer().getOrDefault(SPAWNED_BY, PersistentDataType.STRING,  "not set");
             Log.logInfo("SpawnedCheck - checking: " + spawnReasonsStored.toString() + " vs actual: " + spawnReason, Verbosity.HIGHEST);
             return CustomDrop.checkList(spawnReason.toUpperCase(), spawnReasonsStored);
         } else {

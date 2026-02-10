@@ -36,9 +36,11 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
+
+import static com.gmail.zariust.otherdrops.OtherDrops.SPAWNED_BY;
 
 public abstract class DropType {
     public enum DropCategory {
@@ -291,7 +293,7 @@ public abstract class DropType {
                 CustomMobSupport.spawnCustomMob(type.toString(), spawnLoc);
             }
             data.setOn(mob, owner);
-            mob.setMetadata("CreatureSpawnedBy", new FixedMetadataValue(OtherDrops.plugin, "OtherDrops"));
+            mob.getPersistentDataContainer().set(SPAWNED_BY, PersistentDataType.STRING, "OtherDrops");
             dropResult.addDropped(mob);
             if (passenger != null) mob.addPassenger(passenger);
 

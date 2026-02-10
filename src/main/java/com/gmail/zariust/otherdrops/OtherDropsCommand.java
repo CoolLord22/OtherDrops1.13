@@ -42,7 +42,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.MetadataValue;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.BlockIterator;
 import org.jetbrains.annotations.NotNull;
 
@@ -55,6 +55,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import static com.gmail.zariust.otherdrops.OtherDrops.SPAWNED_BY;
 
 public class OtherDropsCommand implements CommandExecutor {
     private enum OBCommand {
@@ -305,9 +307,7 @@ public class OtherDropsCommand implements CommandExecutor {
                 Entity mob = getTarget(player);
                 if (mob instanceof LivingEntity le) {
                     // TODO: parse via CreatureDrop (need to create CreatureDrop.parse(entity)
-                    List<MetadataValue> md = le.getMetadata("CreatureSpawnedBy");
-                    String spawnReason = "not set";
-                    if (!md.isEmpty()) spawnReason = (String) md.get(0).value();
+                    String spawnReason = mob.getPersistentDataContainer().getOrDefault(SPAWNED_BY, PersistentDataType.STRING,  "not set");
                     sender.sendMessage("OdId: mob details: " + mob.getType() + "@" + CreatureData.parse(mob) + " spawnedby: " + spawnReason + CustomMobSupport.getCustomMobName(le));
                 } else {
                     sender.sendMessage("No living entity found.");

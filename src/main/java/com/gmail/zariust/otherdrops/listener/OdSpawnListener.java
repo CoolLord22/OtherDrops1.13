@@ -12,10 +12,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
-import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.gmail.zariust.otherdrops.OtherDrops.SPAWNED_BY;
 
 public class OdSpawnListener implements Listener {
     private final OtherDrops parent;
@@ -38,7 +40,7 @@ public class OdSpawnListener implements Listener {
         Log.logInfo("SpawnEvent: before checks. Spawned by " + event.getSpawnReason(), Verbosity.EXTREME);
 
         // This listener should only be registered if "spawned" condition exists, so tag creature
-        event.getEntity().setMetadata("CreatureSpawnedBy", new FixedMetadataValue(OtherDrops.plugin, event.getSpawnReason().toString()));
+        event.getEntity().getPersistentDataContainer().set(SPAWNED_BY, PersistentDataType.STRING, event.getSpawnReason().toString());
 
         // Only run OccurredEvent/performDrop if "action: SPAWN" trigger used
         if (OtherDropsConfig.dropForSpawnTrigger) {
@@ -50,10 +52,8 @@ public class OdSpawnListener implements Listener {
                         Log.logInfo("SpawnEvent: ignoring spawn from OtherDrops (add spawntrigger_ignores_otherdrops_spawn: false to the config to override, but beware infinite loops).", Verbosity.HIGH);
                         return;
                     }
-
                 }
             }
-
             OccurredEvent drop = new OccurredEvent(event);
             parent.sectionManager.performDrop(drop);
         }
