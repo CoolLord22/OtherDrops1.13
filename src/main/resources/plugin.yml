@@ -1,6 +1,7 @@
 name: OtherDrops
 main: com.gmail.zariust.otherdrops.OtherDrops
 version: ${project.version}-b${buildNumber}
+api-version: 1.20
 author: Zarius
 authors: [<Name>, Updated by CoolLord22]
 website: https://www.spigotmc.org/resources/otherdrops-updated.51793/
@@ -19,7 +20,7 @@ commands:
             §a/od show <block> §7- show custom drops for particular blocktype
             §a/od settings §7- show current global settings
 
-softdepend: [GriefPrevention, Heroes, Jobs, mcMMO, MobArena, MythicMobs, PlaceholderAPI, Towny, WildStacker, WorldGuard, Vault, Multiverse-Core]
+softdepend: [GriefPrevention, Heroes, Jobs, mcMMO, MobArena, MythicMobs, PlaceholderAPI, WildStacker, WorldGuard, Vault, Multiverse-Core]
 permissions:
     otherdrops.admin.id:
         default: op

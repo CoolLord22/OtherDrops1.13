@@ -111,7 +111,7 @@ public class ExplosionAgent implements Agent {
         if (name.equalsIgnoreCase("EXPLOSION") || name.equalsIgnoreCase("EXPLOSION_ANY")) return new ExplosionAgent();
 
         name = name.toUpperCase().replace("EXPLOSION_", "");
-        if (name.equals("TNT")) return new ExplosionAgent(EntityType.PRIMED_TNT);
+        if (name.equals("TNT")) return new ExplosionAgent(EntityType.TNT);
         else if (name.equals("FIRE") || name.equals("FIREBALL")) return new ExplosionAgent(Material.FIRE);
 
         Log.logInfo("Parsing explosion for: " + name, Verbosity.HIGH);

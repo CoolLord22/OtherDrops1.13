@@ -158,8 +158,8 @@ public class DamageAction extends Action {
             case NORMAL:
                 if (damageVal < 0) {
                     double newHealth = ent.getHealth() + (damageVal * -1);
-                    if (newHealth > ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()) ;
-                    newHealth = ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+                    if (newHealth > ent.getAttribute(Attribute.MAX_HEALTH).getValue()) ;
+                    newHealth = ent.getAttribute(Attribute.MAX_HEALTH).getValue();
                     EntityWrapper.setHealth(ent, newHealth);
                 } else if (damageVal > 0) {
                     if (attacker != null) {

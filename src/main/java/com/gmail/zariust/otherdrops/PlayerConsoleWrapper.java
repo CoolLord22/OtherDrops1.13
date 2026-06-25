@@ -16,6 +16,7 @@
 
 package com.gmail.zariust.otherdrops;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
@@ -181,5 +182,11 @@ public class PlayerConsoleWrapper implements ConsoleCommandSender {
     public Spigot spigot() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public @NotNull Component name() {
+        if (caller == null) return Component.text("console");
+        return Component.text(caller.getName());
     }
 }

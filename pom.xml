@@ -5,7 +5,7 @@
 
     <groupId>com.gmail.zariust</groupId>
     <artifactId>OtherDrops</artifactId>
-    <version>3.2.8</version>
+    <version>3.2.9</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -240,14 +240,22 @@
             <id>sk89q-repo</id>
             <url>https://maven.enginehub.org/repo/</url>
         </repository>
+        <repository>
+            <id>maven-ottonien</id>
+            <url>https://maven.ottonien.com/repository/maven-all/</url>
+        </repository>
+        <repository>
+            <id>papermc</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
         <!-- Spigot API -->
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.19.4-R0.1-SNAPSHOT</version>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.21.11-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!-- CustomBlockData -->
@@ -327,13 +335,6 @@
             <version>2.11.6</version>
             <scope>provided</scope>
         </dependency>
-        <!-- Towny API -->
-        <dependency>
-            <groupId>com.github.TownyAdvanced</groupId>
-            <artifactId>Towny</artifactId>
-            <version>0.94.0.4</version>
-            <scope>provided</scope>
-        </dependency>
         <!-- WildStacker API -->
         <dependency>
             <groupId>com.bgsoftware</groupId>
@@ -341,28 +342,11 @@
             <version>2025.2</version>
             <scope>provided</scope>
         </dependency>
-        <!-- WorldEdit API -->
-        <dependency>
-            <groupId>com.sk89q.worldedit</groupId>
-            <artifactId>worldedit-bukkit</artifactId>
-            <version>7.0.0</version>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.sk89q.intake</groupId>
-                    <artifactId>intake</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.bstats</groupId>
-                    <artifactId>bstats-bukkit</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
         <!-- WorldGuard API -->
         <dependency>
             <groupId>com.sk89q.worldguard</groupId>
             <artifactId>worldguard-bukkit</artifactId>
-            <version>7.0.0</version>
+            <version>7.0.14</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>

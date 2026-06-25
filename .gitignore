@@ -20,8 +20,6 @@ src/com/gmail/zariust/bukkit/obevents/.DS_Store
 .metadata/
 .recommenders/
 
-# Ignore plugin.yml as generated from plugin.yml.template
-src/main/resources/plugin.yml
 /.metadata/
 
 .externalToolBuilders/New_Builder.launch
@@ -35,4 +33,6 @@ lib/authlib-1.5.21.jar
 /target
 buildNumber.properties
 dependency-reduced-pom.xml
-OtherDrops.iml
+*.iml
+compile_output.txt
+.idea

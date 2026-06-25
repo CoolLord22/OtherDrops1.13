@@ -28,7 +28,7 @@ public class EntityWrapper {
     }
 
     public static AttributeInstance getMaxHealth(LivingEntity entity) {
-        return entity.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        return entity.getAttribute(Attribute.MAX_HEALTH);
     }
 
     public static void damage(LivingEntity ent, Double damageVal, LivingEntity attacker) {

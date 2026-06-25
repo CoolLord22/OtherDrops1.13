@@ -24,6 +24,7 @@ import org.bukkit.block.Biome;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public enum Weather {
     RAIN(true), SNOW(true), THUNDER(true), CLEAR(false), CLOUD(true), NONE(false), STORM(true) {
@@ -45,20 +46,27 @@ public enum Weather {
         stormy = storm;
     }
 
+    private static final Set<Biome> NO_WEATHER_BIOMES = Set.of(
+            Biome.NETHER_WASTES, Biome.CRIMSON_FOREST, Biome.WARPED_FOREST,
+            Biome.SOUL_SAND_VALLEY, Biome.BASALT_DELTAS, Biome.THE_END, Biome.DESERT
+    );
+
+    private static final Set<Biome> SNOWY_BIOMES = Set.of(
+            Biome.GROVE, Biome.JAGGED_PEAKS, Biome.FROZEN_PEAKS, Biome.SNOWY_BEACH,
+            Biome.SNOWY_TAIGA, Biome.SNOWY_PLAINS, Biome.SNOWY_SLOPES, Biome.ICE_SPIKES,
+            Biome.DEEP_FROZEN_OCEAN, Biome.FROZEN_OCEAN, Biome.FROZEN_RIVER
+    );
+
     public static Weather match(Biome biome, boolean hasStorm, boolean thundering) {
         if (biome == null) biome = Biome.PLAINS;
-        return switch (biome) {
-            case NETHER_WASTES, CRIMSON_FOREST, WARPED_FOREST, SOUL_SAND_VALLEY, BASALT_DELTAS, THE_END, DESERT -> NONE;
-            case GROVE, JAGGED_PEAKS, FROZEN_PEAKS, SNOWY_BEACH, SNOWY_TAIGA, SNOWY_PLAINS, SNOWY_SLOPES, ICE_SPIKES,
-                 DEEP_FROZEN_OCEAN, FROZEN_OCEAN, FROZEN_RIVER -> {
-                if (hasStorm) yield SNOW;
-                yield CLEAR;
-            }
-            default -> {
-                if (hasStorm) yield thundering ? THUNDER : RAIN;
-                yield CLEAR;
-            }
-        };
+        if (NO_WEATHER_BIOMES.contains(biome)) {
+            return NONE;
+        } else if (SNOWY_BIOMES.contains(biome)) {
+            return hasStorm ? SNOW : CLEAR;
+        } else {
+            if (hasStorm) return thundering ? THUNDER : RAIN;
+            return CLEAR;
+        }
     }
 
     public boolean isStormy() {

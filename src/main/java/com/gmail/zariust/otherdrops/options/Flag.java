@@ -20,8 +20,6 @@ import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.*;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
-import com.palmergames.bukkit.towny.object.TownyPermission;
-import com.palmergames.bukkit.towny.utils.PlayerCacheUtil;
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import me.ryanhamshire.GriefPrevention.PlayerData;
@@ -95,27 +93,6 @@ public abstract class Flag implements Comparable<Flag> {
         }
     };
 
-    public final static Flag TOWNY_BUILD_PERMISSION = new Flag("TOWNY_BUILD_PERMISSION") {
-        @Override
-        public void matches(OccurredEvent event, boolean state, final FlagState result) {
-            if (Dependencies.hasTowny()) {
-                Player player = null;
-                if (event.getTool() instanceof PlayerSubject) {
-                    player = ((PlayerSubject) event.getTool()).getPlayer();
-                }
-                if (player != null) {
-                    if (PlayerCacheUtil.getCachePermission(player, event.getLocation(), event.getLocation().getBlock().getType(), TownyPermission.ActionType.BUILD)) {
-                        Log.logInfo("Towny build permission allowed.", HIGHEST);
-                        result.dropThis = true;
-                    } else {
-                        Log.logInfo("Towny build permission failed.", HIGHEST);
-                        result.dropThis = false;
-                    }
-                }
-            }
-        }
-    };
-
     public final static Flag GRIEFPREVENTION_BUILD_PERMISSION = new Flag("GRIEFPREVENTION_BUILD_PERMISSION") {
         @Override
         public void matches(OccurredEvent event, boolean state, final FlagState result) {
@@ -169,7 +146,6 @@ public abstract class Flag implements Comparable<Flag> {
         flags.put("IN_MOB_ARENA", IN_MOB_ARENA);
         flags.put("UNIQUE", UNIQUE);
         flags.put("WORLDGUARD_BUILD_PERMISSION", WORLDGUARD_BUILD_PERMISSION);
-        flags.put("TOWNY_BUILD_PERMISSION", TOWNY_BUILD_PERMISSION);
         flags.put("GRIEFPREVENTION_BUILD_PERMISSION", GRIEFPREVENTION_BUILD_PERMISSION);
         flags.put("DROP_TO_INVENTORY", DROP_TO_INVENTORY);
     }

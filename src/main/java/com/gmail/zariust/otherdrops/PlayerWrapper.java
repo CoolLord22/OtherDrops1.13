@@ -16,6 +16,19 @@
 
 package com.gmail.zariust.otherdrops;
 
+import com.destroystokyo.paper.Title;
+import com.destroystokyo.paper.block.TargetBlockInfo;
+import com.destroystokyo.paper.entity.TargetEntityInfo;
+import io.papermc.paper.datacomponent.DataComponentType;
+import io.papermc.paper.entity.LookAnchor;
+import io.papermc.paper.entity.TeleportFlag;
+import io.papermc.paper.threadedregions.scheduler.EntityScheduler;
+import io.papermc.paper.world.damagesource.CombatTracker;
+import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.util.TriState;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.*;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
@@ -28,9 +41,15 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
+import org.bukkit.damage.DamageSource;
 import org.bukkit.entity.*;
 import org.bukkit.entity.memory.MemoryKey;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.InventoryView.Property;
@@ -44,16 +63,24 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.PlayerProfile;
+import io.papermc.paper.connection.PlayerGameConnection;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
+import org.checkerframework.checker.index.qual.NonNegative;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 @SuppressWarnings("deprecation")
 public class PlayerWrapper implements Player {
@@ -268,6 +295,31 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public void setArrowsInBody(@NonNegative int count, boolean fireEvent) {
+
+    }
+
+    @Override
+    public @NonNegative int getBeeStingerCooldown() {
+        return 0;
+    }
+
+    @Override
+    public void setBeeStingerCooldown(@NonNegative int ticks) {
+
+    }
+
+    @Override
+    public @NonNegative int getBeeStingersInBody() {
+        return 0;
+    }
+
+    @Override
+    public void setBeeStingersInBody(@NonNegative int count) {
+
+    }
+
+    @Override
     public int getMaximumNoDamageTicks() {
         return caller.getMaximumNoDamageTicks();
     }
@@ -285,6 +337,16 @@ public class PlayerWrapper implements Player {
     @Override
     public void setNoDamageTicks(int ticks) {
         caller.setNoDamageTicks(ticks);
+    }
+
+    @Override
+    public int getNoActionTicks() {
+        return 0;
+    }
+
+    @Override
+    public void setNoActionTicks(int ticks) {
+
     }
 
     @Override
@@ -348,8 +410,18 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public void setVisualFire(@NotNull TriState fire) {
+
+    }
+
+    @Override
     public boolean isVisualFire() {
         return false;
+    }
+
+    @Override
+    public @NotNull TriState getVisualFire() {
+        return null;
     }
 
     @Override
@@ -408,6 +480,11 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public @NotNull ItemStack getPickItemStack() {
+        return null;
+    }
+
+    @Override
     public float getFallDistance() {
         return caller.getFallDistance();
     }
@@ -435,12 +512,17 @@ public class PlayerWrapper implements Player {
     @NotNull
     @Override
     public PlayerProfile getPlayerProfile() {
-        return null;
+        return caller.getPlayerProfile();
     }
 
     @Override
     public boolean isOnline() {
         return caller.isOnline();
+    }
+
+    @Override
+    public boolean isConnected() {
+        return false;
     }
 
     @Override
@@ -451,6 +533,26 @@ public class PlayerWrapper implements Player {
     @Override
     public void setDisplayName(String name) {
         caller.setDisplayName(name);
+    }
+
+    @Override
+    public void playerListName(@org.jspecify.annotations.Nullable Component name) {
+
+    }
+
+    @Override
+    public Component playerListName() {
+        return null;
+    }
+
+    @Override
+    public @org.jspecify.annotations.Nullable Component playerListHeader() {
+        return null;
+    }
+
+    @Override
+    public @org.jspecify.annotations.Nullable Component playerListFooter() {
+        return null;
     }
 
     @Override
@@ -469,6 +571,16 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public int getProtocolVersion() {
+        return 0;
+    }
+
+    @Override
+    public @org.jspecify.annotations.Nullable InetSocketAddress getVirtualHost() {
+        return null;
+    }
+
+    @Override
     public void sendRawMessage(String message) {
         caller.sendRawMessage(message);
     }
@@ -481,6 +593,53 @@ public class PlayerWrapper implements Player {
     @Override
     public void kickPlayer(String message) {
         caller.kickPlayer(message);
+    }
+
+    @Override
+    public void kick(@org.jspecify.annotations.Nullable Component message, PlayerKickEvent.Cause cause) {
+
+    }
+
+    @Override
+    public <E extends BanEntry<? super PlayerProfile>> @org.jspecify.annotations.Nullable E ban(
+            @org.jspecify.annotations.Nullable String reason, @org.jspecify.annotations.Nullable Date expires,
+            @org.jspecify.annotations.Nullable String source, boolean kickPlayer) {
+        return null;
+    }
+
+    @Override
+    public <E extends BanEntry<? super PlayerProfile>> @org.jspecify.annotations.Nullable E ban(
+            @org.jspecify.annotations.Nullable String reason, @org.jspecify.annotations.Nullable Instant expires,
+            @org.jspecify.annotations.Nullable String source, boolean kickPlayer) {
+        return null;
+    }
+
+    @Override
+    public <E extends BanEntry<? super PlayerProfile>> @org.jspecify.annotations.Nullable E ban(
+            @org.jspecify.annotations.Nullable String reason, @org.jspecify.annotations.Nullable Duration duration,
+            @org.jspecify.annotations.Nullable String source, boolean kickPlayer) {
+        return null;
+    }
+
+    @Override
+    public @org.jspecify.annotations.Nullable BanEntry<InetAddress> banIp(
+            @org.jspecify.annotations.Nullable String reason, @org.jspecify.annotations.Nullable Date expires,
+            @org.jspecify.annotations.Nullable String source, boolean kickPlayer) {
+        return null;
+    }
+
+    @Override
+    public @org.jspecify.annotations.Nullable BanEntry<InetAddress> banIp(
+            @org.jspecify.annotations.Nullable String reason, @org.jspecify.annotations.Nullable Instant expires,
+            @org.jspecify.annotations.Nullable String source, boolean kickPlayer) {
+        return null;
+    }
+
+    @Override
+    public @org.jspecify.annotations.Nullable BanEntry<InetAddress> banIp(
+            @org.jspecify.annotations.Nullable String reason, @org.jspecify.annotations.Nullable Duration duration,
+            @org.jspecify.annotations.Nullable String source, boolean kickPlayer) {
+        return null;
     }
 
     @Override
@@ -501,6 +660,16 @@ public class PlayerWrapper implements Player {
     @Override
     public void setSneaking(boolean sneak) {
         caller.setSneaking(sneak);
+    }
+
+    @Override
+    public void setPose(@NotNull Pose pose, boolean fixed) {
+
+    }
+
+    @Override
+    public boolean hasFixedPose() {
+        return false;
     }
 
     @Override
@@ -641,6 +810,27 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public <E extends BanEntry<? super PlayerProfile>> @org.jspecify.annotations.Nullable E ban(
+            @org.jspecify.annotations.Nullable String reason, @org.jspecify.annotations.Nullable Date expires,
+            @org.jspecify.annotations.Nullable String source) {
+        return null;
+    }
+
+    @Override
+    public <E extends BanEntry<? super PlayerProfile>> @org.jspecify.annotations.Nullable E ban(
+            @org.jspecify.annotations.Nullable String reason, @org.jspecify.annotations.Nullable Instant expires,
+            @org.jspecify.annotations.Nullable String source) {
+        return null;
+    }
+
+    @Override
+    public <E extends BanEntry<? super PlayerProfile>> @org.jspecify.annotations.Nullable E ban(
+            @org.jspecify.annotations.Nullable String reason, @org.jspecify.annotations.Nullable Duration duration,
+            @org.jspecify.annotations.Nullable String source) {
+        return null;
+    }
+
+    @Override
     public boolean isWhitelisted() {
         return caller.isWhitelisted();
     }
@@ -763,6 +953,21 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public long getLastLogin() {
+        return 0;
+    }
+
+    @Override
+    public long getLastSeen() {
+        return 0;
+    }
+
+    @Override
+    public @org.jspecify.annotations.Nullable Location getRespawnLocation(boolean loadLocationAndValidate) {
+        return null;
+    }
+
+    @Override
     public boolean isSprinting() {
         return caller.isSprinting();
     }
@@ -803,6 +1008,16 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public int getPlayerListOrder() {
+        return 0;
+    }
+
+    @Override
+    public void setPlayerListOrder(int order) {
+
+    }
+
+    @Override
     public boolean teleport(Location location, TeleportCause cause) {
         return caller.teleport(location, cause);
     }
@@ -810,6 +1025,13 @@ public class PlayerWrapper implements Player {
     @Override
     public boolean teleport(Entity destination, TeleportCause cause) {
         return caller.teleport(destination, cause);
+    }
+
+    @Override
+    public @NotNull CompletableFuture<Boolean> teleportAsync(@NotNull Location loc,
+                                                             @NotNull PlayerTeleportEvent.TeleportCause cause,
+                                                             @NotNull TeleportFlag @NotNull ... teleportFlags) {
+        return null;
     }
 
     @Override
@@ -830,6 +1052,11 @@ public class PlayerWrapper implements Player {
     @Override
     public Player getKiller() {
         return caller.getKiller();
+    }
+
+    @Override
+    public void setKiller(@Nullable Player killer) {
+
     }
 
     @Override
@@ -934,6 +1161,11 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public boolean clearActivePotionEffects() {
+        return false;
+    }
+
+    @Override
     public boolean hasPotionEffect(PotionEffectType arg0) {
         throw new UnsupportedOperationException("Not supported yet."); 
     }
@@ -958,6 +1190,11 @@ public class PlayerWrapper implements Player {
     @Override
     public void closeInventory() {
         throw new UnsupportedOperationException("Not supported yet."); 
+
+    }
+
+    @Override
+    public void closeInventory(InventoryCloseEvent.Reason reason) {
 
     }
 
@@ -1151,6 +1388,11 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public boolean hasLineOfSight(@NotNull Location location) {
+        return false;
+    }
+
+    @Override
     public void setCanPickupItems(boolean arg0) {
         throw new UnsupportedOperationException("Not supported yet."); 
 
@@ -1269,6 +1511,16 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public @Nullable Component customName() {
+        return null;
+    }
+
+    @Override
+    public void customName(@Nullable Component customName) {
+
+    }
+
+    @Override
     public String getCustomName() {
         throw new UnsupportedOperationException("Not supported yet."); 
     }
@@ -1285,6 +1537,16 @@ public class PlayerWrapper implements Player {
 
     @Override
     public boolean isVisibleByDefault() {
+        return false;
+    }
+
+    @Override
+    public @NotNull Set<Player> getTrackedBy() {
+        return Set.of();
+    }
+
+    @Override
+    public boolean isTrackedBy(@NotNull Player player) {
         return false;
     }
 
@@ -1379,8 +1641,18 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public void damage(double amount, @NotNull DamageSource damageSource) {
+
+    }
+
+    @Override
     public void setHealth(double arg0) {
         throw new UnsupportedOperationException("Not supported yet."); 
+
+    }
+
+    @Override
+    public void heal(double amount, @NotNull EntityRegainHealthEvent.RegainReason reason) {
 
     }
 
@@ -1655,6 +1927,13 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public <T> void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX,
+                                  double offsetY, double offsetZ, double extra,
+                                  @org.jspecify.annotations.Nullable T data, boolean force) {
+
+    }
+
+    @Override
     public MainHand getMainHand() {
         throw new UnsupportedOperationException("Not supported yet."); 
     }
@@ -1671,6 +1950,42 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public @org.jspecify.annotations.Nullable InventoryView openAnvil(
+            @org.jspecify.annotations.Nullable Location location, boolean force) {
+        return null;
+    }
+
+    @Override
+    public @org.jspecify.annotations.Nullable InventoryView openCartographyTable(
+            @org.jspecify.annotations.Nullable Location location, boolean force) {
+        return null;
+    }
+
+    @Override
+    public @org.jspecify.annotations.Nullable InventoryView openGrindstone(
+            @org.jspecify.annotations.Nullable Location location, boolean force) {
+        return null;
+    }
+
+    @Override
+    public @org.jspecify.annotations.Nullable InventoryView openLoom(
+            @org.jspecify.annotations.Nullable Location location, boolean force) {
+        return null;
+    }
+
+    @Override
+    public @org.jspecify.annotations.Nullable InventoryView openSmithingTable(
+            @org.jspecify.annotations.Nullable Location location, boolean force) {
+        return null;
+    }
+
+    @Override
+    public @org.jspecify.annotations.Nullable InventoryView openStonecutter(
+            @org.jspecify.annotations.Nullable Location location, boolean force) {
+        return null;
+    }
+
+    @Override
     public List<Block> getLineOfSight(Set<Material> set, int i) {
         throw new UnsupportedOperationException("Not supported yet."); 
     }
@@ -1678,6 +1993,41 @@ public class PlayerWrapper implements Player {
     @Override
     public Block getTargetBlock(Set<Material> set, int i) {
         throw new UnsupportedOperationException("Not supported yet."); 
+    }
+
+    @Override
+    public @Nullable Block getTargetBlock(int maxDistance, @NotNull TargetBlockInfo.FluidMode fluidMode) {
+        return null;
+    }
+
+    @Override
+    public @Nullable BlockFace getTargetBlockFace(int maxDistance, @NotNull TargetBlockInfo.FluidMode fluidMode) {
+        return null;
+    }
+
+    @Override
+    public @Nullable BlockFace getTargetBlockFace(int maxDistance, @NotNull FluidCollisionMode fluidMode) {
+        return null;
+    }
+
+    @Override
+    public @Nullable TargetBlockInfo getTargetBlockInfo(int maxDistance, @NotNull TargetBlockInfo.FluidMode fluidMode) {
+        return null;
+    }
+
+    @Override
+    public @Nullable Entity getTargetEntity(int maxDistance, boolean ignoreBlocks) {
+        return null;
+    }
+
+    @Override
+    public @Nullable TargetEntityInfo getTargetEntityInfo(int maxDistance, boolean ignoreBlocks) {
+        return null;
+    }
+
+    @Override
+    public @Nullable RayTraceResult rayTraceEntities(int maxDistance, boolean ignoreBlocks) {
+        return null;
     }
 
     @Override
@@ -1721,6 +2071,11 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public void playHurtAnimation(float yaw) {
+
+    }
+
+    @Override
     public void setCollidable(boolean bln) {
         throw new UnsupportedOperationException("Not supported yet."); 
     }
@@ -1739,6 +2094,11 @@ public class PlayerWrapper implements Player {
     @Override
     public AttributeInstance getAttribute(Attribute atrbt) {
         throw new UnsupportedOperationException("Not supported yet."); 
+    }
+
+    @Override
+    public void registerAttribute(@NotNull Attribute attribute) {
+
     }
 
     @Override
@@ -1787,14 +2147,51 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public <T extends Projectile> @NotNull T launchProjectile(@NotNull Class<? extends T> projectile,
+                                                              @Nullable Vector velocity,
+                                                              @Nullable Consumer<? super T> function) {
+        return null;
+    }
+
+    @Override
     public boolean isHandRaised() {
         throw new UnsupportedOperationException("Not supported yet."); 
+    }
+
+    @Override
+    public boolean isJumping() {
+        return false;
+    }
+
+    @Override
+    public void setJumping(boolean jumping) {
+
+    }
+
+    @Override
+    public void playPickupItemAnimation(@NotNull Item item, int quantity) {
+
+    }
+
+    @Override
+    public float getHurtDirection() {
+        return 0;
     }
 
     @Nullable
     @Override
     public ItemStack getItemInUse() {
         return null;
+    }
+
+    @Override
+    public int getItemInUseTicks() {
+        return 0;
+    }
+
+    @Override
+    public void setItemInUseTicks(int ticks) {
+
     }
 
     @Override
@@ -1985,7 +2382,12 @@ public class PlayerWrapper implements Player {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
-	@Override
+    @Override
+    public void setRiptiding(boolean riptiding) {
+
+    }
+
+    @Override
 	public boolean isPersistent() {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
@@ -2025,7 +2427,118 @@ public class PlayerWrapper implements Player {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
-	@Override
+    @Override
+    public @NotNull Component name() {
+        return null;
+    }
+
+    @Override
+    public @NotNull Component teamDisplayName() {
+        return null;
+    }
+
+    @Override
+    public @Nullable Location getOrigin() {
+        return null;
+    }
+
+    @Override
+    public boolean fromMobSpawner() {
+        return false;
+    }
+
+    @NotNull
+    @Override
+    public CreatureSpawnEvent.SpawnReason getEntitySpawnReason() {
+        return null;
+    }
+
+    @Override
+    public boolean isUnderWater() {
+        return false;
+    }
+
+    @Override
+    public boolean isInRain() {
+        return false;
+    }
+
+    @Override
+    public boolean isInLava() {
+        return false;
+    }
+
+    @Override
+    public boolean isTicking() {
+        return false;
+    }
+
+    @Override
+    public @NotNull Set<Player> getTrackedPlayers() {
+        return Set.of();
+    }
+
+    @Override
+    public boolean spawnAt(@NotNull Location location, @NotNull CreatureSpawnEvent.SpawnReason reason) {
+        return false;
+    }
+
+    @Override
+    public boolean isInPowderedSnow() {
+        return false;
+    }
+
+    @Override
+    public double getX() {
+        return 0;
+    }
+
+    @Override
+    public double getY() {
+        return 0;
+    }
+
+    @Override
+    public double getZ() {
+        return 0;
+    }
+
+    @Override
+    public float getPitch() {
+        return 0;
+    }
+
+    @Override
+    public float getYaw() {
+        return 0;
+    }
+
+    @Override
+    public boolean collidesAt(@NotNull Location location) {
+        return false;
+    }
+
+    @Override
+    public boolean wouldCollideUsing(@NotNull BoundingBox boundingBox) {
+        return false;
+    }
+
+    @Override
+    public @NotNull EntityScheduler getScheduler() {
+        return null;
+    }
+
+    @Override
+    public @NotNull String getScoreboardEntryName() {
+        return "";
+    }
+
+    @Override
+    public void broadcastHurtAnimation(@NotNull Collection<Player> players) {
+
+    }
+
+    @Override
 	public void updateCommands() {
 		throw new UnsupportedOperationException("Not supported yet.");
 		
@@ -2122,7 +2635,18 @@ public class PlayerWrapper implements Player {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
-	@Override
+    @Override
+    public boolean teleport(@NotNull Location location, @NotNull PlayerTeleportEvent.TeleportCause cause,
+                            @NotNull TeleportFlag @NotNull ... teleportFlags) {
+        return false;
+    }
+
+    @Override
+    public void lookAt(double x, double y, double z, @NotNull LookAnchor entityAnchor) {
+
+    }
+
+    @Override
 	public <T> T getMemory(MemoryKey<T> arg0) {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
@@ -2186,6 +2710,66 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public float getSidewaysMovement() {
+        return 0;
+    }
+
+    @Override
+    public float getUpwardsMovement() {
+        return 0;
+    }
+
+    @Override
+    public float getForwardsMovement() {
+        return 0;
+    }
+
+    @Override
+    public void startUsingItem(@NotNull EquipmentSlot hand) {
+
+    }
+
+    @Override
+    public void completeUsingActiveItem() {
+
+    }
+
+    @Override
+    public @NotNull ItemStack getActiveItem() {
+        return null;
+    }
+
+    @Override
+    public void clearActiveItem() {
+
+    }
+
+    @Override
+    public int getActiveItemRemainingTime() {
+        return 0;
+    }
+
+    @Override
+    public void setActiveItemRemainingTime(@Range(from = 0L, to = 2147483647L) int ticks) {
+
+    }
+
+    @Override
+    public boolean hasActiveItem() {
+        return false;
+    }
+
+    @Override
+    public int getActiveItemUsedTime() {
+        return 0;
+    }
+
+    @Override
+    public @NotNull EquipmentSlot getActiveItemHand() {
+        return null;
+    }
+
+    @Override
     public void setInvisible(boolean b) {
 
     }
@@ -2196,6 +2780,26 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
+    public void setNoPhysics(boolean noPhysics) {
+
+    }
+
+    @Override
+    public boolean hasNoPhysics() {
+        return false;
+    }
+
+    @Override
+    public boolean isFreezeTickingLocked() {
+        return false;
+    }
+
+    @Override
+    public void lockFreezeTicks(boolean locked) {
+
+    }
+
+    @Override
 	public Pose getPose() {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
@@ -2203,6 +2807,31 @@ public class PlayerWrapper implements Player {
     @NotNull
     @Override
     public SpawnCategory getSpawnCategory() {
+        return null;
+    }
+
+    @Override
+    public boolean isInWorld() {
+        return false;
+    }
+
+    @Override
+    public @Nullable String getAsString() {
+        return "";
+    }
+
+    @Override
+    public @Nullable EntitySnapshot createSnapshot() {
+        return null;
+    }
+
+    @Override
+    public @NotNull Entity copy() {
+        return null;
+    }
+
+    @Override
+    public @NotNull Entity copy(@NotNull Location to) {
         return null;
     }
 
@@ -2245,4 +2874,683 @@ public class PlayerWrapper implements Player {
     public void sendSignChange(@NotNull Location location, @Nullable String[] strings, @NotNull DyeColor dyeColor, boolean b) throws IllegalArgumentException {
 
     }
+
+    @NotNull
+    @Override
+    public PlayerGameConnection getConnection() {
+        return caller.getConnection();
+    }
+
+    @Override
+    public int getDeathScreenScore() {
+        return caller.getDeathScreenScore();
+    }
+
+    @Override
+    public void setDeathScreenScore(int score) {
+        caller.setDeathScreenScore(score);
+    }
+
+    @NotNull
+    @Override
+    public Set<net.kyori.adventure.bossbar.BossBar> activeBossBars() {
+        Set<net.kyori.adventure.bossbar.BossBar> set =  new HashSet<>();
+        for (BossBar bossBar : caller.activeBossBars()) {
+            set.add(bossBar);
+        }
+        return set;
+    }
+
+    @Override
+    public Component displayName() {
+        return null;
+    }
+
+    @Override
+    public void displayName(@org.jspecify.annotations.Nullable Component displayName) {
+
+    }
+
+    @Override
+    public void sendEntityEffect(@NotNull EntityEffect effect, @NotNull Entity entity) {
+        caller.sendEntityEffect(effect, entity);
+    }
+
+    @NotNull
+    @Override
+    public io.papermc.paper.entity.PlayerGiveResult give(@NotNull Collection<ItemStack> items, boolean allowDrop) {
+        return caller.give(items, allowDrop);
+    }
+
+    @NotNull
+    @Override
+    public java.util.Set<Long> getSentChunkKeys() {
+        return caller.getSentChunkKeys();
+    }
+
+    @NotNull
+    @Override
+    public java.util.Set<Chunk> getSentChunks() {
+        return caller.getSentChunks();
+    }
+
+    @Override
+    public boolean isChunkSent(long chunkKey) {
+        return caller.isChunkSent(chunkKey);
+    }
+
+    @NotNull
+    @Override
+    public java.time.Duration getIdleDuration() {
+        return caller.getIdleDuration();
+    }
+
+    @Override
+    public void resetIdleDuration() {
+        caller.resetIdleDuration();
+    }
+
+    @NotNull
+    @Override
+    public java.util.Collection<EnderPearl> getEnderPearls() {
+        return caller.getEnderPearls();
+    }
+
+    @NotNull
+    @Override
+    public org.bukkit.Input getCurrentInput() {
+        return caller.getCurrentInput();
+    }
+
+    @Override
+    public void setRespawnLocation(@Nullable Location location, boolean force) {
+        caller.setRespawnLocation(location, force);
+    }
+
+    @Nullable
+    @Override
+    public InetSocketAddress getHAProxyAddress() {
+        return caller.getHAProxyAddress();
+    }
+
+    @Override
+    public boolean isTransferred() {
+        return caller.isTransferred();
+    }
+
+    @NotNull
+    @Override
+    public java.util.concurrent.CompletableFuture<byte[]> retrieveCookie(@NotNull NamespacedKey key) {
+        return caller.retrieveCookie(key);
+    }
+
+    @Override
+    public void storeCookie(@NotNull NamespacedKey key, byte @NotNull [] data) {
+        caller.storeCookie(key, data);
+    }
+
+    @Override
+    public void transfer(@NotNull String host, int port) {
+        caller.transfer(host, port);
+    }
+
+    @Override
+    public void showWinScreen() {
+        caller.showWinScreen();
+    }
+
+    @Override
+    public boolean hasSeenWinScreen() {
+        return caller.hasSeenWinScreen();
+    }
+
+    @Override
+    public void setHasSeenWinScreen(boolean seen) {
+        caller.setHasSeenWinScreen(seen);
+    }
+
+    @Override
+    public void sendActionBar(String message) {
+
+    }
+
+    @Override
+    public void sendActionBar(char alternateChar, String message) {
+
+    }
+
+    @Override
+    public void sendActionBar(BaseComponent... message) {
+
+    }
+
+    @Override
+    public void setPlayerListHeaderFooter(BaseComponent @org.jspecify.annotations.Nullable [] header,
+                                          BaseComponent @org.jspecify.annotations.Nullable [] footer) {
+
+    }
+
+    @Override
+    public void setPlayerListHeaderFooter(@org.jspecify.annotations.Nullable BaseComponent header,
+                                          @org.jspecify.annotations.Nullable BaseComponent footer) {
+
+    }
+
+    @Override
+    public void setTitleTimes(int fadeInTicks, int stayTicks, int fadeOutTicks) {
+
+    }
+
+    @Override
+    public void setSubtitle(BaseComponent[] subtitle) {
+
+    }
+
+    @Override
+    public void setSubtitle(BaseComponent subtitle) {
+
+    }
+
+    @Override
+    public void showTitle(@org.jspecify.annotations.Nullable BaseComponent[] title) {
+
+    }
+
+    @Override
+    public void showTitle(@org.jspecify.annotations.Nullable BaseComponent title) {
+
+    }
+
+    @Override
+    public void showTitle(@org.jspecify.annotations.Nullable BaseComponent[] title,
+                          @org.jspecify.annotations.Nullable BaseComponent[] subtitle, int fadeInTicks, int stayTicks,
+                          int fadeOutTicks) {
+
+    }
+
+    @Override
+    public void showTitle(@org.jspecify.annotations.Nullable BaseComponent title,
+                          @org.jspecify.annotations.Nullable BaseComponent subtitle, int fadeInTicks, int stayTicks,
+                          int fadeOutTicks) {
+
+    }
+
+    @Override
+    public void sendTitle(Title title) {
+
+    }
+
+    @Override
+    public void updateTitle(Title title) {
+
+    }
+
+    @Override
+    public void hideTitle() {
+
+    }
+
+    @Override
+    public void sendHealthUpdate(double health, int food, float saturation) {
+        caller.sendHealthUpdate(health, food, saturation);
+    }
+
+    @Override
+    public void sendHealthUpdate() {
+        caller.sendHealthUpdate();
+    }
+
+    @Override
+    public int calculateTotalExperiencePoints() {
+        return caller.calculateTotalExperiencePoints();
+    }
+
+    @Override
+    public void setExperienceLevelAndProgress(int totalExperience) {
+        caller.setExperienceLevelAndProgress(totalExperience);
+    }
+
+    @Override
+    public int getExperiencePointsNeededForNextLevel() {
+        return caller.getExperiencePointsNeededForNextLevel();
+    }
+
+    @Override
+    public void giveExp(int amount, boolean applyMending) {
+        caller.giveExp(amount, applyMending);
+    }
+
+    @Override
+    public int applyMending(int amount) {
+        return caller.applyMending(amount);
+    }
+
+    @Override
+    public void setFlyingFallDamage(@NotNull net.kyori.adventure.util.TriState state) {
+        caller.setFlyingFallDamage(state);
+    }
+
+    @NotNull
+    @Override
+    public net.kyori.adventure.util.TriState hasFlyingFallDamage() {
+        return caller.hasFlyingFallDamage();
+    }
+
+    @Override
+    public boolean isListed(@NotNull Player other) {
+        return caller.isListed(other);
+    }
+
+    @Override
+    public boolean unlistPlayer(@NotNull Player other) {
+        return caller.unlistPlayer(other);
+    }
+
+    @Override
+    public boolean listPlayer(@NotNull Player other) {
+        return caller.listPlayer(other);
+    }
+
+    @Override
+    public void setResourcePack(@NotNull UUID id, @NotNull String url, byte @Nullable [] hash, @Nullable String prompt, boolean force) {
+        caller.setResourcePack(id, url, hash, prompt, force);
+    }
+
+    @Override
+    public void setResourcePack(@NotNull UUID id, @NotNull String url, byte @Nullable [] hash, @Nullable net.kyori.adventure.text.Component prompt, boolean force) {
+        caller.setResourcePack(id, url, hash, prompt, force);
+    }
+
+    @Override
+    public org.bukkit.event.player.PlayerResourcePackStatusEvent.Status getResourcePackStatus() {
+        return caller.getResourcePackStatus();
+    }
+
+    @Override
+    public void addResourcePack(@NotNull UUID id, @NotNull String url, byte @Nullable [] hash, @Nullable String prompt, boolean force) {
+        caller.addResourcePack(id, url, hash, prompt, force);
+    }
+
+    @Override
+    public void removeResourcePack(@NotNull UUID id) {
+        caller.removeResourcePack(id);
+    }
+
+    @Override
+    public void removeResourcePacks() {
+        caller.removeResourcePacks();
+    }
+
+    @Override
+    public void setPlayerProfile(@NotNull PlayerProfile profile) {
+        caller.setPlayerProfile(profile);
+    }
+
+    @Override
+    public float getCooldownPeriod() {
+        return caller.getCooldownPeriod();
+    }
+
+    @Override
+    public float getCooledAttackStrength(float adjustTicks) {
+        return caller.getCooledAttackStrength(adjustTicks);
+    }
+
+    @Override
+    public void resetCooldown() {
+        caller.resetCooldown();
+    }
+
+    @NotNull
+    @Override
+    public <T> T getClientOption(@NotNull com.destroystokyo.paper.ClientOption<T> option) {
+        return caller.getClientOption(option);
+    }
+
+    @Override
+    public void sendOpLevel(byte level) {
+        caller.sendOpLevel(level);
+    }
+
+    @Override
+    public void addAdditionalChatCompletions(@NotNull Collection<String> completions) {
+        caller.addAdditionalChatCompletions(completions);
+    }
+
+    @Override
+    public void removeAdditionalChatCompletions(@NotNull Collection<String> completions) {
+        caller.removeAdditionalChatCompletions(completions);
+    }
+
+    @Nullable
+    @Override
+    public String getClientBrandName() {
+        return caller.getClientBrandName();
+    }
+
+    @Override
+    public void lookAt(@NotNull Entity entity, @NotNull io.papermc.paper.entity.LookAnchor playerAnchor, @NotNull io.papermc.paper.entity.LookAnchor entityAnchor) {
+        caller.lookAt(entity, playerAnchor, entityAnchor);
+    }
+
+    @Override
+    public void showElderGuardian(boolean silent) {
+        caller.showElderGuardian(silent);
+    }
+
+    @Override
+    public int getWardenWarningCooldown() {
+        return caller.getWardenWarningCooldown();
+    }
+
+    @Override
+    public void setWardenWarningCooldown(int cooldown) {
+        caller.setWardenWarningCooldown(cooldown);
+    }
+
+    @Override
+    public int getWardenTimeSinceLastWarning() {
+        return caller.getWardenTimeSinceLastWarning();
+    }
+
+    @Override
+    public void setWardenTimeSinceLastWarning(int time) {
+        caller.setWardenTimeSinceLastWarning(time);
+    }
+
+    @Override
+    public int getWardenWarningLevel() {
+        return caller.getWardenWarningLevel();
+    }
+
+    @Override
+    public void setWardenWarningLevel(int level) {
+        caller.setWardenWarningLevel(level);
+    }
+
+    @Override
+    public void increaseWardenWarningLevel() {
+        caller.increaseWardenWarningLevel();
+    }
+
+    @Override
+    public void sendLinks(@NotNull org.bukkit.ServerLinks links) {
+        caller.sendLinks(links);
+    }
+
+    @Override
+    public boolean getAffectsSpawning() {
+        return caller.getAffectsSpawning();
+    }
+
+    @Override
+    public void setAffectsSpawning(boolean affects) {
+        caller.setAffectsSpawning(affects);
+    }
+
+    @Override
+    public int getViewDistance() {
+        return caller.getViewDistance();
+    }
+
+    @Override
+    public void setViewDistance(int viewDistance) {
+        caller.setViewDistance(viewDistance);
+    }
+
+    @Override
+    public int getSimulationDistance() {
+        return caller.getSimulationDistance();
+    }
+
+    @Override
+    public void setSimulationDistance(int simulationDistance) {
+        caller.setSimulationDistance(simulationDistance);
+    }
+
+    @Override
+    public int getSendViewDistance() {
+        return caller.getSendViewDistance();
+    }
+
+    @Override
+    public void setSendViewDistance(int viewDistance) {
+        caller.setSendViewDistance(viewDistance);
+    }
+
+    @NotNull
+    @Override
+    public java.util.Locale locale() {
+        return caller.locale();
+    }
+
+    @Override
+    public void openVirtualSign(@NotNull io.papermc.paper.math.Position position, @NotNull Side side) {
+        caller.openVirtualSign(position, side);
+    }
+
+    @Override
+    public void sendSignChange(@NotNull Location location, @NotNull java.util.List<? extends net.kyori.adventure.text.Component> lines, @NotNull DyeColor dyeColor, boolean hasGlowingText) throws IllegalArgumentException {
+        caller.sendSignChange(location, lines, dyeColor, hasGlowingText);
+    }
+
+    @Override
+    public void sendBlockUpdate(@NotNull Location location, @NotNull org.bukkit.block.TileState tileState) throws IllegalArgumentException {
+        caller.sendBlockUpdate(location, tileState);
+    }
+
+    @Override
+    public void sendPotionEffectChange(@NotNull LivingEntity entity, @NotNull PotionEffect effect) {
+        caller.sendPotionEffectChange(entity, effect);
+    }
+
+    @Override
+    public void sendPotionEffectChangeRemove(@NotNull LivingEntity entity, @NotNull PotionEffectType type) {
+        caller.sendPotionEffectChangeRemove(entity, type);
+    }
+
+    @Override
+    public void sendMultiBlockChange(@NotNull java.util.Map<? extends io.papermc.paper.math.Position, BlockData> blockChanges) {
+        caller.sendMultiBlockChange(blockChanges);
+    }
+
+    @Override
+    public void sendBlockChanges(@NotNull Collection<BlockState> blocks) {
+        caller.sendBlockChanges(blocks);
+    }
+
+    @Override
+    public void playSound(@NotNull Location location, @NotNull Sound sound, @NotNull SoundCategory category, float volume, float pitch, long seed) {
+        caller.playSound(location, sound, category, volume, pitch, seed);
+    }
+
+    @Override
+    public void playSound(@NotNull Location location, @NotNull String sound, @NotNull SoundCategory category, float volume, float pitch, long seed) {
+        caller.playSound(location, sound, category, volume, pitch, seed);
+    }
+
+    @Override
+    public void playSound(@NotNull Entity entity, @NotNull Sound sound, @NotNull SoundCategory category, float volume, float pitch, long seed) {
+        caller.playSound(entity, sound, category, volume, pitch, seed);
+    }
+
+    @Override
+    public void playSound(@NotNull Entity entity, @NotNull String sound, @NotNull SoundCategory category, float volume, float pitch, long seed) {
+        caller.playSound(entity, sound, category, volume, pitch, seed);
+    }
+
+    // HumanEntity methods added for newer API
+    @Override
+    public void setHurtDirection(float direction) {
+        caller.setHurtDirection(direction);
+    }
+
+    @Override
+    public void knockback(double strength, double directionX, double directionZ) {
+
+    }
+
+    @Override
+    public void broadcastSlotBreak(@NotNull EquipmentSlot slot) {
+
+    }
+
+    @Override
+    public void broadcastSlotBreak(@NotNull EquipmentSlot slot, @NotNull Collection<Player> players) {
+
+    }
+
+    @Override
+    public @NotNull ItemStack damageItemStack(@NotNull ItemStack stack, int amount) {
+        return null;
+    }
+
+    @Override
+    public void damageItemStack(@NotNull EquipmentSlot slot, int amount) {
+
+    }
+
+    @Override
+    public float getBodyYaw() {
+        return 0;
+    }
+
+    @Override
+    public void setBodyYaw(float bodyYaw) {
+
+    }
+
+    @Override
+    public boolean canUseEquipmentSlot(@NotNull EquipmentSlot slot) {
+        return false;
+    }
+
+    @Override
+    public @NotNull CombatTracker getCombatTracker() {
+        return null;
+    }
+
+    @Override
+    public void setWaypointStyle(@Nullable Key key) {
+
+    }
+
+    @Override
+    public void setWaypointColor(@Nullable Color color) {
+
+    }
+
+    @Override
+    public @NotNull Key getWaypointStyle() {
+        return null;
+    }
+
+    @Override
+    public @Nullable Color getWaypointColor() {
+        return null;
+    }
+
+    @Override
+    public boolean isDeeplySleeping() {
+        return caller.isDeeplySleeping();
+    }
+
+    @Override
+    public boolean hasCooldown(@NotNull ItemStack item) {
+        return caller.hasCooldown(item);
+    }
+
+    @Override
+    public int getCooldown(@NotNull ItemStack item) {
+        return caller.getCooldown(item);
+    }
+
+    @Override
+    public void setCooldown(@NotNull ItemStack item, int ticks) {
+        caller.setCooldown(item, ticks);
+    }
+
+    @Override
+    public int getCooldown(@NotNull net.kyori.adventure.key.Key key) {
+        return caller.getCooldown(key);
+    }
+
+    @Override
+    public void setCooldown(@NotNull net.kyori.adventure.key.Key key, int ticks) {
+        caller.setCooldown(key, ticks);
+    }
+
+    @Nullable
+    @Override
+    public Location getPotentialRespawnLocation() {
+        return caller.getPotentialRespawnLocation();
+    }
+
+    @Nullable
+    @Override
+    public FishHook getFishHook() {
+        return caller.getFishHook();
+    }
+
+    @Override
+    public void startRiptideAttack(int duration, float attackDamage, @NotNull ItemStack item) {
+        caller.startRiptideAttack(duration, attackDamage, item);
+    }
+
+    @NotNull
+    @Override
+    public Entity releaseLeftShoulderEntity() {
+        return caller.releaseLeftShoulderEntity();
+    }
+
+    @NotNull
+    @Override
+    public Entity releaseRightShoulderEntity() {
+        return caller.releaseRightShoulderEntity();
+    }
+
+    @Nullable
+    @Override
+    public Item dropItem(int slot, int amount, boolean throwRandomly, @Nullable java.util.function.Consumer<Item> consumer) {
+        return caller.dropItem(slot, amount, throwRandomly, consumer);
+    }
+
+    @Nullable
+    @Override
+    public Item dropItem(@NotNull EquipmentSlot slot, int amount, boolean throwRandomly, @Nullable java.util.function.Consumer<Item> consumer) {
+        return caller.dropItem(slot, amount, throwRandomly, consumer);
+    }
+
+    @Nullable
+    @Override
+    public Item dropItem(@NotNull ItemStack itemStack, boolean throwRandomly, @Nullable java.util.function.Consumer<Item> consumer) {
+        return caller.dropItem(itemStack, throwRandomly, consumer);
+    }
+
+    @Override
+    public TriState getFrictionState() {
+        return null;
+    }
+
+    @Override
+    public void setFrictionState(TriState state) {
+
+    }
+
+    @Override
+    public <T> @org.jspecify.annotations.Nullable T getData(DataComponentType.Valued<T> type) {
+        return null;
+    }
+
+    @Override
+    public <T> @org.jspecify.annotations.Nullable T getDataOrDefault(DataComponentType.Valued<? extends T> type,
+                                                                     @org.jspecify.annotations.Nullable T fallback) {
+        return null;
+    }
+
+    @Override
+    public boolean hasData(DataComponentType type) {
+        return false;
+    }
 }
+

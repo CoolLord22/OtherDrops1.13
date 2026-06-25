@@ -22,6 +22,7 @@ import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.things.ODItem;
+import io.papermc.paper.datacomponent.DataComponentTypes;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -49,18 +50,18 @@ public class ToolDamage {
 
     public boolean apply(ItemStack stack, Random rng) {
         boolean fullyConsumed = false;
-        short maxDurability = stack.getType().getMaxDurability();
-        if (maxDurability > 0 && durabilityRange != null) {
-            short durability = stack.getDurability();
-            short damage = durabilityRange.getRandomIn(rng);
+        int maxDamage = stack.getDataOrDefault(DataComponentTypes.MAX_DAMAGE, (int) stack.getType().getMaxDurability());
+        if (maxDamage > 0 && durabilityRange != null) {
+            int currentDamage = stack.getDataOrDefault(DataComponentTypes.DAMAGE, (int) stack.getDurability());
+            short additionalDamage = durabilityRange.getRandomIn(rng);
 
-            if (durability + damage >= maxDurability) fullyConsumed = true;
-            setDurability(stack, (short) (durability + damage), rng);
+            if (currentDamage + additionalDamage >= maxDamage) fullyConsumed = true;
+            setDurability(stack, currentDamage + additionalDamage, rng);
         }
         if (consumeRange != null && (fullyConsumed || durabilityRange == null)) {
             if (fullyConsumed) {
                 fullyConsumed = false;
-                setDurability(stack, (short) 0, rng);
+                setDurability(stack, 0, rng);
             }
             int count = stack.getAmount();
             int take = consumeRange.getRandomIn(rng);
@@ -70,7 +71,7 @@ public class ToolDamage {
         }
         if (replaceItem != null && fullyConsumed) {
             fullyConsumed = false;
-            setDurability(stack, (short) 0, rng);
+            setDurability(stack, 0, rng);
 
             stack.setType(replaceItem.getMaterial());
             stack.setAmount(replaceItemQuantity.getRandomIn(OtherDrops.rng));
@@ -83,7 +84,7 @@ public class ToolDamage {
             Log.logInfo("Tool replaced.", Verbosity.HIGH);
         } else if (durabilityRange == null && consumeRange == null) {
             fullyConsumed = false;
-            setDurability(stack, (short) 0, rng);
+            setDurability(stack, 0, rng);
 
             stack.setType(replaceItem.getMaterial());
             stack.setAmount(replaceItemQuantity.getRandomIn(OtherDrops.rng));
@@ -98,11 +99,11 @@ public class ToolDamage {
         return fullyConsumed;
     }
 
-    private void setDurability(ItemStack stack, short durability, Random rng) {
+    private void setDurability(ItemStack stack, int durability, Random rng) {
         if (stack.getItemMeta().isUnbreakable()) return;
 
-        if (stack.containsEnchantment(Enchantment.DURABILITY)) {
-            int durabilityLevel = (stack.getEnchantmentLevel(Enchantment.DURABILITY) + 1);
+        if (stack.containsEnchantment(Enchantment.UNBREAKING)) {
+            int durabilityLevel = (stack.getEnchantmentLevel(Enchantment.UNBREAKING) + 1);
             double chanceOfDamage = (double) 100 / (durabilityLevel);
 
             String name = stack.getType().toString().toLowerCase();
@@ -118,7 +119,7 @@ public class ToolDamage {
         }
 
         Log.logInfo("Tool damaged.", Verbosity.HIGH);
-        stack.setDurability(durability);
+        stack.setData(DataComponentTypes.DAMAGE, durability);
     }
 
     public static ToolDamage parseFrom(ConfigurationNode node) {

@@ -23,7 +23,6 @@ import com.garbagemule.MobArena.MobArenaHandler;
 import com.gmail.nossr50.mcMMO;
 import com.gmail.zariust.common.Verbosity;
 import com.herocraftonline.heroes.Heroes;
-import com.palmergames.bukkit.towny.Towny;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.clip.placeholderapi.PlaceholderAPIPlugin;
@@ -42,7 +41,6 @@ public class Dependencies {
     // Plugin Dependencies
     private static WorldGuardPlugin worldGuard = null; // for WorldGuard support
     private static PlaceholderAPIPlugin placeHolderAPI = null;
-    private static Towny towny = null;
     private static WildStacker wildStacker = null;
     private static MythicBukkit mythicMobs = null;
     private static Jobs jobs = null;
@@ -69,7 +67,6 @@ public class Dependencies {
             Log.logError("Failed to load one or more optional dependencies - continuing OtherDrops startup.", e);
         }
         try {
-            towny = (Towny) getPlugin("Towny");
             placeHolderAPI = (PlaceholderAPIPlugin) getPlugin("PlaceholderAPI");
             wildStacker = (WildStacker) getPlugin("WildStacker");
             mythicMobs = (MythicBukkit) getPlugin("MythicMobs");
@@ -156,14 +153,6 @@ public class Dependencies {
 
     public static boolean hasWildStacker() {
         return Dependencies.wildStacker != null;
-    }
-
-    public static boolean hasTowny() {
-        return Dependencies.towny != null;
-    }
-
-    public static Towny getTowny() {
-        return Dependencies.towny;
     }
 
     public static boolean hasPAPI() {

@@ -701,7 +701,7 @@ public class OtherDropsConfig {
         // This has to be set here rather than in loadsimpledrop as we need to know the target
         if (drop instanceof SimpleDrop) {
             if (((SimpleDrop) drop).getDropped() instanceof CreatureDrop cDrop) {
-                if (cDrop.getCreature() == EntityType.PRIMED_TNT) {
+                if (cDrop.getCreature() == EntityType.TNT) {
                     if (!(target instanceof CreatureSubject) && !(primedTNTEnabled)) {
                         ((SimpleDrop) drop).setDropped(null);
                         Log.logWarning("DANGER: primedtnt not allowed to drop from blocks (a chain reaction can kill your server), drop removed. To enable these, check the config!", Verbosity.LOW);
