@@ -31,15 +31,19 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 
 import java.io.*;
+import java.lang.reflect.Method;
 import java.util.*;
 
 public class OtherDrops extends JavaPlugin {
+    public static Method GET_MAX_DAMAGE;
+
     public static OtherDrops plugin;
     public static NamespacedKey PLAYER_PLACED;
     public static NamespacedKey SPAWNED_BY;
@@ -72,8 +76,10 @@ public class OtherDrops extends JavaPlugin {
         try {
             Bukkit.getLogger().warning("Beginning legacy material support. This may temporarily delay server startup. This call has been moved to onEnable() to help prevent the lag spike when first BlockTarget interaction was triggered.");
             Bukkit.getWorlds().get(0).getBlockAt(Bukkit.getWorlds().get(0).getSpawnLocation()).getData();
-        } catch (Exception ignored) {
-        }
+        } catch (Exception ignored) {}
+        try {
+            GET_MAX_DAMAGE = Damageable.class.getMethod("getMaxDamage");
+        } catch (NoSuchMethodException ignored) {}
         File oldFolder = new File("plugins" + File.separator + "OtherDrops_1.13");
         if (oldFolder.exists()) {
             Bukkit.getLogger().warning("Detected old directory plugins/OtherDrops_1.13! Copying directory to OtherDrops...");

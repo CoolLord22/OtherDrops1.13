@@ -25,8 +25,11 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import static com.gmail.zariust.common.Verbosity.EXTREME;
+import static com.gmail.zariust.otherdrops.OtherDrops.GET_MAX_DAMAGE;
 
 public class ItemData implements Data, RangeableData {
     private int data;
@@ -43,7 +46,7 @@ public class ItemData implements Data, RangeableData {
     }
 
     public ItemData(ItemStack item) {
-        data = item.getDurability();
+        data = getDurability(item);
     }
 
     public ItemData(String state) {
@@ -190,5 +193,23 @@ public class ItemData implements Data, RangeableData {
     public Boolean getSheared() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public static int getDurability(ItemStack stack) {
+        if(!(stack.getItemMeta() instanceof Damageable damageable)) return 0;
+        return damageable.getDamage();
+    }
+
+    public static int getMaxDurability(ItemStack stack) {
+        ItemMeta meta = stack.getItemMeta();
+        if(meta instanceof Damageable && GET_MAX_DAMAGE != null) {
+            try {
+                Integer max = (Integer) GET_MAX_DAMAGE.invoke(meta);
+                if (max != null && max > 0) {
+                    return max;
+                }
+            } catch (Exception ignored) {}
+        }
+        return stack.getType().getMaxDurability();
     }
 }

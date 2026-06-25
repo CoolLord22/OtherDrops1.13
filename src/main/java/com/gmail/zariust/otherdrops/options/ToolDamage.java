@@ -24,9 +24,13 @@ import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.things.ODItem;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Random;
+
+import static com.gmail.zariust.otherdrops.data.ItemData.getDurability;
+import static com.gmail.zariust.otherdrops.data.ItemData.getMaxDurability;
 
 public class ToolDamage {
     private ShortRange durabilityRange;
@@ -49,18 +53,16 @@ public class ToolDamage {
 
     public boolean apply(ItemStack stack, Random rng) {
         boolean fullyConsumed = false;
-        short maxDurability = stack.getType().getMaxDurability();
+        short maxDurability = (short) getMaxDurability(stack);
         if (maxDurability > 0 && durabilityRange != null) {
-            short durability = stack.getDurability();
+            short durability = (short) getDurability(stack);
             short damage = durabilityRange.getRandomIn(rng);
-
-            if (durability + damage >= maxDurability) fullyConsumed = true;
-            setDurability(stack, (short) (durability + damage), rng);
+            fullyConsumed = setDurability(stack, maxDurability, (short) (durability + damage), rng);
         }
         if (consumeRange != null && (fullyConsumed || durabilityRange == null)) {
             if (fullyConsumed) {
                 fullyConsumed = false;
-                setDurability(stack, (short) 0, rng);
+                setDurability(stack, maxDurability, (short) 0, rng);
             }
             int count = stack.getAmount();
             int take = consumeRange.getRandomIn(rng);
@@ -70,7 +72,7 @@ public class ToolDamage {
         }
         if (replaceItem != null && fullyConsumed) {
             fullyConsumed = false;
-            setDurability(stack, (short) 0, rng);
+            setDurability(stack, maxDurability, (short) 0, rng);
 
             stack.setType(replaceItem.getMaterial());
             stack.setAmount(replaceItemQuantity.getRandomIn(OtherDrops.rng));
@@ -83,7 +85,7 @@ public class ToolDamage {
             Log.logInfo("Tool replaced.", Verbosity.HIGH);
         } else if (durabilityRange == null && consumeRange == null) {
             fullyConsumed = false;
-            setDurability(stack, (short) 0, rng);
+            setDurability(stack, maxDurability, (short) 0, rng);
 
             stack.setType(replaceItem.getMaterial());
             stack.setAmount(replaceItemQuantity.getRandomIn(OtherDrops.rng));
@@ -98,8 +100,11 @@ public class ToolDamage {
         return fullyConsumed;
     }
 
-    private void setDurability(ItemStack stack, short durability, Random rng) {
-        if (stack.getItemMeta().isUnbreakable()) return;
+    private boolean setDurability(ItemStack stack, short maxDamage, short durability, Random rng) {
+        boolean fullyConsumed = false;
+
+        if (!(stack.getItemMeta() instanceof Damageable damageable)) return fullyConsumed;
+        if (stack.getItemMeta().isUnbreakable()) return fullyConsumed;
 
         if (stack.containsEnchantment(Enchantment.DURABILITY)) {
             int durabilityLevel = (stack.getEnchantmentLevel(Enchantment.DURABILITY) + 1);
@@ -113,12 +118,17 @@ public class ToolDamage {
 
             if (n > chanceOfDamage) {
                 Log.logInfo("Tool with unbreaking failed damage (expected behavior).", Verbosity.HIGH);
-                return;
+                return fullyConsumed;
             }
         }
-
+        if (durability > maxDamage) {
+            durability = maxDamage;
+            fullyConsumed = true;
+        }
         Log.logInfo("Tool damaged.", Verbosity.HIGH);
-        stack.setDurability(durability);
+        damageable.setDamage(durability);
+        stack.setItemMeta(damageable);
+        return fullyConsumed;
     }
 
     public static ToolDamage parseFrom(ConfigurationNode node) {
@@ -158,6 +168,9 @@ public class ToolDamage {
 
     public boolean isReplacement() {
         return this.replaceItem != null;
+    }
+    public boolean isDamage() {
+        return this.durabilityRange != null;
     }
 
     @Override

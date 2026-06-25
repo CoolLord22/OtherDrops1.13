@@ -57,6 +57,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import static com.gmail.zariust.otherdrops.OtherDrops.SPAWNED_BY;
+import static com.gmail.zariust.otherdrops.data.ItemData.getDurability;
+import static com.gmail.zariust.otherdrops.data.ItemData.getMaxDurability;
 
 public class OtherDropsCommand implements CommandExecutor {
     private enum OBCommand {
@@ -313,7 +315,7 @@ public class OtherDropsCommand implements CommandExecutor {
                     sender.sendMessage("No living entity found.");
                 }
             } else {
-                String itemMsg = playerItem.getType() + "@" + playerItem.getDurability() + " maxdura:" + playerItem.getType().getMaxDurability() + " dura%:" + getDurabilityPercentage(playerItem) + " detail: " + playerItem;
+                String itemMsg = playerItem.getType() + "@" + getDurability(playerItem) + " maxdura:" + getMaxDurability(playerItem)  + " dura%:" + getDurabilityPercentage(playerItem) + " detail: " + playerItem;
                 if (playerItem.getItemMeta() != null) {
                     playerItem.getItemMeta().getDisplayName();
                     itemMsg += " name: \"" + playerItem.getItemMeta().getDisplayName().replaceAll(" §", "&") + "\"";
@@ -329,7 +331,7 @@ public class OtherDropsCommand implements CommandExecutor {
             StringBuilder itemFinalWriteData = new StringBuilder();
 
             itemFinalWriteData.append(playerItem.getType());
-            itemFinalWriteData.append("@").append(playerItem.getDurability());
+            itemFinalWriteData.append("@").append(getDurability(playerItem));
             if (!playerItem.getEnchantments().isEmpty()) {
                 itemFinalWriteData.append("!");
                 for (Enchantment enchInMap : playerItem.getEnchantments().keySet()) {
@@ -357,7 +359,7 @@ public class OtherDropsCommand implements CommandExecutor {
             ItemStack playerItem = player.getInventory().getItemInMainHand();
             StringBuilder itemFinalWriteData = new StringBuilder();
             itemFinalWriteData.append(playerItem.getType());
-            itemFinalWriteData.append("@").append(playerItem.getDurability());
+            itemFinalWriteData.append("@").append(getDurability(playerItem));
             if (!playerItem.getEnchantments().isEmpty()) {
                 itemFinalWriteData.append("!");
                 for (Enchantment enchInMap : playerItem.getEnchantments().keySet()) {
@@ -405,9 +407,8 @@ public class OtherDropsCommand implements CommandExecutor {
 
     // returns null if not durability is not valid (ie. Has no maxdurability)
     private Double getDurabilityPercentage(ItemStack item) {
-        double maxDura = item.getType().getMaxDurability();
-        double dura = item.getDurability();
-
+        double maxDura = getMaxDurability(item);
+        double dura = getDurability(item);
         if (maxDura < 1) return null;
         return (double) (Math.round((float) (1 - (dura / maxDura)) * 10000) / 100);
     }

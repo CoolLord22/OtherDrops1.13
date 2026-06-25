@@ -20,6 +20,8 @@ import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -118,7 +120,10 @@ public class PlayerSubject extends LivingSubject {
         if (damage == null) return;
         ItemStack stack = agent.getInventory().getItem(hand);
         if (stack == null) return;
-        if (damage.apply(stack, rng)) agent.getInventory().setItem(hand, null);
+        if (damage.apply(stack, rng)) {
+            agent.getInventory().setItem(hand, null);
+            if(damage.isDamage()) agent.getWorld().playSound(agent.getLocation(), Sound.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 1, 1);
+        }
         else agent.updateInventory(); // because we've edited the stack directly
         // TODO: Option of failure if damage is greater that the amount
         // remaining?
