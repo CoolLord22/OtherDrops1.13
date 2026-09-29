@@ -31,6 +31,7 @@ import org.bukkit.entity.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.projectiles.BlockProjectileSource;
 
 import java.util.Random;
 
@@ -324,7 +325,8 @@ public class ProjectileAgent implements Agent {
             Log.logInfo("ProjectileAgent.getLocation() - agent is null, this shouldn't happen.", HIGH);
             return null;
         }
-        if (agent.getShooter() instanceof LivingEntity) return ((LivingEntity) agent.getShooter()).getLocation();
+        if (agent.getShooter() instanceof LivingEntity shooter) return shooter.getLocation();
+        if (agent.getShooter() instanceof BlockProjectileSource shooter) return shooter.getBlock().getLocation();
         return null;
     }
 

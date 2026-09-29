@@ -145,7 +145,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
                 setTool(evt2.getDamager(), null);
             }
             if (tool != null)
-                attackRange = measureRange(location, evt2.getDamager().getLocation(), "Entity '" + e + "' damaged by '" + tool.toString() + "'");
+                attackRange = measureRange(location, tool.getLocation(), "Entity '" + e + "' damaged by '" + tool.toString() + "'");
         } else setTool(evt.getCause());
         setRegions();
     }
@@ -168,7 +168,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
                 }
             } else {
                 Log.logInfo("Damager: " + evt2.getDamager(), Verbosity.HIGH);
-                attackRange = measureRange(location, evt2.getDamager().getLocation(), "Entity '" + e + "' damaged by '" + tool.toString() + "'");
+                attackRange = measureRange(location, tool.getLocation(), "Entity '" + e + "' damaged by '" + tool.toString() + "'");
             }
         } else setTool(evt.getCause());
         setRegions();

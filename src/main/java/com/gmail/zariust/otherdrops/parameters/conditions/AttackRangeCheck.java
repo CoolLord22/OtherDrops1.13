@@ -20,7 +20,7 @@ public class AttackRangeCheck extends Condition {
     @Override
     protected boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
         if (attackRange == null) return true;
-        return attackRange.matches(occurrence.getLightLevel());
+        return attackRange.matches((int) Math.floor(occurrence.getAttackRange()));
     }
 
     @Override
