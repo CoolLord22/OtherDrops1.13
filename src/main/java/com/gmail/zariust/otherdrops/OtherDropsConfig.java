@@ -375,9 +375,9 @@ public class OtherDropsConfig {
         verbosity = getConfigVerbosity(globalConfig);
         enableBlockTo = globalConfig.getBoolean("enableblockto", false);
         moneyPrecision = globalConfig.getInt("money-precision", 2);
-        customDropsForExplosions = globalConfig.getBoolean("customdropsforexplosions", false);
+        customDropsForExplosions = globalConfig.getBoolean("customdropsforexplosions", true);
         defaultDropSpread = globalConfig.getBoolean("default_dropspread", true);
-        disableXpOnNonDefault = globalConfig.getBoolean("disable_xp_on_non_default", true);
+        disableXpOnNonDefault = globalConfig.getBoolean("disable_xp_on_non_default", false);
         enchantmentsIgnoreLevel = globalConfig.getBoolean("enchantments_ignore_level", false);
         enchantmentsUseUnsafe = globalConfig.getBoolean("enchantments_use_unsafe", false);
         enchantmentsRestrictMatching = globalConfig.getBoolean("enchantments_restrict_matching", true);
@@ -399,7 +399,7 @@ public class OtherDropsConfig {
         globalUpdateChecking = globalConfig.getBoolean("update_checker", true);
         primedTNTEnabled = globalConfig.getBoolean("primed_tnt", false);
         globalOverrideExplosionCap = globalConfig.getBoolean("override_explosion_cap", false);
-        globalCustomSpawnLimit = globalConfig.getInt("custom_spawn_limit", 150);
+        globalCustomSpawnLimit = globalConfig.getInt("custom_spawn_limit", 300);
 
         gTimeFormat = globalConfig.getString("time_format", "HH:mm:ss");
         gDateFormat = globalConfig.getString("date_format", "yyyy/MM/dd");
