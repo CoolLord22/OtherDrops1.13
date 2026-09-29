@@ -41,7 +41,7 @@ public class PermissionCheck extends Condition {
 
         if (player == null) player = ((PlayerSubject) agent).getPlayer();
 
-        boolean match = false;
+        boolean match = !permissionMap.containsValue(true);
         for (String perm : permissionMap.keySet()) {
             if (perm.startsWith("!")) {
                 if (Dependencies.hasPermission(player, perm.substring(1))) {

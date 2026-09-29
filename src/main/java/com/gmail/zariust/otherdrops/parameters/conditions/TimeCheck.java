@@ -21,7 +21,8 @@ public class TimeCheck extends Condition {
     @Override
     protected boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
         if (timeMap == null || timeMap.isEmpty()) return true;
-        boolean match = false;
+
+        boolean match = !timeMap.containsValue(true);
         for (Time t : timeMap.keySet()) {
             if (t.contains(occurrence.getTime())) {
                 if (timeMap.get(t)) match = true;

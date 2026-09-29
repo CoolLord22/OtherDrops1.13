@@ -40,7 +40,7 @@ public class PermissionGroupCheck extends Condition {
 
         if (player == null) player = ((PlayerSubject) agent).getPlayer();
 
-        boolean match = false;
+        boolean match = !permissionGroupMap.containsValue(true);
         for (String group : permissionGroupMap.keySet()) {
             if (OtherDrops.inGroup(player, group)) {
                 if (permissionGroupMap.get(group)) match = true;
