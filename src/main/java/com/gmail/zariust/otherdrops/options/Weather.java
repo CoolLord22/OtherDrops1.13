@@ -19,7 +19,8 @@ package com.gmail.zariust.otherdrops.options;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
-import org.bukkit.block.Biome;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 
 import java.util.HashMap;
 import java.util.List;
@@ -45,20 +46,12 @@ public enum Weather {
         stormy = storm;
     }
 
-    public static Weather match(Biome biome, boolean hasStorm, boolean thundering) {
-        if (biome == null) biome = Biome.PLAINS;
-        return switch (biome) {
-            case NETHER_WASTES, CRIMSON_FOREST, WARPED_FOREST, SOUL_SAND_VALLEY, BASALT_DELTAS, THE_END, DESERT -> NONE;
-            case GROVE, JAGGED_PEAKS, FROZEN_PEAKS, SNOWY_BEACH, SNOWY_TAIGA, SNOWY_PLAINS, SNOWY_SLOPES, ICE_SPIKES,
-                 DEEP_FROZEN_OCEAN, FROZEN_OCEAN, FROZEN_RIVER -> {
-                if (hasStorm) yield SNOW;
-                yield CLEAR;
-            }
-            default -> {
-                if (hasStorm) yield thundering ? THUNDER : RAIN;
-                yield CLEAR;
-            }
-        };
+    public static Weather match(Block block, boolean hasStorm, boolean thundering) {
+        if (block == null || block.getWorld().getEnvironment() != World.Environment.NORMAL) return NONE;
+        if (block.getHumidity() <= 0.0) return hasStorm ? CLOUD : NONE;   // desert, savanna, badlands...
+        if (!hasStorm) return CLEAR;
+        if (block.getTemperature() < 0.15) return SNOW;                  // vanilla's snow threshold (height-adjusted)
+        return thundering ? THUNDER : RAIN;
     }
 
     public boolean isStormy() {

@@ -672,8 +672,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     // Constructor helpers
     private void setWeatherTimeHeight(Location loc) {
         World world = loc.getWorld();
-        Biome biome = loc.getBlock().getBiome();
-        weather = Weather.match(biome, world.hasStorm(), world.isThundering());
+        weather = Weather.match(loc.getBlock(), world.hasStorm(), world.isThundering());
         moonPhaseLevel = (int) ((world.getFullTime() / 24000) % 8);
         time = world.getTime();
         height = loc.getBlockY();
