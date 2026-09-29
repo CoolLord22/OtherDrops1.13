@@ -83,16 +83,18 @@ public class Time extends Range<Long> {
         List<String> times = OtherDropsConfig.getMaybeList(node, "time", "times");
         if (times.isEmpty()) return def;
         HashMap<Time, Boolean> result = new HashMap<>();
+
         for (String name : times) {
-            Time time = parse(name);
-            if (time == null && name.startsWith("-")) {
-                time = parse(name.substring(1));
-                if (time == null) {
-                    Log.logWarning("Invalid time " + name + "; skipping...");
-                    continue;
-                }
-                result.put(time, false);
-            } else result.put(time, true);
+            boolean negated = name.startsWith("-");
+            if (negated) name = name.substring(1);
+            Time time;
+            try {
+                time = parse(name);
+            } catch (IllegalArgumentException e) {
+                Log.logWarning("Invalid time " + (negated ? "-" : "") + name + "; skipping...");
+                continue;
+            }
+            result.put(time, !negated);
         }
         if (result.isEmpty()) return null;
         return result;

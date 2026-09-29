@@ -30,8 +30,7 @@ public enum Weather {
     RAIN(true), SNOW(true), THUNDER(true), CLEAR(false), CLOUD(true), NONE(false), STORM(true) {
         @Override
         public boolean matches(Weather sky) {
-            if (sky.stormy && sky != THUNDER) return true;
-            return false;
+            return sky == RAIN || sky == SNOW;
         }
     };
     private final boolean stormy;
