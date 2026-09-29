@@ -68,6 +68,7 @@ public class ItemStackAgent extends ToolAgent {
                     return Bukkit.getItemFactory().equals(thisMeta, stackMeta);
                 }
             }
+            return false; // Required item not-null, player item was null.
         }
         return true;
     }
@@ -77,7 +78,7 @@ public class ItemStackAgent extends ToolAgent {
         return "ITEM_STACK@" + identifier;
     }
 
-    private static boolean compareModifiersIgnoringUUID(Collection<AttributeModifier> a, Collection<AttributeModifier> b) {
+    public static boolean compareModifiersIgnoringUUID(Collection<AttributeModifier> a, Collection<AttributeModifier> b) {
         if (a.size() != b.size()) return false;
 
         List<AttributeModifier> listA = new ArrayList<>(a);
