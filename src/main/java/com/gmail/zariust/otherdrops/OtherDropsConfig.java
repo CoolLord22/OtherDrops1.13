@@ -1082,9 +1082,8 @@ public class OtherDropsConfig {
         if (pos.isEmpty() && neg.isEmpty()) return def;
         Map<String, Boolean> result = new HashMap<>();
         for (String name : pos) {
-            if (name.startsWith("-")) {
-                result.put(name, false);
-            } else result.put(name, true);
+            if (name.startsWith("-")) result.put(name.substring(1), false);
+            else result.put(name, true);
         }
         for (String name : neg) {
             result.put(name, false);
