@@ -162,6 +162,7 @@ public class SpecialMessageAction extends Action {
             String message = newNode.getString("message", "");
 
             tempMessages.add(new ODActionBar(message));
+            Log.logWarning("Action bar messages are temporarily unavailable in this version and will be ignored.");
         }
         if (parseMe.getKeys().contains("bossbar")) {
             ConfigurationNode newNode = parseMe.getConfigurationNode("bossbar");
