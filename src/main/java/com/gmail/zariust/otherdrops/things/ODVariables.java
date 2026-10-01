@@ -84,11 +84,15 @@ public class ODVariables {
     }
 
     public String parse(String msg) {
+        if (msg == null) return null;
         msg = parseMultipleOptions(msg);
 
-        for (Entry<String, String> entrySet : variables.entrySet()) {
-            msg = msg.replaceAll(entrySet.getKey(), entrySet.getValue());
-        }
+        // Longest keys first, so "%time" is replaced before "%t", "%displayname"/"%date" before "%d", etc.
+        // String.replace is literal: safe with '$' and '\' in values, and "." in "%loc.x" no longer matches any character.
+        List<Entry<String, String>> entries = new ArrayList<>(variables.entrySet());
+        entries.sort((a, b) -> Integer.compare(b.getKey().length(), a.getKey().length()));
+        for (Entry<String, String> entry : entries)
+            msg = msg.replace(entry.getKey(), entry.getValue() == null ? "" : entry.getValue());
 
         return msg;
     }
