@@ -63,10 +63,12 @@ public class ParticleAction extends Action {
         if (object instanceof List) {
             @SuppressWarnings("unchecked") List<String> stringList = (List<String>) object;
             for (String effect : stringList) {
-                effects.add(getEffect(effect));
+                ParticleEffect parsed = getEffect(effect);
+                if (parsed != null) effects.add(parsed);
             }
         } else if (object instanceof String stringObj) {
-            effects.add(getEffect(stringObj));
+            ParticleEffect parsed = getEffect(stringObj);
+            if (parsed != null) effects.add(parsed);
         }
     }
 
@@ -119,7 +121,7 @@ public class ParticleAction extends Action {
     private void applyEffect(Location location) {
         for (ParticleEffect effect : this.effects) {
             try {
-                Log.dMsg("Sending effect: " + effect.getType().getName() + " speed: " + effect.getSpeed() + ", count:" + effect.getCount() + ", radius:" + effect.getRadius());
+                Log.dMsg("Sending effect: " + effect.getType().name() + " speed: " + effect.getSpeed() + ", count:" + effect.getCount() + ", radius:" + effect.getRadius());
                 effect.sendToLocation(location, effect.getSpeed(), effect.getCount(), effect.getRadius());
             } catch (Exception e) {
                 Log.logError("Error while applying particle action:", e);
@@ -131,7 +133,7 @@ public class ParticleAction extends Action {
     private void applyEffect(Entity lEnt) {
         for (ParticleEffect effect : this.effects) {
             try {
-                Log.dMsg("Sending effect: " + effect.getType().getName() + " speed: " + effect.getSpeed() + ", count:" + effect.getCount() + ", radius:" + effect.getRadius());
+                Log.dMsg("Sending effect: " + effect.getType().name() + " speed: " + effect.getSpeed() + ", count:" + effect.getCount() + ", radius:" + effect.getRadius());
                 Location location = lEnt.getLocation();
                 effect.sendToLocation(location, effect.getSpeed(), effect.getCount(), effect.getRadius());
             } catch (Exception e) {
@@ -178,7 +180,8 @@ public class ParticleAction extends Action {
         } catch (NumberFormatException ex) {
             Log.logInfo("Particleeffect: invalid radius (" + split[3] + ")");
         }
-        ParticleEffect effect = new ParticleEffect(ParticleEffect.ParticleType.valueOf(split[0]));
+        ParticleEffect effect = ParticleEffect.parse(split[0]);
+        if (effect == null) return null;
 
         effect.setSpeed(speed);
         effect.setCount(count);

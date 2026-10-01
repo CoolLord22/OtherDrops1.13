@@ -133,6 +133,7 @@ public class OtherDrops extends JavaPlugin {
     // been injected by mods - I realise it could be improved a lot but it's better than nothing :)
     public void exportEnumLists() {
         Log.logInfo("OtherDrops printing export lists.", Verbosity.HIGH);
+        writeNames(null, "org.bukkit.Particle");
         writeNames(null, "org.bukkit.Material");
         writeNames(null, "org.bukkit.Sound");
         writeNames(null, "org.bukkit.block.Biome");
