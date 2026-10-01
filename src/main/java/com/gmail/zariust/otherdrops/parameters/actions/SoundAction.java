@@ -131,14 +131,8 @@ public class SoundAction extends Action {
                 playSound(sound, occurence.getLocation());
                 break;
             case RADIUS:
-                // occurence.getLocation().getRadiusPlayers()? - how do we get players around radius without an entity?
-                Location loc = occurence.getLocation();
-                for (Player player : loc.getWorld().getPlayers()) {
-                    if (player.getLocation().getX() > (loc.getX() - radius) || player.getLocation().getX() < (loc.getX() + radius))
-                        if (player.getLocation().getY() > (loc.getY() - radius) || player.getLocation().getY() < (loc.getY() + radius))
-                            if (player.getLocation().getZ() > (loc.getZ() - radius) || player.getLocation().getZ() < (loc.getZ() + radius))
-                                playSound(sound, player.getLocation());
-                }
+                for (Player player : getPlayersInRadius(occurence.getLocation(), radius))
+                    playSound(sound, player.getLocation());
                 break;
             case SERVER:
                 for (Player player : Bukkit.getServer().getOnlinePlayers()) {

@@ -15,7 +15,6 @@ import com.gmail.zariust.otherdrops.subject.ProjectileAgent;
 import com.gmail.zariust.otherdrops.things.ODVariables;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -50,7 +49,7 @@ public class MessageAction extends Action {
     private final List<String> messages = new ArrayList<>(); // this can contain variables, parse at runtime
 
     public MessageAction(Object messageToParse, MessageType messageType2) {
-        this(messageToParse, messageType2, 0);
+        this(messageToParse, messageType2, OtherDropsConfig.gActionRadius);
     }
 
     @SuppressWarnings("unchecked")
@@ -88,15 +87,8 @@ public class MessageAction extends Action {
                 if (occurence.getPlayerVictim() != null) occurence.getPlayerVictim().sendMessage(message);
                 break;
             case RADIUS:
-                // occurence.getLocation().getRadiusPlayers()? - how do we get players around radius without an entity?
-                Location loc = occurence.getLocation();
-                for (Player player : loc.getWorld().getPlayers()) {
-                    if (player.getLocation().getX() > (loc.getX() - radius) || player.getLocation().getX() < (loc.getX() + radius))
-                        if (player.getLocation().getY() > (loc.getY() - radius) || player.getLocation().getY() < (loc.getY() + radius))
-                            if (player.getLocation().getZ() > (loc.getZ() - radius) || player.getLocation().getZ() < (loc.getZ() + radius))
-                                player.sendMessage(message);
-                }
-
+                for (Player player : getPlayersInRadius(occurence.getLocation(), radius))
+                    player.sendMessage(message);
                 break;
             case SERVER:
                 for (Player player : Bukkit.getServer().getOnlinePlayers()) {

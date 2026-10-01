@@ -6,6 +6,8 @@ import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.parameters.actions.*;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -44,4 +46,16 @@ public abstract class Action extends Parameter {
         registerAction(new SpecialMessageAction(null, null));
     }
 
+    /**
+     * Players within `radius` blocks of `loc` (a sphere, same world only).
+     * Shared by every action's ".radius" target.
+     */
+    protected static List<Player> getPlayersInRadius(Location loc, double radius) {
+        List<Player> result = new ArrayList<>();
+        if (loc == null || loc.getWorld() == null) return result;
+        double radiusSquared = radius * radius;
+        for (Player player : loc.getWorld().getPlayers())
+            if (player.getLocation().distanceSquared(loc) <= radiusSquared) result.add(player);
+        return result;
+    }
 }

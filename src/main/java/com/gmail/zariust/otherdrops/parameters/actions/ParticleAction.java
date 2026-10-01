@@ -90,13 +90,8 @@ public class ParticleAction extends Action {
                 return false;
 
             case RADIUS:
-                // occurence.getLocation().getRadiusPlayers()? - how do we get players around radius without an entity?
-                Location loc = occurence.getLocation();
-                for (Player player : loc.getWorld().getPlayers()) {
-                    if (player.getLocation().getX() > (loc.getX() - radius) || player.getLocation().getX() < (loc.getX() + radius))
-                        if (player.getLocation().getY() > (loc.getY() - radius) || player.getLocation().getY() < (loc.getY() + radius))
-                            if (player.getLocation().getZ() > (loc.getZ() - radius) || player.getLocation().getZ() < (loc.getZ() + radius))
-                                applyEffect(player);
+                for (Player player : getPlayersInRadius(occurence.getLocation(), radius)) {
+                    applyEffect(player);
                 }
                 break;
             case SERVER:

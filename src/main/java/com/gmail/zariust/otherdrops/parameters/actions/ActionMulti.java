@@ -6,7 +6,6 @@ import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.parameters.Action;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -33,15 +32,8 @@ public abstract class ActionMulti extends Action {
                 applyEffect(occurence.getVictim());
                 return false;
             case RADIUS:
-                // occurence.getLocation().getRadiusPlayers()? - how do we get players around radius without an entity?
-                Location loc = occurence.getLocation();
-                for (Player player : loc.getWorld().getPlayers()) {
-                    if (player.getLocation().getX() > (loc.getX() - radius) || player.getLocation().getX() < (loc.getX() + radius))
-                        if (player.getLocation().getY() > (loc.getY() - radius) || player.getLocation().getY() < (loc.getY() + radius))
-                            if (player.getLocation().getZ() > (loc.getZ() - radius) || player.getLocation().getZ() < (loc.getZ() + radius))
-                                applyEffect(player);
-                }
-
+                for (Player player : getPlayersInRadius(occurence.getLocation(), radius))
+                    applyEffect(player);
                 break;
             case SERVER:
                 for (Player player : Bukkit.getServer().getOnlinePlayers()) {

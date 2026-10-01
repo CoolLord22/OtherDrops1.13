@@ -10,7 +10,6 @@ import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.parameters.Action;
 import com.gmail.zariust.otherdrops.things.ODVariables;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -105,14 +104,7 @@ public class SpecialMessageAction extends Action {
                 if (occurrence.getPlayerVictim() != null) players.add(occurrence.getPlayerVictim());
                 break;
             case RADIUS:
-                Location loc = occurrence.getLocation();
-                for (Player player : loc.getWorld().getPlayers()) {
-                    if (player.getLocation().getX() > (loc.getX() - OtherDropsConfig.gActionRadius) || player.getLocation().getX() < (loc.getX() + OtherDropsConfig.gActionRadius))
-                        if (player.getLocation().getY() > (loc.getY() - OtherDropsConfig.gActionRadius) || player.getLocation().getY() < (loc.getY() + OtherDropsConfig.gActionRadius))
-                            if (player.getLocation().getZ() > (loc.getZ() - OtherDropsConfig.gActionRadius) || player.getLocation().getZ() < (loc.getZ() + OtherDropsConfig.gActionRadius))
-                                players.add(player);
-                }
-
+                players.addAll(getPlayersInRadius(occurrence.getLocation(), OtherDropsConfig.gActionRadius));
                 break;
             case SERVER:
                 players.addAll(Bukkit.getServer().getOnlinePlayers());
