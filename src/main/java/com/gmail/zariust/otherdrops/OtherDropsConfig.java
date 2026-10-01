@@ -875,6 +875,7 @@ public class OtherDropsConfig {
 		drops.forEach(dropNode -> {
 			boolean isGroup = dropNode.getKeys().contains("dropgroup");
 			CustomDrop drop = loadDrop(dropNode, target, trigger, isGroup);
+            drop.setParentGroup(group);
 			group.add(drop);
 		});
         group.sort();

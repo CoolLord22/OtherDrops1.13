@@ -66,6 +66,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
     protected List<String> messages;
     private final List<Action> actions = new ArrayList<>();
     private final List<Condition> conditions = new ArrayList<>();
+    protected GroupDropEvent parentGroup;
     private boolean defaultOverride;
 
     // Conditions
@@ -266,6 +267,12 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
         this.toKeepDrops = toKeepDrops;
     }
 
+    public void setParentGroup(GroupDropEvent group) { this.parentGroup = group; }
+
+    public List<Condition> getConditions() {
+        return conditions;
+    }
+
     public double getChance() {
         return chance;
     }
@@ -399,6 +406,8 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
     public void addConditions(List<Condition> parse) {
         if (parse != null) this.conditions.addAll(parse);
     }
+
+    public GroupDropEvent getParentGroup() { return this.parentGroup; }
 
     public boolean getDefaultOverride() {
         return this.defaultOverride;

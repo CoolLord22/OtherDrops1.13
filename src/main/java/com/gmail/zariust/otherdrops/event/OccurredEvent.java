@@ -50,10 +50,7 @@ import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static com.gmail.zariust.common.Verbosity.HIGHEST;
 
@@ -85,6 +82,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     private String spawnedReason;
     private String jobName;
     private int jobLevel = -1;
+    private final Map<Object, Object> commitData = new IdentityHashMap<>();
 
     // Constructors
     public OccurredEvent(BlockBreakEvent evt) {
@@ -815,6 +813,14 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     }
 
     // Accessors
+
+    public void setCommitData(Object key, Object data) {
+        commitData.put(key, data);
+    }
+
+    public Object getCommitData(Object key) {
+        return commitData.get(key);
+    }
 
     /**
      * @return The agent that caused this event.

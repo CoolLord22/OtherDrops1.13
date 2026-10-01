@@ -5,18 +5,21 @@ import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.options.IntRange;
+import com.gmail.zariust.otherdrops.parameters.Committable;
 import com.gmail.zariust.otherdrops.parameters.Condition;
 import com.gmail.zariust.otherdrops.things.ODItem;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 import java.util.Map.Entry;
 
-public class ItemRequirementCheck extends Condition {
+public class ItemRequirementCheck extends Condition implements Committable {
     String name = "ItemRequirementCheck";
 
     public record ItemRequirement(IntRange quantity, Set<Integer> slots) {}
+    private record Claim(ODItem item, ItemStack stack, int amount) {}
 
     private final Map<ODItem, ItemRequirement> requiredStored;
     private final Random rng = new Random();
@@ -25,18 +28,58 @@ public class ItemRequirementCheck extends Condition {
         this.requiredStored = requiredStored;
     }
 
+    /** CHECK ONLY: find matching stacks and remember them. Nothing is removed here. */
     @Override
     public boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
-        boolean contained = false;
+        Player player = occurrence.getPlayerAttacker();
+        if (player == null) return false; // no player, no inventory to check
+
+        List<Claim> claims = new ArrayList<>();
         for (Entry<ODItem, ItemRequirement> req : requiredStored.entrySet()) {
-            Integer reqQuantity = req.getValue().quantity().getRandomIn(rng);
-            ItemStack toRemove = getItem(req, occurrence.getPlayerAttacker().getInventory(), reqQuantity);
-            if (toRemove != null) {
-                contained = true;
-                toRemove.setAmount(toRemove.getAmount() - reqQuantity);
-            }
+            int reqQuantity = req.getValue().quantity().getRandomIn(rng); // rolled once, reused at commit
+            ItemStack found = getItem(req, player.getInventory(), reqQuantity);
+            if (found != null) claims.add(new Claim(req.getKey(), found, reqQuantity));
         }
-        return contained;
+
+        // Current behavior kept: passes if ANY listed item was found (OR), and every found item is taken.
+        // For AND semantics, replace the next line with:
+        //     if (claims.size() != requiredStored.size()) return false;
+        if (claims.isEmpty()) return false;
+
+        occurrence.setCommitData(this, claims);
+        return true;
+    }
+
+    /**
+     * Re-verify the exact stacks captured during the check. Fails if another section in this event already
+     * took them (e.g. two sections both need the player's last cookie), or if the stack changed.
+     */
+    @Override
+    public boolean canCommit(CustomDrop drop, OccurredEvent occurrence) {
+        List<Claim> claims = getClaims(occurrence);
+        if (claims == null) return true;
+        for (Claim claim : claims) {
+            if (claim.stack() == null || !claim.item().matches(claim.stack())) return false;
+            if (claim.stack().getAmount() < claim.amount()) return false;
+        }
+        return true;
+    }
+
+    /** Take the items from the stacks captured at check time (not whatever the player is holding now). */
+    @Override
+    public void commit(CustomDrop drop, OccurredEvent occurrence) {
+        List<Claim> claims = getClaims(occurrence);
+        if (claims == null) return;
+        for (Claim claim : claims) {
+            if (claim.amount() <= 0) continue; // /q#0 (or no /q#): required but not taken
+            claim.stack().setAmount(claim.stack().getAmount() - claim.amount());
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Claim> getClaims(OccurredEvent occurrence) {
+        Object data = occurrence.getCommitData(this);
+        return data instanceof List ? (List<Claim>) data : null;
     }
 
     @Override
@@ -94,19 +137,15 @@ public class ItemRequirementCheck extends Condition {
         ODItem req = reqEntry.getKey();
         Set<Integer> slots = reqEntry.getValue().slots();
 
-        // No slots specified → check entire inventory
+        // No slots specified -> check entire inventory
         if (slots.isEmpty()) {
             for (ItemStack item : inv.getContents()) {
-                if (req.matches(item) && reqQuantity <= item.getAmount()) {
-                    return item;
-                }
+                if (item != null && req.matches(item) && reqQuantity <= item.getAmount()) return item;
             }
         } else {
             for (Integer slot : slots) {
                 ItemStack item = inv.getItem(slot);
-                if (req.matches(item) && reqQuantity <= item.getAmount()) {
-                    return item;
-                }
+                if (item != null && req.matches(item) && reqQuantity <= item.getAmount()) return item;
             }
         }
         return null;

@@ -1,6 +1,8 @@
 package com.gmail.zariust.otherdrops;
 
 import com.gmail.zariust.otherdrops.event.*;
+import com.gmail.zariust.otherdrops.parameters.Committable;
+import com.gmail.zariust.otherdrops.parameters.Condition;
 import com.gmail.zariust.otherdrops.parameters.Trigger;
 import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
@@ -22,8 +24,7 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EntityEquipment;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static com.gmail.zariust.common.Verbosity.*;
 
@@ -92,6 +93,13 @@ public class SectionManager {
         DropRunner.defaultDamageDone = false;
         // Loop through the drops and check for a match, process uniques, etc
         List<SimpleDrop> scheduledDrops = gatherDrops(customDrops, occurrence);
+
+        // Apply side effects (itemrequirement, cooldown) only for sections that will actually run.
+        // Must happen BEFORE the DEFAULT detection below (a canceled DEFAULT section must not keep vanilla drops)
+        // and BEFORE scheduleDrop (so delayed drops take the item now, not after the delay).
+        Map<CustomDrop, Boolean> groupResults = new HashMap<>();
+        scheduledDrops.removeIf(drop -> !commitWithGroups(drop, occurrence, groupResults));
+
         if (OtherDropsConfig.verbosity.exceeds(HIGHEST)) Log.logInfo("PerformDrop: scheduled drops=" + scheduledDrops, HIGHEST);
 
         // check for any DEFAULT drops
@@ -277,13 +285,7 @@ public class SectionManager {
         List<SimpleDrop> finalDrops = new ArrayList<>();
         for (CustomDrop customDrop : matchedDrops) {
             if (customDrop instanceof GroupDropEvent groupCustomDrop) {
-                // Process dropGroup events here...
-                // Display dropgroup "message:"
-                String message = MessageAction.getRandomMessage(customDrop, occurrence, customDrop.getMessages(), true);
-                if (!message.isEmpty() && occurrence.getTool() instanceof PlayerSubject) {
-                    ((PlayerSubject) occurrence.getTool()).getPlayer().sendMessage(message);
-                }
-
+                // Group message is sent in commitWithGroups, once one of its drops actually runs
                 finalDrops.addAll(gatherDrops(groupCustomDrop.getDrops(), occurrence));
             } else {
                 // OtherDrops.logInfo("PerformDrop: adding " + customDrop.getDropName(), HIGHEST);
@@ -314,6 +316,57 @@ public class SectionManager {
         if (schedule > 0.0) Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(OtherDrops.plugin, dropRunner, schedule);
         else dropRunner.run();
         // }
+    }
+
+    /** True if every Committable condition on this section can still be applied. No side effects. */
+    private static boolean canCommitAll(CustomDrop drop, OccurredEvent occurrence) {
+        for (Condition c : drop.getConditions())
+            if (c instanceof Committable com && !com.canCommit(drop, occurrence)) return false;
+        return true;
+    }
+
+    /** Apply every Committable on this section. Only call after canCommitAll returned true. */
+    private static void commitAll(CustomDrop drop, OccurredEvent occurrence) {
+        for (Condition c : drop.getConditions())
+            if (c instanceof Committable com) com.commit(drop, occurrence);
+    }
+
+    /**
+     * Commits a scheduled drop and all of its parent groups (outermost first). Each group commits at most once
+     * per event (tracked in groupResults), and sends its message when it does. Returns false if the drop
+     * must not run (it, or one of its groups, can no longer be committed).
+     */
+    private static boolean commitWithGroups(SimpleDrop drop, OccurredEvent occurrence, Map<CustomDrop, Boolean> groupResults) {
+        Deque<CustomDrop> chain = new ArrayDeque<>();
+        for (CustomDrop g = drop.getParentGroup(); g != null; g = g.getParentGroup()) chain.addFirst(g);
+
+        // 1. verify the whole chain before applying anything
+        for (CustomDrop g : chain) {
+            Boolean done = groupResults.get(g);
+            if (Boolean.FALSE.equals(done)) return false;               // group already failed this event
+            if (done == null && !canCommitAll(g, occurrence)) {
+                groupResults.put(g, false);
+                return false;
+            }
+        }
+        if (!canCommitAll(drop, occurrence)) return false;
+
+        // 2. apply: groups that haven't committed yet (outermost first), then the drop itself
+        for (CustomDrop g : chain) {
+            if (groupResults.get(g) == null) {
+                commitAll(g, occurrence);
+                groupResults.put(g, true);
+                sendGroupMessage(g, occurrence);
+            }
+        }
+        commitAll(drop, occurrence);
+        return true;
+    }
+
+    private static void sendGroupMessage(CustomDrop group, OccurredEvent occurrence) {
+        String message = MessageAction.getRandomMessage(group, occurrence, group.getMessages(), true);
+        if (!message.isEmpty() && occurrence.getTool() instanceof PlayerSubject player)
+            player.getPlayer().sendMessage(message);
     }
 
     /* For testing only, so far
