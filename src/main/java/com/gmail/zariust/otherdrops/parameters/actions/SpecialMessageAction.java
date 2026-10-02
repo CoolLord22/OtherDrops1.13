@@ -192,6 +192,6 @@ public class SpecialMessageAction extends Action {
             if (type.ordinal() > toSend.ordinal()) toSend = type;
         }
 
-        return List.of(new SpecialMessageAction(tempMessages, toSend));
+        return tempMessages.isEmpty() ? List.of() : List.of(new SpecialMessageAction(tempMessages, toSend));
     }
 }
