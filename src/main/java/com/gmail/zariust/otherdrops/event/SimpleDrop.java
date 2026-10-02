@@ -228,7 +228,7 @@ public class SimpleDrop extends CustomDrop {
         double x = maxOffset.getX();
         double y = maxOffset.getY();
         double z = maxOffset.getZ();
-        return location.add(OtherDrops.rng.nextDouble() * x * (OtherDrops.rng.nextInt() > 0.5 ? 1 : -1), OtherDrops.rng.nextDouble() * y * (OtherDrops.rng.nextInt() > 0.5 ? 1 : -1), OtherDrops.rng.nextDouble() * z * (OtherDrops.rng.nextInt() > 0.5 ? 1 : -1));
+        return location.clone().add(OtherDrops.rng.nextDouble() * x * (OtherDrops.rng.nextInt() > 0.5 ? 1 : -1), OtherDrops.rng.nextDouble() * y * (OtherDrops.rng.nextInt() > 0.5 ? 1 : -1), OtherDrops.rng.nextDouble() * z * (OtherDrops.rng.nextInt() > 0.5 ? 1 : -1));
     }
 
     @Override
