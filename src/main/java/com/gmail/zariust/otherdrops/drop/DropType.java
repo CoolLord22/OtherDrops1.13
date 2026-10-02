@@ -126,22 +126,25 @@ public abstract class DropType {
         return new DropFlags(dropToInventory, naturally, spread, rng, recipient, tool, eventType, spawnReason, victim, toKeepDrops, dropsFilter);
     }
 
-    // Drop now! Return false if the roll fails This is our initial point of entry for dropping This is a wrapper for the specific
-    // droptype's "performDrop" - parse overall chance first then call performDrop "quantity" (from quantity: parameter) times over
     public DropResult drop(Location from, Target target, Location offset, double amount, DropFlags flags) {
         Location offsetLocation = calculateOffsetLocation(from, offset);
 
-        if (chance < 100.0) {
-            double rolledChance = flags.rng.nextDouble();
-            Log.logInfo("Rolling chance: checking " + rolledChance + " <= " + (chance / 100) + " (" + (!(rolledChance > chance / 100.0)) + ")", Verbosity.HIGHEST);
-            if (rolledChance > chance / 100.0) {
-                Log.logInfo("Failed roll, returning...", Verbosity.HIGHEST);
-                return DropResult.fromQuantity(-1);
-            }
+        if (chance >= 100.0) {
+            gDropResult = dropLocal(target, offsetLocation, amount, flags);
+            return gDropResult;
         }
 
-        gDropResult = dropLocal(target, offsetLocation, amount, flags);
-        return gDropResult;
+        // Roll the chance separately for each repeat (quantity:), the same way entries in a list are rolled
+        DropResult result = DropResult.fromQuantity(-1);   // "failed" unless at least one roll passes
+        int repeats = calculateQuantity(amount, flags.rng);
+        for (int i = 0; i < repeats; i++) {
+            double rolledChance = flags.rng.nextDouble();
+            boolean passed = rolledChance <= chance / 100.0;
+            Log.logInfo("Rolling chance (" + (i + 1) + "/" + repeats + "): " + rolledChance + " <= " + (chance / 100) + " (" + passed + ")", Verbosity.HIGHEST);
+            if (passed) result.add(dropLocal(target, offsetLocation, 1, flags));
+        }
+        gDropResult = result;
+        return result;
     }
 
     private Location calculateOffsetLocation(Location from, Location offset) {

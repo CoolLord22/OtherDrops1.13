@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DropResult {
+    private boolean anyRan;
     private int quantity;
     public final List<Entity> droppedEntities = new ArrayList<>();
     private boolean overrideDefault;
@@ -20,6 +21,7 @@ public class DropResult {
 
     public DropResult(int quant) {
         quantity = quant;
+        anyRan = quant > 0;
     }
 
     public DropResult(boolean overrideDefault2) {
@@ -88,20 +90,29 @@ public class DropResult {
     }
 
     public void add(DropResult drop) {
-        this.quantity = drop.getQuantity();
-        this.addDropped(drop.getDropped());
+        merge(drop);
         if (drop.getOverrideDefault()) this.setOverrideDefault(drop.getOverrideDefault());
         if (drop.getOverrideDefaultXp()) this.setOverrideDefaultXp(drop.getOverrideDefaultXp());
     }
 
     public void addWithoutOverride(DropResult drop) {
-        this.quantity = drop.getQuantity();
-        this.addDropped(drop.getDropped());
+        merge(drop);
     }
 
     public static DropResult getFromOverrideDefault(boolean overrideDefault2) {
         return new DropResult(overrideDefault2);
+    }
 
+    /** Sums successful parts; the result is -1 (failed) only if every part so far failed its chance. */
+    private void merge(DropResult drop) {
+        int q = drop.getQuantity();
+        if (q >= 0) {
+            quantity = (anyRan ? quantity : 0) + q;
+            anyRan = true;
+        } else if (!anyRan) {
+            quantity = -1;
+        }
+        addDropped(drop.getDropped());
     }
 
     public boolean isOverrideEquipment() {
