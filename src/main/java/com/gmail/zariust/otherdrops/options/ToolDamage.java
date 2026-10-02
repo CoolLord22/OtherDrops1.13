@@ -16,16 +16,13 @@
 
 package com.gmail.zariust.otherdrops.options;
 
-import com.gmail.zariust.common.CommonEnchantments;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.things.ODItem;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Random;
 
@@ -51,18 +48,23 @@ public class ToolDamage {
         this.replaceItemQuantity = new IntRange(replaceQuantity);
     }
 
-    public boolean apply(ItemStack stack, Random rng) {
+    public ItemStack apply(ItemStack original, Random rng) {
+        ItemStack stack = original.clone();
         boolean fullyConsumed = false;
         short maxDurability = (short) getMaxDurability(stack);
+
+        // 1. durability (damagetool / fixtool)
         if (maxDurability > 0 && durabilityRange != null) {
             short durability = (short) getDurability(stack);
             short damage = durabilityRange.getRandomIn(rng);
             fullyConsumed = setDurability(stack, maxDurability, (short) (durability + damage), rng);
         }
-        if (consumeRange != null && (fullyConsumed || durabilityRange == null)) {
+
+        // 2. stack size (consumetool / growtool)
+        if (consumeRange != null && (fullyConsumed || durabilityRange == null || maxDurability <= 0)) {
             if (fullyConsumed) {
                 fullyConsumed = false;
-                setDurability(stack, maxDurability, (short) 0, rng);
+                resetDurability(stack);
             }
             int count = stack.getAmount();
             int take = consumeRange.getRandomIn(rng);
@@ -70,34 +72,22 @@ public class ToolDamage {
             else stack.setAmount(count - take);
             Log.logInfo("Tool consume: " + take + "x " + stack + " consumed (" + (count - take) + ") remaining.", Verbosity.HIGH);
         }
-        if (replaceItem != null && fullyConsumed) {
-            fullyConsumed = false;
-            setDurability(stack, maxDurability, (short) 0, rng);
 
-            stack.setType(replaceItem.getMaterial());
-            stack.setAmount(replaceItemQuantity.getRandomIn(OtherDrops.rng));
-            ItemMeta meta = stack.getItemMeta();
-            meta.setDisplayName(replaceItem.getDisplayName());
-            meta.setLore(replaceItem.lore);
-            stack.setItemMeta(meta);
-            CommonEnchantments.applyEnchantments(stack, replaceItem.getEnchantments());
-
-            Log.logInfo("Tool replaced.", Verbosity.HIGH);
-        } else if (durabilityRange == null && consumeRange == null) {
-            fullyConsumed = false;
-            setDurability(stack, maxDurability, (short) 0, rng);
-
-            stack.setType(replaceItem.getMaterial());
-            stack.setAmount(replaceItemQuantity.getRandomIn(OtherDrops.rng));
-            ItemMeta meta = stack.getItemMeta();
-            meta.setDisplayName(replaceItem.getDisplayName());
-            meta.setLore(replaceItem.lore);
-            stack.setItemMeta(meta);
-            CommonEnchantments.applyEnchantments(stack, replaceItem.getEnchantments());
-
-            Log.logInfo("Tool replaced.", Verbosity.HIGH);
+        // 3. replacement (replacetool): when it has been fully used up, or when replacetool is the only option
+        if (replaceItem != null && (fullyConsumed || (durabilityRange == null && consumeRange == null))) {
+            ItemStack replacement = replaceItem.createStack(replaceItemQuantity);
+            if (replacement != null) return replacement;
+            Log.logWarning("replacetool: couldn't resolve '" + replaceItem + "'; tool not replaced.");
         }
-        return fullyConsumed;
+
+        return fullyConsumed ? null : stack;
+    }
+
+    private void resetDurability(ItemStack stack) {
+        if (stack.getItemMeta() instanceof Damageable damageable) {
+            damageable.setDamage(0);
+            stack.setItemMeta(damageable);
+        }
     }
 
     private boolean setDurability(ItemStack stack, short maxDamage, short durability, Random rng) {
@@ -121,9 +111,11 @@ public class ToolDamage {
                 return fullyConsumed;
             }
         }
-        if (durability > maxDamage) {
+        if (durability >= maxDamage) {
             durability = maxDamage;
             fullyConsumed = true;
+        } else if (durability < 0) {
+            durability = 0;       // fixtool can't repair past "brand new"
         }
         Log.logInfo("Tool damaged.", Verbosity.HIGH);
         damageable.setDamage(durability);

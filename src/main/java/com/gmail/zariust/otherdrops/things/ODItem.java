@@ -10,6 +10,7 @@ import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.ItemData;
+import com.gmail.zariust.otherdrops.options.IntRange;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -278,5 +279,29 @@ public class ODItem {
             }
         }
         return false;
+    }
+
+    /** A new stack of this item, or null if it can't be resolved. */
+    public ItemStack createStack(IntRange quantity) {
+        int amount = quantity.getRandomIn(OtherDrops.rng);
+
+        // OD_ITEM@ / MYTHIC_ITEM@ / NAMESPACE_ITEM@: exact copy (meta, PDC, attributes, components...)
+        if (itemStack != null) {
+            ItemStack copy = itemStack.clone();
+            copy.setAmount(amount);
+            return copy;
+        }
+
+        Material material = getMaterial();
+        if (material == null) return null;
+        ItemStack result = new ItemStack(material, amount);
+        ItemMeta meta = result.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName(getDisplayName());
+            meta.setLore(lore);
+            result.setItemMeta(meta);
+        }
+        CommonEnchantments.applyEnchantments(result, getEnchantments());
+        return result;
     }
 }

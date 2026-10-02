@@ -118,13 +118,15 @@ public class PlayerSubject extends LivingSubject {
     @Override
     public void damageTool(ToolDamage damage, Random rng) {
         if (damage == null) return;
-        ItemStack stack = agent.getInventory().getItem(hand);
-        if (stack == null) return;
-        if (damage.apply(stack, rng)) {
-            agent.getInventory().setItem(hand, null);
-            if(damage.isDamage()) agent.getWorld().playSound(agent.getLocation(), Sound.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 1, 1);
-        }
-        else agent.updateInventory(); // because we've edited the stack directly
+        ItemStack handItem = agent.getInventory().getItem(this.hand);
+        if (handItem == null) return;
+
+        ItemStack result = damage.apply(handItem, rng);
+        agent.getInventory().setItem(this.hand, result);
+        if (result == null && damage.isDamage())
+            agent.getWorld().playSound(agent.getLocation(), Sound.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 1, 1);
+
+        agent.updateInventory(); // because we've edited the stack directly
         // TODO: Option of failure if damage is greater that the amount
         // remaining?
     }
