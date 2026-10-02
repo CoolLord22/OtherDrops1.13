@@ -237,9 +237,21 @@ public class BlockTarget implements Target {
 
     @Override
     public String toString() {
-        if (id == null) return "ANY_BLOCK";
+        if (id == null) return except == null ? "ANY_BLOCK" : "ANY_BLOCK_EXCEPT " + except;
+        if (blockData != null) {                       // a real block from an event: show its full state
+            String state = stateString(blockData);
+            return state.isEmpty() ? id.toString() : id + "@" + state;
+        }
         if (data == null) return id.toString();
-        return id + "@" + data.get(id);
+        String dataString = data.get(id);
+        return dataString == null || dataString.isEmpty() ? id.toString() : id + "@" + dataString;
+    }
+
+    /** "[facing=north,honey_level=3]" from "minecraft:beehive[facing=north,honey_level=3]", or "" if the block has no properties. */
+    private static String stateString(BlockData blockData) {
+        String full = blockData.getAsString();
+        int bracket = full.indexOf('[');
+        return bracket < 0 ? "" : full.substring(bracket);
     }
 
     @Override

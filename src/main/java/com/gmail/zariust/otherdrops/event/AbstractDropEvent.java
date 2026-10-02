@@ -80,11 +80,12 @@ public abstract class AbstractDropEvent {
 
     public boolean basicMatch(AbstractDropEvent other) {
         if (!target.matches(other.target)) {
-            Log.logInfo("AbstractDrop - basicMatch/target (type=" + target.getClass() + ") - failed. this.target=" + target + " other.target=" + other.target.toString(), HIGHEST);
+            Log.logInfo("AbstractDrop - basicMatch/target doesn't match: section wants " + target + ", event has " + other.target
+                    + " (" + target.getClass().getSimpleName() + ")", HIGHEST);
             return false;
         }
         if (!trigger.equals(other.trigger)) {
-            Log.logInfo("AbstractDrop - basicMatch/trigger - failed. this.trigger=" + trigger + " other.trigger=" + other.trigger.toString(), HIGHEST);
+            Log.logInfo("AbstractDrop - basicMatch/trigger doesn't match: section wants " + trigger + ", event has " + other.trigger, HIGHEST);
             return false;
         }
         return true;
