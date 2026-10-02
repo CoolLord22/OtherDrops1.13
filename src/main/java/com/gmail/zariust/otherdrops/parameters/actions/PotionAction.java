@@ -161,7 +161,7 @@ public class PotionAction extends Action {
     public static PotionEffect getEffect(String effects) {
         String[] split = effects.split("@");
         int duration = 100;
-        int strength = 4;
+        int strength = 1;
 
         try {
             if (split.length > 1) duration = Integer.parseInt(split[1]);
