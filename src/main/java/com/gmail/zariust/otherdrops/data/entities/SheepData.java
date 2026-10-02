@@ -2,7 +2,6 @@ package com.gmail.zariust.otherdrops.data.entities;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import org.bukkit.DyeColor;
@@ -52,26 +51,12 @@ public class SheepData extends CreatureData {
         Log.logInfo("SheepData: parsing from string.", Verbosity.HIGHEST);
         Boolean sheared = null;
         DyeColor thisColor = null;
-
-        if (!state.isEmpty() && !state.equals("0")) {
-            String[] splitState = state.split(OtherDropsConfig.CreatureDataSeparator);
-
-            for (String sub : splitState) {
-                sub = sub.toLowerCase().replaceAll("[\\s-_]", "");
-
-                if (sub.contains("!sheared")) sheared = true;
-                else if (sub.contains("!unsheared")) sheared = false;
-                else {
-                    sheared = null;
-                }
-                for (DyeColor color : DyeColor.values()) {
-                    if (sub.replaceAll("!", "").equals(color.name().toLowerCase().replaceAll("[\\s-_]", "")))
-                        thisColor = color;
-                }
-                if (sheared == null && thisColor == null) Log.logInfo("SheepData: invalid data passed (" + sub + ")");
-            }
+        for (String sub : CreatureData.keywords(state)) {
+            if (sub.equals("sheared")) sheared = true;
+            else if (sub.equals("unsheared")) sheared = false;
+            for (DyeColor color : DyeColor.values())
+                if (sub.equals(CreatureData.normalize(color.name()))) thisColor = color;
         }
-
         return new SheepData(sheared, thisColor);
     }
 

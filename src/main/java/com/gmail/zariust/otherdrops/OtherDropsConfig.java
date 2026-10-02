@@ -1179,11 +1179,11 @@ public class OtherDropsConfig {
         else if (upperName.equals("PLAYERGROUP")) return new GroupSubject(data);
         else if (upperName.startsWith("DAMAGE_")) return EnvironmentAgent.parse(name, data);
         else {
-            LivingSubject creatureSubject = CreatureSubject.parse(name, data, item.getDisplayName());
+            LivingSubject creatureSubject = CreatureSubject.parse(name, item.getRawDataString(), item.getDisplayName());
 
             if (creatureSubject != null) return creatureSubject;
             else if (upperName.startsWith("PROJECTILE")) return ProjectileAgent.parse(name, data);
-            else if (upperName.startsWith("EXPLOSION")) return ExplosionAgent.parse(name, data);
+            else if (upperName.startsWith("EXPLOSION")) return ExplosionAgent.parse(name, item.getRawDataString());
             else return ToolAgent.parse(item);
         }
     }
@@ -1208,8 +1208,7 @@ public class OtherDropsConfig {
         else if (upperName.startsWith("MYTHIC_MOB")) return MythicMobSubject.parse(data);
         else if (upperName.startsWith("VEHICLE") || upperName.matches("BOAT|MINECART|BOAT_SPRUCE|BOAT_JUNGLE|BOAT_BIRCH|BOAT_ACACIA|BOAT_DARK_OAk")) return VehicleTarget.parse(Material.getMaterial(upperName.replaceAll("VEHICLE_", "")), data);
         else {
-            LivingSubject creatureSubject = CreatureSubject.parse(name, data, item.getDisplayName());
-
+            LivingSubject creatureSubject = CreatureSubject.parse(name, item.getRawDataString(), item.getDisplayName());
             if (creatureSubject != null) return creatureSubject;
             else if (upperName.equalsIgnoreCase("SPECIAL_LEAFDECAY")) return BlockTarget.parse("LEAVES", data, item.displayname); // for compatibility
             else return BlockTarget.parse(name, data, item.displayname);

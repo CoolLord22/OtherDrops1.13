@@ -1,7 +1,6 @@
 package com.gmail.zariust.otherdrops.data.entities;
 
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import org.bukkit.entity.Entity;
@@ -42,17 +41,10 @@ public class TameableData extends CreatureData {
 
     public static CreatureData parseFromString(String state) {
         Boolean tamed = null;
-
-        if (!state.isEmpty() && !state.equals("0")) {
-            String[] split = state.split(OtherDropsConfig.CreatureDataSeparator);
-
-            for (String sub : split) {
-                sub = sub.toLowerCase().replaceAll("[\\s-_]", "");
-                if (sub.matches("(tame[d]*)")) tamed = true;
-                else if (sub.matches("(untamed|wild)")) tamed = false;
-            }
+        for (String sub : CreatureData.keywords(state)) {
+            if (sub.equals("tamed") || sub.equals("tame")) tamed = true;
+            else if (sub.equals("untamed") || sub.equals("wild")) tamed = false;
         }
-
         return new TameableData(tamed);
     }
 

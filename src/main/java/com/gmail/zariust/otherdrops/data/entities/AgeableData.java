@@ -1,7 +1,6 @@
 package com.gmail.zariust.otherdrops.data.entities;
 
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import org.bukkit.entity.Ageable;
@@ -46,15 +45,10 @@ public class AgeableData extends CreatureData {
     }
 
     public static CreatureData parseFromString(String state) {
-        // state example: VILLAGER!BABY, BABY, BABY!NORMAL (order doesn't matter)
         Boolean adult = null;
-        if (!state.isEmpty() && !state.equals("0")) {
-            String[] split = state.split(OtherDropsConfig.CreatureDataSeparator);
-            for (String sub : split) {
-                sub = sub.toLowerCase().replaceAll("[\\s-_]", "");
-                if (sub.contains("!adult")) adult = true;
-                else if (sub.contains("!baby")) adult = false;
-            }
+        for (String sub : CreatureData.keywords(state)) {
+            if (sub.equals("adult")) adult = true;
+            else if (sub.equals("baby")) adult = false;
         }
         return new AgeableData(adult);
     }

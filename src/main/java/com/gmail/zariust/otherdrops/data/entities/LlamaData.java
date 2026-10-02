@@ -1,7 +1,6 @@
 package com.gmail.zariust.otherdrops.data.entities;
 
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import org.bukkit.entity.Entity;
@@ -41,18 +40,9 @@ public class LlamaData extends CreatureData {
 
     public static CreatureData parseFromString(String state) {
         Llama.Color thisType = null;
-
-        if (!state.isEmpty() && !state.equals("0")) {
-            String[] split = state.split(OtherDropsConfig.CreatureDataSeparator);
-
-            for (String sub : split) {
-                sub = sub.toLowerCase().replaceAll("[\\s-_]", "");
-                for (Llama.Color type : Llama.Color.values()) {
-                    if (sub.equals(type.name().toLowerCase().replaceAll("[\\s-_]", ""))) thisType = type;
-                }
-                if (thisType == null) Log.logInfo("LlamaData: type not found (" + sub + ")");
-            }
-        }
+        for (String sub : CreatureData.keywords(state))
+            for (Llama.Color type : Llama.Color.values())
+                if (sub.equals(CreatureData.normalize(type.name()))) thisType = type;
         return new LlamaData(thisType);
     }
 

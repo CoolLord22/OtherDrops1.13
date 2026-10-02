@@ -1,7 +1,6 @@
 package com.gmail.zariust.otherdrops.data.entities;
 
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import org.bukkit.DyeColor;
@@ -48,21 +47,12 @@ public class CatData extends CreatureData {
     public static CreatureData parseFromString(String state) {
         Cat.Type thisType = null;
         DyeColor collarColor = null;
-
-        if (!state.isEmpty() && !state.equals("0")) {
-            String[] split = state.split(OtherDropsConfig.CreatureDataSeparator);
-
-            for (String sub : split) {
-                sub = sub.toLowerCase().replaceAll("[\\s-_]", "").replaceAll("cat", "");
-                for (Cat.Type type : Cat.Type.values()) {
-                    if (sub.equals(type.name().toLowerCase().replaceAll("[\\s-_]", ""))) thisType = type;
-                }
-                for (DyeColor color : DyeColor.values()) {
-                    if (sub.replaceAll("!", "").equals(color.name().toLowerCase().replaceAll("[\\s-_]", "")))
-                        collarColor = color;
-                }
-                if (thisType == null && collarColor == null) Log.logInfo("CatData: invalid data passed (" + sub + ")");
-            }
+        for (String keyword : CreatureData.keywords(state)) {
+            String sub = keyword.replace("cat", "");   // "blackcat" -> "black" (kept for compatibility)
+            for (Cat.Type type : Cat.Type.values())
+                if (sub.equals(CreatureData.normalize(type.name()))) thisType = type;
+            for (DyeColor color : DyeColor.values())
+                if (sub.equals(CreatureData.normalize(color.name()))) collarColor = color;
         }
         return new CatData(thisType, collarColor);
     }

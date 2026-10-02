@@ -2,7 +2,6 @@ package com.gmail.zariust.otherdrops.data.entities;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import org.bukkit.entity.Entity;
@@ -44,17 +43,13 @@ public class SlimeData extends CreatureData {
     public static CreatureData parseFromString(String state) {
         Log.logInfo("SlimeData: parsing from string.", Verbosity.HIGHEST);
         Integer slimeSize = null;
-
-        if (!state.isEmpty() && !state.equals("0")) {
-            String[] split = state.split(OtherDropsConfig.CreatureDataSeparator);
-
-            for (String sub : split) {
-                sub = sub.toLowerCase().replaceAll("[\\s-_]", "");
-                if (sub.equalsIgnoreCase("TINY")) slimeSize = 1;
-                else if (sub.equalsIgnoreCase("SMALL")) slimeSize = 2;
-                else if (sub.equalsIgnoreCase("BIG")) slimeSize = 3;
-                else if (sub.equalsIgnoreCase("HUGE")) slimeSize = 4;
-                else if (sub.matches("[0-9]+")) slimeSize = Integer.valueOf(sub);
+        for (String sub : CreatureData.keywords(state)) {
+            switch (sub) {
+                case "tiny" -> slimeSize = 1;
+                case "small" -> slimeSize = 2;
+                case "big" -> slimeSize = 3;
+                case "huge" -> slimeSize = 4;
+                default -> { if (sub.matches("[0-9]+")) slimeSize = Integer.valueOf(sub); }
             }
         }
         return new SlimeData(slimeSize);

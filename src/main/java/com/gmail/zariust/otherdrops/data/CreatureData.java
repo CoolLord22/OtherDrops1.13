@@ -76,7 +76,6 @@ public class CreatureData implements Data, RangeableData {
     public int data;
     private final Boolean sheared;
 
-
     private static void put(Map<EntityType, List<Class<?>>> aMap, String entityType, Class<?> classToAdd) {
         try {
             EntityType type = EntityType.valueOf(entityType);
@@ -152,6 +151,45 @@ public class CreatureData implements Data, RangeableData {
     @Override
     // No creature has a block state, so nothing to do here.
     public void setOn(BlockState state) {
+    }
+
+    /**
+     * Splits creature data into entries. Entries are separated by one or more "!" (so "!" and "!!" both work);
+     * "\!" is a literal "!" (for enchantments inside equipment). Anything after "~" is the custom name and is
+     * left out. An enchantment ("name#level") straight after an "eq:" entry is attached to that equipment item,
+     * so "eq:head:DIAMOND_HELMET!thorns#3" works without escaping.
+     */
+    public static List<String> tokens(String state) {
+        List<String> result = new ArrayList<>();
+        if (state == null) return result;
+        String data = state.split("~", 2)[0].replace("\\!", "\u0000");
+        for (String raw : data.split("!+")) {
+            String token = raw.replace("\u0000", "!").trim();
+            if (token.isEmpty() || token.equals("0")) continue;
+            int last = result.size() - 1;
+            if (token.contains("#") && last >= 0 && result.get(last).toLowerCase().startsWith("eq:")) {
+                String equip = result.get(last);
+                result.set(last, equip + (equip.contains("@") ? "!" : "@!") + token);
+                continue;
+            }
+            result.add(token);
+        }
+        return result;
+    }
+
+    /** "Light_Blue" -> "lightblue": lower case, no spaces, underscores or dashes. */
+    public static String normalize(String text) {
+        return text.toLowerCase().replaceAll("[\\s_-]", "");
+    }
+
+    /** Normalized keywords: every entry except equipment ("eq:…") and health ("20hp"). */
+    public static List<String> keywords(String state) {
+        List<String> result = new ArrayList<>();
+        for (String token : tokens(state)) {
+            if (token.toLowerCase().startsWith("eq:") || token.matches("(?i)[0-9.]+hp?")) continue;
+            result.add(normalize(token));
+        }
+        return result;
     }
 
     public static Data parse(EntityType creature, String state) {

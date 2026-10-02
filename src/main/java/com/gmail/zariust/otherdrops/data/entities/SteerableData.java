@@ -1,7 +1,6 @@
 package com.gmail.zariust.otherdrops.data.entities;
 
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import org.bukkit.entity.Entity;
@@ -42,17 +41,10 @@ public class SteerableData extends CreatureData {
 
     public static CreatureData parseFromString(String state) {
         Boolean saddled = null;
-
-        if (!state.isEmpty() && !state.equals("0")) {
-            String[] split = state.split(OtherDropsConfig.CreatureDataSeparator);
-
-            for (String sub : split) {
-                sub = sub.toLowerCase().replaceAll("[\\s-_]", "");
-                if (sub.contains("!saddled")) saddled = true;
-                else if (sub.contains("!unsaddled")) saddled = false;
-            }
+        for (String sub : CreatureData.keywords(state)) {
+            if (sub.equals("saddled")) saddled = true;
+            else if (sub.equals("unsaddled")) saddled = false;
         }
-
         return new SteerableData(saddled);
     }
 

@@ -1,9 +1,7 @@
 package com.gmail.zariust.otherdrops.data.entities;
 
 import com.gmail.zariust.common.CommonMaterial;
-import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import org.bukkit.Bukkit;
@@ -51,29 +49,14 @@ public class EndermanData extends CreatureData {
     }
 
     public static CreatureData parseFromString(String state) {
-        Log.logInfo("EndermanData: parsing from string.", Verbosity.HIGHEST);
         BlockData blockData = null;
         Boolean canCarry = null;
-
-        if (!state.isEmpty() && !state.equals("0")) {
-            String[] split = state.split(OtherDropsConfig.CreatureDataSeparator);
-
-            for (String sub : split) {
-                sub = sub.toLowerCase().replaceAll("[\\s-_]", "");
-                if (sub.equalsIgnoreCase("carry")) canCarry = true;
-                else if (sub.equalsIgnoreCase("nocarry")) canCarry = false;
-                else {
-                    // nothing else to check so assume material
-                    Material material;
-                    if (sub.contains("@")) {
-                        String[] split2 = sub.split("@", 2);
-                        Log.logWarning("Unsupported argument for: " + split2[0] + " with " + split[1]);
-                        material = CommonMaterial.matchMaterial(split2[0]);
-                    } else {
-                        material = CommonMaterial.matchMaterial(sub);
-                    }
-                    if (material != null) blockData = Bukkit.createBlockData(material);
-                }
+        for (String sub : CreatureData.keywords(state)) {
+            if (sub.equals("carry")) canCarry = true;
+            else if (sub.equals("nocarry")) canCarry = false;
+            else {
+                Material material = CommonMaterial.matchMaterial(sub.split("@", 2)[0]);
+                if (material != null && material.isBlock()) blockData = Bukkit.createBlockData(material);
             }
         }
         return new EndermanData(blockData, canCarry);

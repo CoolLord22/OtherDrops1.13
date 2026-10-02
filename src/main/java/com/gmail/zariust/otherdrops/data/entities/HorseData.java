@@ -1,7 +1,6 @@
 package com.gmail.zariust.otherdrops.data.entities;
 
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import org.bukkit.entity.Entity;
@@ -44,55 +43,14 @@ public class HorseData extends CreatureData {
     }
 
     public static CreatureData parseFromString(String state) {
-        Horse.Color thisColor = null; // null = wildcard
-        Horse.Style thisStyle = null; // null = wildcard
-
-        if (!state.isEmpty() && !state.equals("0")) {
-            String[] split = state.split(OtherDropsConfig.CreatureDataSeparator);
-
-            for (String sub : split) {
-                sub = sub.toLowerCase().replaceAll("[\\s-_]", "");
-                //start color matching
-                if (sub.contains("!colorblack")) {
-                    thisColor = (Horse.Color.BLACK);
-                }
-                if (sub.contains("!colorbrown")) {
-                    thisColor = (Horse.Color.BROWN);
-                }
-                if (sub.contains("!colordarkbrown")) {
-                    thisColor = (Horse.Color.DARK_BROWN);
-                }
-                if (sub.contains("!colorchestnut")) {
-                    thisColor = (Horse.Color.CHESTNUT);
-                }
-                if (sub.contains("!colorcreamy")) {
-                    thisColor = (Horse.Color.CREAMY);
-                }
-                if (sub.contains("!colorgray")) {
-                    thisColor = (Horse.Color.GRAY);
-                }
-                if (sub.contains("!colorwhite")) {
-                    thisColor = (Horse.Color.WHITE);
-                }
-
-                if (sub.contains("!styleblackdots")) {
-                    thisStyle = (Horse.Style.BLACK_DOTS);
-                }
-                if (sub.contains("!stylenone")) {
-                    thisStyle = (Horse.Style.NONE);
-                }
-                if (sub.contains("!stylewhite")) {
-                    thisStyle = (Horse.Style.WHITE);
-                }
-                if (sub.contains("!stylewhitefield")) {
-                    thisStyle = (Horse.Style.WHITEFIELD);
-                }
-                if (sub.contains("!stylewhitedots")) {
-                    thisStyle = (Horse.Style.WHITE_DOTS);
-                }
-            }
+        Horse.Color thisColor = null;
+        Horse.Style thisStyle = null;
+        for (String sub : CreatureData.keywords(state)) {
+            for (Horse.Color color : Horse.Color.values())
+                if (sub.equals("color" + CreatureData.normalize(color.name()))) thisColor = color;
+            for (Horse.Style style : Horse.Style.values())
+                if (sub.equals("style" + CreatureData.normalize(style.name()))) thisStyle = style;
         }
-
         return new HorseData(thisColor, thisStyle);
     }
 

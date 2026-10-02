@@ -1,7 +1,6 @@
 package com.gmail.zariust.otherdrops.data.entities;
 
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import org.bukkit.entity.Entity;
@@ -47,27 +46,14 @@ public class VillagerData extends CreatureData {
     }
 
     public static CreatureData parseFromString(String state) {
-        // state example: BLACK_CAT!BABY!WILD, or TAME!REDCAT!ADULT (order doesn't matter)
-        @SuppressWarnings("unused") Profession thisProf = null;
+        Profession thisProf = null;
         Villager.Type thisType = null;
-
-        if (!state.isEmpty() && !state.equals("0")) {
-            String[] split = state.split(OtherDropsConfig.CreatureDataSeparator);
-
-            for (String sub : split) {
-                sub = sub.toLowerCase().replaceAll("[\\s-_]", "");
-
-                // loop through types looking for match
-                for (Profession type : Profession.values()) {
-                    if (sub.equals(type.name().toLowerCase().replaceAll("[\\s-_]", ""))) thisProf = type;
-                }
-                for (Villager.Type type : Villager.Type.values()) {
-                    if (sub.equals(type.name().toLowerCase().replaceAll("[\\s-_]", ""))) thisType = type;
-                }
-                if (thisProf == null && thisType == null) Log.logInfo("VillagerData: type not found (" + sub + ")");
-            }
+        for (String sub : CreatureData.keywords(state)) {
+            for (Profession type : Profession.values())
+                if (sub.equals(CreatureData.normalize(type.name()))) thisProf = type;
+            for (Villager.Type type : Villager.Type.values())
+                if (sub.equals(CreatureData.normalize(type.name()))) thisType = type;
         }
-
         return new VillagerData(thisProf, thisType);
     }
 

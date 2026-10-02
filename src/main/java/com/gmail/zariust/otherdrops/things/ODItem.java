@@ -41,6 +41,7 @@ public class ODItem {
     public final List<String> lore = new ArrayList<>();
     public ItemStack itemStack;
 
+    private String rawDataString;
     private Material material;
     private Data data;
 
@@ -98,6 +99,7 @@ public class ODItem {
             // if extra fields are found, parse them - firstly separating out the type of "thing" this is
             item.name = firstSplit[0];
             String firstChar = drop.substring(item.name.length(), item.name.length() + 1);
+            if (!firstChar.equals("~")) item.rawDataString = firstSplit[1].split("~", 2)[0];
             if (firstChar.matches("[^~]")) {
                 // only want to use a semi-colon rather than @ or : but preserve the ~
                 firstChar = ";";
@@ -175,6 +177,10 @@ public class ODItem {
             this.data = parseDataFromString(this.dataString);
         }
         return data;
+    }
+
+    public String getRawDataString() {
+        return rawDataString != null ? rawDataString : getDataString();
     }
 
     public Data parseDataFromString(String dataString) {

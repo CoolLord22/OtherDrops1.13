@@ -2,10 +2,10 @@ package com.gmail.zariust.otherdrops.drop;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
-import org.bukkit.entity.LivingEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 public class DropResult {
     private boolean anyRan;
@@ -75,18 +75,12 @@ public class DropResult {
     }
 
     public String getDroppedString() {
-        StringBuilder valBuilder = new StringBuilder("[");
+        StringJoiner joiner = new StringJoiner(", ", "[", "]");
         for (Entity ent : droppedEntities) {
-            if (ent instanceof Item item) {
-                valBuilder.append(item.getItemStack());
-            } else if (ent instanceof LivingEntity) {
-                valBuilder.append(ent);
-            } else valBuilder.append(ent.toString()).append(",");
+            if (ent instanceof Item item) joiner.add(item.getItemStack().toString());
+            else joiner.add(ent.toString());
         }
-        String val = valBuilder.toString();
-        if (val.length() > 1) val = val.substring(0, val.length() - 1);
-        val += "]";
-        return val;
+        return joiner.toString();
     }
 
     public void add(DropResult drop) {

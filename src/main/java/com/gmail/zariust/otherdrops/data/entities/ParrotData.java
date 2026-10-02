@@ -1,7 +1,6 @@
 package com.gmail.zariust.otherdrops.data.entities;
 
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import org.bukkit.entity.Entity;
@@ -42,19 +41,9 @@ public class ParrotData extends CreatureData {
 
     public static CreatureData parseFromString(String state) {
         Parrot.Variant thisType = null;
-
-        if (!state.isEmpty() && !state.equals("0")) {
-            String[] split = state.split(OtherDropsConfig.CreatureDataSeparator);
-
-            for (String sub : split) {
-                sub = sub.toLowerCase().replaceAll("[\\s-_]", "");
-                for (Parrot.Variant type : Parrot.Variant.values()) {
-                    if (sub.equals(type.name().toLowerCase().replaceAll("[\\s-_]", ""))) thisType = type;
-                }
-                if (thisType == null) Log.logInfo("ParrotData: type not found (" + sub + ")");
-            }
-        }
-
+        for (String sub : CreatureData.keywords(state))
+            for (Parrot.Variant type : Parrot.Variant.values())
+                if (sub.equals(CreatureData.normalize(type.name()))) thisType = type;
         return new ParrotData(thisType);
     }
 

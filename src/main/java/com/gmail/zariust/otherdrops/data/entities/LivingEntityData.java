@@ -3,7 +3,6 @@ package com.gmail.zariust.otherdrops.data.entities;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.EntityWrapper;
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.drop.ItemDrop;
@@ -138,32 +137,24 @@ public class LivingEntityData extends CreatureData {
         Double maxHealth = null;
         CreatureEquipment equip = null;
         String customName = null;
-        String newState;
 
         if (!state.isEmpty() && !state.equals("0")) {
             String[] customNameSplit = state.split("~", 2);
-            newState = customNameSplit[0];
             if (customNameSplit.length > 1) customName = customNameSplit[1];
-
-            String[] split = newState.split(OtherDropsConfig.CreatureDataSeparator);
-
-            for (String sub : split) {
-                if (sub.matches("(?i)[0-9.]+hp?")) {
-                    maxHealth = Double.valueOf(sub.replaceAll("[^0-9.]", ""));
-                } else {
-                    sub = sub.replaceAll("[\\s-_]", "");
-                    if (sub.matches("(?i)eq:.*")) {
-                        if (equip == null) equip = new CreatureEquipment();
-                        equip = parseEquipmentString(sub, equip);
-                    }
+            for (String token : CreatureData.tokens(state)) {
+                if (token.matches("(?i)[0-9.]+hp?")) {
+                    maxHealth = Double.valueOf(token.replaceAll("[^0-9.]", ""));
+                } else if (token.toLowerCase().startsWith("eq:")) {
+                    if (equip == null) equip = new CreatureEquipment();
+                    parseEquipmentString(token.replaceAll("\\s", ""), equip);
                 }
             }
         }
-        if (customName == null && (state.contains("~"))) customName = "CoolLordsWayToEnsureNobodyUsesThisNameHAHA";
+        if (customName == null && state.contains("~")) customName = "CoolLordsWayToEnsureNobodyUsesThisNameHAHA";
         return new LivingEntityData(maxHealth, equip, customName);
     }
 
-    private static CreatureEquipment parseEquipmentString(String sub, CreatureEquipment passEquip) {
+    private static void parseEquipmentString(String sub, CreatureEquipment passEquip) {
         String[] subSplit = sub.split(":", 3);
 
         if (subSplit.length == 3) {
@@ -194,7 +185,6 @@ public class LivingEntityData extends CreatureData {
                 passEquip.bootsChance = chance;
             }
         }
-        return passEquip;
 
     }
 

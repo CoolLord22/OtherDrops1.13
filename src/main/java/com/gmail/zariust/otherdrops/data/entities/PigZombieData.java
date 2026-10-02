@@ -1,8 +1,6 @@
 package com.gmail.zariust.otherdrops.data.entities;
 
-import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import org.bukkit.entity.Entity;
@@ -41,27 +39,18 @@ public class PigZombieData extends CreatureData {
 
     }
 
-    public static CreatureData parseFromString(String state) {
-        Log.logInfo("PigZombieData: parsing from string.", Verbosity.HIGHEST);
+   public static CreatureData parseFromString(String state) {
+
+       // TODO: support range:
+
+       /*
+        * if(state.startsWith("RANGE")) return RangeData.parse(state); try {
+        * int sz = Integer.parseInt(state); return new CreatureData(sz); }
+        * catch(NumberFormatException e) {} break;
+        */
         Integer anger = null;
-
-        // TODO: support range:
-
-        /*
-         * if(state.startsWith("RANGE")) return RangeData.parse(state); try {
-         * int sz = Integer.parseInt(state); return new CreatureData(sz); }
-         * catch(NumberFormatException e) {} break;
-         */
-        if (!state.isEmpty() && !state.equals("0")) {
-            String[] split = state.split(OtherDropsConfig.CreatureDataSeparator);
-
-            for (String sub : split) {
-                if (sub.matches("[0-9]+")) { // need to check numbers before any
-                    // .toLowerCase()
-                    anger = Integer.valueOf(sub);
-                }
-            }
-        }
+        for (String sub : CreatureData.keywords(state))
+            if (sub.matches("[0-9]+")) anger = Integer.valueOf(sub);
         return new PigZombieData(anger);
     }
 

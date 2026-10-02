@@ -1,7 +1,6 @@
 package com.gmail.zariust.otherdrops.data.entities;
 
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import org.bukkit.entity.Creeper;
@@ -45,18 +44,10 @@ public class CreeperData extends CreatureData {
 
     public static CreatureData parseFromString(String state) {
         Boolean powered = null;
-        LivingEntityData leData = (LivingEntityData) LivingEntityData.parseFromString(state);
-
-        if (!state.isEmpty() && !state.equals("0")) {
-            String[] split = state.split(OtherDropsConfig.CreatureDataSeparator);
-
-            for (String sub : split) {
-                sub = sub.toLowerCase().replaceAll("[\\s-_]", "");
-                if (sub.equalsIgnoreCase("powered")) powered = true;
-                if (sub.equalsIgnoreCase("unpowered")) powered = false;
-            }
+        for (String sub : CreatureData.keywords(state)) {
+            if (sub.equals("powered")) powered = true;
+            else if (sub.equals("unpowered")) powered = false;
         }
-
         return new CreeperData(powered);
     }
 

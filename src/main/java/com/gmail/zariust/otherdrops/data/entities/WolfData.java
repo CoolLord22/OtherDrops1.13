@@ -1,7 +1,6 @@
 package com.gmail.zariust.otherdrops.data.entities;
 
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import org.bukkit.DyeColor;
@@ -46,27 +45,14 @@ public class WolfData extends CreatureData {
     }
 
     public static CreatureData parseFromString(String state) {
-        // return new CreatureData(((Wolf)entity).isAngry() ? 1 : (((Wolf)entity).isTamed() ? 2 : 0));
         Boolean angry = null;
         DyeColor collarColor = null;
-
-        if (!state.isEmpty() && !state.equals("0")) {
-            String[] split = state.split(OtherDropsConfig.CreatureDataSeparator);
-
-            for (String sub : split) {
-                sub = sub.toLowerCase().replaceAll("[\\s-_]", "");
-                if (sub.equalsIgnoreCase("angry")) angry = true;
-                else if (sub.matches("neutral")) angry = false;
-                else {
-                    for (DyeColor color : DyeColor.values()) {
-                        if (sub.replaceAll("!", "").equals(color.name().toLowerCase().replaceAll("[\\s-_]", "")))
-                            collarColor = color;
-                    }
-                }
-                if (angry == null && collarColor == null) Log.logInfo("WolfData: invalid data passed (" + sub + ")");
-            }
+        for (String sub : CreatureData.keywords(state)) {
+            if (sub.equals("angry")) angry = true;
+            else if (sub.equals("neutral")) angry = false;
+            else for (DyeColor color : DyeColor.values())
+                    if (sub.equals(CreatureData.normalize(color.name()))) collarColor = color;
         }
-
         return new WolfData(angry, collarColor);
     }
 
