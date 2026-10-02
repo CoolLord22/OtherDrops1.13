@@ -16,6 +16,8 @@
 
 package com.gmail.zariust.otherdrops.subject;
 
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 import org.bukkit.Bukkit;
@@ -123,8 +125,10 @@ public class PlayerSubject extends LivingSubject {
 
         ItemStack result = damage.apply(handItem, rng);
         agent.getInventory().setItem(this.hand, result);
-        if (result == null && damage.isDamage())
+        if (result == null && damage.isDamage()) {
             agent.getWorld().playSound(agent.getLocation(), Sound.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 1, 1);
+            Log.logInfo("PlayerSubject DamageTool: broke item in player's hand.", Verbosity.HIGH);
+        }
 
         agent.updateInventory(); // because we've edited the stack directly
         // TODO: Option of failure if damage is greater that the amount
