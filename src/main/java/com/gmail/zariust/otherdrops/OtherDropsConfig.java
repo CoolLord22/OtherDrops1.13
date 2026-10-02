@@ -978,7 +978,8 @@ public class OtherDropsConfig {
     }
 
     public static Map<Biome, Boolean> parseBiomesFrom(ConfigurationNode node) {
-        return parseMaybeBiomesFrom(node, "biome", "biomes");
+        Map<Biome, Boolean> result = parseMaybeBiomesFrom(node, "biome", "biomes");
+        return result.isEmpty() ? defaultBiomes : result;            // defaults: biome: applies here only
     }
 
     public static Map<Biome, Boolean> parseFishingBiomesFrom(ConfigurationNode node) {
@@ -987,8 +988,8 @@ public class OtherDropsConfig {
 
     public static Map<Biome, Boolean> parseMaybeBiomesFrom(ConfigurationNode node, String... keys) {
         List<String> biomes = getMaybeList(node, keys);
-        if (biomes.isEmpty()) return defaultBiomes;
         HashMap<Biome, Boolean> result = new HashMap<>();
+        if (biomes.isEmpty()) return result;
         result.put(null, containsAll(biomes));
         for (String name : biomes) {
             name = name.toUpperCase();
