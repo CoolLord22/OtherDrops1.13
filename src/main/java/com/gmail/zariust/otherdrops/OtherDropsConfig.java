@@ -734,8 +734,8 @@ public class OtherDropsConfig {
             drop.setWeighted(true);
         }
 
-        Object exclusive = node.get("exclusive");
-        if (exclusive != null) drop.setExclusiveKey(exclusive.toString());
+        if (node.get("exclusive") != null)
+            Log.logWarning("'exclusive' is no longer supported and is ignored (" + drop + "). Use 'weight' instead: " + "https://github.com/CoolLord22/OtherDrops1.13/wiki/Drop-Selection#weight");
 
         // Note: playerrespawn requires minimum delay of 1
         if (drop.getTrigger() == Trigger.PLAYER_RESPAWN) {
