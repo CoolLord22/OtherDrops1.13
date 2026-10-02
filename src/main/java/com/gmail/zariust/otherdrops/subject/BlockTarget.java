@@ -165,6 +165,7 @@ public class BlockTarget implements Target {
     @Override
     public boolean matches(Subject block) {
         if (!(block instanceof BlockTarget targ)) return false;
+        if (except != null && except.contains(targ.getMaterial())) return false;
 
         if (this.customName != null) {
             if (!this.customName.equals(targ.customName)) return false;

@@ -21,7 +21,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerFishEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EntityEquipment;
 
 import java.util.*;
@@ -69,26 +68,6 @@ public class SectionManager {
         // TODO: return a list of drops found? difficult due to multi-classes?
         if (OtherDropsConfig.verbosity.exceeds(HIGH))
             Log.logInfo("PerformDrop - potential drops found: " + customDrops + " tool: " + (occurrence.getTool() == null ? "" : occurrence.getTool().toString()), HIGH);
-
-        // check if block is excepted (for any)
-        for (CustomDrop drop : customDrops) {
-            if (drop.getTarget() instanceof BlockTarget any) {
-                if (any.except != null) {
-                    Material compareTo = null;
-                    Material compareToOffhand = null;
-                    if (occurrence.getEvent() instanceof BlockBreakEvent) {
-                        compareTo = ((BlockBreakEvent) occurrence.getEvent()).getBlock().getType();
-                    } else if (occurrence.getEvent() instanceof PlayerInteractEvent pie) {
-                        compareTo = pie.getPlayer().getInventory().getItemInMainHand().getType();
-                        compareToOffhand = pie.getPlayer().getInventory().getItemInOffHand().getType();
-                    }
-
-                    if (any.except.contains(compareTo) || any.except.contains(compareToOffhand)) {
-                        return;
-                    }
-                }
-            }
-        }
 
         DropRunner.defaultDamageDone = false;
         // Loop through the drops and check for a match, process uniques, etc
