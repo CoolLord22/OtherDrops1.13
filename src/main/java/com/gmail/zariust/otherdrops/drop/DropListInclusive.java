@@ -96,9 +96,13 @@ public class DropListInclusive extends DropType {
     }
 
     public static DropType parse(String drop, String data, IntRange amount, double chance) {
-        drop = drop.toUpperCase().replace("EVERY_", "^ANY_");
-        MaterialGroup group = MaterialGroup.get(drop.substring(1));
+        drop = drop.toUpperCase();
+        String name = drop.startsWith("EVERY_") ? drop.substring("EVERY_".length()) : drop.substring(1);  // strip "^" or "EVERY_"
+        MaterialGroup group = MaterialGroup.get(name);
+        if (group == null && !name.startsWith("ANY_"))
+            group = MaterialGroup.get("ANY_" + name); // EVERY_SWORD -> ANY_SWORD
         if (group == null) {
+            drop = "^" + name;
             if (drop.equals("^ANY_CREATURE"))
                 return new DropListInclusive(CreatureGroup.CREATURE_ANY.creatures(), amount, chance);
             else if (drop.equals("^ANY_VEHICLE_SPAWN"))

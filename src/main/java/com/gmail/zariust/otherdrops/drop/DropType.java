@@ -395,9 +395,10 @@ public abstract class DropType {
         // - A MaterialGroup constant beginning with ANY_, optionally prefixed
         // with ^ to indicate ALL
         // - One of the special keywords DEFAULT, DENY, MONEY, CONTENTS
-        if (originalName.toUpperCase().startsWith("ANY_")) {
+        String upper = originalName.toUpperCase();
+        if (upper.startsWith("ANY_") || upper.startsWith("TAG_")) {
             return DropListExclusive.parse(originalName, defaultData, amount.toIntRange(), chance);
-        } else if (originalName.toUpperCase().startsWith("^ANY_") || originalName.toUpperCase().startsWith("EVERY_")) {
+        } else if (upper.startsWith("^") || upper.startsWith("EVERY_")) {
             return DropListInclusive.parse(originalName, defaultData, amount.toIntRange(), chance);
         } else {
             DropType dropType = CreatureDrop.parse(originalName, defaultData, amount.toIntRange(), chance);

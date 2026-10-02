@@ -158,7 +158,7 @@ public class MaterialGroup {
     }
 
     public static boolean isValid(String string) {
-        return lookup.containsKey(string);
+        return lookup.containsKey(string.toUpperCase());
     }
 
     public boolean isBlock() {
