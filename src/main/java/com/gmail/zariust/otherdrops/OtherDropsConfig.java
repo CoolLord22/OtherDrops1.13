@@ -20,6 +20,7 @@ import com.gmail.zariust.common.CommonItemstack;
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.MaterialGroup;
 import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.data.BlockStateData;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.SimpleData;
 import com.gmail.zariust.otherdrops.drop.*;
@@ -924,6 +925,18 @@ public class OtherDropsConfig {
         }
 
         if (dataStr.isEmpty()) return new BlockTarget(mat);
+        // Modern block states: replacementblock: "WHEAT@[age=0]"
+        if (BlockStateData.isBlockState(dataStr)) {
+            try {
+                return new BlockTarget(mat, BlockStateData.parse(mat, dataStr));
+            } catch (IllegalArgumentException e) {
+                Log.logWarning("Invalid block state '" + dataStr + "' in replacementblock for " + mat + "; using its default state.");
+                return new BlockTarget(mat);
+            }
+        }
+
+        // Deprecated: WHEAT@0 and legacy named states
+        BlockStateData.warnDeprecated(mat, dataStr);
         Data data;
         try {
             int intData = Integer.parseInt(dataStr);
@@ -932,7 +945,6 @@ public class OtherDropsConfig {
             try {
                 data = SimpleData.parse(mat, dataStr);
             } catch (IllegalArgumentException ex) {
-                Log.logWarning(ex.getMessage());
                 return null;
             }
         }

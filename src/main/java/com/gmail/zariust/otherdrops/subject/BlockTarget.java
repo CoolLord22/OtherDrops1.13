@@ -27,6 +27,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.CommandBlock;
 import org.bukkit.block.data.Ageable;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.block.data.type.Beehive;
 import org.bukkit.entity.FallingBlock;
@@ -38,6 +39,7 @@ import java.util.List;
 public class BlockTarget implements Target {
     private final Material id;
     private final Data data;
+    private BlockData blockData;
     private Block bl;
     public List<Material> except;
     private String customName;
@@ -66,14 +68,22 @@ public class BlockTarget implements Target {
 
     public BlockTarget(Block block) {
         this(block == null ? Material.AIR : block.getType(), getData(block));
-        bl = block;
-        location = bl.getLocation();
-        if (block.getState() instanceof CommandBlock) {
-            customName = ((CommandBlock) block.getState()).getName();
-        } else if (block.getState() instanceof InventoryHolder) {
-            // TODO: This really shouldn't be toString, but rather an inventory view? But not sure how to get that from a break event.
-            customName = block.getState().toString();
+        if (block != null) {
+            bl = block;
+            location = bl.getLocation();
+            if (block.getState() instanceof CommandBlock) {
+                customName = ((CommandBlock) block.getState()).getName();
+            } else if (block.getState() instanceof InventoryHolder) {
+                // TODO: This really shouldn't be toString, but rather an inventory view? But not sure how to get that from a break event.
+                customName = block.getState().toString();
+            }
+            blockData = block.getBlockData();
         }
+    }
+
+    public BlockTarget(BlockState newState, Location loc) {
+        this(newState.getType(), loc, newState.getRawData());
+        blockData = newState.getBlockData();
     }
 
     public BlockTarget(Material mat, Data d) { // The Rome constructor
@@ -167,57 +177,62 @@ public class BlockTarget implements Target {
         if (!(block instanceof BlockTarget targ)) return false;
         if (except != null && except.contains(targ.getMaterial())) return false;
 
-        if (this.customName != null) {
-            if (!this.customName.equals(targ.customName)) return false;
-        }
+        if (this.customName != null && !this.customName.equals(targ.customName)) return false;
 
-        boolean match;
-        if (id == targ.id) match = true;
-        if (data == null) {
-            match = true;
-        } else {
-            match = data.matches(targ.data);
-        }
-        return match;
+        if (data == null) return true;
+        if (data instanceof BlockStateData stateData) return stateData.matches(targ.blockData);
+        return data.matches(targ.data);
     }
 
     public static Target parse(String name, String state, String customName) {
         name = name.toUpperCase();
         state = state.toUpperCase();
-        Material mat;
         if (name.matches("[0-9]+")) {
             Log.logWarning("Error while parsing: " + name + ". Support for numerical IDs has been dropped!");
         }
 
-        mat = Material.getMaterial(name.toUpperCase());
+        // Fetch material
+        Material mat = Material.getMaterial(name);
+        if (mat == null) mat = CommonMaterial.matchMaterial(name);
+        if (mat == null) return null;
 
-        if (mat == null) {
-            mat = CommonMaterial.matchMaterial(name);
-        }
-
-        if (mat == null) {
-            return null;
-        }
         if (!mat.isBlock()) {
             // Only a very select few non-blocks are permitted as a target
             if (mat != Material.PAINTING && mat != Material.MINECART && mat != Material.COMMAND_BLOCK_MINECART && mat != Material.TNT_MINECART && mat != Material.HOPPER_MINECART && mat != Material.FURNACE_MINECART && mat != Material.CHEST_MINECART && mat != Material.OAK_BOAT && mat != Material.ACACIA_BOAT && mat != Material.BIRCH_BOAT && mat != Material.DARK_OAK_BOAT && mat != Material.JUNGLE_BOAT && mat != Material.SPRUCE_BOAT)
                 return null;
             else return VehicleTarget.parse(mat, state);
         }
+
+        if (state.isEmpty()) return new BlockTarget(mat, customName);
+        if (BlockStateData.isBlockState(state)) {
+            try {
+                return new BlockTarget(mat, customName, BlockStateData.parse(mat, state));
+            } catch (IllegalArgumentException e) {
+                Log.logWarning("Invalid block state '" + state + "' for " + mat
+                        + " (check the property names and values with the F3 screen or /setblock); skipping...");
+                return null;
+            }
+        }
+
+        // Deprecated: plain numbers (WHEAT@7)
         try {
             int val = Integer.parseInt(state);
+            BlockStateData.warnDeprecated(mat, state);
             return new BlockTarget(mat, customName, val);
         } catch (NumberFormatException ignored) {
         }
+
+        // Everything else: legacy named states (deprecated), plus non-state data (containers, spawners, jukeboxes, ranges)
         Data data;
         try {
             data = SimpleData.parse(mat, state);
         } catch (IllegalArgumentException e) {
-            Log.logWarning(e.getMessage());
             return null;
         }
-        if (data != null) return new BlockTarget(mat, customName, data);
-        return new BlockTarget(mat, customName);
+        if (data == null) return new BlockTarget(mat, customName);
+        if (data instanceof SimpleData || data instanceof NoteData)
+            BlockStateData.warnDeprecated(mat, state);
+        return new BlockTarget(mat, customName, data);
     }
 
     @Override

@@ -645,7 +645,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
 
     @SuppressWarnings("deprecation")
     public OccurredEvent(BlockGrowEvent evt) {
-        super(new BlockTarget(evt.getNewState().getType(), evt.getBlock().getLocation(), evt.getNewState().getRawData()), Trigger.BLOCK_GROW);
+        super(new BlockTarget(evt.getNewState(), evt.getBlock().getLocation()), Trigger.BLOCK_GROW);
         event = evt;
         setLocationWorldBiomeLight(evt.getBlock());
         setWeatherTimeHeight(location);
