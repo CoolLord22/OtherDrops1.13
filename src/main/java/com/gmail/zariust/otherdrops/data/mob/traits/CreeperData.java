@@ -1,8 +1,8 @@
-package com.gmail.zariust.otherdrops.data.entities;
+package com.gmail.zariust.otherdrops.data.mob.traits;
 
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
+import com.gmail.zariust.otherdrops.data.mob.CreatureData;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;

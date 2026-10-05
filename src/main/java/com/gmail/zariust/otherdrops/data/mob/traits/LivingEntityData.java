@@ -1,12 +1,13 @@
-package com.gmail.zariust.otherdrops.data.entities;
+package com.gmail.zariust.otherdrops.data.mob.traits;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.EntityWrapper;
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.data.CreatureData;
+import com.gmail.zariust.otherdrops.config.ConfigSubject;
 import com.gmail.zariust.otherdrops.data.Data;
-import com.gmail.zariust.otherdrops.drop.ItemDrop;
-import com.gmail.zariust.otherdrops.options.IntRange;
+import com.gmail.zariust.otherdrops.data.item.ODItem;
+import com.gmail.zariust.otherdrops.data.mob.CreatureData;
+import com.gmail.zariust.otherdrops.data.mob.CreatureEquipment;
 import com.gmail.zariust.otherdrops.things.ODVariables;
 import org.bukkit.Material;
 import org.bukkit.entity.*;
@@ -188,23 +189,14 @@ public class LivingEntityData extends CreatureData {
 
     }
 
+    /** An equipment item: any item string, including saved items (Ex: DIAMOND_HELMET@protection#4, OD_ITEM@key). */
     private static ItemStack getItemStack(String slot) {
-
-        // this section doesn't work yet - need to save a list of itemstacks and
-        // choose one at spawn time
-        /*
-         * if (slot.startsWith("any")) { // material group
-         * Log.logInfo("Checking materialgroup..."); MaterialGroup group =
-         * MaterialGroup.get(slot); if (group != null) { Material mat =
-         * group.getOneRandom(); if (mat != null) {
-         * Log.logInfo("Checking materialgroup...MAT = "+mat.toString()); return
-         * new ItemStack(mat); } } } else {
-         */
-        ItemDrop item = (ItemDrop) ItemDrop.parse(slot, "", new IntRange(1), 100);
-        if (item != null) return item.getItem();
-        // }
-
-        return null;
+        ODItem item = ConfigSubject.parseSubject(slot).getODItem();
+        if (item == null) {
+            Log.logWarning("Invalid equipment item '" + slot + "'; skipping...");
+            return null;
+        }
+        return item.create(1, null, null);
     }
 
     @Override

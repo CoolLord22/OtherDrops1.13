@@ -1,49 +1,49 @@
-package com.gmail.zariust.otherdrops.data.entities;
+package com.gmail.zariust.otherdrops.data.mob.traits;
 
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
-import org.bukkit.entity.Axolotl;
+import com.gmail.zariust.otherdrops.data.mob.CreatureData;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Llama;
 import org.bukkit.entity.Player;
 
-public class AxolotlData extends CreatureData {
-    final Axolotl.Variant variant; // null = wildcard
+public class LlamaData extends CreatureData {
+    final Llama.Color variant; // null = wildcard
 
-    public AxolotlData(Axolotl.Variant variant) {
+    public LlamaData(Llama.Color variant) {
         this.variant = variant;
     }
 
     @Override
     public void setOn(Entity entity, Player owner) {
-        if (entity instanceof Axolotl axolotl) {
-            if (variant != null) axolotl.setVariant(variant);
+        if (entity instanceof Llama llama) {
+            if (variant != null) llama.setColor(variant);
         }
     }
 
     @Override
     public boolean matches(Data d) {
-        if (!(d instanceof AxolotlData vd)) return false;
+        if (!(d instanceof LlamaData vd)) return false;
         if (this.variant != null) if (this.variant != vd.variant) return false;
         return true;
     }
 
     public static CreatureData parseFromEntity(Entity entity) {
-        if (entity instanceof Axolotl axolotl) {
-            return new AxolotlData(axolotl.getVariant());
+        if (entity instanceof Llama llama) {
+            return new LlamaData(llama.getColor());
         } else {
-            Log.logInfo("AxolotlData: error, parseFromEntity given different creature - this shouldn't happen.");
+            Log.logInfo("LlamaData: error, parseFromEntity given different creature - this shouldn't happen.");
             return null;
         }
     }
 
     public static CreatureData parseFromString(String state) {
-        Axolotl.Variant thisType = null;
+        Llama.Color thisType = null;
         for (String sub : CreatureData.keywords(state))
-            for (Axolotl.Variant type : Axolotl.Variant.values())
+            for (Llama.Color type : Llama.Color.values())
                 if (sub.equals(CreatureData.normalize(type.name()))) thisType = type;
-        return new AxolotlData(thisType);
+        return new LlamaData(thisType);
     }
 
     @Override

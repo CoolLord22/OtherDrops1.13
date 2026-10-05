@@ -14,11 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package com.gmail.zariust.otherdrops.data;
+package com.gmail.zariust.otherdrops.data.mob;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.data.entities.*;
+import com.gmail.zariust.otherdrops.data.Data;
+import com.gmail.zariust.otherdrops.data.RangeableData;
+import com.gmail.zariust.otherdrops.data.mob.traits.*;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.*;
 

@@ -20,7 +20,7 @@ import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
-import com.gmail.zariust.otherdrops.data.EffectData;
+import com.gmail.zariust.otherdrops.data.effects.EffectData;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 

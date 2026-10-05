@@ -1,50 +1,49 @@
-package com.gmail.zariust.otherdrops.data.entities;
+package com.gmail.zariust.otherdrops.data.mob.traits;
 
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
+import com.gmail.zariust.otherdrops.data.mob.CreatureData;
+import org.bukkit.entity.Axolotl;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Frog;
 import org.bukkit.entity.Player;
 
-public class FrogData extends CreatureData {
-    final Frog.Variant variant; // null = wildcard
+public class AxolotlData extends CreatureData {
+    final Axolotl.Variant variant; // null = wildcard
 
-    public FrogData(Frog.Variant variant) {
+    public AxolotlData(Axolotl.Variant variant) {
         this.variant = variant;
     }
 
     @Override
     public void setOn(Entity entity, Player owner) {
-        if (entity instanceof Frog frog) {
-            if (variant != null) frog.setVariant(variant);
+        if (entity instanceof Axolotl axolotl) {
+            if (variant != null) axolotl.setVariant(variant);
         }
     }
 
     @Override
     public boolean matches(Data d) {
-        if (!(d instanceof FrogData vd)) return false;
+        if (!(d instanceof AxolotlData vd)) return false;
         if (this.variant != null) if (this.variant != vd.variant) return false;
         return true;
     }
 
     public static CreatureData parseFromEntity(Entity entity) {
-        if (entity instanceof Frog frog) {
-            return new FrogData(frog.getVariant());
+        if (entity instanceof Axolotl axolotl) {
+            return new AxolotlData(axolotl.getVariant());
         } else {
-            Log.logInfo("FrogData: error, parseFromEntity given different creature - this shouldn't happen.");
+            Log.logInfo("AxolotlData: error, parseFromEntity given different creature - this shouldn't happen.");
             return null;
         }
-
     }
 
     public static CreatureData parseFromString(String state) {
-        Frog.Variant thisType = null;
+        Axolotl.Variant thisType = null;
         for (String sub : CreatureData.keywords(state))
-            for (Frog.Variant type : Frog.Variant.values())
+            for (Axolotl.Variant type : Axolotl.Variant.values())
                 if (sub.equals(CreatureData.normalize(type.name()))) thisType = type;
-        return new FrogData(thisType);
+        return new AxolotlData(thisType);
     }
 
     @Override

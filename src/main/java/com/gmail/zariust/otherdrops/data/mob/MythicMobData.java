@@ -1,8 +1,9 @@
-package com.gmail.zariust.otherdrops.data;
+package com.gmail.zariust.otherdrops.data.mob;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.data.Data;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;

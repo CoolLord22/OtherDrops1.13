@@ -1,7 +1,6 @@
 package com.gmail.zariust.otherdrops.data.effects;
 
 import com.gmail.zariust.otherdrops.OtherDrops;
-import com.gmail.zariust.otherdrops.data.EffectData;
 import org.bukkit.Effect;
 import org.bukkit.block.BlockFace;
 

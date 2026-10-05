@@ -14,11 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package com.gmail.zariust.otherdrops.data;
+package com.gmail.zariust.otherdrops.data.effects;
 
 
-import com.gmail.zariust.otherdrops.data.effects.SmokeEffectData;
-import com.gmail.zariust.otherdrops.data.effects.StepSoundEffectData;
+import com.gmail.zariust.otherdrops.data.Data;
+import com.gmail.zariust.otherdrops.data.RecordData;
 import org.bukkit.Effect;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;

@@ -1,4 +1,4 @@
-package com.gmail.zariust.otherdrops.data.entities;
+package com.gmail.zariust.otherdrops.data.mob;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;

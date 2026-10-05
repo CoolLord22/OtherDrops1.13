@@ -4,7 +4,7 @@ import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.Data;
-import com.gmail.zariust.otherdrops.data.MythicMobData;
+import com.gmail.zariust.otherdrops.data.mob.MythicMobData;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
