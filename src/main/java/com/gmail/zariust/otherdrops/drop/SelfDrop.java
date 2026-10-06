@@ -17,6 +17,9 @@
 package com.gmail.zariust.otherdrops.drop;
 
 import com.gmail.zariust.common.CommonEntity;
+import com.gmail.zariust.common.CommonMaterial;
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.mob.CreatureData;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
@@ -25,16 +28,23 @@ import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.gmail.zariust.otherdrops.subject.CreatureSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
 import com.gmail.zariust.otherdrops.subject.VehicleTarget;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.CreatureSpawner;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.Beehive;
+import org.bukkit.block.data.type.TechnicalPiston;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Painting;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.PistonExtensionMaterial;
+import org.bukkit.inventory.meta.BlockDataMeta;
+import org.bukkit.inventory.meta.BlockStateMeta;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.lang.reflect.Method;
 
 public class SelfDrop extends DropType {
     private final IntRange count;
@@ -77,33 +87,11 @@ public class SelfDrop extends DropType {
             } else return dropResult;
         } else if (source instanceof BlockTarget blockTarget) {
             Block block = blockTarget.getBlock();
-            Material material = block.getType();
-            int data, quantity = count.getRandomIn(flags.rng);
-            switch (material) {
-                case AIR:
-                case REDSTONE_WIRE:
-                    data = 0;
-                    material = Material.REDSTONE;
-                    break;
-           /* case SIGN:
-            case WALL_SIGN:
-                data = 0;
-                material = Material.SIGN;
-                break; */
-                case MOVING_PISTON:
-                    data = 0;
-                    PistonExtensionMaterial ext = (PistonExtensionMaterial) block.getState().getData();
-                    material = ext.isSticky() ? Material.STICKY_PISTON : Material.PISTON;
-                    break;
-                case SPAWNER:
-                    CreatureSpawner spawner = (CreatureSpawner) block.getState();
-                    data = spawner.getSpawnedType().getTypeId();
-                    break;
-                default: // Most block data doesn't transfer to the item of the same ID
-                    data = 0;
-                    break;
-            }
-            ItemStack stack = new ItemStack(material, quantity, (short) data);
+            Material itemType = itemFor(block);
+            if (itemType == null) return dropResult;        // air, fire, liquids…: nothing to drop
+            int quantity = count.getRandomIn(flags.rng);
+            ItemStack stack = new ItemStack(itemType, quantity);
+            if (keepsBlockState(itemType)) copyBlockState(block, stack);
             dropResult.addWithoutOverride(drop(from, stack, flags));
             rolledCount = quantity;
         }
@@ -123,5 +111,69 @@ public class SelfDrop extends DropType {
     @Override
     public DoubleRange getAmountRange() {
         return count.toDoubleRange();
+    }
+
+    /** Minecraft 1.20.2+ knows the item for every block; on older versions we fall back to the rules below. */
+    private static final Method PLACEMENT_MATERIAL = findPlacementMaterial();
+    private static Method findPlacementMaterial() {
+        try {
+            return BlockData.class.getMethod("getPlacementMaterial");
+        } catch (NoSuchMethodException e) {
+            return null;
+        }
+    }
+    /** The item for a block, like pick-block: REDSTONE_WIRE -> REDSTONE, OAK_WALL_SIGN -> OAK_SIGN… Null if none. */
+    private static Material itemFor(Block block) {
+        Material type = block.getType();
+        if (type.isAir()) return null;
+        if (type == Material.MOVING_PISTON || type == Material.PISTON_HEAD)
+            return block.getBlockData() instanceof TechnicalPiston piston && piston.getType() == TechnicalPiston.Type.STICKY
+                    ? Material.STICKY_PISTON : Material.PISTON;
+        if (PLACEMENT_MATERIAL != null) {
+            try {
+                if (PLACEMENT_MATERIAL.invoke(block.getBlockData()) instanceof Material m && m.isItem() && !m.isAir()) return m;
+            } catch (ReflectiveOperationException ignored) {
+            }
+        }
+        if (type.isItem()) return type;
+        Material mapped = switch (type.name()) {
+            case "REDSTONE_WIRE" -> Material.REDSTONE;
+            case "TRIPWIRE" -> Material.STRING;
+            case "WHEAT" -> Material.WHEAT_SEEDS;
+            case "CARROTS" -> Material.CARROT;
+            case "POTATOES" -> Material.POTATO;
+            case "BEETROOTS" -> Material.BEETROOT_SEEDS;
+            case "COCOA" -> Material.COCOA_BEANS;
+            case "MELON_STEM", "ATTACHED_MELON_STEM" -> Material.MELON_SEEDS;
+            case "PUMPKIN_STEM", "ATTACHED_PUMPKIN_STEM" -> Material.PUMPKIN_SEEDS;
+            case "SWEET_BERRY_BUSH" -> Material.SWEET_BERRIES;
+            case "CAVE_VINES", "CAVE_VINES_PLANT" -> Material.GLOW_BERRIES;
+            case "KELP_PLANT" -> Material.KELP;
+            case "BAMBOO_SAPLING" -> Material.BAMBOO;
+            default -> null;
+        };
+        if (mapped != null) return mapped;
+        // wall variants: OAK_WALL_SIGN -> OAK_SIGN, WALL_TORCH -> TORCH, *_WALL_BANNER, *_WALL_HEAD, *_WALL_FAN…
+        Material unwalled = Material.matchMaterial(type.name().replace("WALL_", ""));
+        return unwalled != null && unwalled.isItem() ? unwalled : null;
+    }
+
+    /** Blocks whose THIS item keeps their settings, like silk touch / Ctrl+pick-block:
+     *  spawners and trial spawners (mob type, spawn settings), beehives and bee nests (the bees and the honey level). */
+    private static boolean keepsBlockState(Material type) {
+        return CommonMaterial.isSpawner(type) || type == Material.BEEHIVE || type == Material.BEE_NEST;
+    }
+    private static void copyBlockState(Block block, ItemStack stack) {
+        ItemMeta meta = stack.getItemMeta();
+        try {
+            if (meta instanceof BlockStateMeta stateMeta) stateMeta.setBlockState(block.getState());  // mob type, bees inside…
+            if (block.getBlockData() instanceof Beehive hive && meta instanceof BlockDataMeta dataMeta) {
+                // only the honey level, so the hive still faces the player when it's placed again
+                dataMeta.setBlockData(Bukkit.createBlockData(block.getType(), "[honey_level=" + hive.getHoneyLevel() + "]"));
+            }
+            stack.setItemMeta(meta);
+        } catch (IllegalArgumentException e) { // a server version whose item meta can't hold this state
+            Log.logInfo("THIS: couldn't copy the " + block.getType() + "'s settings to the item (" + e.getMessage() + ").", Verbosity.HIGH);
+        }
     }
 }
