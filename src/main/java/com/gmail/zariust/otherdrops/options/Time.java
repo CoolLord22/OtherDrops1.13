@@ -29,9 +29,9 @@ import static java.lang.Math.abs;
 
 public class Time extends Range<Long> {
     public final static Time DAY = new Time(0, 12000 - 1);
-    public final static Time NIGHT = new Time(13800, 22200 - 1);
-    public final static Time DUSK = new Time(12000, 13800 - 1);
-    public final static Time DAWN = new Time(22200, 24000 - 1);
+    public final static Time NIGHT = new Time(13000, 23000 - 1);
+    public final static Time DUSK = new Time(12000, 13000 - 1);
+    public final static Time DAWN = new Time(23000, 24000 - 1);
     public final static Time DARKNESS = new Time(12000, 24000 - 1);
 
     public Time() {
