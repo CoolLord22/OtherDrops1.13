@@ -39,30 +39,16 @@ public class DropRunner implements Runnable {
     private final OtherDrops plugin;
     final OccurredEvent currentEvent;
     SimpleDrop customDrop;
-    final Player player;
-    final Location playerLoc;
     final boolean defaultDrop;
     public static boolean defaultDamageDone;
 
     private int droppedQuantity = 0;
     private double amount = 1;
 
-    public DropRunner(OtherDrops otherblocks, OccurredEvent target, SimpleDrop dropData, Player player, Location playerLoc, boolean defaultDrop) {
-        this.plugin = otherblocks;
-        this.currentEvent = target;
-        this.customDrop = dropData;
-        this.player = player;
-        this.playerLoc = playerLoc;
-        this.defaultDrop = defaultDrop;
-    }
-
-    public DropRunner(OtherDrops plugin2, OccurredEvent evt, CustomDrop customDrop2, Player player2, Location playerLoc2, boolean defaultDrop) {
-        this.plugin = plugin2;
-        this.currentEvent = evt;
-        if (customDrop2 instanceof SimpleDrop) this.customDrop = (SimpleDrop) customDrop2;
-        else Log.logWarning("DropRunner: customdrop is not simple. Customdrop: " + customDrop2.toString(), Verbosity.NORMAL);
-        this.player = player2;
-        this.playerLoc = playerLoc2;
+    public DropRunner(OtherDrops plugin, OccurredEvent event, CustomDrop drop, boolean defaultDrop) {
+        this.plugin = plugin;
+        this.currentEvent = event;
+        if (drop instanceof SimpleDrop) this.customDrop = (SimpleDrop) drop;
         this.defaultDrop = defaultDrop;
     }
 
