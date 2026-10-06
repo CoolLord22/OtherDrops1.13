@@ -41,6 +41,7 @@ public class DropRunner implements Runnable {
     SimpleDrop customDrop;
     final boolean defaultDrop;
     public static boolean defaultDamageDone;
+    private boolean toolDamageDone = false;
 
     private int droppedQuantity = 0;
     private double amount = 1;
@@ -91,19 +92,37 @@ public class DropRunner implements Runnable {
             action.act(customDrop, currentEvent);
     }
 
+    /** For delayed sections: apply damagetool/consumetool/replacetool at event time. No default damage
+     *  (a delayed section can't cancel the break, so vanilla already damaged the tool). */
+    public void processToolDamageNow() {
+        Agent used = currentEvent.getTool();
+        if (used != null && customDrop.getToolDamage() != null) applyToolDamage(used, customDrop.getToolDamage());
+        toolDamageDone = true;
+    }
+
     public void processToolDamage() {
+        if (toolDamageDone) return;
         Agent used = currentEvent.getTool();
         if (used != null) { // there's no tool for leaf decay Tool damage
             if (customDrop.getToolDamage() != null && !(currentEvent.getEvent() instanceof PlayerDropItemEvent)) {
-                used.damageTool(customDrop.getToolDamage(), customDrop.rng);
+                applyToolDamage(used, customDrop.getToolDamage());
             } else {
                 if (currentEvent.getEvent() instanceof BlockBreakEvent)
                     if (droppedQuantity > 0 && currentEvent.isOverrideDefault() && !defaultDamageDone && !defaultDrop) {
-                        used.damageTool(new ToolDamage(1), customDrop.rng);
+                        applyToolDamage(used, new ToolDamage(1));
                         defaultDamageDone = true;
                     }
             }
 
+        }
+    }
+
+    private void applyToolDamage(Agent used, ToolDamage toolDamage) {
+        if (currentEvent.getTrigger() == Trigger.RIGHT_CLICK && toolDamage.isReplacement()) {
+            // vanilla still uses the held item after this click; swap it once the click is finished
+            Bukkit.getScheduler().runTask(OtherDrops.plugin, () -> used.damageTool(toolDamage, customDrop.rng));
+        } else {
+            used.damageTool(toolDamage, customDrop.rng);
         }
     }
 
@@ -136,32 +155,35 @@ public class DropRunner implements Runnable {
         // Replacement block
         if (customDrop.getReplacementBlock() != null) { // note: we shouldn't change the replacementBlock, just a copy of it.
             Target toReplace = currentEvent.getTarget();
-            BlockTarget tempReplace = customDrop.getReplacementBlock();
-            BlockTarget ifFarmlandUpOneBlock;
-            BlockTarget getsBlockBeingChanged = new BlockTarget(toReplace.getLocation().getBlock());
+            BlockTarget replacement = customDrop.getReplacementBlock().getMaterial() == null
+                    ? new BlockTarget(toReplace.getLocation().getBlock())
+                    : customDrop.getReplacementBlock();
+            Log.logInfo("Replacing " + toReplace + " with " + replacement, Verbosity.HIGHEST);
 
-            if (customDrop.getReplacementBlock().getMaterial() == null) {
-                tempReplace = new BlockTarget(toReplace.getLocation().getBlock());
-            }
-
-            Log.logInfo("Replacing " + toReplace + " with " + customDrop.getReplacementBlock().toString(), Verbosity.HIGHEST);
-
-            if (tempReplace.getMaterial() == Material.AIR && currentEvent.getRealEvent() instanceof EntityDeathEvent) {
+            if (replacement.getMaterial() == Material.AIR && currentEvent.getRealEvent() instanceof EntityDeathEvent) {
                 if (!(currentEvent.getVictim() instanceof Player)) currentEvent.getVictim().remove();
             }
 
-            if (getsBlockBeingChanged.getMaterial() == Material.FARMLAND && (tempReplace.getMaterial() == Material.WHEAT | tempReplace.getMaterial() == Material.BEETROOTS || tempReplace.getMaterial() == Material.CARROTS || tempReplace.getMaterial() == Material.POTATOES || tempReplace.getMaterial() == Material.MELON_STEM || tempReplace.getMaterial() == Material.PUMPKIN_STEM)) {
-                ifFarmlandUpOneBlock = new BlockTarget(toReplace.getLocation().add(0, 1, 0).getBlock());
-                ifFarmlandUpOneBlock.setTo(tempReplace);
-            }
+            // Crops and nether wart replace the block ABOVE farmland / soul sand; anything else replaces the target itself.
+            // Decided now, while the target block still exists.
+            Material targetType = toReplace.getLocation().getBlock().getType();
+            Material newType = replacement.getMaterial();
+            boolean cropOnFarmland = targetType == Material.FARMLAND && (newType == Material.WHEAT || newType == Material.BEETROOTS
+                    || newType == Material.CARROTS || newType == Material.POTATOES || newType == Material.MELON_STEM || newType == Material.PUMPKIN_STEM);
+            boolean wartOnSoulSand = targetType == Material.SOUL_SAND && newType == Material.NETHER_WART;
+            Target where = (cropOnFarmland || wartOnSoulSand)
+                    ? new BlockTarget(toReplace.getLocation().add(0, 1, 0).getBlock())
+                    : toReplace;
 
-            if (getsBlockBeingChanged.getMaterial() == Material.SOUL_SAND && (tempReplace.getMaterial() == Material.NETHER_WART)) {
-                ifFarmlandUpOneBlock = new BlockTarget(toReplace.getLocation().add(0, 1, 0).getBlock());
-                ifFarmlandUpOneBlock.setTo(tempReplace);
+            // BREAK and BLOCK_PLACE: vanilla finishes the break/placement AFTER this event, so replace on the next tick.
+            // Never cancel a placement - that would undo it and give the item back.
+            Trigger trigger = currentEvent.getTrigger();
+            if (trigger == Trigger.BREAK || trigger == Trigger.BLOCK_PLACE) {
+                Bukkit.getScheduler().runTask(OtherDrops.plugin, () -> where.setTo(replacement));
             } else {
-                toReplace.setTo(tempReplace);
+                where.setTo(replacement);
             }
-            currentEvent.setCancelled(true);
+            if (trigger != Trigger.BLOCK_PLACE) currentEvent.setCancelled(true);
         }
     }
 

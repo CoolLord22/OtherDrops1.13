@@ -292,9 +292,10 @@ public class SectionManager {
 
         // schedule the task - NOTE: this must be a sync task due to the changes
         // made in the performActualDrop function
-        if (schedule > 0.0) Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(OtherDrops.plugin, dropRunner, schedule);
-        else dropRunner.run();
-        // }
+        if (delay > 0.0) {
+            dropRunner.processToolDamageNow();   // the tool used is the one in hand NOW, not in 2 seconds
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(OtherDrops.plugin, dropRunner, delay);
+        } else dropRunner.run();
     }
 
     /** True if every Committable condition on this section can still be applied. No side effects. */
