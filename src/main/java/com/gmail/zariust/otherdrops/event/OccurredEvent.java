@@ -680,18 +680,24 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         location = block.getLocation();
         world = block.getWorld();
         biome = block.getBiome();
-        if (block.getType().isTransparent()) {
-            lightLevel = block.getLightLevel();
-        } else { // look for an air block around
-            byte maxLight = 0;
-            for (BlockFace face : BlockFace.values()) {
-                if (block.getRelative(face).getType().isTransparent()) {
-                    byte currentLevel = block.getRelative(face).getLightLevel();
-                    if (currentLevel > maxLight) maxLight = currentLevel;
-                }
+        lightLevel = litSide(block).getLightLevel();
+    }
+
+    /** Where light for this block is measured: the block itself if light passes through it (air, glass, plants, slabs),
+     *  otherwise its brightest open side (only the 6 faces; diagonals don't light a block). */
+    private static Block litSide(Block block) {
+        if (!block.getType().isOccluding()) return block;
+        Block best = block;
+        int bestLevel = -1;
+        for (BlockFace face : new BlockFace[]{BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST}) {
+            Block side = block.getRelative(face);
+            if (side.getType().isOccluding()) continue;
+            if (side.getLightLevel() > bestLevel) {
+                best = side;
+                bestLevel = side.getLightLevel();
             }
-            lightLevel = maxLight;
         }
+        return best;
     }
 
     private void setLocationWorldBiomeLight(Entity e) {
