@@ -18,7 +18,12 @@ package com.gmail.zariust.otherdrops.options;
 
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Comparative {
+    private static final Pattern RANGE = Pattern.compile("(-?\\d+)\\s*[-~]\\s*(-?\\d+)");
+
     private final int      compare;
     private final int      val;
     private final IntRange range;
@@ -39,35 +44,21 @@ public class Comparative {
         return Integer.compare(v, val) == compare;
     }
 
-    public static String[] splitRange(String range) {
-        return range.split("[~-]", 2);
-    }
-
     public static Comparative parse(String cmp) {
-        if (cmp == null)
-            return null;
-
-        // Allow a comparative to support intranges
-        String splitString = cmp;
-        if (cmp.startsWith("-")) {
-            splitString = cmp.substring(1);
-        }
-        String[] split = splitRange(splitString);
-        if (split.length > 1) {
-            return new Comparative(0, 0, IntRange.parse(cmp));
-        } else {
-            try {
-                return switch (cmp.charAt(0)) {
-                    case '<' -> new Comparative(Integer.parseInt(cmp.substring(1)),
-                            -1, null);
-                    case '>' -> new Comparative(Integer.parseInt(cmp.substring(1)),
-                            1, null);
-                    case '=' -> new Comparative(Integer.parseInt(cmp.substring(1)));
-                    default -> new Comparative(Integer.parseInt(cmp));
-                };
-            } catch (NumberFormatException e) {
-                throw new IllegalArgumentException(e);
-            }
+        if (cmp == null) return null;
+        String s = cmp.trim();
+        try {
+            if (s.startsWith(">=")) return new Comparative(Integer.parseInt(s.substring(2).trim()) - 1, 1, null);
+            if (s.startsWith("<=")) return new Comparative(Integer.parseInt(s.substring(2).trim()) + 1, -1, null);
+            if (s.startsWith(">")) return new Comparative(Integer.parseInt(s.substring(1).trim()), 1, null);
+            if (s.startsWith("<")) return new Comparative(Integer.parseInt(s.substring(1).trim()), -1, null);
+            if (s.startsWith("=")) return new Comparative(Integer.parseInt(s.substring(1).trim()));
+            Matcher range = RANGE.matcher(s);              // "5-10", "-64--10", "-5~5"
+            if (range.matches())
+                return new Comparative(0, 0, new IntRange(Integer.parseInt(range.group(1)), Integer.parseInt(range.group(2))));
+            return new Comparative(Integer.parseInt(s));   // "10", "-5"
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid comparison '" + cmp + "' (use <N, >N, <=N, >=N, =N, N or MIN-MAX)", e);
         }
     }
 
