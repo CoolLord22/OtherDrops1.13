@@ -17,12 +17,12 @@
 package com.gmail.zariust.otherdrops;
 
 import com.gmail.zariust.common.CommonItemstack;
-import com.gmail.zariust.common.CommonMaterial;
-import com.gmail.zariust.common.MaterialGroup;
 import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.config.ConfigSubject;
 import com.gmail.zariust.otherdrops.data.BlockStateData;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.SimpleData;
+import com.gmail.zariust.otherdrops.data.item.ODItem;
 import com.gmail.zariust.otherdrops.drop.*;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.DropsMap;
@@ -35,9 +35,11 @@ import com.gmail.zariust.otherdrops.parameters.conditions.MoonPhaseCheck;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 import com.gmail.zariust.otherdrops.special.SpecialResultHandler;
 import com.gmail.zariust.otherdrops.special.SpecialResultLoader;
-import com.gmail.zariust.otherdrops.subject.*;
+import com.gmail.zariust.otherdrops.subject.Agent;
+import com.gmail.zariust.otherdrops.subject.BlockTarget;
+import com.gmail.zariust.otherdrops.subject.CreatureSubject;
 import com.gmail.zariust.otherdrops.subject.Subject.ItemCategory;
-import com.gmail.zariust.otherdrops.things.ODItem;
+import com.gmail.zariust.otherdrops.subject.Target;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -1123,10 +1125,9 @@ public class OtherDropsConfig {
 
         if (!filterList.isEmpty()) {
             for (String entry : filterList) {
-                ODItem item = ODItem.parseItem(entry);
-                if (item.itemStack != null || item.getMaterial() != null) {
-                    itemsToFilter.add(item);
-                }
+                ODItem item = ConfigSubject.parseSubject(entry).getODItem();
+                if (item != null) itemsToFilter.add(item);
+                else Log.logWarning("drops.keep/drops.remove: '" + entry + "' isn't a valid item; skipping...");
             }
             drop.setDropsFilter(itemsToFilter);
             drop.setToKeepDrops(toKeepContents);

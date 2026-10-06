@@ -58,7 +58,7 @@ public class DropListInclusive extends DropType {
     private static DropType[] materialsToDrops(List<Material> materials, int defaultData, IntRange amount, double chance) {
         DropType[] drops = new DropType[materials.size()];
         for (int i = 0; i < drops.length; i++) {
-            drops[i] = new ItemDrop(amount, materials.get(i), defaultData, chance, null, "");
+            drops[i] = new ItemDrop(materials.get(i), amount, chance);
         }
         return drops;
     }

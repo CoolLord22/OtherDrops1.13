@@ -19,7 +19,9 @@ package com.gmail.zariust.otherdrops.options;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.things.ODItem;
+import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.config.ConfigSubject;
+import com.gmail.zariust.otherdrops.data.item.ODItem;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
@@ -27,8 +29,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Random;
 
-import static com.gmail.zariust.otherdrops.data.ItemData.getDurability;
-import static com.gmail.zariust.otherdrops.data.ItemData.getMaxDurability;
+import static com.gmail.zariust.otherdrops.data.item.properties.DamageProperty.getDurability;
+import static com.gmail.zariust.otherdrops.data.item.properties.DamageProperty.getMaxDurability;
 
 public class ToolDamage {
     private static final String LOG = "ToolDamage: ";
@@ -94,12 +96,9 @@ public class ToolDamage {
 
         // 3. replacement (replacetool): when it has been fully used up, or when replacetool is the only option
         if (replaceItem != null && (fullyConsumed || (durabilityRange == null && consumeRange == null))) {
-            ItemStack replacement = replaceItem.createStack(replaceItemQuantity);
-            if (replacement != null) {
-                Log.logInfo(LOG + "replaced " + describe(original) + " with " + describe(replacement) + ".", Verbosity.HIGH);
-                return replacement;
-            }
-            Log.logWarning(LOG + "replacetool couldn't resolve '" + replaceItem + "'; tool not replaced.");
+            ItemStack replacement = replaceItem.create(replaceItemQuantity.getRandomIn(OtherDrops.rng), null, null);
+            Log.logInfo(LOG + "replaced " + describe(original) + " with " + describe(replacement) + ".", Verbosity.HIGH);
+            return replacement;
         }
 
         return fullyConsumed ? null : stack;
@@ -132,7 +131,9 @@ public class ToolDamage {
         if (replace != null) {
             String[] replaceSplit = replace.split("/q#");
             if (replaceSplit.length > 1) damage.replaceItemQuantity = IntRange.parse(replaceSplit[1]);
-            damage.replaceItem = ODItem.parseItem(replace.replaceAll("(\\/q#\\d{1,9}-\\d{1,9}|\\/q#\\d{1,9})", ""));
+            String replaceItem = replace.replaceAll("(\\/q#\\d{1,9}-\\d{1,9}|\\/q#\\d{1,9})", "");
+            damage.replaceItem = ConfigSubject.parseSubject(replaceItem).getODItem();
+            if (damage.replaceItem == null) Log.logWarning(LOG + "replacetool: '" + replaceItem + "' isn't a valid item; ignoring.");
         }
         if (damage.durabilityRange != null || damage.consumeRange != null || damage.replaceItem != null) {
             Log.logInfo(LOG + "loaded " + damage, Verbosity.HIGHEST);

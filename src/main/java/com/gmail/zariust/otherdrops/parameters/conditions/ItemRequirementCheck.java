@@ -1,13 +1,15 @@
 package com.gmail.zariust.otherdrops.parameters.conditions;
 
 import com.gmail.zariust.otherdrops.ConfigurationNode;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
+import com.gmail.zariust.otherdrops.config.ConfigSubject;
+import com.gmail.zariust.otherdrops.data.item.ODItem;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.parameters.Committable;
 import com.gmail.zariust.otherdrops.parameters.Condition;
-import com.gmail.zariust.otherdrops.things.ODItem;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -107,10 +109,14 @@ public class ItemRequirementCheck extends Condition implements Committable {
                 base = sSplit[0];
                 if (sSplit.length > 1) slotsPart = sSplit[1];
             }
-            ODItem item = ODItem.parseItem(base.trim());
+            ODItem item = ConfigSubject.parseSubject(base.trim()).getODItem();
+            if (item == null) {
+                Log.logWarning("itemrequirement: '" + base.trim() + "' isn't a valid item; skipping...");
+                continue;
+            }
             value.put(item, new ItemRequirement(quantityRange, parseSlots(slotsPart)));
         }
-
+        if (value.isEmpty()) return null;
         List<Condition> conditionList = new ArrayList<>();
         conditionList.add(new ItemRequirementCheck(value));
         return conditionList;

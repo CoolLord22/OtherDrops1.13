@@ -19,22 +19,18 @@ package com.gmail.zariust.otherdrops.data;
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.data.itemmeta.OdItemMeta;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import static com.gmail.zariust.common.Verbosity.EXTREME;
-import static com.gmail.zariust.otherdrops.OtherDrops.GET_MAX_DAMAGE;
+import static com.gmail.zariust.otherdrops.data.item.properties.DamageProperty.getDurability;
 
 public class ItemData implements Data, RangeableData {
     private int data;
     private String dataString;
-    public OdItemMeta itemMeta;
 
     public ItemData(int d) {
         data = d;
@@ -51,11 +47,6 @@ public class ItemData implements Data, RangeableData {
 
     public ItemData(String state) {
         dataString = state; // FIXME: needs more safety checks
-    }
-
-    public ItemData(int dataVal, OdItemMeta itemMeta) {
-        data = dataVal;
-        this.itemMeta = itemMeta;
     }
 
     @Override
@@ -149,22 +140,6 @@ public class ItemData implements Data, RangeableData {
         // FIXME: add a safety check here
         Log.logInfo("Parsing for possible metadata: " + state + " type=" + metaType.toString(), Verbosity.HIGH);
         int dataVal = 0;
-
-        if (!state.isEmpty() && !state.equals("0")) {
-            String separator = "=";
-            String[] split = state.split(separator);
-            StringBuilder subMinusDurability = new StringBuilder();
-
-            for (String sub : split) {
-                if (sub.matches("[0-9]+")) { // need to check numbers before any .toLowerCase()
-                    dataVal = Integer.parseInt(sub);
-                } else {
-                    subMinusDurability.append(sub).append(separator);
-                }
-            }
-            return new ItemData(dataVal, OdItemMeta.parse(subMinusDurability.substring(0, subMinusDurability.length() - 1), metaType));
-        }
-
         return new ItemData(dataVal, state);
     }
 
@@ -193,23 +168,5 @@ public class ItemData implements Data, RangeableData {
     public Boolean getSheared() {
         // TODO Auto-generated method stub
         return null;
-    }
-
-    public static int getDurability(ItemStack stack) {
-        if(!(stack.getItemMeta() instanceof Damageable damageable)) return 0;
-        return damageable.getDamage();
-    }
-
-    public static int getMaxDurability(ItemStack stack) {
-        ItemMeta meta = stack.getItemMeta();
-        if(meta instanceof Damageable && GET_MAX_DAMAGE != null) {
-            try {
-                Integer max = (Integer) GET_MAX_DAMAGE.invoke(meta);
-                if (max != null && max > 0) {
-                    return max;
-                }
-            } catch (Exception ignored) {}
-        }
-        return stack.getType().getMaxDurability();
     }
 }

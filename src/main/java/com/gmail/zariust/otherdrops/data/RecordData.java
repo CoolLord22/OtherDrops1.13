@@ -21,6 +21,7 @@ import com.gmail.zariust.common.MaterialGroup;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.data.effects.EffectData;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Material;

@@ -20,12 +20,12 @@ import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.*;
 import com.gmail.zariust.otherdrops.data.Data;
+import com.gmail.zariust.otherdrops.data.item.ODItem;
 import com.gmail.zariust.otherdrops.listener.OdSpawnListener;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.subject.Agent;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
-import com.gmail.zariust.otherdrops.things.ODItem;
 import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.core.mobs.ActiveMob;
@@ -44,7 +44,7 @@ import static com.gmail.zariust.otherdrops.OtherDrops.SPAWNED_BY;
 
 public abstract class DropType {
     public enum DropCategory {
-        ITEM, CREATURE, MONEY, GROUP, DENY, CONTENTS, DEFAULT, VEHICLE, EXPERIENCE, MYTHIC_CREATURE, ITEM_STACK
+        ITEM, CREATURE, MONEY, GROUP, DENY, CONTENTS, DEFAULT, VEHICLE, EXPERIENCE, MYTHIC_CREATURE
     }
 
     public static class DropFlags {
@@ -222,8 +222,8 @@ public abstract class DropType {
 
         if (!dropsFilter.isEmpty()) {
             boolean found = false;
-            for (ODItem odItem : dropsFilter) {
-                if (odItem.matches(stack)) {
+            for (ODItem ODItem : dropsFilter) {
+                if (ODItem.matches(stack)) {
                     found = true;
                 }
             }

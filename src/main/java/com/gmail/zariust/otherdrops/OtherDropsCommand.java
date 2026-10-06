@@ -17,7 +17,8 @@
 package com.gmail.zariust.otherdrops;
 
 import com.gmail.zariust.common.Verbosity;
-import com.gmail.zariust.otherdrops.data.CreatureData;
+import com.gmail.zariust.otherdrops.data.item.properties.ItemProperties;
+import com.gmail.zariust.otherdrops.data.mob.CreatureData;
 import com.gmail.zariust.otherdrops.drop.DropResult;
 import com.gmail.zariust.otherdrops.drop.DropType;
 import com.gmail.zariust.otherdrops.drop.DropType.DropFlags;
@@ -36,7 +37,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.*;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -52,13 +52,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import static com.gmail.zariust.otherdrops.OtherDrops.SPAWNED_BY;
-import static com.gmail.zariust.otherdrops.data.ItemData.getDurability;
-import static com.gmail.zariust.otherdrops.data.ItemData.getMaxDurability;
+import static com.gmail.zariust.otherdrops.data.item.properties.DamageProperty.getDurability;
+import static com.gmail.zariust.otherdrops.data.item.properties.DamageProperty.getMaxDurability;
 
 public class OtherDropsCommand implements CommandExecutor {
     private enum OBCommand {
@@ -328,27 +327,9 @@ public class OtherDropsCommand implements CommandExecutor {
                 ((Player) sender).sendRawMessage(ChatColor.GREEN + "Block looked at is " + ChatColor.WHITE + block + " mat: " + block.getType() + " lightlevel: " + block.getLightLevel() + " lightfromsky: " + block.getLightFromSky() + " biome: " + block.getBiome());
             }
 
-            StringBuilder itemFinalWriteData = new StringBuilder();
-
-            itemFinalWriteData.append(playerItem.getType());
-            itemFinalWriteData.append("@").append(getDurability(playerItem));
-            if (!playerItem.getEnchantments().isEmpty()) {
-                itemFinalWriteData.append("!");
-                for (Enchantment enchInMap : playerItem.getEnchantments().keySet()) {
-                    itemFinalWriteData.append(enchInMap.getKey().toString().replace("minecraft:", "")).append("#").append(playerItem.getEnchantmentLevel(enchInMap)).append("!");
-                }
-            }
-            if (playerItem.getItemMeta() != null) {
-                itemFinalWriteData.append("~").append(playerItem.getItemMeta().getDisplayName());
-                if (playerItem.getItemMeta().getLore() != null) {
-                    List<String> loreList = playerItem.getItemMeta().getLore();
-                    for (String loreLine : loreList) {
-                        itemFinalWriteData.append(";").append(loreLine);
-                    }
-                }
-            }
+            String itemFinalWriteData = ItemProperties.toConfigString(playerItem).replace("§", "&");
             sender.sendMessage("");
-            player.sendRawMessage(ChatColor.GREEN + "The item config is:§r " + ChatColor.WHITE + itemFinalWriteData.toString().replaceAll("§", "&"));
+            player.sendRawMessage(ChatColor.GREEN + "The item config is:§r " + ChatColor.WHITE + itemFinalWriteData);
         }
     }
 
@@ -357,24 +338,7 @@ public class OtherDropsCommand implements CommandExecutor {
             File folder = new File("plugins" + File.separator + "OtherDrops");
             BufferedWriter out;
             ItemStack playerItem = player.getInventory().getItemInMainHand();
-            StringBuilder itemFinalWriteData = new StringBuilder();
-            itemFinalWriteData.append(playerItem.getType());
-            itemFinalWriteData.append("@").append(getDurability(playerItem));
-            if (!playerItem.getEnchantments().isEmpty()) {
-                itemFinalWriteData.append("!");
-                for (Enchantment enchInMap : playerItem.getEnchantments().keySet()) {
-                    itemFinalWriteData.append(enchInMap.getKey().toString().replace("minecraft:", "")).append("#").append(playerItem.getEnchantmentLevel(enchInMap)).append("!");
-                }
-            }
-            if (playerItem.getItemMeta() != null) {
-                itemFinalWriteData.append("~").append(playerItem.getItemMeta().getDisplayName());
-                if (playerItem.getItemMeta().getLore() != null) {
-                    List<String> loreList = playerItem.getItemMeta().getLore();
-                    for (String loreLine : loreList) {
-                        itemFinalWriteData.append(";").append(loreLine);
-                    }
-                }
-            }
+            String itemFinalWriteData = ItemProperties.toConfigString(playerItem).replace("§", "&");
             try {
                 File configFile = new File(folder.getAbsolutePath() + File.separator + "ItemOutput" + ".txt");
                 configFile.getParentFile().mkdirs();
@@ -385,8 +349,7 @@ public class OtherDropsCommand implements CommandExecutor {
             } catch (IOException exception) {
                 Log.logError("Encountered an error while writing ItemOutput.", exception);
             }
-
-            player.sendRawMessage(ChatColor.GREEN + "The item config is:§r " + ChatColor.WHITE + itemFinalWriteData.toString().replaceAll("§", "&"));
+            player.sendRawMessage(ChatColor.GREEN + "The item config is:§r " + ChatColor.WHITE + itemFinalWriteData);
         }
     }
 
