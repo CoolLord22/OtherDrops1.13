@@ -16,12 +16,10 @@
 
 package com.gmail.zariust.odspecialevents;
 
-import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 import org.bukkit.World;
-import org.bukkit.block.Biome;
 
 import java.util.List;
 
@@ -61,15 +59,12 @@ public class StormEvent extends SpecialResult {
 
     @Override
     public boolean canRunFor(SimpleDrop drop) {
-        Biome biome = drop.getTarget().getLocation().getBlock().getBiome();
-        return !OtherDrops.NetherBiomes.contains(biome.name());
+        return true;
     }
 
     @Override
     public boolean canRunFor(OccurredEvent drop) {
-        Biome biome = drop.getBiome();
-        if (OtherDrops.NetherBiomes.contains(biome.name())) return false;
-        return true;
+        return drop.getWorld().getEnvironment() == World.Environment.NORMAL;
     }
 
 }
