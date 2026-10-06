@@ -28,7 +28,7 @@ public class OtherDropsTabExecutor implements TabExecutor {
                 if(args[0].equalsIgnoreCase("saveitem")) {
                     list.add("<item key>");
                     for(NamespacedKey key : OtherDrops.loadedItems.keySet()) {
-                        if(key.getKey().contains("od_item_")) list.add(key.getKey().replaceAll("od_item_", "OD_ITEM@"));
+                        if(key.getKey().contains("od_item_")) list.add(key.getKey().replace("od_item_", "OD_ITEM@"));
                     }
                     lastArg = args[1];
                 } else if(args[0].equalsIgnoreCase("id")) {
@@ -38,7 +38,7 @@ public class OtherDropsTabExecutor implements TabExecutor {
                 } else if(args[0].equalsIgnoreCase("drop")) {
                     list.add("<drop string>");
                     for(NamespacedKey key : OtherDrops.loadedItems.keySet()) {
-                        list.add(key.getKey());
+                        if(key.getKey().contains("od_item_")) list.add(key.getKey().replace("od_item_", "OD_ITEM@"));
                     }
                     lastArg = args[1];
                 }
