@@ -30,7 +30,7 @@ public class SpecialMessageAction extends Action {
                     return type;
                 }
             }
-            Log.logInfo("SpecialMessageAction - Invalid send-to type specified: (" + s + ") defaulting to ATTACKER.", Verbosity.NORMAL);
+            if (s != null) Log.logInfo("SpecialMessageAction - Invalid send-to type specified: (" + s + ") defaulting to ATTACKER.", Verbosity.NORMAL);
             return ATTACKER;
         }
 

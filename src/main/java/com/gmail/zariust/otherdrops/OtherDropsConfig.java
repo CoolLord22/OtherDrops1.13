@@ -1024,7 +1024,7 @@ public class OtherDropsConfig {
                     matched = true;
                     break;
                 }
-                Log.logInfo("Biome match: checking " + name + " against " + biomeMatch.name() + ", match = " + matched, HIGHEST);
+                Log.logInfo("Biome match: checking " + name + " against " + biomeMatch.name() + ", match = " + matched, EXTREME);
             }
             if (!matched) {
                 Log.logWarning("Invalid biome " + name + "; skipping...");
@@ -1059,7 +1059,7 @@ public class OtherDropsConfig {
                     matched = true;
                     break;
                 }
-                Log.logInfo("Moon phase match: checking " + name + " against " + moonPhaseMatch.name() + ", match = " + matched, HIGHEST);
+                Log.logInfo("Moon phase match: checking " + name + " against " + moonPhaseMatch.name() + ", match = " + matched, EXTREME);
             }
             if (!matched) {
                 Log.logWarning("Invalid moon phase " + name + "; skipping...");

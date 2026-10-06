@@ -41,8 +41,8 @@ public class DistanceCheck extends Condition {
     public List<Condition> parse(ConfigurationNode node) {
         Location locationToMeasureAgainst = new Location(null, 0, 0, 0);
         String getConfig = node.getString("distance");
-        Log.logInfo("Loading distance condition: " + getConfig, Verbosity.HIGHEST);
         if (getConfig == null) return null;
+        Log.logInfo("Loading distance condition: " + getConfig, Verbosity.HIGHEST);
 
         String[] split = getConfig.split("@");
         if (split.length > 1) {
