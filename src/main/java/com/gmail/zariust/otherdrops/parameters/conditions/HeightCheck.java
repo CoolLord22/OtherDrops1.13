@@ -20,7 +20,7 @@ public class HeightCheck extends Condition {
     @Override
     protected boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
         if (height == null) return true;
-        return height.matches(occurrence.getLightLevel());
+        return height.matches(occurrence.getHeight());
     }
 
     @Override
