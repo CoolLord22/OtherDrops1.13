@@ -76,12 +76,17 @@ public abstract class DropType {
             return eventType;
         }
 
-        protected String getRecipientName() {
+        public String getRecipientName() {
             if (recipient == null) return "";
             return recipient.getDisplayName();
         }
-
-        protected String getToolName() {
+        public String getVictim() {
+            return victim;
+        }
+        public String getSpawnReason() {
+            return spawnReason;
+        }
+        public String getToolName() {
             if (tool == null) return "";
             if (tool instanceof PlayerSubject) {
                 return ((PlayerSubject) tool).getTool().getReadableName();
