@@ -1158,61 +1158,11 @@ public class OtherDropsConfig {
     }
 
     public static Agent parseAgent(String agent) {
-        ODItem item = ODItem.parseItem(agent);
-        String name = item.name;
-        String upperName = name.toUpperCase();
-        String data = item.getDataString();
-
-        // Agent can be one of the following
-        // - A tool; ie, a Material constant
-        // - One of the Material synonyms NOTHING and DYE
-        // - A MaterialGroup constant
-        // - One of the special wildcards ANY, ANY_CREATURE, ANY_DAMAGE
-        // - A DamageCause constant prefixed by DAMAGE_
-        // - DAMAGE_FIRE_TICK and DAMAGE_CUSTOM are valid but not allowed
-        // - DAMAGE_WATER is invalid but allowed, and stored as CUSTOM
-        // - A EntityType constant prefixed by CREATURE_
-        // - A projectile; ie a Material constant prefixed by PROJECTILE_
-        if (MaterialGroup.isValid(name) || upperName.startsWith("ANY") || upperName.equals("ALL")) return AnySubject.parseAgent(name);
-        else if (upperName.equals("PLAYER")) return PlayerSubject.parse(data);
-        else if (upperName.startsWith("MYTHIC_MOB")) return MythicMobSubject.parse(data);
-        else if (upperName.equals("PLAYERGROUP")) return new GroupSubject(data);
-        else if (upperName.startsWith("DAMAGE_")) return EnvironmentAgent.parse(name, data);
-        else {
-            LivingSubject creatureSubject = CreatureSubject.parse(name, item.getRawDataString(), item.getDisplayName());
-
-            if (creatureSubject != null) return creatureSubject;
-            else if (upperName.startsWith("PROJECTILE")) return ProjectileAgent.parse(name, data);
-            else if (upperName.startsWith("EXPLOSION")) return ExplosionAgent.parse(name, item.getRawDataString());
-            else return ToolAgent.parse(item);
-        }
+        return ConfigSubject.parseSubject(agent).getAgent();
     }
 
     public static Target parseTarget(String blockName) {
-        blockName = CommonMaterial.substituteAlias(blockName);
-
-        ODItem item = ODItem.parseItem(blockName);
-        String name = item.name;
-        String upperName = item.name.toUpperCase();
-        String data = item.getDataString();
-        // Target name is one of the following:
-        // - A Material constant that is a block, painting, or vehicle
-        // - A EntityType constant prefixed by CREATURE_
-        // - An integer representing a Material
-        // - One of the keywords PLAYER or PLAYERGROUP
-        // - Vehicle starting with VEHICLE (note: BOAT, MINECART, etc. can only be vehicles in a target so process accordingly)
-        // - A MaterialGroup constant containing blocks
-        if (upperName.equals("PLAYER")) return PlayerSubject.parse(data);
-        else if (upperName.equals("PLAYERGROUP")) return new GroupSubject(data);
-        else if (MaterialGroup.isValid(name) || upperName.startsWith("ANY") || upperName.equals("ALL")) return AnySubject.parseTarget(upperName);
-        else if (upperName.startsWith("MYTHIC_MOB")) return MythicMobSubject.parse(data);
-        else if (upperName.startsWith("VEHICLE") || upperName.matches("BOAT|MINECART|BOAT_SPRUCE|BOAT_JUNGLE|BOAT_BIRCH|BOAT_ACACIA|BOAT_DARK_OAk")) return VehicleTarget.parse(Material.getMaterial(upperName.replaceAll("VEHICLE_", "")), data);
-        else {
-            LivingSubject creatureSubject = CreatureSubject.parse(name, item.getRawDataString(), item.getDisplayName());
-            if (creatureSubject != null) return creatureSubject;
-            else if (upperName.equalsIgnoreCase("SPECIAL_LEAFDECAY")) return BlockTarget.parse("LEAVES", data, item.displayname); // for compatibility
-            else return BlockTarget.parse(name, data, item.displayname);
-        }
+        return ConfigSubject.parseSubject(blockName).getTarget();
     }
 
     public ConfigurationNode getEventNode(SpecialResultHandler event) {
