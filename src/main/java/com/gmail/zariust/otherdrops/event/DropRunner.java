@@ -184,7 +184,8 @@ public class DropRunner implements Runnable {
                 if (customDrop.getFortuneEnhance() && currentEvent.getTool() instanceof PlayerSubject) {
                     ItemStack tool = ((PlayerSubject) currentEvent.getTool()).getTool().getActualTool();
                     if (tool.containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS)) {
-                        fortuneMultiplier = ((1.0) / (tool.getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS) + 2.0)) + ((tool.getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS) + 1.0) / (2.0));
+                        int level = tool.getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
+                        if (level > 0) fortuneMultiplier = Math.max(0, customDrop.rng.nextInt(level + 2) - 1) + 1;
                         Log.logInfo("Found fortune! Multiplier is..." + fortuneMultiplier, HIGHEST);
                     }
                 }
