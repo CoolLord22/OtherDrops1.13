@@ -21,6 +21,7 @@ import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.Data;
+import com.gmail.zariust.otherdrops.data.item.ODItem;
 import com.gmail.zariust.otherdrops.event.ExclusiveMap.ExclusiveKey;
 import com.gmail.zariust.otherdrops.options.Flag;
 import com.gmail.zariust.otherdrops.options.IntRange;
@@ -29,10 +30,8 @@ import com.gmail.zariust.otherdrops.parameters.Condition;
 import com.gmail.zariust.otherdrops.parameters.Trigger;
 import com.gmail.zariust.otherdrops.subject.Agent;
 import com.gmail.zariust.otherdrops.subject.Target;
-import com.gmail.zariust.otherdrops.things.ODItem;
+import com.gmail.zariust.otherdrops.things.ODVariables;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -334,14 +333,9 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
 
     public void perform(OccurredEvent evt) {
         currentEvent = evt;
-
         int schedule = getRandomDelay();
 
-        Location playerLoc = null;
-        Player player = null; // FIXME: need to get player early - in event
-        // if (evt.player != null) playerLoc = player.getLocation();
-        DropRunner dropRunner = new DropRunner(OtherDrops.plugin, evt, this, player, playerLoc, this.isDefault());
-
+        DropRunner dropRunner = new DropRunner(OtherDrops.plugin, evt, this, this.isDefault());
         // schedule the task - NOTE: this must be a sync task due to the changes made in the performActualDrop function
         if (schedule > 0.0) Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(OtherDrops.plugin, dropRunner, schedule);
         else dropRunner.run();
