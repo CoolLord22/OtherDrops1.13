@@ -317,14 +317,14 @@ public class OtherDropsCommand implements CommandExecutor {
                 String itemMsg = playerItem.getType() + "@" + getDurability(playerItem) + " maxdura:" + getMaxDurability(playerItem)  + " dura%:" + getDurabilityPercentage(playerItem) + " detail: " + playerItem;
                 if (playerItem.getItemMeta() != null) {
                     playerItem.getItemMeta().getDisplayName();
-                    itemMsg += " name: \"" + playerItem.getItemMeta().getDisplayName().replaceAll(" §", "&") + "\"";
+                    itemMsg += " name: \"" + playerItem.getItemMeta().getDisplayName().replace(" §", "&") + "\"";
                 }
 
-                ((Player) sender).sendRawMessage(ChatColor.GREEN + "Item in hand: " + ChatColor.WHITE + itemMsg.replaceAll("§", "&"));
+                player.sendRawMessage(ChatColor.GREEN + "Item in hand: " + ChatColor.WHITE + itemMsg.replace("§", "&"));
                 sender.sendMessage("");
 
                 Block block = player.getTargetBlock(new HashSet<>(), 100);
-                ((Player) sender).sendRawMessage(ChatColor.GREEN + "Block looked at is " + ChatColor.WHITE + block + " mat: " + block.getType() + " lightlevel: " + block.getLightLevel() + " lightfromsky: " + block.getLightFromSky() + " biome: " + block.getBiome());
+                player.sendRawMessage(ChatColor.GREEN + "Block looked at is " + ChatColor.WHITE + block + " mat: " + block.getType() + " lightlevel: " + block.getLightLevel() + " lightfromsky: " + block.getLightFromSky() + " biome: " + block.getBiome());
             }
 
             String itemFinalWriteData = ItemProperties.toConfigString(playerItem).replace("§", "&");
