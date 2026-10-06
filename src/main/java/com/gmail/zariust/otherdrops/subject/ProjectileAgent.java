@@ -17,7 +17,6 @@
 package com.gmail.zariust.otherdrops.subject;
 
 import com.gmail.zariust.common.CommonEntity;
-import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.EquipmentSlotResolver;
 import com.gmail.zariust.otherdrops.Log;
@@ -249,49 +248,32 @@ public class ProjectileAgent implements Agent {
         name = name.toUpperCase().replace("PROJECTILE_", "");
         Material mat;
         @SuppressWarnings("unused") String checkName = name.toUpperCase().replaceAll("[\\s-_]", "");
-        // TODO: parse by projectile names for future compatibility
-        switch (name) {
-            case "FIRE":
-            case "FIREBALL":
-                mat = Material.FIRE_CHARGE;
-                break;
-            case "POTION":
-                mat = Material.POTION;
-                break;
-            case "SNOWBALL":
-                mat = Material.SNOWBALL;
-                break;
-            case "EGG":
-                mat = Material.EGG;
-                break;
-            case "FISH":
-            case "FISHINGROD":
-                mat = Material.FISHING_ROD;
-                break;
-            case "ARROW":
-                mat = Material.ARROW;
-                break;
-            case "SPECTRALARROW":
-                mat = Material.SPECTRAL_ARROW;
-                break;
-            case "TIPPEDARROW":
-                mat = Material.TIPPED_ARROW;
-                break;
-            case "ENDERPEARL":
-                mat = Material.ENDER_PEARL;
-                break;
-            case "WITHERSKULL":
-                mat = Material.WITHER_SKELETON_SKULL;
-                break;
-            case "EXPBOTTLE":
-                mat = Material.EXPERIENCE_BOTTLE;
-                break;
-            case "ANY":
-                mat = null;
-                break;
-            default:
-                Log.logInfo("Unknown projectile: " + name, Verbosity.NORMAL);
+        switch (name.replace("_", "")) {
+            case "ANY" -> mat = null;
+            case "FIRE", "FIREBALL", "FIRECHARGE" -> mat = Material.FIRE_CHARGE;
+            case "POTION", "SPLASHPOTION", "LINGERINGPOTION" -> mat = Material.POTION;
+            case "SNOWBALL" -> mat = Material.SNOWBALL;
+            case "EGG" -> mat = Material.EGG;
+            case "FISH", "FISHINGROD", "FISHINGBOBBER" -> mat = Material.FISHING_ROD;
+            case "ARROW" -> mat = Material.ARROW;
+            case "SPECTRALARROW" -> mat = Material.SPECTRAL_ARROW;
+            case "TIPPEDARROW" -> mat = Material.TIPPED_ARROW;
+            case "ENDERPEARL" -> mat = Material.ENDER_PEARL;
+            case "WITHERSKULL" -> mat = Material.WITHER_SKELETON_SKULL;
+            case "EXPBOTTLE", "EXPERIENCEBOTTLE" -> mat = Material.EXPERIENCE_BOTTLE;
+            case "TRIDENT" -> mat = Material.TRIDENT;
+            case "FIREWORK", "FIREWORKROCKET" -> mat = Material.FIREWORK_ROCKET;
+            case "WINDCHARGE" -> {
+                mat = Material.matchMaterial("WIND_CHARGE");
+                if (mat == null) {
+                    Log.logWarning("PROJECTILE_WIND_CHARGE needs Minecraft 1.21 or newer.");
+                    return null;
+                }
+            }
+            default -> {
+                Log.logWarning("Unknown projectile: " + name + " (see the Material List page for valid names).");
                 return null;
+            }
         }
         // Parse data, which is one of the following
         // - A EntityType constant (note that only GHAST and SKELETON will
