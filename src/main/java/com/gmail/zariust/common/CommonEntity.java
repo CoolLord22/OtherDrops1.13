@@ -69,18 +69,17 @@ public final class CommonEntity {
         // Log.logInfo("Checking creature '"+name+"' (original name: '"+originalName+"')",
         // Verbosity.HIGH);
 
-        // Creature aliases - format: (<aliasvalue>, <bukkitmobname>) - must be
-        // lowercase
+        // Creature aliases - format: (<aliasvalue>, <bukkitmobname>) - must be lowercase
         Map<String, String> replacer = new HashMap<>();
-        replacer.put("mooshroom", "mushroomcow");
         replacer.put("endermen", "enderman");
-        replacer.put("zombiepig", "pigzombie");
-        replacer.put("pigman", "pigzombie");
-        replacer.put("zombiepigman", "pigzombie");
         replacer.put("dog", "wolf");
-        replacer.put("snowgolem", "snowman");
         replacer.put("lavaslime", "magmacube");
         replacer.put("magmaslime", "magmacube");
+        //replacer.put("mooshroom", "mushroomcow");
+        //replacer.put("zombiepig", "pigzombie");
+        //replacer.put("pigman", "pigzombie");
+        //replacer.put("zombiepigman", "pigzombie");
+        //replacer.put("snowgolem", "snowman");
 
         if(replacer.containsKey(name.toLowerCase()))
         	name = replacer.get(name.toLowerCase());
