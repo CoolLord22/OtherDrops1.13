@@ -8,6 +8,7 @@ import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.parameters.Committable;
 import com.gmail.zariust.otherdrops.parameters.Condition;
 import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
+import com.gmail.zariust.otherdrops.things.ODVariables;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class CooldownCheck extends Condition implements Committable {
 
     public CooldownCheck(String cooldown, String cooldownMessage, Double time) {
         this.cooldown = cooldown;
-        this.cooldownMessage = cooldownMessage;
+        this.cooldownMessage = cooldownMessage == null ? null : ODVariables.preParse(cooldownMessage);
         this.time = time;
     }
 
