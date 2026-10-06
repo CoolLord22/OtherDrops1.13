@@ -9,7 +9,6 @@ import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.Subject.ItemCategory;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
@@ -283,12 +282,8 @@ public class SectionManager {
     }
 
     public void scheduleDrop(OccurredEvent evt, CustomDrop customDrop, boolean defaultDrop) {
-        int schedule = customDrop.getRandomDelay();
-
-        Location playerLoc = null;
-        Player player = null; // FIXME: need to get player early - in event
-        // if (evt.player != null) playerLoc = player.getLocation();
-        DropRunner dropRunner = new DropRunner(OtherDrops.plugin, evt, customDrop, player, playerLoc, defaultDrop);
+        DropRunner dropRunner = new DropRunner(OtherDrops.plugin, evt, customDrop, defaultDrop);
+        int delay = customDrop.getRandomDelay();
 
         // schedule the task - NOTE: this must be a sync task due to the changes
         // made in the performActualDrop function
