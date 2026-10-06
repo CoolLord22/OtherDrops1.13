@@ -51,8 +51,6 @@ public class OtherDrops extends JavaPlugin {
     public Log log = null;
     public final SectionManager sectionManager;
 
-    public static final List<String> NetherBiomes = new ArrayList<>(Arrays.asList("NETHER", "NETHER_WASTES", "CRIMSON_FOREST", "WARPED_FOREST", "SOUL_SAND_VALLEY", "BASALT_DELTAS"));
-
     // Global random number generator - used throughout the whole plugin
     public static final Random rng = new Random();
 
