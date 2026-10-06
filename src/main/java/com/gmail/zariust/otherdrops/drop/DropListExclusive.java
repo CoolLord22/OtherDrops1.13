@@ -81,17 +81,16 @@ public class DropListExclusive extends DropType {
 
     @Override
     protected DropResult performDrop(Target source, Location where, DropFlags flags) {
-        // don't set override default here - it's set for each individual drop
         DropResult returnRes = DropResult.fromQuantity(0);
         double select = flags.rng.nextDouble() * percentTotal, cumul = 0;
         for (DropType drop : group) {
             cumul += drop.getChance();
             if (select <= cumul) {
-                returnRes.add(drop.dropLocal(source, where, 1, flags));
-                break;
+                returnRes.add(drop.dropLocal(source, where, 1, flags)); // the picked drop decides (DEFAULT keeps vanilla)
+                return returnRes;
             }
         }
-
+        returnRes.setOverrideDefault(this.overrideDefault); // picked "nothing": still replaces the vanilla drop
         return returnRes;
     }
 

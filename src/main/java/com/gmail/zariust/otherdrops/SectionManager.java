@@ -1,5 +1,6 @@
 package com.gmail.zariust.otherdrops;
 
+import com.gmail.zariust.otherdrops.drop.ItemDrop;
 import com.gmail.zariust.otherdrops.event.*;
 import com.gmail.zariust.otherdrops.parameters.Committable;
 import com.gmail.zariust.otherdrops.parameters.Condition;
@@ -91,7 +92,7 @@ public class SectionManager {
                 defaultDrop = true;
                 occurrence.setOverrideDefault(false); // DEFAULT drop
             }
-            if (simpleDrop.getDropped() != null && simpleDrop.getDropped().toString().equalsIgnoreCase("AIR"))
+            if (simpleDrop.getDropped() instanceof ItemDrop item && item.getMaterial() == Material.AIR)
                 occurrence.setOverrideDefault(true); // NOTHING drop
         }
 

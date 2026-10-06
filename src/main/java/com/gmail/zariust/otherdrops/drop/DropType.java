@@ -417,7 +417,7 @@ public abstract class DropType {
             } else if (originalName.toUpperCase().startsWith("XP"))
                 return ExperienceDrop.parse(originalName, defaultData, amount.toIntRange(), chance);
             else if (originalName.equalsIgnoreCase("CONTENTS")) return new ContentsDrop();
-            else if (originalName.equalsIgnoreCase("DEFAULT")) return new ItemDrop((Material) null);
+            else if (originalName.equalsIgnoreCase("DEFAULT")) return new ItemDrop(null);
             else if (originalName.equalsIgnoreCase("THIS") || originalName.equalsIgnoreCase("SELF"))
                 return new SelfDrop(amount.toIntRange(), chance);
             return ItemDrop.parse(originalName, defaultData, amount.toIntRange(), chance);
@@ -434,7 +434,6 @@ public abstract class DropType {
 
     public void setDisplayName(String msg) {
         this.displayName = msg;
-
     }
 
     public List<String> getLore() {

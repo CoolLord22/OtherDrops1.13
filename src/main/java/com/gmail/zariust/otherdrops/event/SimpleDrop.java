@@ -19,6 +19,7 @@ package com.gmail.zariust.otherdrops.event;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
+import com.gmail.zariust.otherdrops.drop.DropListInclusive;
 import com.gmail.zariust.otherdrops.drop.DropType;
 import com.gmail.zariust.otherdrops.drop.ItemDrop;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
@@ -104,7 +105,13 @@ public class SimpleDrop extends CustomDrop {
 
     @Override
     public boolean isDefault() {
-        return (dropped instanceof ItemDrop && ((ItemDrop) dropped).getMaterial() == null);
+        return containsDefault(dropped);
+    }
+
+    private static boolean containsDefault(DropType drop) {
+        if (drop instanceof ItemDrop item) return item.getMaterial() == null;
+        if (drop instanceof DropListInclusive list) return list.getGroup().stream().anyMatch(SimpleDrop::containsDefault);
+        return false;
     }
 
     @Override

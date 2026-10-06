@@ -852,14 +852,17 @@ public class OtherDropsConfig {
     private void setDefaultOverride(DropType dropped) {
         if (dropped == null) return;
 
-        if (dropped instanceof MoneyDrop) {
+        if (dropped instanceof ItemDrop item && item.getMaterial() == null) {
+            dropped.overrideDefault = false;                 // DEFAULT never replaces the vanilla drop
+        } else if (dropped instanceof MoneyDrop) {
             dropped.overrideDefault = moneyOverridesDefault;
         } else if (dropped instanceof ExperienceDrop) {
             dropped.overrideDefault = xpOverridesDefault;
-        } else if (dropped instanceof DropListExclusive) {
-			((DropListExclusive) dropped).getGroup().forEach(this::setDefaultOverride);
-        } else if (dropped instanceof DropListInclusive) {
-			((DropListInclusive) dropped).getGroup().forEach(this::setDefaultOverride);
+        } else if (dropped instanceof DropListExclusive list) {
+            dropped.overrideDefault = lootOverridesDefault;  // used when the pick lands on "nothing"
+            list.getGroup().forEach(this::setDefaultOverride);
+        } else if (dropped instanceof DropListInclusive list) {
+            list.getGroup().forEach(this::setDefaultOverride);
         } else {
             dropped.overrideDefault = lootOverridesDefault;
         }
