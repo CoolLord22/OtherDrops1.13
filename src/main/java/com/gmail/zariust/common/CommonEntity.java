@@ -132,45 +132,29 @@ public final class CommonEntity {
         return null;
     }
 
+    /** The item a projectile is matched by in config (PROJECTILE_<name>). Null if it isn't a supported projectile. */
     public static Material getProjectileType(Entity e) {
         if (!(e instanceof Projectile)) return null;
-
-        // Arrow, Egg, EnderPearl, Fireball, Fish, LargeFireball, SmallFireball, Snowball, ThrownExpBottle, ThrownPotion, WitherSkull, SpectralArrow, and TippedArrow
-        if (e instanceof Arrow)
-            return Material.ARROW;
-        if (e instanceof DragonFireball)
-            return Material.FIRE_CHARGE;
-        if (e instanceof Egg)
-            return Material.EGG;
-        if (e instanceof EnderPearl)
-            return Material.ENDER_PEARL;
-        if (e instanceof Fireball)
-            return Material.FIRE_CHARGE;
-        if (e instanceof FishHook)
-            return Material.FISHING_ROD;
-        if (e instanceof LargeFireball)
-            return Material.FIRE_CHARGE;
-        if (e instanceof LingeringPotion)
-            return Material.POTION;
-        if (e instanceof SmallFireball)
-            return Material.FIRE_CHARGE;
-        if (e instanceof Snowball)
-            return Material.SNOWBALL;
-        if (e instanceof SpectralArrow)
-            return Material.SPECTRAL_ARROW;
-        if (e instanceof SplashPotion)
-            return Material.POTION;
-        if (e instanceof ThrownExpBottle)
-            return Material.EXPERIENCE_BOTTLE;
-        if (e instanceof ThrownPotion)
-            return Material.POTION;
-        if (e instanceof TippedArrow)
-            return Material.TIPPED_ARROW;
-        if (e instanceof Trident)
-            return Material.TRIDENT;
-        if (e instanceof WitherSkull)
-            return Material.WITHER_SKELETON_SKULL;
-        return null;
+        // by entity type NAME, so newer entities work without a newer compile API (and renamed types are covered)
+        switch (e.getType().name()) {
+            case "ARROW":
+                // tipped arrows are plain Arrow entities on modern versions; they carry a color and/or effects
+                return e instanceof Arrow arrow && (arrow.getColor() != null || arrow.hasCustomEffects())
+                        ? Material.TIPPED_ARROW : Material.ARROW;
+            case "SPECTRAL_ARROW": return Material.SPECTRAL_ARROW;
+            case "TRIDENT": return Material.TRIDENT;
+            case "SNOWBALL": return Material.SNOWBALL;
+            case "EGG": return Material.EGG;
+            case "ENDER_PEARL": return Material.ENDER_PEARL;
+            case "EXPERIENCE_BOTTLE": case "THROWN_EXP_BOTTLE": return Material.EXPERIENCE_BOTTLE;
+            case "POTION": case "SPLASH_POTION": case "LINGERING_POTION": return Material.POTION;
+            case "FIREBALL": case "SMALL_FIREBALL": case "DRAGON_FIREBALL": return Material.FIRE_CHARGE;
+            case "WITHER_SKULL": return Material.WITHER_SKELETON_SKULL;
+            case "FISHING_BOBBER": case "FISHING_HOOK": return Material.FISHING_ROD;
+            case "FIREWORK_ROCKET": case "FIREWORK": return Material.FIREWORK_ROCKET;
+            case "WIND_CHARGE": case "BREEZE_WIND_CHARGE": return Material.matchMaterial("WIND_CHARGE"); // 1.21+
+            default: return null;
+        }
     }
 
     public static Material getExplosiveType(Entity e) {
