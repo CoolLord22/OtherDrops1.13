@@ -1,5 +1,6 @@
 package com.gmail.zariust.otherdrops.parameters.conditions;
 
+import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
@@ -67,8 +68,7 @@ public class MobSpawnerCheck extends Condition {
             for (y2 = -radius; y2 <= radius; y2++) {
                 for (z2 = -radius; z2 <= radius; z2++) {
                     Block block = world.getBlockAt(x1 + x2, y1 + y2, z1 + z2);
-
-                    if (block.getType() == Material.SPAWNER) return true;
+                    if (CommonMaterial.isSpawner(block.getType())) return true;
                 }
             }
         }

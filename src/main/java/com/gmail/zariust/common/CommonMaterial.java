@@ -275,6 +275,11 @@ public final class CommonMaterial {
         return drop;
     }
 
+    /** Regular and trial spawners (TRIAL_SPAWNER is 1.21+, so it's checked by name). */
+    public static boolean isSpawner(Material type) {
+        return type == Material.SPAWNER || type.name().equals("TRIAL_SPAWNER");
+    }
+
     public static boolean fuzzyMatchString(String one, String two) {
         return one.toLowerCase().replaceAll("[\\s-_]", "").equals(two.toLowerCase().replaceAll("[\\s-_]", ""));
     }
