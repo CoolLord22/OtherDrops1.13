@@ -201,19 +201,28 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         super(new BlockTarget(block), Trigger.fromInteract(evt.getAction()));
         // Since we track "cancelled" player interact events in order to support left/right clicking on air we need to make sure we do not "uncancel" to cancelled events
         event = new Cancellable() {
-            private boolean cancelled = false;
-            {
-                if (evt.isCancelled()) this.cancelled = true;
-            }
+            private boolean deniedByOtherDrops = false;
+            private Event.Result previousBlockResult;
+            private Event.Result previousItemResult;
 
             @Override
-            public void setCancelled(boolean arg0) {
-                if (!this.cancelled) evt.setCancelled(arg0);
+            public void setCancelled(boolean cancel) {
+                if (cancel && !deniedByOtherDrops) {
+                    previousBlockResult = evt.useInteractedBlock();
+                    previousItemResult = evt.useItemInHand();
+                    evt.setUseInteractedBlock(Event.Result.DENY);
+                    evt.setUseItemInHand(Event.Result.DENY);
+                    deniedByOtherDrops = true;
+                } else if (!cancel && deniedByOtherDrops) {
+                    evt.setUseInteractedBlock(previousBlockResult);
+                    evt.setUseItemInHand(previousItemResult);
+                    deniedByOtherDrops = false;
+                }
             }
 
             @Override
             public boolean isCancelled() {
-                return evt.isCancelled();
+                return deniedByOtherDrops;
             }
         };
 

@@ -24,15 +24,15 @@ import com.gmail.zariust.otherdrops.event.DropCreateException;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import org.bukkit.GameMode;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-
-import java.util.HashSet;
+import org.bukkit.inventory.EquipmentSlot;
 
 public class OdPlayerListener implements Listener {
     private final OtherDrops parent;
@@ -43,23 +43,21 @@ public class OdPlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent event) {
-        // Deliberately processing cancelled events as a click into air is always "cancelled" and we want to catch that event
-        if (event.isCancelled() && (event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
-            Log.logInfo("Cancelled event but not AIR - skipping.", Verbosity.HIGHEST);
+        // Right-clicks fire once per hand. With an empty off hand, the main-hand event already covered this click.
+        if (isEmptyOffHandEcho(event.getHand(), event.getPlayer())) return;
+
+        // Respect other plugins (protection, claims...). This event has two results instead of one "cancelled":
+        //  - clicking a block: skip if another plugin denied using that block
+        //  - clicking air: there's no block (so useInteractedBlock() is always DENY); skip only if item use was denied
+        Block clicked = event.getClickedBlock();
+        if (clicked != null ? event.useInteractedBlock() == Event.Result.DENY : event.useItemInHand() == Event.Result.DENY) {
+            Log.logInfo("Interact denied by another plugin - skipping.", Verbosity.HIGHEST);
             return;
         }
         // TODO Make configurable for creative players
-        Block targetBlock = null;
-        if (event.getClickedBlock() == null) {
-            try {
-                targetBlock = event.getPlayer().getTargetBlock(new HashSet<>(), 200);
-            } catch (Exception ex) {
-                // no need to do anything here
-            }
-            if (targetBlock == null) targetBlock = event.getPlayer().getLocation().getBlock();
-        } else {
-            targetBlock = event.getClickedBlock();
-        }
+        // Clicking air: use the block the player is looking at (or their own block if looking at the sky)
+        Block targetBlock = clicked != null ? clicked : event.getPlayer().getTargetBlockExact(200);
+        if (targetBlock == null) targetBlock = event.getPlayer().getLocation().getBlock();
 
         OccurredEvent drop = new OccurredEvent(event, targetBlock);
         parent.sectionManager.performDrop(drop);
@@ -67,6 +65,7 @@ public class OdPlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
+        if (skipEmptyHand(event.getHand(), event.getPlayer())) return;
         if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
             // skip drops for creative mode - TODO: make this configurable?
         } else {
@@ -81,5 +80,17 @@ public class OdPlayerListener implements Listener {
         event.setCancelled(true);
         OccurredEvent drop = new OccurredEvent(event);
         parent.sectionManager.performDrop(drop);
+    }
+
+    /** Right-clicks fire once per hand. When exactly one hand holds something, only that hand counts. */
+    private static boolean skipEmptyHand(EquipmentSlot hand, Player player) {
+        boolean mainEmpty = player.getInventory().getItemInMainHand().getType().isAir();
+        boolean offEmpty = player.getInventory().getItemInOffHand().getType().isAir();
+        if (hand == EquipmentSlot.OFF_HAND) return offEmpty;            // empty off hand: the main hand covers it
+        if (hand == EquipmentSlot.HAND) return mainEmpty && !offEmpty;  // empty main hand + item in off hand: the off hand covers it
+        return false;
+    }
+    private static boolean isEmptyOffHandEcho(EquipmentSlot hand, Player player) {
+        return hand == EquipmentSlot.OFF_HAND && player.getInventory().getItemInOffHand().getType().isAir();
     }
 }
