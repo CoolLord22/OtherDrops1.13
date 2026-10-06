@@ -87,10 +87,9 @@ public class DropListExclusive extends DropType {
             cumul += drop.getChance();
             if (select <= cumul) {
                 returnRes.add(drop.dropLocal(source, where, 1, flags)); // the picked drop decides (DEFAULT keeps vanilla)
-                return returnRes;
+                break;
             }
         }
-        returnRes.setOverrideDefault(this.overrideDefault); // picked "nothing": still replaces the vanilla drop
         return returnRes;
     }
 

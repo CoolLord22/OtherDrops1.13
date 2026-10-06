@@ -859,7 +859,6 @@ public class OtherDropsConfig {
         } else if (dropped instanceof ExperienceDrop) {
             dropped.overrideDefault = xpOverridesDefault;
         } else if (dropped instanceof DropListExclusive list) {
-            dropped.overrideDefault = lootOverridesDefault;  // used when the pick lands on "nothing"
             list.getGroup().forEach(this::setDefaultOverride);
         } else if (dropped instanceof DropListInclusive list) {
             list.getGroup().forEach(this::setDefaultOverride);
