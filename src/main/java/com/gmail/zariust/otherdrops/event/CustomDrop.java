@@ -383,7 +383,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
     }
 
     public void setMessages(List<String> messages) {
-        this.messages = messages;
+        this.messages = ODVariables.preParse(messages);
     }
 
     public List<String> getMessages() {
